@@ -7,6 +7,8 @@ from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE, MSO_CONNECTOR
 from pptx.enum.text import PP_ALIGN
+from pptx.oxml.ns import qn
+from pptx.oxml.xmlchemy import OxmlElement
 from pptx.util import Emu, Pt
 
 from .config import PipelineConfig
@@ -119,7 +121,10 @@ def add_arrow(slide, element: Element, *, scale: float, offset_x: int, offset_y:
     geometry = element.geometry
     if not isinstance(geometry, PolylineGeometry) or len(geometry.points) != 2:
         raise TypeError("arrow element requires 2-point PolylineGeometry")
-    polygon = arrow_polygon(geometry.points[0], geometry.points[1], max(4.0, element.stroke.width * scale))
+    if try_add_semantic_arrow(slide, element, scale=scale, offset_x=offset_x, offset_y=offset_y):
+        return
+    # python-pptx does not expose arrowheads directly, so freeform is the conservative fallback.
+    polygon = arrow_polygon(geometry.points[0], geometry.points[1], max(4.0, element.stroke.width * 1.4))
     builder = slide.shapes.build_freeform(
         start_x=to_emu(polygon[0].x, scale, offset_x),
         start_y=to_emu(polygon[0].y, scale, offset_y),
@@ -135,6 +140,26 @@ def add_arrow(slide, element: Element, *, scale: float, offset_x: int, offset_y:
     shape.fill.fore_color.rgb = rgb
     shape.line.color.rgb = rgb
     shape.line.width = Emu(max(1, int(element.stroke.width * scale * 0.6)))
+
+
+def try_add_semantic_arrow(slide, element: Element, *, scale: float, offset_x: int, offset_y: int) -> bool:
+    geometry = element.geometry
+    if not isinstance(geometry, PolylineGeometry) or len(geometry.points) != 2:
+        return False
+    start, end = geometry.points
+    try:
+        shape = slide.shapes.add_connector(
+            MSO_CONNECTOR.STRAIGHT,
+            to_emu(start.x, scale, offset_x),
+            to_emu(start.y, scale, offset_y),
+            to_emu(end.x, scale, offset_x),
+            to_emu(end.y, scale, offset_y),
+        )
+        apply_line_style(shape, element, scale=scale)
+        add_connector_arrowhead(shape, end_at="tail")
+        return True
+    except Exception:
+        return False
 
 
 def add_textbox(slide, element: Element, *, scale: float, offset_x: int, offset_y: int) -> None:
@@ -184,7 +209,7 @@ def apply_fill_style(shape, element: Element) -> None:
         shape.fill.background()
 
 
-def arrow_polygon(start: Point, end: Point, width_emu: float) -> tuple[Point, ...]:
+def arrow_polygon(start: Point, end: Point, width_pixels: float) -> tuple[Point, ...]:
     dx = end.x - start.x
     dy = end.y - start.y
     length = math.hypot(dx, dy)
@@ -194,7 +219,7 @@ def arrow_polygon(start: Point, end: Point, width_emu: float) -> tuple[Point, ..
     uy = dy / length
     nx = -uy
     ny = ux
-    shaft_half = max(2.5, width_emu / 2.0 / 12000.0)
+    shaft_half = max(2.5, width_pixels * 0.9)
     head_half = shaft_half * 2.0
     head_length = min(length * 0.45, max(8.0, shaft_half * 4.0))
     body_length = max(length - head_length, shaft_half * 2.0)
@@ -210,3 +235,16 @@ def arrow_polygon(start: Point, end: Point, width_emu: float) -> tuple[Point, ..
 
 def to_emu(value: float, scale: float, offset: int) -> Emu:
     return Emu(int(offset + value * scale))
+
+
+def add_connector_arrowhead(shape, *, end_at: str) -> None:
+    ln = shape._element.spPr.get_or_add_ln()
+    tag = qn("a:tailEnd" if end_at == "tail" else "a:headEnd")
+    for child in list(ln):
+        if child.tag == tag:
+            ln.remove(child)
+    arrow = OxmlElement("a:tailEnd" if end_at == "tail" else "a:headEnd")
+    arrow.set("type", "triangle")
+    arrow.set("w", "med")
+    arrow.set("len", "med")
+    ln.append(arrow)

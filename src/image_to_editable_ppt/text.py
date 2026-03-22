@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 
 from PIL import Image
 
 from .config import PipelineConfig
-from .ir import BBox, BoxGeometry, Element, FillStyle, Point, StrokeStyle, TextPayload
+from .ir import BBox, BoxGeometry, Element, FillStyle, Point, PolylineGeometry, StrokeStyle, TextPayload
 
 
 @dataclass(slots=True, frozen=True)
@@ -112,6 +113,28 @@ def looks_structural(bbox: BBox, structural_elements: list[Element], config: Pip
     for element in structural_elements:
         if element.kind in {"rect", "rounded_rect"} and element.bbox.inset(config.text_margin).contains_point(center):
             return True
-        if element.kind in {"line", "orthogonal_connector", "arrow"} and element.bbox.expand(config.text_margin).contains_point(center):
+        if element.kind in {"line", "orthogonal_connector", "arrow"} and is_near_polyline(center, element, config.text_margin):
             return True
     return False
+
+
+def is_near_polyline(point: Point, element: Element, margin: float) -> bool:
+    if not isinstance(element.geometry, PolylineGeometry):
+        return False
+    if not element.bbox.expand(margin).contains_point(point):
+        return False
+    for start, end in zip(element.geometry.points[:-1], element.geometry.points[1:], strict=True):
+        if point_segment_distance(point, start, end) <= margin:
+            return True
+    return False
+
+
+def point_segment_distance(point: Point, start: Point, end: Point) -> float:
+    dx = end.x - start.x
+    dy = end.y - start.y
+    if dx == 0 and dy == 0:
+        return math.hypot(point.x - start.x, point.y - start.y)
+    projection = ((point.x - start.x) * dx + (point.y - start.y) * dy) / (dx * dx + dy * dy)
+    projection = max(0.0, min(1.0, projection))
+    closest = Point(start.x + projection * dx, start.y + projection * dy)
+    return math.hypot(point.x - closest.x, point.y - closest.y)

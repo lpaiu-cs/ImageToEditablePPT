@@ -55,7 +55,7 @@ def build_elements(
         min_component_area=active_config.min_component_area,
     )
     elements = detect_elements(processed, active_config)
-    elements = repair_elements(elements, active_config)
+    elements = repair_elements(elements, processed, active_config)
     backend = ocr_backend or get_ocr_backend(enable_ocr)
     text = extract_text_elements(image, elements, active_config, backend=backend)
     gated = gate_elements(elements + text, active_config)

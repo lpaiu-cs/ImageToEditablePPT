@@ -10,8 +10,20 @@ from .preprocess import ProcessedImage
 
 
 def detect_elements(processed: ProcessedImage, config: PipelineConfig) -> list[Element]:
-    horizontal = extract_strokes(processed.boundary_mask, "horizontal", config)
-    vertical = extract_strokes(processed.boundary_mask, "vertical", config)
+    horizontal = extract_strokes(
+        processed.boundary_mask,
+        "horizontal",
+        config,
+        array=processed.array,
+        gray=processed.gray,
+    )
+    vertical = extract_strokes(
+        processed.boundary_mask,
+        "vertical",
+        config,
+        array=processed.array,
+        gray=processed.gray,
+    )
     boxes = fit_boxes(
         horizontal,
         vertical,

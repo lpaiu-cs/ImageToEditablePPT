@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import dataclass
 import math
 from statistics import median
@@ -8,7 +9,7 @@ import numpy as np
 
 from .config import PipelineConfig
 from .ir import BBox, BoxGeometry, Element, Point, PolylineGeometry, StrokeStyle, FillStyle
-from .style import estimate_fill_color, sample_bbox_border_colors
+from .style import color_distance, estimate_fill_color, sample_bbox_border_colors
 
 
 @dataclass(slots=True)
@@ -36,10 +37,20 @@ class Stroke:
         return self.y1 - self.y0
 
 
-def extract_strokes(mask: np.ndarray, orientation: str, config: PipelineConfig) -> list[Stroke]:
+def extract_strokes(
+    mask: np.ndarray,
+    orientation: str,
+    config: PipelineConfig,
+    *,
+    array: np.ndarray | None = None,
+    gray: np.ndarray | None = None,
+    min_length: int | None = None,
+    allow_gap_merge: bool = True,
+) -> list[Stroke]:
     if orientation not in {"horizontal", "vertical"}:
         raise ValueError("orientation must be horizontal or vertical")
     primary = mask if orientation == "horizontal" else mask.T
+    min_run_length = config.min_stroke_length if min_length is None else min_length
     runs: list[tuple[int, int, int]] = []
     for offset, row in enumerate(primary):
         in_run = False
@@ -49,10 +60,10 @@ def extract_strokes(mask: np.ndarray, orientation: str, config: PipelineConfig) 
                 start = idx
                 in_run = True
             elif not value and in_run:
-                if idx - start >= config.min_stroke_length:
+                if idx - start >= min_run_length:
                     runs.append((offset, start, idx))
                 in_run = False
-        if in_run and row.size - start >= config.min_stroke_length:
+        if in_run and row.size - start >= min_run_length:
             runs.append((offset, start, row.size))
     strokes: list[Stroke] = []
     for offset, start, end in runs:
@@ -78,10 +89,25 @@ def extract_strokes(mask: np.ndarray, orientation: str, config: PipelineConfig) 
                     thickness=1.0,
                 )
             )
-    return merge_parallel_strokes(strokes, config)
+    return merge_parallel_strokes(
+        strokes,
+        config,
+        mask=mask,
+        array=array,
+        gray=gray,
+        allow_gap_merge=allow_gap_merge,
+    )
 
 
-def merge_parallel_strokes(strokes: list[Stroke], config: PipelineConfig) -> list[Stroke]:
+def merge_parallel_strokes(
+    strokes: list[Stroke],
+    config: PipelineConfig,
+    *,
+    mask: np.ndarray,
+    array: np.ndarray | None,
+    gray: np.ndarray | None,
+    allow_gap_merge: bool,
+) -> list[Stroke]:
     if not strokes:
         return []
     if strokes[0].orientation == "horizontal":
@@ -109,7 +135,7 @@ def merge_parallel_strokes(strokes: list[Stroke], config: PipelineConfig) -> lis
                 )
             else:
                 merged.append(stroke)
-        return merge_collinear_gaps(merged, config)
+        return merge_collinear_gaps(merged, config, mask=mask, array=array, gray=gray) if allow_gap_merge else merged
     strokes = sorted(strokes, key=lambda stroke: (stroke.x0, stroke.y0))
     merged = []
     for stroke in strokes:
@@ -134,10 +160,17 @@ def merge_parallel_strokes(strokes: list[Stroke], config: PipelineConfig) -> lis
             )
         else:
             merged.append(stroke)
-    return merge_collinear_gaps(merged, config)
+    return merge_collinear_gaps(merged, config, mask=mask, array=array, gray=gray) if allow_gap_merge else merged
 
 
-def merge_collinear_gaps(strokes: list[Stroke], config: PipelineConfig) -> list[Stroke]:
+def merge_collinear_gaps(
+    strokes: list[Stroke],
+    config: PipelineConfig,
+    *,
+    mask: np.ndarray,
+    array: np.ndarray | None,
+    gray: np.ndarray | None,
+) -> list[Stroke]:
     if not strokes:
         return []
     orientation = strokes[0].orientation
@@ -154,7 +187,14 @@ def merge_collinear_gaps(strokes: list[Stroke], config: PipelineConfig) -> list[
         if orientation == "horizontal":
             aligned = abs(prev.center_y - stroke.center_y) <= config.stroke_alignment_tolerance
             gap = stroke.x0 - prev.x1
-            if aligned and 0 <= gap <= config.stroke_merge_gap:
+            if aligned and 0 <= gap <= config.stroke_merge_gap and should_merge_strokes(
+                prev,
+                stroke,
+                mask=mask,
+                array=array,
+                gray=gray,
+                config=config,
+            ):
                 merged[-1] = Stroke(
                     orientation="horizontal",
                     x0=prev.x0,
@@ -168,7 +208,14 @@ def merge_collinear_gaps(strokes: list[Stroke], config: PipelineConfig) -> list[
         else:
             aligned = abs(prev.center_x - stroke.center_x) <= config.stroke_alignment_tolerance
             gap = stroke.y0 - prev.y1
-            if aligned and 0 <= gap <= config.stroke_merge_gap:
+            if aligned and 0 <= gap <= config.stroke_merge_gap and should_merge_strokes(
+                prev,
+                stroke,
+                mask=mask,
+                array=array,
+                gray=gray,
+                config=config,
+            ):
                 merged[-1] = Stroke(
                     orientation="vertical",
                     x0=min(prev.x0, stroke.x0),
@@ -181,6 +228,107 @@ def merge_collinear_gaps(strokes: list[Stroke], config: PipelineConfig) -> list[
                 continue
         merged.append(stroke)
     return merged
+
+
+def should_merge_strokes(
+    first: Stroke,
+    second: Stroke,
+    *,
+    mask: np.ndarray,
+    array: np.ndarray | None,
+    gray: np.ndarray | None,
+    config: PipelineConfig,
+) -> bool:
+    if array is None or gray is None:
+        return False
+    score = 0
+    if first.orientation == second.orientation:
+        score += 2
+    if first.orientation == "horizontal":
+        aligned = abs(first.center_y - second.center_y) <= config.stroke_alignment_tolerance
+        gap = second.x0 - first.x1
+    else:
+        aligned = abs(first.center_x - second.center_x) <= config.stroke_alignment_tolerance
+        gap = second.y0 - first.y1
+    if not aligned or gap < 0 or gap > config.stroke_merge_gap:
+        return False
+    score += 1
+    width_ratio = min(first.thickness, second.thickness) / max(first.thickness, second.thickness)
+    if width_ratio >= 0.68:
+        score += 1
+    first_color = sample_stroke_color(array, first)
+    second_color = sample_stroke_color(array, second)
+    if color_distance(first_color, second_color) <= config.repair_color_distance:
+        score += 1
+    first_darkness = sample_stroke_darkness(gray, first)
+    second_darkness = sample_stroke_darkness(gray, second)
+    if abs(first_darkness - second_darkness) <= config.repair_darkness_delta:
+        score += 1
+    has_occluder, has_conflict = inspect_stroke_gap(mask, first, second, config)
+    micro_gap = gap <= max(2.0, max(first.thickness, second.thickness) * 1.5)
+    if micro_gap or has_occluder:
+        score += 1
+    if has_conflict:
+        score -= 3
+    return not has_conflict and score >= config.repair_min_score
+
+
+def sample_stroke_color(array: np.ndarray, stroke: Stroke) -> tuple[int, int, int]:
+    x0 = max(0, int(math.floor(stroke.x0)))
+    y0 = max(0, int(math.floor(stroke.y0)))
+    x1 = min(array.shape[1], int(math.ceil(stroke.x1)))
+    y1 = min(array.shape[0], int(math.ceil(stroke.y1)))
+    if x1 <= x0 or y1 <= y0:
+        return (0, 0, 0)
+    sample = array[y0:y1, x0:x1, :].reshape(-1, 3)
+    return tuple(int(channel) for channel in np.median(sample, axis=0))
+
+
+def sample_stroke_darkness(gray: np.ndarray, stroke: Stroke) -> float:
+    x0 = max(0, int(math.floor(stroke.x0)))
+    y0 = max(0, int(math.floor(stroke.y0)))
+    x1 = min(gray.shape[1], int(math.ceil(stroke.x1)))
+    y1 = min(gray.shape[0], int(math.ceil(stroke.y1)))
+    if x1 <= x0 or y1 <= y0:
+        return 0.0
+    return float(255.0 - np.median(gray[y0:y1, x0:x1]))
+
+
+def inspect_stroke_gap(
+    mask: np.ndarray,
+    first: Stroke,
+    second: Stroke,
+    config: PipelineConfig,
+) -> tuple[bool, bool]:
+    band = max(2, int(round(max(first.thickness, second.thickness) * 1.6)))
+    if first.orientation == "horizontal":
+        x0 = max(0, int(math.floor(first.x1)) - 1)
+        x1 = min(mask.shape[1], int(math.ceil(second.x0)) + 1)
+        y0 = max(0, int(round((first.center_y + second.center_y) / 2.0)) - band)
+        y1 = min(mask.shape[0], int(round((first.center_y + second.center_y) / 2.0)) + band + 1)
+        if x1 <= x0 or y1 <= y0:
+            return False, False
+        window = mask[y0:y1, x0:x1]
+        fill_ratio = float(window.mean()) if window.size else 0.0
+        cross_ratio = float(np.max(window.sum(axis=0)) / max(1, window.shape[0])) if window.size else 0.0
+    else:
+        x0 = max(0, int(round((first.center_x + second.center_x) / 2.0)) - band)
+        x1 = min(mask.shape[1], int(round((first.center_x + second.center_x) / 2.0)) + band + 1)
+        y0 = max(0, int(math.floor(first.y1)) - 1)
+        y1 = min(mask.shape[0], int(math.ceil(second.y0)) + 1)
+        if x1 <= x0 or y1 <= y0:
+            return False, False
+        window = mask[y0:y1, x0:x1]
+        fill_ratio = float(window.mean()) if window.size else 0.0
+        cross_ratio = float(np.max(window.sum(axis=1)) / max(1, window.shape[1])) if window.size else 0.0
+    if fill_ratio <= config.repair_occluder_fill_ratio:
+        return False, False
+    has_conflict = fill_ratio >= config.repair_conflict_fill_ratio or cross_ratio >= 0.84
+    has_occluder = (
+        config.repair_occluder_fill_ratio <= fill_ratio <= config.repair_conflict_fill_ratio
+        and cross_ratio < 0.84
+    )
+    return has_occluder, has_conflict
 
 
 def fit_boxes(
@@ -335,49 +483,223 @@ def fit_orthogonal_connector(
     *,
     element_id: str,
 ) -> Element | None:
-    ys = pixels[:, 0]
-    xs = pixels[:, 1]
-    row_values, row_counts = np.unique(ys, return_counts=True)
-    col_values, col_counts = np.unique(xs, return_counts=True)
-    dominant_y = int(row_values[int(np.argmax(row_counts))])
-    dominant_x = int(col_values[int(np.argmax(col_counts))])
-    band = max(1, int(round(math.sqrt(len(pixels)) / 10.0)))
-    coverage = (
-        (np.abs(ys - dominant_y) <= band) | (np.abs(xs - dominant_x) <= band)
-    ).mean()
-    if coverage < config.orthogonal_cover_threshold:
+    local_mask = component_mask(pixels, bbox)
+    min_length = max(config.connector_min_segment_length, config.min_stroke_length // 2)
+    horizontal = extract_strokes(
+        local_mask,
+        "horizontal",
+        config,
+        min_length=min_length,
+        allow_gap_merge=False,
+    )
+    vertical = extract_strokes(
+        local_mask,
+        "vertical",
+        config,
+        min_length=min_length,
+        allow_gap_merge=False,
+    )
+    if not horizontal or not vertical:
         return None
-    left_extent = xs[ys == dominant_y].min(initial=dominant_x)
-    right_extent = xs[ys == dominant_y].max(initial=dominant_x)
-    top_extent = ys[xs == dominant_x].min(initial=dominant_y)
-    bottom_extent = ys[xs == dominant_x].max(initial=dominant_y)
-    horizontal_len = max(dominant_x - left_extent, right_extent - dominant_x)
-    vertical_len = max(dominant_y - top_extent, bottom_extent - dominant_y)
-    if horizontal_len < config.min_stroke_length or vertical_len < config.min_stroke_length:
+    local_points, band = orthogonal_chain_points(horizontal, vertical, config)
+    if local_points is None:
         return None
-    horizontal_candidates = [
-        (Point(float(left_extent), float(dominant_y)), abs(dominant_x - left_extent)),
-        (Point(float(right_extent), float(dominant_y)), abs(right_extent - dominant_x)),
-    ]
-    vertical_candidates = [
-        (Point(float(dominant_x), float(top_extent)), abs(dominant_y - top_extent)),
-        (Point(float(dominant_x), float(bottom_extent)), abs(bottom_extent - dominant_y)),
-    ]
-    horizontal_endpoint = max(horizontal_candidates, key=lambda item: item[1])[0]
-    vertical_endpoint = max(vertical_candidates, key=lambda item: item[1])[0]
+    coverage = connector_pixel_coverage(local_mask, local_points, band=band)
+    if coverage < config.connector_min_coverage:
+        return None
+    global_points = tuple(Point(point.x + bbox.x0, point.y + bbox.y0) for point in local_points)
     stroke_color = tuple(int(channel) for channel in np.median(array[pixels[:, 0], pixels[:, 1], :], axis=0))
-    points = (horizontal_endpoint, Point(float(dominant_x), float(dominant_y)), vertical_endpoint)
     return Element(
         id=element_id,
         kind="orthogonal_connector",
-        geometry=PolylineGeometry(points=points),
+        geometry=PolylineGeometry(points=global_points),
         stroke=StrokeStyle(color=stroke_color, width=max(1.0, band * 1.5)),
         fill=FillStyle(enabled=False, color=None),
         text=None,
-        confidence=min(0.94, 0.75 + coverage * 0.2),
+        confidence=min(0.96, 0.72 + coverage * 0.24 + min(len(global_points), 5) * 0.01),
         source_region=bbox,
         inferred=False,
     )
+
+
+def component_mask(pixels: np.ndarray, bbox: BBox) -> np.ndarray:
+    width = max(1, int(math.ceil(bbox.width)))
+    height = max(1, int(math.ceil(bbox.height)))
+    mask = np.zeros((height, width), dtype=bool)
+    xs = pixels[:, 1] - int(math.floor(bbox.x0))
+    ys = pixels[:, 0] - int(math.floor(bbox.y0))
+    mask[ys, xs] = True
+    return mask
+
+
+def orthogonal_chain_points(
+    horizontal: list[Stroke],
+    vertical: list[Stroke],
+    config: PipelineConfig,
+) -> tuple[tuple[Point, ...] | None, int]:
+    adjacency: dict[tuple[int, int], set[tuple[int, int]]] = defaultdict(set)
+    edge_count = 0
+    band = max(1, int(round(median([stroke.thickness for stroke in horizontal + vertical]))))
+    for stroke in horizontal:
+        nodes = horizontal_segment_nodes(stroke, vertical, config)
+        edge_count += add_segment_edges(adjacency, nodes, axis="x")
+    for stroke in vertical:
+        nodes = vertical_segment_nodes(stroke, horizontal, config)
+        edge_count += add_segment_edges(adjacency, nodes, axis="y")
+    if not adjacency:
+        return None, band
+    endpoints = [node for node, neighbors in adjacency.items() if len(neighbors) == 1]
+    if len(endpoints) != 2:
+        return None, band
+    if any(len(neighbors) > 2 for neighbors in adjacency.values()):
+        return None, band
+    path = walk_simple_path(adjacency, endpoints[0], endpoints[1])
+    if path is None:
+        return None, band
+    compressed = compress_path(path)
+    if len(compressed) < 3:
+        return None, band
+    if len(compressed) - 1 > config.connector_max_segments:
+        return None, band
+    return tuple(Point(float(x), float(y)) for x, y in compressed), band
+
+
+def horizontal_segment_nodes(
+    stroke: Stroke,
+    vertical: list[Stroke],
+    config: PipelineConfig,
+) -> list[tuple[int, int]]:
+    y = int(round(stroke.center_y))
+    endpoint_margin = max(1, int(round(stroke.thickness / 2.0)))
+    nodes = [
+        (int(round(stroke.x0 + endpoint_margin)), y),
+        (int(round(stroke.x1 - endpoint_margin)), y),
+    ]
+    for other in vertical:
+        x = int(round(other.center_x))
+        if stroke.x0 - config.stroke_alignment_tolerance <= x <= stroke.x1 + config.stroke_alignment_tolerance and other.y0 - config.stroke_alignment_tolerance <= y <= other.y1 + config.stroke_alignment_tolerance:
+            nodes.append((x, y))
+    return dedupe_sorted_nodes(nodes, axis="x", tolerance=max(2, int(round(stroke.thickness))))
+
+
+def vertical_segment_nodes(
+    stroke: Stroke,
+    horizontal: list[Stroke],
+    config: PipelineConfig,
+) -> list[tuple[int, int]]:
+    x = int(round(stroke.center_x))
+    endpoint_margin = max(1, int(round(stroke.thickness / 2.0)))
+    nodes = [
+        (x, int(round(stroke.y0 + endpoint_margin))),
+        (x, int(round(stroke.y1 - endpoint_margin))),
+    ]
+    for other in horizontal:
+        y = int(round(other.center_y))
+        if stroke.y0 - config.stroke_alignment_tolerance <= y <= stroke.y1 + config.stroke_alignment_tolerance and other.x0 - config.stroke_alignment_tolerance <= x <= other.x1 + config.stroke_alignment_tolerance:
+            nodes.append((x, y))
+    return dedupe_sorted_nodes(nodes, axis="y", tolerance=max(2, int(round(stroke.thickness))))
+
+
+def dedupe_sorted_nodes(
+    nodes: list[tuple[int, int]],
+    *,
+    axis: str,
+    tolerance: int,
+) -> list[tuple[int, int]]:
+    index = 0 if axis == "x" else 1
+    ordered = sorted(set(nodes), key=lambda node: (node[index], node[1 - index]))
+    collapsed: list[tuple[int, int]] = []
+    for node in ordered:
+        if not collapsed:
+            collapsed.append(node)
+            continue
+        previous = collapsed[-1]
+        if abs(node[index] - previous[index]) <= tolerance and abs(node[1 - index] - previous[1 - index]) <= tolerance:
+            collapsed[-1] = (
+                int(round((previous[0] + node[0]) / 2.0)),
+                int(round((previous[1] + node[1]) / 2.0)),
+            )
+            continue
+        collapsed.append(node)
+    return collapsed
+
+
+def add_segment_edges(
+    adjacency: dict[tuple[int, int], set[tuple[int, int]]],
+    nodes: list[tuple[int, int]],
+    *,
+    axis: str,
+) -> int:
+    if len(nodes) < 2:
+        return 0
+    edge_count = 0
+    for start, end in zip(nodes[:-1], nodes[1:], strict=True):
+        if start == end:
+            continue
+        adjacency[start].add(end)
+        adjacency[end].add(start)
+        edge_count += 1
+    return edge_count
+
+
+def walk_simple_path(
+    adjacency: dict[tuple[int, int], set[tuple[int, int]]],
+    start: tuple[int, int],
+    end: tuple[int, int],
+) -> list[tuple[int, int]] | None:
+    path = [start]
+    previous: tuple[int, int] | None = None
+    current = start
+    while current != end:
+        candidates = [node for node in adjacency[current] if node != previous]
+        if len(candidates) != 1:
+            return None
+        previous = current
+        current = candidates[0]
+        path.append(current)
+        if len(path) > len(adjacency) + 1:
+            return None
+    return path
+
+
+def compress_path(path: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    if len(path) <= 2:
+        return path
+    compressed = [path[0]]
+    for idx in range(1, len(path) - 1):
+        prev = compressed[-1]
+        current = path[idx]
+        nxt = path[idx + 1]
+        prev_dir = (int(math.copysign(1, current[0] - prev[0])) if current[0] != prev[0] else 0, int(math.copysign(1, current[1] - prev[1])) if current[1] != prev[1] else 0)
+        next_dir = (int(math.copysign(1, nxt[0] - current[0])) if nxt[0] != current[0] else 0, int(math.copysign(1, nxt[1] - current[1])) if nxt[1] != current[1] else 0)
+        if prev_dir == next_dir:
+            continue
+        compressed.append(current)
+    compressed.append(path[-1])
+    return compressed
+
+
+def connector_pixel_coverage(mask: np.ndarray, points: tuple[Point, ...], *, band: int) -> float:
+    pixels = np.argwhere(mask)
+    if len(pixels) == 0:
+        return 0.0
+    covered = 0
+    for y, x in pixels:
+        if any(pixel_near_axis_segment(x, y, start, end, band) for start, end in zip(points[:-1], points[1:], strict=True)):
+            covered += 1
+    return covered / len(pixels)
+
+
+def pixel_near_axis_segment(x: int, y: int, start: Point, end: Point, band: int) -> bool:
+    if int(round(start.x)) == int(round(end.x)):
+        segment_x = int(round(start.x))
+        y0 = min(start.y, end.y) - band
+        y1 = max(start.y, end.y) + band
+        return abs(x - segment_x) <= band and y0 <= y <= y1
+    segment_y = int(round(start.y))
+    x0 = min(start.x, end.x) - band
+    x1 = max(start.x, end.x) + band
+    return abs(y - segment_y) <= band and x0 <= x <= x1
 
 
 def best_vertical_for_box(
