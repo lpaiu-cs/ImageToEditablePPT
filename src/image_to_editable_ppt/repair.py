@@ -61,6 +61,8 @@ def try_merge_lines(
     processed: ProcessedImage,
     config: PipelineConfig,
 ) -> Element | None:
+    if first.id.count("-") > 1 or second.id.count("-") > 1:
+        return None
     p1, p2 = first.geometry.points
     q1, q2 = second.geometry.points
     if not segments_collinear(p1, p2, q1, q2, tolerance=config.stroke_alignment_tolerance * 1.2):
@@ -142,6 +144,7 @@ def inspect_gap_region(
     config: PipelineConfig,
 ) -> tuple[bool, bool]:
     band = max(2, int(round(width * 1.6)))
+    trim = max(2, int(round(width * 2.5)))
     x0 = max(0, int(math.floor(min(start.x, end.x))) - band)
     x1 = min(foreground_mask.shape[1], int(math.ceil(max(start.x, end.x))) + band + 1)
     y0 = max(0, int(math.floor(min(start.y, end.y))) - band)
@@ -149,13 +152,17 @@ def inspect_gap_region(
     if x1 <= x0 or y1 <= y0:
         return False, False
     window = foreground_mask[y0:y1, x0:x1]
-    fill_ratio = float(window.mean()) if window.size else 0.0
+    if orientation == "horizontal":
+        inner = window[:, trim:-trim] if window.shape[1] > trim * 2 else window
+    else:
+        inner = window[trim:-trim, :] if window.shape[0] > trim * 2 else window
+    fill_ratio = float(inner.mean()) if inner.size else 0.0
     if fill_ratio <= config.repair_occluder_fill_ratio:
         return False, False
     if orientation == "horizontal":
-        cross_ratio = float(np.max(window.sum(axis=0)) / max(1, window.shape[0]))
+        cross_ratio = float(np.max(inner.sum(axis=0)) / max(1, inner.shape[0])) if inner.size else 0.0
     else:
-        cross_ratio = float(np.max(window.sum(axis=1)) / max(1, window.shape[1]))
+        cross_ratio = float(np.max(inner.sum(axis=1)) / max(1, inner.shape[1])) if inner.size else 0.0
     has_conflict = fill_ratio >= config.repair_conflict_fill_ratio or cross_ratio >= 0.84
     has_occluder = (
         config.repair_occluder_fill_ratio <= fill_ratio <= config.repair_conflict_fill_ratio

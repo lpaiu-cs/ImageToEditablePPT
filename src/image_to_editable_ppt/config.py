@@ -5,9 +5,13 @@ from dataclasses import dataclass
 
 @dataclass(slots=True)
 class PipelineConfig:
+    adaptive_background: bool = True
+    background_blur_divisor: float = 72.0
     foreground_threshold: float = 32.0
     min_component_area: int = 18
     min_stroke_length: int = 18
+    min_relative_line_length: float = 0.04
+    min_relative_box_size: float = 0.02
     stroke_alignment_tolerance: int = 4
     stroke_merge_gap: int = 18
     repair_min_score: int = 6
@@ -24,10 +28,14 @@ class PipelineConfig:
     connector_min_segment_length: int = 12
     connector_min_coverage: float = 0.76
     connector_max_segments: int = 4
-    min_arrow_widen_ratio: float = 1.65
+    text_cluster_min_components: int = 3
+    text_spacing_ratio: float = 1.8
+    text_baseline_tolerance_ratio: float = 0.65
+    min_arrow_widen_ratio: float = 1.40
     inclusion_confidence: float = 0.80
     tentative_confidence: float = 0.68
     text_confidence: float = 0.92
     fill_delta_threshold: float = 14.0
+    fill_homogeneity_threshold: float = 18.0
     slide_padding_pt: float = 24.0
     text_margin: float = 10.0

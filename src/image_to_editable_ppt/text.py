@@ -82,13 +82,16 @@ def extract_text_elements(
     config: PipelineConfig,
     *,
     backend: OCRBackend,
+    candidate_regions: list[BBox] | None = None,
 ) -> list[Element]:
     text_elements: list[Element] = []
-    for index, region in enumerate(backend.extract(image), start=1):
+    for index, region in enumerate(extract_candidate_regions(image, backend, candidate_regions), start=1):
         content = region.text.strip()
         if not content:
             continue
         if region.confidence < config.text_confidence:
+            continue
+        if not plausible_text_box(region.bbox, config):
             continue
         if not looks_structural(region.bbox, structural_elements, config):
             continue
@@ -106,6 +109,50 @@ def extract_text_elements(
             )
         )
     return text_elements
+
+
+def extract_candidate_regions(
+    image: Image.Image,
+    backend: OCRBackend,
+    candidate_regions: list[BBox] | None,
+) -> list[OCRTextRegion]:
+    if not candidate_regions:
+        return backend.extract(image)
+    regions: list[OCRTextRegion] = []
+    for candidate in candidate_regions:
+        crop_box = (
+            max(0, int(math.floor(candidate.x0))),
+            max(0, int(math.floor(candidate.y0))),
+            min(image.size[0], int(math.ceil(candidate.x1))),
+            min(image.size[1], int(math.ceil(candidate.y1))),
+        )
+        if crop_box[2] - crop_box[0] < 2 or crop_box[3] - crop_box[1] < 2:
+            continue
+        crop = image.crop(crop_box)
+        for region in backend.extract(crop):
+            regions.append(
+                OCRTextRegion(
+                    text=region.text,
+                    bbox=BBox(
+                        region.bbox.x0 + crop_box[0],
+                        region.bbox.y0 + crop_box[1],
+                        region.bbox.x1 + crop_box[0],
+                        region.bbox.y1 + crop_box[1],
+                    ),
+                    confidence=region.confidence,
+                )
+            )
+    return regions
+
+
+def plausible_text_box(bbox: BBox, config: PipelineConfig) -> bool:
+    if bbox.width < max(8.0, config.text_margin * 0.7):
+        return False
+    if bbox.height < max(6.0, config.text_margin * 0.45):
+        return False
+    if bbox.height > bbox.width * 1.8:
+        return False
+    return True
 
 
 def looks_structural(bbox: BBox, structural_elements: list[Element], config: PipelineConfig) -> bool:

@@ -48,6 +48,8 @@ def estimate_fill_color(
     stroke_width: float,
     background_color: tuple[int, int, int],
     delta_threshold: float,
+    homogeneity_threshold: float,
+    detail_mask: np.ndarray | None = None,
 ) -> tuple[bool, tuple[int, int, int] | None]:
     inset = max(2.0, stroke_width + 1.0)
     inner = bbox.inset(inset)
@@ -57,8 +59,38 @@ def estimate_fill_color(
     y1 = min(array.shape[0], int(math.ceil(inner.y1)))
     if x1 - x0 < 2 or y1 - y0 < 2:
         return False, None
-    colors = array[y0:y1, x0:x1, :].reshape(-1, 3)
+    colors_region = array[y0:y1, x0:x1, :]
+    if detail_mask is not None:
+        excluded = dilate_mask(detail_mask[y0:y1, x0:x1], radius=max(1, int(round(stroke_width / 2.0))))
+        valid = ~excluded
+        if float(valid.mean()) < 0.40:
+            return False, None
+        colors = colors_region[valid]
+    else:
+        colors = colors_region.reshape(-1, 3)
+    if colors.size == 0:
+        return False, None
     fill = median_color(colors)
     if color_distance(fill, background_color) < delta_threshold:
         return False, None
+    distances = np.linalg.norm(colors.astype(np.float32) - np.asarray(fill, dtype=np.float32)[None, :], axis=1)
+    if float(np.percentile(distances, 80)) > homogeneity_threshold:
+        return False, None
     return True, fill
+
+
+def dilate_mask(mask: np.ndarray, *, radius: int) -> np.ndarray:
+    if radius <= 0 or mask.size == 0:
+        return mask
+    dilated = mask.copy()
+    for _ in range(radius):
+        padded = np.pad(dilated, ((1, 1), (1, 1)), mode="constant", constant_values=False)
+        expanded = dilated.copy()
+        height, width = dilated.shape
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                y0 = 1 + dy
+                x0 = 1 + dx
+                expanded |= padded[y0 : y0 + height, x0 : x0 + width]
+        dilated = expanded
+    return dilated

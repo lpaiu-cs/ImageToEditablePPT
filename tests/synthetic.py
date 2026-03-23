@@ -4,7 +4,7 @@ from io import BytesIO
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 
 def save_image(image: Image.Image, path: Path) -> Path:
@@ -145,6 +145,18 @@ def text_box_diagram() -> Image.Image:
     return image
 
 
+def boxed_text_cluster_diagram() -> Image.Image:
+    image = Image.new("RGB", (320, 220), "white")
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.load_default()
+    draw.rectangle((34, 34, 286, 176), outline="black", width=5)
+    draw.text((76, 88), "Encoder Stage", fill=(26, 26, 26), font=font)
+    draw.text((88, 110), "Token Mixer", fill=(30, 30, 30), font=font)
+    image = image.filter(ImageFilter.GaussianBlur(radius=0.35))
+    image = apply_noise(image, seed=83, sigma=1.2)
+    return jpeg_roundtrip(image, quality=88)
+
+
 def paper_like_occluded_box() -> Image.Image:
     def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
         add_gradient_rect(draw, box=(32, 32, 192, 132), scale=scale, top_color=(234, 240, 252), bottom_color=(207, 224, 246))
@@ -209,6 +221,74 @@ def paper_like_mixed_figure() -> Image.Image:
             fill=(120, 76, 132),
         )
     return rasterize_fixture((300, 170), draw, seed=41, blur=0.45, compression_quality=78, noise_sigma=4.6)
+
+
+def paper_like_dense_text_diagram() -> Image.Image:
+    image = Image.new("RGB", (1280, 820), (249, 249, 246))
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.load_default()
+    for y in range(image.size[1]):
+        ratio = y / max(1, image.size[1] - 1)
+        color = (
+            int(round(248 * (1.0 - ratio) + 240 * ratio)),
+            int(round(249 * (1.0 - ratio) + 244 * ratio)),
+            int(round(246 * (1.0 - ratio) + 238 * ratio)),
+        )
+        draw.line((0, y, image.size[0], y), fill=color, width=1)
+    draw.rounded_rectangle((70, 70, 560, 360), radius=26, outline=(24, 24, 24), width=8, fill=(235, 241, 248))
+    draw.rounded_rectangle((760, 108, 1210, 430), radius=24, outline=(28, 28, 28), width=8, fill=(245, 239, 228))
+    draw.rectangle((210, 510, 600, 710), outline=(22, 22, 22), width=7, fill=(240, 245, 234))
+    draw.line((560, 214, 760, 214), fill=(20, 20, 20), width=8)
+    draw.line((406, 360, 406, 510), fill=(20, 20, 20), width=8)
+    draw.line((406, 510, 210, 510), fill=(20, 20, 20), width=8)
+    draw.line((986, 430, 986, 520), fill=(20, 20, 20), width=8)
+    draw.line((986, 520, 610, 520), fill=(20, 20, 20), width=8)
+    left_rows = [
+        "Input tokens",
+        "Patch embedding",
+        "Residual stream",
+        "Normalization",
+        "Attention block",
+        "Projection head",
+    ]
+    right_rows = [
+        "Skip branch",
+        "Feature mixer",
+        "Context block",
+        "Gated update",
+        "Dense labels",
+        "Render path",
+    ]
+    lower_rows = [
+        "Prediction logits",
+        "Loss terms",
+        "Auxiliary score",
+        "Regularizer alpha",
+    ]
+    for index, text in enumerate(left_rows):
+        draw.text((118, 106 + index * 28), text, fill=(36, 36, 36), font=font)
+    for index, text in enumerate(right_rows):
+        draw.text((806, 150 + index * 30), text, fill=(40, 40, 40), font=font)
+    for index, text in enumerate(lower_rows):
+        draw.text((254, 560 + index * 28), text, fill=(34, 34, 34), font=font)
+    for row in range(7):
+        draw.text((640, 86 + row * 26), f"legend {row + 1}", fill=(54, 54, 54), font=font)
+    for row in range(6):
+        draw.text((72, 392 + row * 24), f"caption row {row + 1}", fill=(64, 64, 64), font=font)
+    for row in range(5):
+        draw.text((830, 468 + row * 24), f"footnote {row + 1}", fill=(60, 60, 60), font=font)
+    draw.ellipse((1090, 560, 1215, 700), fill=(184, 206, 231))
+    draw.ellipse((1110, 540, 1238, 640), fill=(165, 182, 216))
+    draw.ellipse((1060, 622, 1188, 742), fill=(196, 146, 194))
+    draw.polygon([(1106, 586), (1142, 556), (1204, 570), (1190, 628), (1124, 642)], fill=(120, 86, 138))
+    for x, y, radius in ((1040, 180, 18), (1072, 214, 12), (1112, 174, 10), (990, 648, 16), (1160, 734, 12)):
+        draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=(170, 180, 198))
+    for x0, y0, x1, y1, shade in ((92, 96, 538, 344, 6), (782, 130, 1188, 404, 8), (224, 526, 584, 694, 7)):
+        for offset in range(3):
+            draw.rounded_rectangle((x0 + offset * 6, y0 + offset * 6, x1 - offset * 6, y1 - offset * 6), radius=18, outline=(220 - shade * offset, 220 - shade * offset, 220 - shade * offset), width=1)
+    image = image.filter(ImageFilter.GaussianBlur(radius=0.55))
+    image = apply_noise(image, seed=84, sigma=3.8)
+    return jpeg_roundtrip(image, quality=76)
 
 
 def scaled_box(box: tuple[int, int, int, int], scale: int) -> tuple[int, int, int, int]:

@@ -5,12 +5,14 @@
 ## 현재 지원 범위
 
 - 단일 이미지 입력
+- text-like / icon-like residual을 geometry fitting 전에 보수적으로 제거하는 non-diagram filtering
 - axis-aligned rectangle / rounded rectangle 검출
 - straight line 검출
 - 강한 근거가 있을 때만 수행하는 evidence-aware occlusion repair
 - simple multi-segment orthogonal connector 검출
 - simple arrow 검출
 - 닫힌 박스의 대표 단색 fill 추정
+- non-uniform background에서 local contrast 기반 detail mask를 병행하는 보수적 전처리
 - 높은 신뢰도 텍스트만 포함하는 선택적 OCR 게이트
 - editable PPTX export
 - synthetic 및 paper-like rasterized fixture 기반 테스트
@@ -30,6 +32,7 @@
 - 검출보다 생략을 우선한다.
 - fill은 닫힌 박스에만 적용한다.
 - 비-다이어그램으로 보이는 복합 요소는 생략한다.
+- OCR이 꺼져 있어도 text-like region은 geometry 후보에서 제거한다.
 - MVP는 결정적 heuristic 파이프라인으로 시작한다.
 - OCR은 기본 비활성화에 가까운 선택 기능이며, 없으면 텍스트를 생략한다.
 - gap repair는 작은 거리만으로 허용하지 않고, 정렬/두께/명암/occluder/conflict 여부를 함께 본다.
@@ -58,12 +61,13 @@ image-to-editable-ppt input.png output.pptx --debug-elements elements.json
 
 1. 전처리: 배경 추정, foreground / boundary mask 구성, speck 제거
 2. 구조 후보 탐지: 수평/수직 stroke 추출, 박스 후보 탐지
-3. primitive fitting: box / line / arrow / connector fitting
-4. occlusion repair: 정렬, 폭, 명암, occluder, conflict를 함께 보는 evidence-aware merge
-5. style extraction: stroke / fill representative color 추정
-6. text extraction: 선택적 OCR + 구조적 역할 게이트
-7. confidence gating: 낮은 신뢰도 primitive 생략
-8. PPT export: primitive별 editable object 생성
+3. non-diagram filtering: connected component feature와 text row cluster로 text/icon residual 제거
+4. primitive fitting: box / line / arrow / connector fitting
+5. occlusion repair: 정렬, 폭, 명암, occluder, conflict를 함께 보는 evidence-aware merge
+6. style extraction: 내부 detail pixel을 제외한 stroke / fill representative color 추정
+7. text extraction: text-like cluster crop 기반의 선택적 OCR + 구조적 역할 게이트
+8. confidence gating: 낮은 신뢰도 primitive 생략
+9. PPT export: primitive별 editable object 생성
 
 ## Export Semantics
 
@@ -82,6 +86,8 @@ image-to-editable-ppt input.png output.pptx --debug-elements elements.json
 - 약한 기하 근거와 conflict가 있는 경우 repair 생략
 - noisy open contour에서 fill 금지
 - mixed figure에서 non-diagram region omission
+- dense text-heavy rasterized diagram에서 text fragment suppression과 large container survival
+- OCR off 상태에서 text glyph가 geometry primitive로 새지 않음
 - multi-segment orthogonal connector의 보수적 검출
 - arrow export의 arrowhead markup 생성
 
@@ -90,6 +96,6 @@ image-to-editable-ppt input.png output.pptx --debug-elements elements.json
 - 박스/커넥터는 axis-aligned 구조에 강하게 편향되어 있다.
 - orthogonal connector는 단순한 chain만 지원하며, branch/T-junction/loop는 생략한다.
 - arrow는 shaft + 한쪽 끝 widening 신호를 사용하는 단순 검출이다.
-- OCR은 `pytesseract`가 설치되어 있을 때만 동작하며, box 내부 등 구조적 위치에서만 포함한다.
+- OCR은 `pytesseract`가 설치되어 있을 때만 동작하며, text-like cluster crop이 구조적으로 그럴듯한 위치에 있을 때만 포함한다.
 - 실제 논문 figure 전체에서 diagram subregion 분리는 아직 제한적이다.
-- paper-like fixture는 커버하지만, 실제 모든 논문 raster artifact를 일반적으로 다루는 수준은 아니다.
+- dense paper-like fixture는 커버하지만, polished infographic / UI mockup / general figure reconstruction을 지원한다고 주장하지 않는다.

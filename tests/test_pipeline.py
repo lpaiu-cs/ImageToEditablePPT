@@ -13,12 +13,14 @@ from image_to_editable_ppt.ir import BBox, Element, FillStyle, Point, PolylineGe
 from image_to_editable_ppt.pipeline import build_elements, convert_image
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
 from tests.synthetic import (
+    boxed_text_cluster_diagram,
     complex_diagram,
     directional_arrow,
     icon_only,
     occluded_box,
     open_contour,
     paper_like_directional_arrow,
+    paper_like_dense_text_diagram,
     paper_like_insufficient_widening,
     paper_like_mixed_arrow_with_connector,
     paper_like_mixed_figure,
@@ -39,6 +41,23 @@ class FakeOCRBackend(OCRBackend):
 
     def extract(self, image):
         return self._regions
+
+
+class CropAwareOCRBackend(OCRBackend):
+    def __init__(self) -> None:
+        self.calls: list[tuple[int, int]] = []
+
+    def extract(self, image):
+        self.calls.append(image.size)
+        if image.size[0] >= 260:
+            return []
+        return [
+            OCRTextRegion(
+                text="Encoder Stage",
+                bbox=BBox(8.0, 6.0, min(140.0, image.size[0] - 4.0), min(34.0, image.size[1] - 4.0)),
+                confidence=0.97,
+            )
+        ]
 
 
 XML_NS = {
@@ -132,6 +151,16 @@ def test_text_is_only_included_when_high_confidence_and_structural() -> None:
     assert texts[0].text.content == "Encoder"
 
 
+def test_ocr_routes_text_like_clusters_to_candidate_crops() -> None:
+    backend = CropAwareOCRBackend()
+    result = build_elements(boxed_text_cluster_diagram(), config=PipelineConfig(), ocr_backend=backend)
+    texts = [element for element in result.elements if element.kind == "text"]
+    assert texts
+    assert texts[0].text is not None
+    assert texts[0].text.content == "Encoder Stage"
+    assert any(size[0] < 260 for size in backend.calls)
+
+
 def test_realistic_occluded_box_is_repaired_only_when_evidence_is_strong() -> None:
     result = build_elements(paper_like_occluded_box(), config=PipelineConfig())
     inferred_boxes = [
@@ -178,6 +207,32 @@ def test_no_fill_on_open_contour_under_noise() -> None:
         element.kind in {"rect", "rounded_rect"} and element.fill.enabled
         for element in result.elements
     )
+
+
+def test_dense_text_heavy_diagram_suppresses_text_fragments_with_ocr_off() -> None:
+    result = build_elements(paper_like_dense_text_diagram(), config=PipelineConfig())
+    large_boxes = [
+        element
+        for element in result.elements
+        if element.kind in {"rect", "rounded_rect"} and element.bbox.width > 260 and element.bbox.height > 150
+    ]
+    long_connectors = [
+        element
+        for element in result.elements
+        if element.kind in {"line", "orthogonal_connector", "arrow"} and max(element.bbox.width, element.bbox.height) > 150
+    ]
+    tiny_primitives = [
+        element
+        for element in result.elements
+        if element.kind in {"rect", "rounded_rect", "line", "orthogonal_connector", "arrow"}
+        and max(element.bbox.width, element.bbox.height) < 60
+    ]
+    assert len(large_boxes) >= 2
+    assert long_connectors
+    assert tiny_primitives == []
+    assert not any(element.kind == "text" for element in result.elements)
+    assert len(result.elements) <= 8
+    assert any(region.reason == "rejected_as_text_like" for region in result.rejected_regions)
 
 
 def test_arrow_exporter_unit_maps_tip_to_ooxml_tail_end(tmp_path: Path) -> None:

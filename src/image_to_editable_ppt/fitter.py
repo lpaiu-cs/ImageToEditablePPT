@@ -4,12 +4,17 @@ from collections import defaultdict
 from dataclasses import dataclass
 import math
 from statistics import median
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 from .config import PipelineConfig
 from .ir import BBox, BoxGeometry, Element, Point, PolylineGeometry, StrokeStyle, FillStyle
+from .preprocess import ScaleContext, build_boundary_mask
 from .style import color_distance, estimate_fill_color, sample_bbox_border_colors
+
+if TYPE_CHECKING:
+    from .filtering import ComponentFeatures
 
 
 @dataclass(slots=True)
@@ -301,6 +306,7 @@ def inspect_stroke_gap(
     config: PipelineConfig,
 ) -> tuple[bool, bool]:
     band = max(2, int(round(max(first.thickness, second.thickness) * 1.6)))
+    trim = max(2, int(round(max(first.thickness, second.thickness) * 2.5)))
     if first.orientation == "horizontal":
         x0 = max(0, int(math.floor(first.x1)) - 1)
         x1 = min(mask.shape[1], int(math.ceil(second.x0)) + 1)
@@ -309,8 +315,9 @@ def inspect_stroke_gap(
         if x1 <= x0 or y1 <= y0:
             return False, False
         window = mask[y0:y1, x0:x1]
-        fill_ratio = float(window.mean()) if window.size else 0.0
-        cross_ratio = float(np.max(window.sum(axis=0)) / max(1, window.shape[0])) if window.size else 0.0
+        inner = window[:, trim:-trim] if window.shape[1] > trim * 2 else window
+        fill_ratio = float(inner.mean()) if inner.size else 0.0
+        cross_ratio = float(np.max(inner.sum(axis=0)) / max(1, inner.shape[0])) if inner.size else 0.0
     else:
         x0 = max(0, int(round((first.center_x + second.center_x) / 2.0)) - band)
         x1 = min(mask.shape[1], int(round((first.center_x + second.center_x) / 2.0)) + band + 1)
@@ -319,8 +326,9 @@ def inspect_stroke_gap(
         if x1 <= x0 or y1 <= y0:
             return False, False
         window = mask[y0:y1, x0:x1]
-        fill_ratio = float(window.mean()) if window.size else 0.0
-        cross_ratio = float(np.max(window.sum(axis=1)) / max(1, window.shape[1])) if window.size else 0.0
+        inner = window[trim:-trim, :] if window.shape[0] > trim * 2 else window
+        fill_ratio = float(inner.mean()) if inner.size else 0.0
+        cross_ratio = float(np.max(inner.sum(axis=1)) / max(1, inner.shape[1])) if inner.size else 0.0
     if fill_ratio <= config.repair_occluder_fill_ratio:
         return False, False
     has_conflict = fill_ratio >= config.repair_conflict_fill_ratio or cross_ratio >= 0.84
@@ -337,17 +345,22 @@ def fit_boxes(
     *,
     boundary_mask: np.ndarray,
     array: np.ndarray,
+    detail_mask: np.ndarray,
     background_color: tuple[int, int, int],
     config: PipelineConfig,
+    scale: ScaleContext,
 ) -> list[Element]:
     candidates: list[Element] = []
     for top in horizontal:
         for bottom in horizontal:
-            if bottom.center_y <= top.center_y + config.min_box_size:
+            if bottom.center_y <= top.center_y + scale.min_box_size:
                 continue
-            if abs(top.x0 - bottom.x0) > config.stroke_merge_gap:
+            edge_tolerance = config.stroke_merge_gap
+            if top.inferred or bottom.inferred:
+                edge_tolerance += max(4, int(round(scale.estimated_stroke_width * 3.0)))
+            if abs(top.x0 - bottom.x0) > edge_tolerance:
                 continue
-            if abs(top.x1 - bottom.x1) > config.stroke_merge_gap:
+            if abs(top.x1 - bottom.x1) > edge_tolerance:
                 continue
             left = best_vertical_for_box(vertical, x_target=min(top.x0, bottom.x0), y0=top.center_y, y1=bottom.center_y, config=config)
             right = best_vertical_for_box(vertical, x_target=max(top.x1, bottom.x1), y0=top.center_y, y1=bottom.center_y, config=config)
@@ -359,7 +372,7 @@ def fit_boxes(
                 max(right.center_x, top.x1, bottom.x1),
                 max(bottom.center_y, left.y1, right.y1),
             )
-            if bbox.width < config.min_box_size or bbox.height < config.min_box_size:
+            if bbox.width < scale.min_box_size or bbox.height < scale.min_box_size:
                 continue
             supports = side_supports(boundary_mask, bbox, top, right, bottom, left)
             if min(supports.values()) < config.min_side_support:
@@ -375,6 +388,8 @@ def fit_boxes(
                 stroke_width=stroke_width,
                 background_color=background_color,
                 delta_threshold=config.fill_delta_threshold,
+                homogeneity_threshold=config.fill_homogeneity_threshold,
+                detail_mask=detail_mask,
             )
             rounded = is_rounded_rectangle(top, right, bottom, left, bbox)
             inferred = any(stroke.inferred for stroke in (top, right, bottom, left))
@@ -397,10 +412,26 @@ def fit_boxes(
             )
     deduped: list[Element] = []
     for candidate in sorted(candidates, key=lambda element: element.confidence, reverse=True):
-        if any(candidate.bbox.iou(existing.bbox) >= 0.85 for existing in deduped):
+        if any(boxes_equivalent(candidate, existing) for existing in deduped):
             continue
         deduped.append(candidate)
     return deduped
+
+
+def boxes_equivalent(first: Element, second: Element) -> bool:
+    if first.bbox.iou(second.bbox) >= 0.85:
+        return True
+    center_dx = abs(first.bbox.center.x - second.bbox.center.x)
+    center_dy = abs(first.bbox.center.y - second.bbox.center.y)
+    width_ratio = min(first.bbox.width, second.bbox.width) / max(1.0, max(first.bbox.width, second.bbox.width))
+    height_ratio = min(first.bbox.height, second.bbox.height) / max(1.0, max(first.bbox.height, second.bbox.height))
+    stroke_margin = max(first.stroke.width, second.stroke.width) * 4.0 + 2.0
+    return (
+        center_dx <= stroke_margin
+        and center_dy <= stroke_margin
+        and width_ratio >= 0.72
+        and height_ratio >= 0.72
+    )
 
 
 def fit_linear_component(
@@ -410,9 +441,16 @@ def fit_linear_component(
     config: PipelineConfig,
     *,
     element_id: str,
+    scale: ScaleContext | None = None,
+    features: ComponentFeatures | None = None,
 ) -> Element | None:
     points = np.column_stack((pixels[:, 1].astype(np.float32), pixels[:, 0].astype(np.float32)))
-    if len(points) < config.min_component_area:
+    min_component_area = scale.min_component_area if scale is not None else config.min_component_area
+    min_linear_length = scale.min_linear_length if scale is not None else max(
+        config.min_stroke_length,
+        int(round(max(array.shape[0], array.shape[1]) * config.min_relative_line_length)),
+    )
+    if len(points) < min_component_area:
         return None
     centroid = points.mean(axis=0)
     centered = points - centroid
@@ -428,23 +466,48 @@ def fit_linear_component(
     orth_error = float(np.sqrt(np.mean(minor_proj**2)))
     approx_width = max(1.0, float(np.percentile(np.abs(minor_proj), 80) * 2.0 + 1.0))
     aspect = length / max(1.0, approx_width)
-    if aspect < config.min_line_aspect_ratio or orth_error > config.max_straight_orth_error:
+    if aspect < config.min_line_aspect_ratio:
         return None
     bins = np.linspace(major_proj.min(), major_proj.max(), num=11)
     widths: list[float] = []
+    occupancy = []
     for start, end in zip(bins[:-1], bins[1:], strict=True):
         band = np.abs(major_proj - (start + end) / 2.0) <= max(1.0, (end - start) / 2.0)
         if not band.any():
             widths.append(0.0)
+            occupancy.append(0.0)
             continue
         widths.append(float(np.percentile(np.abs(minor_proj[band]), 85) * 2.0 + 1.0))
+        occupancy.append(1.0)
     core_width = median(width for width in widths[2:-2] if width > 0) if any(width > 0 for width in widths[2:-2]) else approx_width
+    continuity = float(np.mean(occupancy)) if occupancy else 0.0
+    if length < min_linear_length:
+        return None
     start_widen = max(widths[:2]) / max(1.0, core_width)
     end_widen = max(widths[-2:]) / max(1.0, core_width)
+    if start_widen >= end_widen:
+        inner_widen = max(widths[2:4]) / max(1.0, core_width) if len(widths) >= 4 else 0.0
+    else:
+        inner_widen = max(widths[-4:-2]) / max(1.0, core_width) if len(widths) >= 4 else 0.0
+    arrow_candidate = (
+        max(start_widen, end_widen) >= config.min_arrow_widen_ratio
+        and abs(start_widen - end_widen) > 0.25
+        and inner_widen <= 1.95
+    )
+    straight_orth_limit = max(config.max_straight_orth_error, approx_width * (0.8 if arrow_candidate else 0.55))
+    if orth_error > straight_orth_limit:
+        return None
+    if continuity < 0.82:
+        return None
+    if features is not None:
+        if features.near_structure_count == 0 and length < min_linear_length * 1.5:
+            return None
+        if not arrow_candidate and features.branchiness > 0.45:
+            return None
     start = centroid + major * major_proj.min()
     end = centroid + major * major_proj.max()
-    stroke_color = tuple(int(channel) for channel in np.median(array[pixels[:, 0], pixels[:, 1], :], axis=0))
-    if max(start_widen, end_widen) >= config.min_arrow_widen_ratio and abs(start_widen - end_widen) > 0.25:
+    stroke_color = sample_component_stroke_color(array, pixels)
+    if arrow_candidate:
         start_point = Point(float(end[0]), float(end[1])) if start_widen > end_widen else Point(float(start[0]), float(start[1]))
         end_point = Point(float(start[0]), float(start[1])) if start_widen > end_widen else Point(float(end[0]), float(end[1]))
         confidence = min(0.95, 0.78 + min(max(start_widen, end_widen), 3.0) * 0.06)
@@ -482,9 +545,17 @@ def fit_orthogonal_connector(
     config: PipelineConfig,
     *,
     element_id: str,
+    scale: ScaleContext | None = None,
+    features: ComponentFeatures | None = None,
 ) -> Element | None:
-    local_mask = component_mask(pixels, bbox)
-    min_length = max(config.connector_min_segment_length, config.min_stroke_length // 2)
+    local_mask_full = component_mask(pixels, bbox)
+    local_mask = build_boundary_mask(local_mask_full)
+    min_stroke_length = scale.min_stroke_length if scale is not None else config.min_stroke_length
+    min_linear_length = scale.min_linear_length if scale is not None else max(
+        config.min_stroke_length,
+        int(round(max(array.shape[0], array.shape[1]) * config.min_relative_line_length)),
+    )
+    min_length = max(8, config.connector_min_segment_length // 2, min_stroke_length // 3)
     horizontal = extract_strokes(
         local_mask,
         "horizontal",
@@ -499,16 +570,30 @@ def fit_orthogonal_connector(
         min_length=min_length,
         allow_gap_merge=False,
     )
-    if not horizontal or not vertical:
-        return None
     local_points, band = orthogonal_chain_points(horizontal, vertical, config)
     if local_points is None:
+        horizontal = projection_strokes(local_mask_full, "horizontal", min_length=min_length)
+        vertical = projection_strokes(local_mask_full, "vertical", min_length=min_length)
+        if not horizontal or not vertical:
+            return None
+        local_points, band = orthogonal_chain_points(horizontal, vertical, config)
+        if local_points is None:
+            local_points, band = projection_chain_fallback(horizontal, vertical)
+    if local_points is None:
         return None
-    coverage = connector_pixel_coverage(local_mask, local_points, band=band)
+    coverage = connector_pixel_coverage(local_mask_full, local_points, band=band)
     if coverage < config.connector_min_coverage:
         return None
+    path_length = polyline_length(local_points)
+    if path_length < min_linear_length * 1.1:
+        return None
+    if features is not None:
+        if features.near_structure_count == 0 and path_length < min_linear_length * 1.5:
+            return None
+        if features.density > 0.48:
+            return None
     global_points = tuple(Point(point.x + bbox.x0, point.y + bbox.y0) for point in local_points)
-    stroke_color = tuple(int(channel) for channel in np.median(array[pixels[:, 0], pixels[:, 1], :], axis=0))
+    stroke_color = sample_component_stroke_color(array, pixels)
     return Element(
         id=element_id,
         kind="orthogonal_connector",
@@ -530,6 +615,291 @@ def component_mask(pixels: np.ndarray, bbox: BBox) -> np.ndarray:
     ys = pixels[:, 0] - int(math.floor(bbox.y0))
     mask[ys, xs] = True
     return mask
+
+
+def projection_strokes(mask: np.ndarray, orientation: str, *, min_length: int) -> list[Stroke]:
+    if orientation == "horizontal":
+        profile = mask.sum(axis=1)
+        threshold = max(min_length * 2, int(round(mask.shape[1] * 0.30)))
+        strokes: list[Stroke] = []
+        for start, end in profile_bands(profile, threshold=threshold):
+            band = mask[start:end, :]
+            x_profile = band.sum(axis=0)
+            x_threshold = max(1, band.shape[0] // 2)
+            for x0, x1 in profile_bands(x_profile, threshold=x_threshold):
+                if x1 - x0 < min_length:
+                    continue
+                strokes.append(
+                    Stroke(
+                        orientation="horizontal",
+                        x0=float(x0),
+                        y0=float(start),
+                        x1=float(x1),
+                        y1=float(end),
+                        thickness=float(end - start),
+                    )
+                )
+        return strokes
+    profile = mask.sum(axis=0)
+    threshold = max(min_length * 2, int(round(mask.shape[0] * 0.28)))
+    strokes = []
+    for start, end in profile_bands(profile, threshold=threshold):
+        band = mask[:, start:end]
+        y_profile = band.sum(axis=1)
+        y_threshold = max(1, band.shape[1] // 2)
+        for y0, y1 in profile_bands(y_profile, threshold=y_threshold):
+            if y1 - y0 < min_length:
+                continue
+            strokes.append(
+                Stroke(
+                    orientation="vertical",
+                    x0=float(start),
+                    y0=float(y0),
+                    x1=float(end),
+                    y1=float(y1),
+                    thickness=float(end - start),
+                )
+            )
+    return strokes
+
+
+def profile_bands(profile: np.ndarray, *, threshold: int) -> list[tuple[int, int]]:
+    bands: list[tuple[int, int]] = []
+    start: int | None = None
+    for index, value in enumerate(profile.tolist()):
+        if value >= threshold and start is None:
+            start = index
+        elif value < threshold and start is not None:
+            bands.append((start, index))
+            start = None
+    if start is not None:
+        bands.append((start, len(profile)))
+    return bands
+
+
+def projection_chain_fallback(
+    horizontal: list[Stroke],
+    vertical: list[Stroke],
+) -> tuple[tuple[Point, ...] | None, int]:
+    if len(horizontal) != 2 or len(vertical) < 2:
+        return None, 0
+    horizontal = sorted(horizontal, key=lambda stroke: stroke.center_y)
+    vertical = sorted(vertical, key=lambda stroke: stroke.center_x)
+    top, bottom = horizontal
+    trunk = next(
+        (
+            stroke
+            for stroke in vertical
+            if stroke.y0 <= top.center_y <= stroke.y1 and stroke.y0 <= bottom.center_y <= stroke.y1
+        ),
+        None,
+    )
+    branch = next(
+        (
+            stroke
+            for stroke in vertical
+            if stroke is not trunk and stroke.center_x > (trunk.center_x if trunk is not None else -1)
+            and stroke.y0 <= bottom.center_y <= stroke.y1
+        ),
+        None,
+    )
+    if trunk is None or branch is None:
+        return None, 0
+    path = (
+        Point(float(top.x0), float(top.center_y)),
+        Point(float(trunk.center_x), float(top.center_y)),
+        Point(float(trunk.center_x), float(bottom.center_y)),
+        Point(float(branch.center_x), float(bottom.center_y)),
+        Point(float(bottom.x1), float(bottom.center_y)),
+    )
+    return path, max(1, int(round(median([top.thickness, bottom.thickness, trunk.thickness, branch.thickness]))))
+
+
+def fit_branchy_component_lines(
+    pixels: np.ndarray,
+    array: np.ndarray,
+    bbox: BBox,
+    config: PipelineConfig,
+    *,
+    element_prefix: str,
+    scale: ScaleContext | None = None,
+    structural_elements: list[Element] | None = None,
+) -> list[Element]:
+    local_mask = component_mask(pixels, bbox)
+    min_linear_length = scale.min_linear_length if scale is not None else max(
+        config.min_stroke_length,
+        int(round(max(array.shape[0], array.shape[1]) * config.min_relative_line_length)),
+    )
+    min_projection_length = max(8, min_linear_length // 3)
+    horizontals = projection_strokes(local_mask, "horizontal", min_length=min_projection_length)
+    verticals = projection_strokes(local_mask, "vertical", min_length=min_projection_length)
+    segments: list[Stroke] = []
+    horizontal_blockers = [
+        stroke
+        for stroke in verticals
+        if stroke.thickness >= max(6.0, (scale.estimated_stroke_width if scale is not None else 2.0) * 2.0)
+    ]
+    vertical_blockers = [
+        stroke
+        for stroke in horizontals
+        if stroke.thickness >= max(6.0, (scale.estimated_stroke_width if scale is not None else 2.0) * 2.0)
+    ]
+    for stroke in horizontals:
+        segments.extend(split_stroke_by_blockers(stroke, horizontal_blockers))
+    for stroke in verticals:
+        segments.extend(split_stroke_by_blockers(stroke, vertical_blockers))
+    color = sample_component_stroke_color(array, pixels)
+    deduped: list[Element] = []
+    for index, stroke in enumerate(sorted(segments, key=lambda segment: segment.length, reverse=True), start=1):
+        if stroke.length < min_linear_length:
+            continue
+        geometry = stroke_to_polyline(stroke, bbox)
+        if structural_elements and segment_is_captured_by_box(geometry.points[0], geometry.points[-1], structural_elements, scale):
+            continue
+        element = Element(
+            id=f"{element_prefix}-{index}",
+            kind="line",
+            geometry=geometry,
+            stroke=StrokeStyle(color=color, width=max(1.0, stroke.thickness * 0.8)),
+            fill=FillStyle(enabled=False, color=None),
+            text=None,
+            confidence=min(0.88, 0.70 + min(stroke.length / max(1.0, min_linear_length), 3.0) * 0.05),
+            source_region=geometry.bbox,
+            inferred=False,
+        )
+        if any(element.bbox.iou(existing.bbox) >= 0.72 for existing in deduped):
+            continue
+        deduped.append(element)
+        if len(deduped) >= 3:
+            break
+    return deduped
+
+
+def split_stroke_by_blockers(stroke: Stroke, blockers: list[Stroke]) -> list[Stroke]:
+    if stroke.orientation == "horizontal":
+        blocked = sorted(
+            (
+                (max(stroke.x0, blocker.x0), min(stroke.x1, blocker.x1))
+                for blocker in blockers
+                if blocker.y0 <= stroke.center_y <= blocker.y1 and blocker.x0 < stroke.x1 and blocker.x1 > stroke.x0
+            ),
+            key=lambda item: item[0],
+        )
+        return horizontal_segments_from_intervals(stroke, blocked)
+    blocked = sorted(
+        (
+            (max(stroke.y0, blocker.y0), min(stroke.y1, blocker.y1))
+            for blocker in blockers
+            if blocker.x0 <= stroke.center_x <= blocker.x1 and blocker.y0 < stroke.y1 and blocker.y1 > stroke.y0
+        ),
+        key=lambda item: item[0],
+    )
+    return vertical_segments_from_intervals(stroke, blocked)
+
+
+def horizontal_segments_from_intervals(stroke: Stroke, intervals: list[tuple[float, float]]) -> list[Stroke]:
+    segments: list[Stroke] = []
+    cursor = stroke.x0
+    for start, end in intervals:
+        if start - cursor >= 1.0:
+            segments.append(
+                Stroke(
+                    orientation="horizontal",
+                    x0=cursor,
+                    y0=stroke.y0,
+                    x1=start,
+                    y1=stroke.y1,
+                    thickness=stroke.thickness,
+                )
+            )
+        cursor = max(cursor, end)
+    if stroke.x1 - cursor >= 1.0:
+        segments.append(
+            Stroke(
+                orientation="horizontal",
+                x0=cursor,
+                y0=stroke.y0,
+                x1=stroke.x1,
+                y1=stroke.y1,
+                thickness=stroke.thickness,
+            )
+        )
+    return segments
+
+
+def vertical_segments_from_intervals(stroke: Stroke, intervals: list[tuple[float, float]]) -> list[Stroke]:
+    segments: list[Stroke] = []
+    cursor = stroke.y0
+    for start, end in intervals:
+        if start - cursor >= 1.0:
+            segments.append(
+                Stroke(
+                    orientation="vertical",
+                    x0=stroke.x0,
+                    y0=cursor,
+                    x1=stroke.x1,
+                    y1=start,
+                    thickness=stroke.thickness,
+                )
+            )
+        cursor = max(cursor, end)
+    if stroke.y1 - cursor >= 1.0:
+        segments.append(
+            Stroke(
+                orientation="vertical",
+                x0=stroke.x0,
+                y0=cursor,
+                x1=stroke.x1,
+                y1=stroke.y1,
+                thickness=stroke.thickness,
+            )
+        )
+    return segments
+
+
+def stroke_to_polyline(stroke: Stroke, bbox: BBox) -> PolylineGeometry:
+    if stroke.orientation == "horizontal":
+        return PolylineGeometry(
+            points=(
+                Point(float(stroke.x0 + bbox.x0), float(stroke.center_y + bbox.y0)),
+                Point(float(stroke.x1 + bbox.x0), float(stroke.center_y + bbox.y0)),
+            )
+        )
+    return PolylineGeometry(
+        points=(
+            Point(float(stroke.center_x + bbox.x0), float(stroke.y0 + bbox.y0)),
+            Point(float(stroke.center_x + bbox.x0), float(stroke.y1 + bbox.y0)),
+        )
+    )
+
+
+def segment_is_captured_by_box(
+    start: Point,
+    end: Point,
+    structural_elements: list[Element],
+    scale: ScaleContext | None,
+) -> bool:
+    margin = max(4.0, (scale.estimated_stroke_width if scale is not None else 2.0) * 3.0)
+    for element in structural_elements:
+        if element.kind not in {"rect", "rounded_rect"}:
+            continue
+        expanded = element.bbox.expand(margin)
+        if expanded.contains_point(start) and expanded.contains_point(end):
+            return True
+    return False
+
+
+def sample_component_stroke_color(array: np.ndarray, pixels: np.ndarray) -> tuple[int, int, int]:
+    sample = array[pixels[:, 0], pixels[:, 1], :].astype(np.float32)
+    if sample.size == 0:
+        return (0, 0, 0)
+    luminance = sample @ np.asarray([0.2126, 0.7152, 0.0722], dtype=np.float32)
+    cutoff = float(np.percentile(luminance, 35))
+    focused = sample[luminance <= cutoff]
+    if focused.size == 0:
+        focused = sample
+    median_color = np.median(focused, axis=0)
+    return tuple(int(round(channel)) for channel in median_color)
 
 
 def orthogonal_chain_points(
@@ -677,6 +1047,15 @@ def compress_path(path: list[tuple[int, int]]) -> list[tuple[int, int]]:
         compressed.append(current)
     compressed.append(path[-1])
     return compressed
+
+
+def polyline_length(points: tuple[Point, ...]) -> float:
+    return float(
+        sum(
+            math.hypot(end.x - start.x, end.y - start.y)
+            for start, end in zip(points[:-1], points[1:], strict=True)
+        )
+    )
 
 
 def connector_pixel_coverage(mask: np.ndarray, points: tuple[Point, ...], *, band: int) -> float:
