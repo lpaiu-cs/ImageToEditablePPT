@@ -1,0 +1,9 @@
+{
+  "rendered_shape_count": 8,
+  "precision": 0.8170503359400815,
+  "recall": 0.03357595376320117,
+  "f1": 0.06450128483873095,
+  "input_edge_pixels": 309537,
+  "output_edge_pixels": 9079,
+  "overlap_pixels": 7418
+}

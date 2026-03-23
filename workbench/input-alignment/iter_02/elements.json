@@ -1,0 +1,80 @@
+[
+  {
+    "id": "box-2",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 898.5,
+        "y0": 313.0,
+        "x1": 960.0,
+        "y1": 391.0
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        209,
+        225,
+        241
+      ],
+      "width": 1.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": true,
+      "color": [
+        210,
+        226,
+        242
+      ]
+    },
+    "text": null,
+    "confidence": 0.9433829611248965,
+    "source_region": {
+      "x0": 898.5,
+      "y0": 313.0,
+      "x1": 960.0,
+      "y1": 391.0
+    },
+    "inferred": false
+  },
+  {
+    "id": "box-1",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 874.5,
+        "y0": 287.5,
+        "x1": 942.5,
+        "y1": 368.0
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        208,
+        224,
+        241
+      ],
+      "width": 1.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": true,
+      "color": [
+        210,
+        226,
+        242
+      ]
+    },
+    "text": null,
+    "confidence": 0.9369833601717659,
+    "source_region": {
+      "x0": 874.5,
+      "y0": 287.5,
+      "x1": 942.5,
+      "y1": 368.0
+    },
+    "inferred": false
+  }
+]

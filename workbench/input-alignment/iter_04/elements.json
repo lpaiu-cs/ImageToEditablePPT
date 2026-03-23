@@ -1,0 +1,146 @@
+[
+  {
+    "id": "box-5",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 590.5,
+        "y0": 528.5,
+        "x1": 1016.5,
+        "y1": 697.5
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        212,
+        228,
+        245
+      ],
+      "width": 1.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9517118404738945,
+    "source_region": {
+      "x0": 590.5,
+      "y0": 528.5,
+      "x1": 1016.5,
+      "y1": 697.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "box-1",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 76.0,
+        "y0": 165.5,
+        "x1": 1241.0,
+        "y1": 699.5
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        237,
+        240,
+        248
+      ],
+      "width": 1.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9367315791584774,
+    "source_region": {
+      "x0": 76.0,
+      "y0": 165.5,
+      "x1": 1241.0,
+      "y1": 699.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "box-3",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 898.5,
+        "y0": 292.0,
+        "x1": 1019.5,
+        "y1": 669.0
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        209,
+        227,
+        247
+      ],
+      "width": 1.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": true,
+      "color": [
+        209,
+        225,
+        242
+      ]
+    },
+    "text": null,
+    "confidence": 0.9364481236683045,
+    "source_region": {
+      "x0": 898.5,
+      "y0": 292.0,
+      "x1": 1019.5,
+      "y1": 669.0
+    },
+    "inferred": true
+  },
+  {
+    "id": "box-4",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 590.5,
+        "y0": 528.5,
+        "x1": 989.5,
+        "y1": 669.5
+      },
+      "corner_radius": 16.919999999999998
+    },
+    "stroke": {
+      "color": [
+        239,
+        249,
+        255
+      ],
+      "width": 1.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.923800616197183,
+    "source_region": {
+      "x0": 590.5,
+      "y0": 528.5,
+      "x1": 989.5,
+      "y1": 669.5
+    },
+    "inferred": false
+  }
+]
