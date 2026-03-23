@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import zipfile
 import xml.etree.ElementTree as ET
+import json
 
 from pptx import Presentation
 import pytest
@@ -12,6 +13,7 @@ from image_to_editable_ppt.exporter import export_to_pptx
 from image_to_editable_ppt.ir import BBox, Element, FillStyle, Point, PolylineGeometry, StrokeStyle
 from image_to_editable_ppt.pipeline import build_elements, convert_image
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
+from image_to_editable_ppt.validation import run_validation_iteration
 from tests.synthetic import (
     boxed_text_cluster_diagram,
     complex_diagram,
@@ -329,3 +331,32 @@ def test_paper_like_mixed_arrow_exports_single_tail_end_marker(tmp_path: Path) -
     assert_arrow_tip_points_to_direction(arrows[0], "right")
     assert other_linear
     assert_slide_connector_uses_tail_end_only(output_path)
+
+
+def test_convert_image_debug_dump_serializes_slot_dataclasses(tmp_path: Path) -> None:
+    image_path = save_image(complex_diagram(), tmp_path / "debug-diagram.png")
+    output_path = tmp_path / "debug-diagram.pptx"
+    debug_path = tmp_path / "debug-elements.json"
+    convert_image(image_path, output_path, config=PipelineConfig(), debug_elements_path=debug_path)
+    assert debug_path.exists()
+    rejection_path = tmp_path / "debug-elements.rejections.json"
+    assert rejection_path.exists()
+    with debug_path.open("r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    assert isinstance(data, list)
+    assert data
+    assert "geometry" in data[0]
+
+
+def test_validation_iteration_exports_pptx_svg_and_comparison_artifacts(tmp_path: Path) -> None:
+    image_path = save_image(complex_diagram(), tmp_path / "validate-diagram.png")
+    run = run_validation_iteration(image_path, tmp_path / "iter", config=PipelineConfig())
+    assert run.artifacts.output_pptx.exists()
+    assert run.artifacts.output_svg.exists()
+    assert run.artifacts.rendered_png.exists()
+    assert run.artifacts.overlay_png.exists()
+    assert run.artifacts.edge_diff_png.exists()
+    assert run.artifacts.metrics_json.exists()
+    assert run.metrics.rendered_shape_count >= 4
+    svg_text = run.artifacts.output_svg.read_text(encoding="utf-8")
+    assert "<svg" in svg_text

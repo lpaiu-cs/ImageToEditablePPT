@@ -351,71 +351,305 @@ def fit_boxes(
     scale: ScaleContext,
 ) -> list[Element]:
     candidates: list[Element] = []
-    for top in horizontal:
-        for bottom in horizontal:
-            if bottom.center_y <= top.center_y + scale.min_box_size:
-                continue
-            edge_tolerance = config.stroke_merge_gap
-            if top.inferred or bottom.inferred:
-                edge_tolerance += max(4, int(round(scale.estimated_stroke_width * 3.0)))
-            if abs(top.x0 - bottom.x0) > edge_tolerance:
-                continue
-            if abs(top.x1 - bottom.x1) > edge_tolerance:
-                continue
-            left = best_vertical_for_box(vertical, x_target=min(top.x0, bottom.x0), y0=top.center_y, y1=bottom.center_y, config=config)
-            right = best_vertical_for_box(vertical, x_target=max(top.x1, bottom.x1), y0=top.center_y, y1=bottom.center_y, config=config)
-            if left is None or right is None:
-                continue
-            bbox = BBox(
-                min(left.center_x, top.x0, bottom.x0),
-                min(top.center_y, left.y0, right.y0),
-                max(right.center_x, top.x1, bottom.x1),
-                max(bottom.center_y, left.y1, right.y1),
-            )
-            if bbox.width < scale.min_box_size or bbox.height < scale.min_box_size:
-                continue
-            supports = side_supports(boundary_mask, bbox, top, right, bottom, left)
-            if min(supports.values()) < config.min_side_support:
-                continue
-            average_support = sum(supports.values()) / len(supports)
-            if average_support < config.min_box_support:
-                continue
-            stroke_width = float(median([top.thickness, bottom.thickness, left.thickness, right.thickness]))
-            stroke_color = sample_bbox_border_colors(array, bbox, stroke_width)
-            fill_enabled, fill_color = estimate_fill_color(
+    enable_relaxed_panel_recovery = max(array.shape[0], array.shape[1]) >= 1800
+    candidates.extend(
+        box_candidates_from_horizontal_pairs(
+            horizontal=horizontal,
+            vertical=vertical,
+            boundary_mask=boundary_mask,
+            array=array,
+            detail_mask=detail_mask,
+            background_color=background_color,
+            config=config,
+            scale=scale,
+            start_index=len(candidates) + 1,
+            relaxed=enable_relaxed_panel_recovery,
+        )
+    )
+    if enable_relaxed_panel_recovery:
+        candidates.extend(
+            box_candidates_from_vertical_pairs(
+                horizontal=horizontal,
+                vertical=vertical,
+                boundary_mask=boundary_mask,
                 array=array,
-                bbox=bbox,
-                stroke_width=stroke_width,
-                background_color=background_color,
-                delta_threshold=config.fill_delta_threshold,
-                homogeneity_threshold=config.fill_homogeneity_threshold,
                 detail_mask=detail_mask,
+                background_color=background_color,
+                config=config,
+                scale=scale,
+                start_index=len(candidates) + 1,
             )
-            rounded = is_rounded_rectangle(top, right, bottom, left, bbox)
-            inferred = any(stroke.inferred for stroke in (top, right, bottom, left))
-            confidence = min(0.98, 0.70 + average_support * 0.25 + (0.03 if inferred else 0.0))
-            candidates.append(
-                Element(
-                    id=f"box-{len(candidates) + 1}",
-                    kind="rounded_rect" if rounded else "rect",
-                    geometry=BoxGeometry(
-                        bbox=bbox,
-                        corner_radius=max(6.0, min(bbox.width, bbox.height) * 0.12) if rounded else 0.0,
-                    ),
-                    stroke=StrokeStyle(color=stroke_color, width=stroke_width),
-                    fill=FillStyle(enabled=fill_enabled, color=fill_color),
-                    text=None,
-                    confidence=confidence,
-                    source_region=bbox,
-                    inferred=inferred,
-                )
-            )
+        )
     deduped: list[Element] = []
     for candidate in sorted(candidates, key=lambda element: element.confidence, reverse=True):
         if any(boxes_equivalent(candidate, existing) for existing in deduped):
             continue
         deduped.append(candidate)
     return deduped
+
+
+def box_candidates_from_horizontal_pairs(
+    *,
+    horizontal: list[Stroke],
+    vertical: list[Stroke],
+    boundary_mask: np.ndarray,
+    array: np.ndarray,
+    detail_mask: np.ndarray,
+    background_color: tuple[int, int, int],
+    config: PipelineConfig,
+    scale: ScaleContext,
+    start_index: int,
+    relaxed: bool,
+) -> list[Element]:
+    candidates: list[Element] = []
+    next_index = start_index
+    for top in horizontal:
+        for bottom in horizontal:
+            if bottom.center_y <= top.center_y + scale.min_box_size:
+                continue
+            if relaxed:
+                left_range, right_range = compatible_horizontal_box_edges(top, bottom, config, scale)
+                if left_range is None or right_range is None:
+                    continue
+                left = best_vertical_for_box(
+                    vertical,
+                    x_range=left_range,
+                    y0=top.center_y,
+                    y1=bottom.center_y,
+                    config=config,
+                    scale=scale,
+                )
+                right = best_vertical_for_box(
+                    vertical,
+                    x_range=right_range,
+                    y0=top.center_y,
+                    y1=bottom.center_y,
+                    config=config,
+                    scale=scale,
+                )
+            else:
+                edge_tolerance = config.stroke_merge_gap
+                if top.inferred or bottom.inferred:
+                    edge_tolerance += max(4, int(round(scale.estimated_stroke_width * 3.0)))
+                if abs(top.x0 - bottom.x0) > edge_tolerance:
+                    continue
+                if abs(top.x1 - bottom.x1) > edge_tolerance:
+                    continue
+                left = best_vertical_for_box(
+                    vertical,
+                    x_target=min(top.x0, bottom.x0),
+                    y0=top.center_y,
+                    y1=bottom.center_y,
+                    config=config,
+                )
+                right = best_vertical_for_box(
+                    vertical,
+                    x_target=max(top.x1, bottom.x1),
+                    y0=top.center_y,
+                    y1=bottom.center_y,
+                    config=config,
+                )
+            if left is None or right is None:
+                continue
+            candidate = build_box_candidate(
+                top=top,
+                right=right,
+                bottom=bottom,
+                left=left,
+                boundary_mask=boundary_mask,
+                array=array,
+                detail_mask=detail_mask,
+                background_color=background_color,
+                config=config,
+                scale=scale,
+                element_id=f"box-{next_index}",
+            )
+            if candidate is None:
+                continue
+            candidates.append(candidate)
+            next_index += 1
+    return candidates
+
+
+def box_candidates_from_vertical_pairs(
+    *,
+    horizontal: list[Stroke],
+    vertical: list[Stroke],
+    boundary_mask: np.ndarray,
+    array: np.ndarray,
+    detail_mask: np.ndarray,
+    background_color: tuple[int, int, int],
+    config: PipelineConfig,
+    scale: ScaleContext,
+    start_index: int,
+) -> list[Element]:
+    candidates: list[Element] = []
+    next_index = start_index
+    for left in vertical:
+        for right in vertical:
+            if right.center_x <= left.center_x + scale.min_box_size:
+                continue
+            top_range, bottom_range = compatible_vertical_box_edges(left, right, config, scale)
+            if top_range is None or bottom_range is None:
+                continue
+            top = best_horizontal_for_box(
+                horizontal,
+                y_range=top_range,
+                x0=left.center_x,
+                x1=right.center_x,
+                config=config,
+                scale=scale,
+            )
+            bottom = best_horizontal_for_box(
+                horizontal,
+                y_range=bottom_range,
+                x0=left.center_x,
+                x1=right.center_x,
+                config=config,
+                scale=scale,
+            )
+            if top is None or bottom is None or bottom.center_y <= top.center_y + scale.min_box_size:
+                continue
+            candidate = build_box_candidate(
+                top=top,
+                right=right,
+                bottom=bottom,
+                left=left,
+                boundary_mask=boundary_mask,
+                array=array,
+                detail_mask=detail_mask,
+                background_color=background_color,
+                config=config,
+                scale=scale,
+                element_id=f"box-{next_index}",
+            )
+            if candidate is None:
+                continue
+            candidates.append(candidate)
+            next_index += 1
+    return candidates
+
+
+def build_box_candidate(
+    *,
+    top: Stroke,
+    right: Stroke,
+    bottom: Stroke,
+    left: Stroke,
+    boundary_mask: np.ndarray,
+    array: np.ndarray,
+    detail_mask: np.ndarray,
+    background_color: tuple[int, int, int],
+    config: PipelineConfig,
+    scale: ScaleContext,
+    element_id: str,
+) -> Element | None:
+    bbox = BBox(
+        min(left.center_x, top.x0, bottom.x0),
+        min(top.center_y, left.y0, right.y0),
+        max(right.center_x, top.x1, bottom.x1),
+        max(bottom.center_y, left.y1, right.y1),
+    )
+    if bbox.width < scale.min_box_size or bbox.height < scale.min_box_size:
+        return None
+    supports = side_supports(boundary_mask, bbox, top, right, bottom, left)
+    if min(supports.values()) < config.min_side_support:
+        return None
+    average_support = sum(supports.values()) / len(supports)
+    if average_support < config.min_box_support:
+        return None
+    stroke_width = float(median([top.thickness, bottom.thickness, left.thickness, right.thickness]))
+    stroke_color = sample_bbox_border_colors(array, bbox, stroke_width)
+    fill_enabled, fill_color = estimate_fill_color(
+        array=array,
+        bbox=bbox,
+        stroke_width=stroke_width,
+        background_color=background_color,
+        delta_threshold=config.fill_delta_threshold,
+        homogeneity_threshold=config.fill_homogeneity_threshold,
+        detail_mask=detail_mask,
+    )
+    rounded = is_rounded_rectangle(top, right, bottom, left, bbox)
+    inferred = any(stroke.inferred for stroke in (top, right, bottom, left))
+    confidence = min(0.98, 0.70 + average_support * 0.25 + (0.03 if inferred else 0.0))
+    return Element(
+        id=element_id,
+        kind="rounded_rect" if rounded else "rect",
+        geometry=BoxGeometry(
+            bbox=bbox,
+            corner_radius=max(6.0, min(bbox.width, bbox.height) * 0.12) if rounded else 0.0,
+        ),
+        stroke=StrokeStyle(color=stroke_color, width=stroke_width),
+        fill=FillStyle(enabled=fill_enabled, color=fill_color),
+        text=None,
+        confidence=confidence,
+        source_region=bbox,
+        inferred=inferred,
+    )
+
+
+def compatible_horizontal_box_edges(
+    top: Stroke,
+    bottom: Stroke,
+    config: PipelineConfig,
+    scale: ScaleContext,
+) -> tuple[tuple[float, float] | None, tuple[float, float] | None]:
+    top_width = top.x1 - top.x0
+    bottom_width = bottom.x1 - bottom.x0
+    if top_width < scale.min_box_size or bottom_width < scale.min_box_size:
+        return None, None
+    overlap_x0 = max(top.x0, bottom.x0)
+    overlap_x1 = min(top.x1, bottom.x1)
+    overlap = overlap_x1 - overlap_x0
+    if overlap < scale.min_box_size * 0.7:
+        return None, None
+    width_ratio = min(top_width, bottom_width) / max(1.0, max(top_width, bottom_width))
+    overlap_ratio = overlap / max(1.0, max(top_width, bottom_width))
+    center_delta = abs(top.center_x - bottom.center_x)
+    center_tolerance = max(
+        config.stroke_merge_gap * 2.5,
+        scale.min_box_size * 1.2,
+        max(top_width, bottom_width) * 0.18,
+    )
+    if top.inferred or bottom.inferred:
+        center_tolerance += max(4.0, scale.estimated_stroke_width * 4.0)
+    if width_ratio < 0.58 or overlap_ratio < 0.62 or center_delta > center_tolerance:
+        return None, None
+    left_range = (min(top.x0, bottom.x0), max(top.x0, bottom.x0))
+    right_range = (min(top.x1, bottom.x1), max(top.x1, bottom.x1))
+    return left_range, right_range
+
+
+def compatible_vertical_box_edges(
+    left: Stroke,
+    right: Stroke,
+    config: PipelineConfig,
+    scale: ScaleContext,
+) -> tuple[tuple[float, float] | None, tuple[float, float] | None]:
+    left_height = left.y1 - left.y0
+    right_height = right.y1 - right.y0
+    if left_height < scale.min_box_size or right_height < scale.min_box_size:
+        return None, None
+    overlap_y0 = max(left.y0, right.y0)
+    overlap_y1 = min(left.y1, right.y1)
+    overlap = overlap_y1 - overlap_y0
+    if overlap < scale.min_box_size * 0.7:
+        return None, None
+    height_ratio = min(left_height, right_height) / max(1.0, max(left_height, right_height))
+    overlap_ratio = overlap / max(1.0, max(left_height, right_height))
+    center_delta = abs(left.center_y - right.center_y)
+    center_tolerance = max(
+        config.stroke_merge_gap * 2.5,
+        scale.min_box_size * 1.2,
+        max(left_height, right_height) * 0.18,
+    )
+    if left.inferred or right.inferred:
+        center_tolerance += max(4.0, scale.estimated_stroke_width * 4.0)
+    if height_ratio < 0.58 or overlap_ratio < 0.62 or center_delta > center_tolerance:
+        return None, None
+    top_range = (min(left.y0, right.y0), max(left.y0, right.y0))
+    bottom_range = (min(left.y1, right.y1), max(left.y1, right.y1))
+    return top_range, bottom_range
 
 
 def boxes_equivalent(first: Element, second: Element) -> bool:
@@ -775,6 +1009,127 @@ def fit_branchy_component_lines(
     return deduped
 
 
+def fit_global_stroke_lines(
+    *,
+    horizontal: list[Stroke],
+    vertical: list[Stroke],
+    array: np.ndarray,
+    gray: np.ndarray,
+    config: PipelineConfig,
+    scale: ScaleContext,
+    structural_elements: list[Element],
+    start_index: int,
+) -> list[Element]:
+    min_length = max(scale.min_linear_length * 1.5, scale.min_box_size * 1.8)
+    candidates = sorted(
+        [stroke for stroke in horizontal + vertical if stroke.length >= min_length],
+        key=lambda stroke: stroke.length,
+        reverse=True,
+    )
+    elements: list[Element] = []
+    next_index = start_index
+    for stroke in candidates:
+        if stroke_matches_box_edge(stroke, structural_elements, scale):
+            continue
+        if sample_stroke_darkness(gray, stroke) < 18.0:
+            continue
+        geometry = global_stroke_geometry(stroke)
+        connection_count = stroke_connection_count(geometry.points[0], geometry.points[-1], structural_elements, scale)
+        if connection_count == 0 and stroke.length < scale.min_linear_length * 2.8:
+            continue
+        if any(geometry.bbox.iou(existing.bbox) >= 0.72 for existing in elements):
+            continue
+        elements.append(
+            Element(
+                id=f"linear-{next_index}",
+                kind="line",
+                geometry=geometry,
+                stroke=StrokeStyle(
+                    color=sample_stroke_color(array, stroke),
+                    width=max(1.0, stroke.thickness),
+                ),
+                fill=FillStyle(enabled=False, color=None),
+                text=None,
+                confidence=min(
+                    0.90,
+                    0.74
+                    + min(stroke.length / max(1.0, scale.min_linear_length * 1.5), 2.0) * 0.05
+                    + min(connection_count, 2) * 0.03,
+                ),
+                source_region=geometry.bbox,
+                inferred=stroke.inferred,
+            )
+        )
+        next_index += 1
+        if len(elements) >= 6:
+            break
+    return elements
+
+
+def global_stroke_geometry(stroke: Stroke) -> PolylineGeometry:
+    if stroke.orientation == "horizontal":
+        return PolylineGeometry(
+            points=(
+                Point(float(stroke.x0), float(stroke.center_y)),
+                Point(float(stroke.x1), float(stroke.center_y)),
+            )
+        )
+    return PolylineGeometry(
+        points=(
+            Point(float(stroke.center_x), float(stroke.y0)),
+            Point(float(stroke.center_x), float(stroke.y1)),
+        )
+    )
+
+
+def stroke_connection_count(
+    start: Point,
+    end: Point,
+    structural_elements: list[Element],
+    scale: ScaleContext,
+) -> int:
+    margin = max(6.0, scale.estimated_stroke_width * 5.0)
+    count = 0
+    for element in structural_elements:
+        if element.kind not in {"rect", "rounded_rect"}:
+            continue
+        expanded = element.bbox.expand(margin)
+        if expanded.contains_point(start):
+            count += 1
+        if expanded.contains_point(end):
+            count += 1
+    return count
+
+
+def stroke_matches_box_edge(
+    stroke: Stroke,
+    structural_elements: list[Element],
+    scale: ScaleContext,
+) -> bool:
+    margin = max(4.0, scale.estimated_stroke_width * 4.0)
+    for element in structural_elements:
+        if element.kind not in {"rect", "rounded_rect"}:
+            continue
+        box = element.bbox
+        if stroke.orientation == "horizontal":
+            if min(abs(stroke.center_y - box.y0), abs(stroke.center_y - box.y1)) > margin:
+                continue
+            overlap = min(stroke.x1, box.x1) - max(stroke.x0, box.x0)
+            if overlap <= 0:
+                continue
+            if overlap / max(1.0, min(stroke.length, box.width)) >= 0.68:
+                return True
+            continue
+        if min(abs(stroke.center_x - box.x0), abs(stroke.center_x - box.x1)) > margin:
+            continue
+        overlap = min(stroke.y1, box.y1) - max(stroke.y0, box.y0)
+        if overlap <= 0:
+            continue
+        if overlap / max(1.0, min(stroke.length, box.height)) >= 0.68:
+            return True
+    return False
+
+
 def split_stroke_by_blockers(stroke: Stroke, blockers: list[Stroke]) -> list[Stroke]:
     if stroke.orientation == "horizontal":
         blocked = sorted(
@@ -1084,23 +1439,77 @@ def pixel_near_axis_segment(x: int, y: int, start: Point, end: Point, band: int)
 def best_vertical_for_box(
     vertical: list[Stroke],
     *,
-    x_target: float,
+    x_target: float | None = None,
+    x_range: tuple[float, float] | None = None,
     y0: float,
     y1: float,
     config: PipelineConfig,
+    scale: ScaleContext | None = None,
 ) -> Stroke | None:
     candidates = []
+    tolerance = float(config.stroke_merge_gap)
+    if scale is not None:
+        tolerance = max(tolerance, scale.estimated_stroke_width * 8.0)
     for stroke in vertical:
-        if abs(stroke.center_x - x_target) > config.stroke_merge_gap:
-            continue
+        if x_range is not None:
+            range_x0, range_x1 = x_range
+            if stroke.center_x < range_x0 - tolerance or stroke.center_x > range_x1 + tolerance:
+                continue
+            distance = 0.0
+            if stroke.center_x < range_x0:
+                distance = range_x0 - stroke.center_x
+            elif stroke.center_x > range_x1:
+                distance = stroke.center_x - range_x1
+        else:
+            if x_target is None or abs(stroke.center_x - x_target) > tolerance:
+                continue
+            distance = abs(stroke.center_x - x_target)
         coverage = min(stroke.y1, y1) - max(stroke.y0, y0)
         if coverage < (y1 - y0) * 0.55:
             continue
-        candidates.append((coverage, stroke))
+        candidates.append((coverage, -distance, stroke))
     if not candidates:
         return None
-    candidates.sort(key=lambda item: (item[0], -abs(item[1].center_x - x_target)), reverse=True)
-    return candidates[0][1]
+    candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    return candidates[0][2]
+
+
+def best_horizontal_for_box(
+    horizontal: list[Stroke],
+    *,
+    y_target: float | None = None,
+    y_range: tuple[float, float] | None = None,
+    x0: float,
+    x1: float,
+    config: PipelineConfig,
+    scale: ScaleContext | None = None,
+) -> Stroke | None:
+    candidates = []
+    tolerance = float(config.stroke_merge_gap)
+    if scale is not None:
+        tolerance = max(tolerance, scale.estimated_stroke_width * 8.0)
+    for stroke in horizontal:
+        if y_range is not None:
+            range_y0, range_y1 = y_range
+            if stroke.center_y < range_y0 - tolerance or stroke.center_y > range_y1 + tolerance:
+                continue
+            distance = 0.0
+            if stroke.center_y < range_y0:
+                distance = range_y0 - stroke.center_y
+            elif stroke.center_y > range_y1:
+                distance = stroke.center_y - range_y1
+        else:
+            if y_target is None or abs(stroke.center_y - y_target) > tolerance:
+                continue
+            distance = abs(stroke.center_y - y_target)
+        coverage = min(stroke.x1, x1) - max(stroke.x0, x0)
+        if coverage < (x1 - x0) * 0.55:
+            continue
+        candidates.append((coverage, -distance, stroke))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    return candidates[0][2]
 
 
 def side_supports(

@@ -39,7 +39,14 @@ def sample_bbox_border_colors(
         array[y0:y1, max(x1 - width, x0) : x1, :],
     ]
     colors = np.concatenate([part.reshape(-1, 3) for part in parts if part.size], axis=0)
-    return median_color(colors)
+    if colors.size == 0:
+        return (0, 0, 0)
+    luminance = colors.astype(np.float32) @ np.asarray([0.2126, 0.7152, 0.0722], dtype=np.float32)
+    cutoff = float(np.percentile(luminance, 35))
+    focused = colors[luminance <= cutoff]
+    if focused.size == 0:
+        focused = colors
+    return median_color(focused)
 
 
 def estimate_fill_color(

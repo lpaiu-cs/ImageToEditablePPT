@@ -57,6 +57,23 @@ JSON 디버그 출력:
 image-to-editable-ppt input.png output.pptx --debug-elements elements.json
 ```
 
+검증 workbench 생성:
+
+```bash
+python tools/alignment_loop.py input.png
+```
+
+위 스크립트는 `workbench/input-alignment/iter_XX/` 아래에 다음 artifact를 남긴다.
+
+- `output.pptx`
+- `output.svg`
+- `output.png`
+- `overlay.png`
+- `edge-diff.png`
+- `comparison.json`
+
+`output.svg`와 `output.png`는 생성된 `PPTX`를 다시 읽어 재구성한 검증용 출력이다. 즉, 외부 raster fallback 없이 실제 export 결과를 기준으로 비교한다.
+
 ## 파이프라인
 
 1. 전처리: 배경 추정, foreground / boundary mask 구성, speck 제거
@@ -99,3 +116,4 @@ image-to-editable-ppt input.png output.pptx --debug-elements elements.json
 - OCR은 `pytesseract`가 설치되어 있을 때만 동작하며, text-like cluster crop이 구조적으로 그럴듯한 위치에 있을 때만 포함한다.
 - 실제 논문 figure 전체에서 diagram subregion 분리는 아직 제한적이다.
 - dense paper-like fixture는 커버하지만, polished infographic / UI mockup / general figure reconstruction을 지원한다고 주장하지 않는다.
+- 큰 캔버스에서는 major panel recovery를 위해 추가적인 conservative box/line fallback이 켜지지만, 여전히 구조 근거가 약하면 생략한다.

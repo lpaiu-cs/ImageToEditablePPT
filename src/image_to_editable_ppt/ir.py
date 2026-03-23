@@ -20,6 +20,9 @@ class Point:
     x: float
     y: float
 
+    def to_dict(self) -> dict[str, float]:
+        return {"x": self.x, "y": self.y}
+
 
 @dataclass(slots=True, frozen=True)
 class BBox:
@@ -76,6 +79,9 @@ class BBox:
             return 0.0
         return inter / union
 
+    def to_dict(self) -> dict[str, float]:
+        return {"x0": self.x0, "y0": self.y0, "x1": self.x1, "y1": self.y1}
+
 
 @dataclass(slots=True, frozen=True)
 class StrokeStyle:
@@ -95,6 +101,13 @@ class TextPayload:
     content: str
     alignment: TextAlignment = "center"
     confidence: float = 0.0
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "content": self.content,
+            "alignment": self.alignment,
+            "confidence": self.confidence,
+        }
 
 
 @dataclass(slots=True, frozen=True)
@@ -136,12 +149,12 @@ class Element:
         geometry: dict[str, object]
         if isinstance(self.geometry, BoxGeometry):
             geometry = {
-                "bbox": self.geometry.bbox.__dict__,
+                "bbox": self.geometry.bbox.to_dict(),
                 "corner_radius": self.geometry.corner_radius,
             }
         else:
             geometry = {
-                "points": [point.__dict__ for point in self.geometry.points],
+                "points": [point.to_dict() for point in self.geometry.points],
             }
         return {
             "id": self.id,
@@ -156,8 +169,8 @@ class Element:
                 "enabled": self.fill.enabled,
                 "color": self.fill.color,
             },
-            "text": None if self.text is None else self.text.__dict__,
+            "text": None if self.text is None else self.text.to_dict(),
             "confidence": self.confidence,
-            "source_region": self.source_region.__dict__,
+            "source_region": self.source_region.to_dict(),
             "inferred": self.inferred,
         }

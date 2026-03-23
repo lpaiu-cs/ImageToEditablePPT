@@ -11,6 +11,7 @@ from .fitter import (
     extract_strokes,
     fit_boxes,
     fit_branchy_component_lines,
+    fit_global_stroke_lines,
     fit_linear_component,
     fit_orthogonal_connector,
 )
@@ -92,6 +93,17 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
         start_index=len(boxes) + 1,
         structural_elements=boxes,
     )
+    if not linear and boxes and max(processed.size) >= 1800:
+        linear = fit_global_stroke_lines(
+            horizontal=horizontal,
+            vertical=vertical,
+            array=processed.array,
+            gray=processed.gray,
+            config=config,
+            scale=processed.scale,
+            structural_elements=boxes,
+            start_index=len(boxes) + 1,
+        )
     return DetectionResult(
         elements=boxes + linear,
         text_regions=text_filter.text_regions,

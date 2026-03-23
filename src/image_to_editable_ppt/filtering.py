@@ -48,7 +48,7 @@ class RejectedRegion:
 
     def to_dict(self) -> dict[str, object]:
         return {
-            "bbox": self.bbox.__dict__,
+            "bbox": self.bbox.to_dict(),
             "label": self.label,
             "reason": self.reason,
             "area": self.area,
