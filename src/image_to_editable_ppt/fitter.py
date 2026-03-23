@@ -48,6 +48,13 @@ class Stroke:
         return self.y1 - self.y0
 
 
+@dataclass(slots=True, frozen=True)
+class StrokeGraphEdge:
+    neighbor: int
+    kind: str
+    bridge_ratio: float = 0.0
+
+
 def extract_strokes(
     mask: np.ndarray,
     orientation: str,
@@ -569,7 +576,8 @@ def fit_fill_region_box_from_component(
     stroke_width = max(1.0, scale.estimated_stroke_width * 0.8)
     top, right, bottom, left = strokes_from_bbox(candidate_bbox, max(1.0, scale.estimated_stroke_width))
     supports = side_supports(boundary_mask, candidate_bbox, top, right, bottom, left)
-    if max(supports.values()) >= config.outer_box_min_side_support and min(supports.values()) < config.outer_box_min_side_support * 0.45:
+    borderless = max(supports.values()) < config.outer_box_min_side_support * 0.6
+    if not borderless and max(supports.values()) >= config.outer_box_min_side_support and min(supports.values()) < config.outer_box_min_side_support * 0.45:
         return None
     fill_enabled, fill_color = estimate_fill_color(
         array=smoothed_array,
@@ -595,6 +603,8 @@ def fit_fill_region_box_from_component(
         + min(density, 0.92) * 0.16
         + min(candidate_bbox.width, candidate_bbox.height) / max(scale.min_box_size * 5.0, 1.0) * 0.06,
     )
+    if borderless:
+        confidence = max(confidence, config.filled_panel_accept_confidence)
     return Element(
         id=element_id,
         kind="rounded_rect" if rounded else "rect",
@@ -1721,6 +1731,7 @@ def fit_hough_segment_elements(
         array=array,
         config=connector_config,
         scale=scale,
+        bridge_mask=bridge_mask,
         structural_elements=structural_elements,
         existing_elements=existing_elements,
         start_index=start_index,
@@ -1857,11 +1868,13 @@ def hough_connector_elements(
     array: np.ndarray,
     config: PipelineConfig,
     scale: ScaleContext,
+    bridge_mask: np.ndarray | None,
     structural_elements: list[Element],
     existing_elements: list[Element],
     start_index: int,
 ) -> tuple[list[Element], set[int]]:
-    groups = stroke_graph_components(strokes, scale)
+    adjacency = build_global_stroke_graph(strokes, scale=scale, config=config, bridge_mask=bridge_mask)
+    groups = stroke_graph_components(adjacency)
     elements: list[Element] = []
     used: set[int] = set()
     next_index = start_index
@@ -1870,22 +1883,36 @@ def hough_connector_elements(
             continue
         if any(index in used for index in group):
             continue
-        horizontals = [strokes[index] for index in group if strokes[index].orientation == "horizontal"]
-        verticals = [strokes[index] for index in group if strokes[index].orientation == "vertical"]
-        if not horizontals or not verticals:
+        path = longest_stroke_path(group, adjacency, strokes, config)
+        if len(path) < 2:
             continue
-        local_points, band = orthogonal_chain_points(horizontals, verticals, config)
-        if local_points is None:
+        geometry, path_kind, bridge_edges = stroke_path_geometry(path, adjacency, strokes, config)
+        if geometry is None or path_kind is None:
             continue
-        coverage = connector_pixel_coverage(mask, local_points, band=max(1, band))
-        if coverage < max(0.58, config.connector_min_coverage - 0.16):
+        band = max(1, int(round(median([strokes[index].thickness for index in path]))))
+        coverage = connector_pixel_coverage(mask, geometry.points, band=max(1, band))
+        coverage_threshold = max(0.50, config.connector_min_coverage - 0.24)
+        if bridge_edges > 0:
+            coverage_threshold = max(0.34, coverage_threshold - 0.14)
+        if coverage < coverage_threshold:
             continue
-        path_length = polyline_length(local_points)
-        if path_length < scale.min_linear_length * 0.9:
+        path_length = polyline_length(geometry.points)
+        if path_length < scale.min_linear_length * (0.70 if bridge_edges > 0 else 0.85):
             continue
-        geometry = PolylineGeometry(points=local_points)
         endpoint_hits = stroke_connection_count(geometry.points[0], geometry.points[-1], structural_elements, scale)
-        if endpoint_hits == 0 and path_length < scale.min_linear_length * 1.5:
+        if path_kind == "line" and endpoint_hits == 0 and bridge_edges == 0 and path_length < scale.min_linear_length * 1.6:
+            continue
+        if (
+            path_kind == "orthogonal_connector"
+            and endpoint_hits == 0
+            and bridge_edges == 0
+            and (
+                path_length < scale.min_linear_length * 2.2
+                or max(geometry.bbox.width, geometry.bbox.height) / max(1.0, min(geometry.bbox.width, geometry.bbox.height)) < 1.35
+            )
+        ):
+            continue
+        if endpoint_hits == 0 and bridge_edges == 0 and path_length < scale.min_linear_length * 1.5:
             continue
         if any(
             geometry.bbox.iou(existing.bbox) >= 0.72
@@ -1893,37 +1920,89 @@ def hough_connector_elements(
             if existing.kind in {"line", "orthogonal_connector", "arrow"}
         ):
             continue
+        resolved_kind = path_kind
+        if path_kind == "line":
+            start_ratio, end_ratio = polyline_endpoint_widening(mask, geometry, band=max(2, band))
+            if max(start_ratio, end_ratio) >= config.min_arrow_widen_ratio and abs(start_ratio - end_ratio) > 0.25:
+                resolved_kind = "arrow"
+                geometry = orient_arrow_geometry(geometry, tip_on_max_axis=end_ratio >= start_ratio)
         anchor = max((strokes[index] for index in group), key=lambda candidate: candidate.length)
         elements.append(
             Element(
                 id=f"linear-{next_index}",
-                kind="orthogonal_connector",
+                kind=resolved_kind,
                 geometry=geometry,
                 stroke=StrokeStyle(color=sample_stroke_color(array, anchor), width=max(1.0, band * 1.5)),
                 fill=FillStyle(enabled=False, color=None),
                 text=None,
-                confidence=min(0.93, 0.70 + coverage * 0.22 + min(len(local_points), 5) * 0.01 + min(endpoint_hits, 2) * 0.02),
+                confidence=min(
+                    0.95,
+                    0.70
+                    + coverage * 0.20
+                    + min(len(geometry.points), 6) * 0.01
+                    + min(endpoint_hits, 2) * 0.02
+                    + min(bridge_edges, 2) * 0.03,
+                ),
                 source_region=geometry.bbox,
                 inferred=any(strokes[index].inferred for index in group),
             )
         )
-        used.update(group)
+        used.update(path)
         next_index += 1
     return elements, used
 
 
-def stroke_graph_components(strokes: list[Stroke], scale: ScaleContext) -> list[list[int]]:
-    adjacency: dict[int, set[int]] = {index: set() for index in range(len(strokes))}
-    tolerance = max(4.0, scale.estimated_stroke_width * 3.0)
+def build_global_stroke_graph(
+    strokes: list[Stroke],
+    *,
+    scale: ScaleContext,
+    config: PipelineConfig,
+    bridge_mask: np.ndarray | None,
+) -> dict[int, list[StrokeGraphEdge]]:
+    adjacency: dict[int, list[StrokeGraphEdge]] = {index: [] for index in range(len(strokes))}
     for left in range(len(strokes)):
         for right in range(left + 1, len(strokes)):
-            if not strokes_interact(strokes[left], strokes[right], tolerance=tolerance):
+            edge = stroke_graph_edge(
+                strokes[left],
+                strokes[right],
+                scale=scale,
+                config=config,
+                bridge_mask=bridge_mask,
+            )
+            if edge is None:
                 continue
-            adjacency[left].add(right)
-            adjacency[right].add(left)
+            adjacency[left].append(StrokeGraphEdge(neighbor=right, kind=edge.kind, bridge_ratio=edge.bridge_ratio))
+            adjacency[right].append(StrokeGraphEdge(neighbor=left, kind=edge.kind, bridge_ratio=edge.bridge_ratio))
+    return adjacency
+
+
+def stroke_graph_edge(
+    first: Stroke,
+    second: Stroke,
+    *,
+    scale: ScaleContext,
+    config: PipelineConfig,
+    bridge_mask: np.ndarray | None,
+) -> StrokeGraphEdge | None:
+    if first.orientation == second.orientation:
+        if not strokes_are_collinear(first, second, scale=scale, config=config):
+            return None
+        bridge_ratio = stroke_gap_bridge_ratio(first, second, bridge_mask)
+        gap = stroke_interval_gap(first, second)
+        endpoint_gap = min_stroke_endpoint_distance(first, second)
+        if bridge_ratio >= config.global_graph_bridge_ratio or endpoint_gap <= max(config.global_graph_endpoint_margin, scale.estimated_stroke_width * 8.0) or gap <= max(config.stroke_merge_gap * 2.5, scale.min_linear_length * 0.4):
+            return StrokeGraphEdge(neighbor=-1, kind="collinear", bridge_ratio=bridge_ratio)
+        return None
+    tolerance = max(config.global_graph_endpoint_margin * 0.5, scale.estimated_stroke_width * 4.0)
+    if strokes_interact(first, second, tolerance=tolerance) or min_stroke_endpoint_distance(first, second) <= tolerance:
+        return StrokeGraphEdge(neighbor=-1, kind="junction", bridge_ratio=0.0)
+    return None
+
+
+def stroke_graph_components(adjacency: dict[int, list[StrokeGraphEdge]]) -> list[list[int]]:
     groups: list[list[int]] = []
     visited: set[int] = set()
-    for start in range(len(strokes)):
+    for start in adjacency:
         if start in visited:
             continue
         stack = [start]
@@ -1932,13 +2011,313 @@ def stroke_graph_components(strokes: list[Stroke], scale: ScaleContext) -> list[
         while stack:
             current = stack.pop()
             group.append(current)
-            for neighbor in adjacency[current]:
+            for edge in adjacency[current]:
+                neighbor = edge.neighbor
                 if neighbor in visited:
                     continue
                 visited.add(neighbor)
                 stack.append(neighbor)
         groups.append(sorted(group))
     return groups
+
+
+def longest_stroke_path(
+    group: list[int],
+    adjacency: dict[int, list[StrokeGraphEdge]],
+    strokes: list[Stroke],
+    config: PipelineConfig,
+) -> list[int]:
+    node_set = set(group)
+    degrees = {node: sum(1 for edge in adjacency[node] if edge.neighbor in node_set) for node in group}
+    starts = [node for node in group if degrees[node] <= 1] or group
+    if len(group) > config.global_graph_max_component:
+        return greedy_stroke_path(starts, adjacency, strokes, node_set)
+    best_path: list[int] = []
+    best_score = -1.0
+
+    def dfs(node: int, visited: set[int], path: list[int], score: float) -> None:
+        nonlocal best_path, best_score
+        if score > best_score:
+            best_score = score
+            best_path = path[:]
+        neighbors = sorted(
+            (
+                edge
+                for edge in adjacency[node]
+                if edge.neighbor in node_set and edge.neighbor not in visited
+            ),
+            key=lambda edge: strokes[edge.neighbor].length + edge.bridge_ratio * 120.0,
+            reverse=True,
+        )
+        for edge in neighbors:
+            visited.add(edge.neighbor)
+            dfs(
+                edge.neighbor,
+                visited,
+                path + [edge.neighbor],
+                score + strokes[edge.neighbor].length + edge.bridge_ratio * 40.0,
+            )
+            visited.remove(edge.neighbor)
+
+    for start in starts:
+        dfs(start, {start}, [start], strokes[start].length)
+    return best_path
+
+
+def greedy_stroke_path(
+    starts: list[int],
+    adjacency: dict[int, list[StrokeGraphEdge]],
+    strokes: list[Stroke],
+    node_set: set[int],
+) -> list[int]:
+    start = max(starts, key=lambda node: strokes[node].length)
+    path = [start]
+    visited = {start}
+    while True:
+        head = path[-1]
+        candidates = [
+            edge
+            for edge in adjacency[head]
+            if edge.neighbor in node_set and edge.neighbor not in visited
+        ]
+        if not candidates:
+            break
+        edge = max(candidates, key=lambda item: strokes[item.neighbor].length + item.bridge_ratio * 120.0)
+        path.append(edge.neighbor)
+        visited.add(edge.neighbor)
+    return path
+
+
+def stroke_path_geometry(
+    path: list[int],
+    adjacency: dict[int, list[StrokeGraphEdge]],
+    strokes: list[Stroke],
+    config: PipelineConfig,
+) -> tuple[PolylineGeometry | None, str | None, int]:
+    path_strokes = [strokes[index] for index in path]
+    bridge_edges = count_path_bridge_edges(path, adjacency)
+    if all(stroke.orientation == path_strokes[0].orientation for stroke in path_strokes):
+        geometry = merged_collinear_path_geometry(path_strokes)
+        return geometry, "line", bridge_edges
+    interfaces = [
+        stroke_interface_point(first, second)
+        for first, second in zip(path_strokes[:-1], path_strokes[1:], strict=True)
+    ]
+    if any(point is None for point in interfaces):
+        return None, None, bridge_edges
+    interface_points = [point for point in interfaces if point is not None]
+    if not interface_points:
+        return None, None, bridge_edges
+    points: list[Point] = [path_endpoint_away_from_interface(path_strokes[0], interface_points[0])]
+    points.extend(interface_points)
+    points.append(path_endpoint_away_from_interface(path_strokes[-1], interface_points[-1]))
+    compressed = compress_point_path(points)
+    if len(compressed) < 2:
+        return None, None, bridge_edges
+    if len(compressed) - 1 > config.global_connector_max_segments:
+        compressed = simplify_point_path(compressed, max_segments=config.global_connector_max_segments)
+    if len(compressed) < 2:
+        return None, None, bridge_edges
+    kind = "line" if len(compressed) == 2 else "orthogonal_connector"
+    return PolylineGeometry(points=tuple(compressed)), kind, bridge_edges
+
+
+def count_path_bridge_edges(path: list[int], adjacency: dict[int, list[StrokeGraphEdge]]) -> int:
+    count = 0
+    for left, right in zip(path[:-1], path[1:], strict=True):
+        for edge in adjacency[left]:
+            if edge.neighbor == right and edge.bridge_ratio >= 0.01:
+                count += 1
+                break
+    return count
+
+
+def merged_collinear_path_geometry(strokes: list[Stroke]) -> PolylineGeometry:
+    orientation = strokes[0].orientation
+    if orientation == "horizontal":
+        y = float(np.median([stroke.center_y for stroke in strokes]))
+        x0 = min(stroke.x0 for stroke in strokes)
+        x1 = max(stroke.x1 for stroke in strokes)
+        return PolylineGeometry(points=(Point(float(x0), y), Point(float(x1), y)))
+    x = float(np.median([stroke.center_x for stroke in strokes]))
+    y0 = min(stroke.y0 for stroke in strokes)
+    y1 = max(stroke.y1 for stroke in strokes)
+    return PolylineGeometry(points=(Point(x, float(y0)), Point(x, float(y1))))
+
+
+def stroke_interface_point(first: Stroke, second: Stroke) -> Point | None:
+    if first.orientation == second.orientation:
+        if first.orientation == "horizontal":
+            if first.center_x <= second.center_x:
+                x = max(first.x1, min(second.x0, second.x1))
+            else:
+                x = max(second.x1, min(first.x0, first.x1))
+            return Point(float((first.x1 + second.x0) / 2.0 if second.x0 >= first.x1 else (max(first.x0, second.x0) + min(first.x1, second.x1)) / 2.0), float((first.center_y + second.center_y) / 2.0))
+        return Point(float((first.center_x + second.center_x) / 2.0), float((first.y1 + second.y0) / 2.0 if second.y0 >= first.y1 else (max(first.y0, second.y0) + min(first.y1, second.y1)) / 2.0))
+    horizontal = first if first.orientation == "horizontal" else second
+    vertical = second if first.orientation == "horizontal" else first
+    return Point(float(vertical.center_x), float(horizontal.center_y))
+
+
+def path_endpoint_away_from_interface(stroke: Stroke, interface: Point) -> Point:
+    endpoints = stroke_endpoints(stroke)
+    return max(endpoints, key=lambda point: gap_between_path_points(point, interface))
+
+
+def stroke_endpoints(stroke: Stroke) -> tuple[Point, Point]:
+    if stroke.orientation == "horizontal":
+        point_y = float(stroke.center_y)
+        return (Point(float(stroke.x0), point_y), Point(float(stroke.x1), point_y))
+    point_x = float(stroke.center_x)
+    return (Point(point_x, float(stroke.y0)), Point(point_x, float(stroke.y1)))
+
+
+def compress_point_path(points: list[Point]) -> list[Point]:
+    compressed: list[Point] = []
+    for point in points:
+        if not compressed:
+            compressed.append(point)
+            continue
+        if gap_between_path_points(compressed[-1], point) <= 1.0:
+            compressed[-1] = point
+            continue
+        compressed.append(point)
+    if len(compressed) <= 2:
+        return compressed
+    reduced = [compressed[0]]
+    for index in range(1, len(compressed) - 1):
+        prev = reduced[-1]
+        current = compressed[index]
+        nxt = compressed[index + 1]
+        if points_are_collinear(prev, current, nxt):
+            continue
+        reduced.append(current)
+    reduced.append(compressed[-1])
+    return reduced
+
+
+def simplify_point_path(points: list[Point], *, max_segments: int) -> list[Point]:
+    simplified = points[:]
+    while len(simplified) - 1 > max_segments and len(simplified) > 2:
+        shortest_index = min(
+            range(1, len(simplified) - 1),
+            key=lambda index: gap_between_path_points(simplified[index - 1], simplified[index]) + gap_between_path_points(simplified[index], simplified[index + 1]),
+        )
+        simplified.pop(shortest_index)
+        simplified = compress_point_path(simplified)
+    return simplified
+
+
+def points_are_collinear(first: Point, second: Point, third: Point) -> bool:
+    return (abs(first.x - second.x) <= 1.0 and abs(second.x - third.x) <= 1.0) or (
+        abs(first.y - second.y) <= 1.0 and abs(second.y - third.y) <= 1.0
+    )
+
+
+def strokes_are_collinear(
+    first: Stroke,
+    second: Stroke,
+    *,
+    scale: ScaleContext,
+    config: PipelineConfig,
+) -> bool:
+    tolerance = max(config.stroke_alignment_tolerance * 2.0, scale.estimated_stroke_width * 3.5)
+    if first.orientation == "horizontal":
+        return abs(first.center_y - second.center_y) <= tolerance
+    return abs(first.center_x - second.center_x) <= tolerance
+
+
+def stroke_interval_gap(first: Stroke, second: Stroke) -> float:
+    if first.orientation == "horizontal":
+        return max(0.0, max(first.x0, second.x0) - min(first.x1, second.x1))
+    return max(0.0, max(first.y0, second.y0) - min(first.y1, second.y1))
+
+
+def stroke_gap_bridge_ratio(
+    first: Stroke,
+    second: Stroke,
+    bridge_mask: np.ndarray | None,
+) -> float:
+    if bridge_mask is None:
+        return 0.0
+    if first.orientation != second.orientation:
+        return 0.0
+    band = max(2, int(round(max(first.thickness, second.thickness) * 2.0)))
+    if first.orientation == "horizontal":
+        left = min(first.x1, second.x1)
+        right = max(first.x0, second.x0)
+        x0 = max(0, int(math.floor(min(left, right))))
+        x1 = min(bridge_mask.shape[1], int(math.ceil(max(left, right))) + 1)
+        y = int(round((first.center_y + second.center_y) / 2.0))
+        y0 = max(0, y - band)
+        y1 = min(bridge_mask.shape[0], y + band + 1)
+    else:
+        top = min(first.y1, second.y1)
+        bottom = max(first.y0, second.y0)
+        y0 = max(0, int(math.floor(min(top, bottom))))
+        y1 = min(bridge_mask.shape[0], int(math.ceil(max(top, bottom))) + 1)
+        x = int(round((first.center_x + second.center_x) / 2.0))
+        x0 = max(0, x - band)
+        x1 = min(bridge_mask.shape[1], x + band + 1)
+    if x1 <= x0 or y1 <= y0:
+        return 0.0
+    window = bridge_mask[y0:y1, x0:x1]
+    return float(window.mean()) if window.size else 0.0
+
+
+def min_stroke_endpoint_distance(first: Stroke, second: Stroke) -> float:
+    first_points = stroke_endpoints(first)
+    second_points = stroke_endpoints(second)
+    return min(gap_between_path_points(left, right) for left in first_points for right in second_points)
+
+
+def gap_between_path_points(first: Point, second: Point) -> float:
+    return math.hypot(second.x - first.x, second.y - first.y)
+
+
+def polyline_endpoint_widening(mask: np.ndarray, geometry: PolylineGeometry, *, band: int) -> tuple[float, float]:
+    if len(geometry.points) != 2:
+        return 1.0, 1.0
+    start, end = geometry.points
+    if abs(end.x - start.x) >= abs(end.y - start.y):
+        x0 = max(0, int(math.floor(min(start.x, end.x))))
+        x1 = min(mask.shape[1], int(math.ceil(max(start.x, end.x))) + 1)
+        y = int(round((start.y + end.y) / 2.0))
+        y0 = max(0, y - band)
+        y1 = min(mask.shape[0], y + band + 1)
+        if x1 <= x0 or y1 <= y0:
+            return 1.0, 1.0
+        profile = mask[y0:y1, x0:x1].sum(axis=0)
+    else:
+        y0 = max(0, int(math.floor(min(start.y, end.y))))
+        y1 = min(mask.shape[0], int(math.ceil(max(start.y, end.y))) + 1)
+        x = int(round((start.x + end.x) / 2.0))
+        x0 = max(0, x - band)
+        x1 = min(mask.shape[1], x + band + 1)
+        if x1 <= x0 or y1 <= y0:
+            return 1.0, 1.0
+        profile = mask[y0:y1, x0:x1].sum(axis=1)
+    if profile.size < 6:
+        return 1.0, 1.0
+    span = max(2, profile.size // 5)
+    center_start = max(0, profile.size // 2 - span // 2)
+    center_end = min(profile.size, center_start + span)
+    core = float(np.median(profile[center_start:center_end])) if center_end > center_start else 1.0
+    core = max(1.0, core)
+    start_ratio = float(np.max(profile[:span])) / core
+    end_ratio = float(np.max(profile[-span:])) / core
+    return start_ratio, end_ratio
+
+
+def orient_arrow_geometry(geometry: PolylineGeometry, *, tip_on_max_axis: bool) -> PolylineGeometry:
+    start, end = geometry.points
+    horizontal = abs(end.x - start.x) >= abs(end.y - start.y)
+    if horizontal:
+        tip = max((start, end), key=lambda point: point.x) if tip_on_max_axis else min((start, end), key=lambda point: point.x)
+    else:
+        tip = max((start, end), key=lambda point: point.y) if tip_on_max_axis else min((start, end), key=lambda point: point.y)
+    tail = start if tip == end else end
+    return PolylineGeometry(points=(tail, tip))
 
 
 def strokes_interact(first: Stroke, second: Stroke, *, tolerance: float) -> bool:
@@ -2318,12 +2697,21 @@ def polyline_length(points: tuple[Point, ...]) -> float:
 
 
 def connector_pixel_coverage(mask: np.ndarray, points: tuple[Point, ...], *, band: int) -> float:
-    pixels = np.argwhere(mask)
+    bbox = PolylineGeometry(points=points).bbox.expand(float(band + 2))
+    x0 = max(0, int(math.floor(bbox.x0)))
+    y0 = max(0, int(math.floor(bbox.y0)))
+    x1 = min(mask.shape[1], int(math.ceil(bbox.x1)))
+    y1 = min(mask.shape[0], int(math.ceil(bbox.y1)))
+    if x1 <= x0 or y1 <= y0:
+        return 0.0
+    local_mask = mask[y0:y1, x0:x1]
+    pixels = np.argwhere(local_mask)
     if len(pixels) == 0:
         return 0.0
     covered = 0
+    shifted_points = tuple(Point(point.x - x0, point.y - y0) for point in points)
     for y, x in pixels:
-        if any(pixel_near_axis_segment(x, y, start, end, band) for start, end in zip(points[:-1], points[1:], strict=True)):
+        if any(pixel_near_axis_segment(x, y, start, end, band) for start, end in zip(shifted_points[:-1], shifted_points[1:], strict=True)):
             covered += 1
     return covered / len(pixels)
 

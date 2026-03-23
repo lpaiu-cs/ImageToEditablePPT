@@ -16,14 +16,17 @@ class GapEvidence:
     score: int
     has_occluder: bool
     has_conflict: bool
+    bridge_ratio: float = 0.0
+    force_merge: bool = False
 
 
 def repair_elements(
     elements: list[Element],
     processed: ProcessedImage,
     config: PipelineConfig,
+    bridge_mask: np.ndarray | None = None,
 ) -> list[Element]:
-    merged = merge_collinear_lines(elements, processed, config)
+    merged = merge_collinear_lines(elements, processed, config, bridge_mask=bridge_mask)
     return snap_linear_endpoints_to_boxes(merged, processed, config)
 
 
@@ -31,6 +34,7 @@ def merge_collinear_lines(
     elements: list[Element],
     processed: ProcessedImage,
     config: PipelineConfig,
+    bridge_mask: np.ndarray | None = None,
 ) -> list[Element]:
     merged: list[Element] = []
     used = set()
@@ -47,7 +51,7 @@ def merge_collinear_lines(
             other = elements[other_idx]
             if other.kind != "line" or not is_two_point_line(other):
                 continue
-            candidate = try_merge_lines(current, other, processed, config)
+            candidate = try_merge_lines(current, other, processed, config, bridge_mask=bridge_mask)
             if candidate is None:
                 continue
             used.add(other_idx)
@@ -162,6 +166,7 @@ def try_merge_lines(
     second: Element,
     processed: ProcessedImage,
     config: PipelineConfig,
+    bridge_mask: np.ndarray | None = None,
 ) -> Element | None:
     if first.id.count("-") > 1 or second.id.count("-") > 1:
         return None
@@ -172,11 +177,11 @@ def try_merge_lines(
     if direction_similarity(p1, p2, q1, q2) < 0.97:
         return None
     near_first, near_second, far_first, far_second = nearest_endpoints(p1, p2, q1, q2)
+    evidence = evaluate_line_gap(first, second, near_first, near_second, processed, config, bridge_mask=bridge_mask)
     gap = gap_between_points(near_first, near_second)
-    if gap > config.stroke_merge_gap * 1.6:
+    if not evidence.force_merge and gap > config.stroke_merge_gap * 1.6:
         return None
-    evidence = evaluate_line_gap(first, second, near_first, near_second, processed, config)
-    if evidence.has_conflict or evidence.score < config.repair_min_score:
+    if evidence.has_conflict or (not evidence.force_merge and evidence.score < config.repair_min_score):
         return None
     merged_geometry = order_merged_geometry(far_first, far_second)
     confidence = min(0.99, max(first.confidence, second.confidence) + 0.02 + 0.01 * max(0, evidence.score - config.repair_min_score))
@@ -196,6 +201,7 @@ def evaluate_line_gap(
     near_second: Point,
     processed: ProcessedImage,
     config: PipelineConfig,
+    bridge_mask: np.ndarray | None = None,
 ) -> GapEvidence:
     score = 0
     if segments_collinear(
@@ -220,20 +226,32 @@ def evaluate_line_gap(
     if darkness_delta <= config.repair_darkness_delta:
         score += 1
     orientation = dominant_orientation(near_first, near_second)
-    has_occluder, has_conflict = inspect_gap_region(
+    has_occluder, has_conflict, bridge_ratio = inspect_gap_region(
         processed.foreground_mask,
         near_first,
         near_second,
         width=max(first.stroke.width, second.stroke.width),
         orientation=orientation,
         config=config,
+        bridge_mask=bridge_mask,
     )
     micro_gap = gap_between_points(near_first, near_second) <= max(2.0, max(first.stroke.width, second.stroke.width) * 1.5)
+    force_merge = bridge_ratio >= config.text_bridge_force_ratio
     if micro_gap or has_occluder:
         score += 1
     if has_conflict:
         score -= 3
-    return GapEvidence(score=score, has_occluder=has_occluder, has_conflict=has_conflict)
+    if force_merge:
+        score = max(score, config.repair_min_score + 2)
+        has_occluder = True
+        has_conflict = False
+    return GapEvidence(
+        score=score,
+        has_occluder=has_occluder,
+        has_conflict=has_conflict,
+        bridge_ratio=bridge_ratio,
+        force_merge=force_merge,
+    )
 
 
 def inspect_gap_region(
@@ -244,7 +262,8 @@ def inspect_gap_region(
     width: float,
     orientation: str,
     config: PipelineConfig,
-) -> tuple[bool, bool]:
+    bridge_mask: np.ndarray | None = None,
+) -> tuple[bool, bool, float]:
     band = max(2, int(round(width * 1.6)))
     trim = max(2, int(round(width * 2.5)))
     x0 = max(0, int(math.floor(min(start.x, end.x))) - band)
@@ -252,15 +271,23 @@ def inspect_gap_region(
     y0 = max(0, int(math.floor(min(start.y, end.y))) - band)
     y1 = min(foreground_mask.shape[0], int(math.ceil(max(start.y, end.y))) + band + 1)
     if x1 <= x0 or y1 <= y0:
-        return False, False
+        return False, False, 0.0
     window = foreground_mask[y0:y1, x0:x1]
     if orientation == "horizontal":
         inner = window[:, trim:-trim] if window.shape[1] > trim * 2 else window
     else:
         inner = window[trim:-trim, :] if window.shape[0] > trim * 2 else window
     fill_ratio = float(inner.mean()) if inner.size else 0.0
-    if fill_ratio <= config.repair_occluder_fill_ratio:
-        return False, False
+    bridge_ratio = 0.0
+    if bridge_mask is not None:
+        bridge_window = bridge_mask[y0:y1, x0:x1]
+        if orientation == "horizontal":
+            bridge_inner = bridge_window[:, trim:-trim] if bridge_window.shape[1] > trim * 2 else bridge_window
+        else:
+            bridge_inner = bridge_window[trim:-trim, :] if bridge_window.shape[0] > trim * 2 else bridge_window
+        bridge_ratio = float(bridge_inner.mean()) if bridge_inner.size else 0.0
+    if fill_ratio <= config.repair_occluder_fill_ratio and bridge_ratio < config.repair_bridge_fill_ratio:
+        return False, False, bridge_ratio
     if orientation == "horizontal":
         cross_ratio = float(np.max(inner.sum(axis=0)) / max(1, inner.shape[0])) if inner.size else 0.0
     else:
@@ -270,7 +297,12 @@ def inspect_gap_region(
         config.repair_occluder_fill_ratio <= fill_ratio <= config.repair_conflict_fill_ratio
         and cross_ratio < 0.84
     )
-    return has_occluder, has_conflict
+    if bridge_ratio >= config.repair_bridge_fill_ratio and not has_conflict:
+        has_occluder = True
+    if bridge_ratio >= config.text_bridge_force_ratio:
+        has_conflict = False
+        has_occluder = True
+    return has_occluder, has_conflict, bridge_ratio
 
 
 def order_merged_geometry(start: Point, end: Point) -> PolylineGeometry:

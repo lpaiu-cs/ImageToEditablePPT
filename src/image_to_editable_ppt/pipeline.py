@@ -67,7 +67,7 @@ def build_elements(
     )
     detection = detect_elements_with_metadata(processed, active_config)
     elements = detection.elements
-    elements = repair_elements(elements, processed, active_config)
+    elements = repair_elements(elements, processed, active_config, bridge_mask=detection.bridge_mask)
     elements = finalize_detected_elements(elements, processed, active_config)
     backend = ocr_backend or get_ocr_backend(enable_ocr)
     text = extract_text_elements(

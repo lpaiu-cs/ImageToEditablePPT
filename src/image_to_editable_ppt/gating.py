@@ -11,6 +11,9 @@ def gate_elements(elements: list[Element], config: PipelineConfig) -> list[Eleme
             if element.confidence >= config.text_confidence:
                 gated.append(element)
             continue
+        if borderless_fill_panel_candidate(element, config):
+            gated.append(element)
+            continue
         if element.confidence >= config.inclusion_confidence:
             gated.append(element)
             continue
@@ -23,3 +26,14 @@ def gate_elements(elements: list[Element], config: PipelineConfig) -> list[Eleme
         }:
             gated.append(element)
     return gated
+
+
+def borderless_fill_panel_candidate(element: Element, config: PipelineConfig) -> bool:
+    return (
+        element.kind in {"rect", "rounded_rect"}
+        and element.fill.enabled
+        and element.fill.color is not None
+        and element.inferred
+        and element.stroke.width <= 1.5
+        and element.confidence >= min(config.filled_panel_accept_confidence, config.inclusion_confidence)
+    )

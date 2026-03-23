@@ -20,7 +20,7 @@ from .fitter import (
     fit_linear_component,
     fit_orthogonal_connector,
 )
-from .ir import BBox, Element
+from .ir import BBox, Element, Point, PolylineGeometry
 from .preprocess import ProcessedImage
 
 
@@ -29,6 +29,7 @@ class DetectionResult:
     elements: list[Element]
     text_regions: list[BBox]
     rejected_regions: list[RejectedRegion]
+    bridge_mask: np.ndarray
 
 
 def detect_elements(processed: ProcessedImage, config: PipelineConfig) -> list[Element]:
@@ -161,6 +162,7 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
         text_regions=text_filter.text_regions,
         rejected_regions=filtered.rejected_regions
         + [region for region in text_filter.rejected_regions if region.label == "text_like"],
+        bridge_mask=bridge_mask,
     )
 
 
@@ -390,9 +392,21 @@ def finalize_detected_elements(elements: list[Element], processed: ProcessedImag
                 continue
             boxes.append(element)
             continue
+        if element.kind == "arrow":
+            element = orient_arrow_element(element, processed)
+        if element.kind == "orthogonal_connector":
+            element = normalize_connector_axes(element, tolerance=max(4.0, processed.scale.estimated_stroke_width * 2.0))
+        if element.kind == "orthogonal_connector" and not polyline_is_axis_aligned(element, tolerance=max(4.0, processed.scale.estimated_stroke_width * 2.0)):
+            continue
+        if element.kind == "orthogonal_connector" and connector_loops_back_into_same_box(element, boxes, processed):
+            continue
+        if element.kind == "orthogonal_connector" and weak_connector_is_unanchored(element, boxes, processed):
+            continue
         if element.kind == "line" and not boxes and line_candidate_count == 1 and isolated_line_too_short(element, processed):
             continue
-        if element.kind == "line" and ambiguous_wedge_line(element, processed, config):
+        if element.kind == "line" and short_unanchored_line(element, boxes, processed):
+            continue
+        if element.kind == "line" and line_endpoint_hits_boxes(element, boxes, processed) == 0 and ambiguous_wedge_line(element, processed, config):
             continue
         if element.kind == "line" and line_matches_any_box_edge(element, boxes, processed.scale):
             continue
@@ -427,6 +441,134 @@ def line_matches_any_box_edge(element: Element, boxes: list[Element], scale) -> 
         if overlap > 0 and overlap / max(1.0, min(abs(end.y - start.y), box.bbox.height)) >= 0.68:
             return True
     return False
+
+
+def normalize_connector_axes(element: Element, *, tolerance: float) -> Element:
+    points = list(getattr(element.geometry, "points", ()))
+    if len(points) < 2:
+        return element
+    normalized = [points[0]]
+    for point in points[1:]:
+        previous = normalized[-1]
+        dx = point.x - previous.x
+        dy = point.y - previous.y
+        if abs(dx) <= tolerance:
+            normalized.append(Point(previous.x, point.y))
+            continue
+        if abs(dy) <= tolerance:
+            normalized.append(Point(point.x, previous.y))
+            continue
+        if abs(dx) >= abs(dy):
+            normalized.append(Point(point.x, previous.y))
+            continue
+        normalized.append(Point(previous.x, point.y))
+    compressed = compress_axis_points(normalized)
+    if len(compressed) < 2:
+        return element
+    kind = "line" if len(compressed) == 2 else element.kind
+    geometry = PolylineGeometry(points=tuple(compressed))
+    return replace(element, kind=kind, geometry=geometry, source_region=geometry.bbox)
+
+
+def compress_axis_points(points: list[Point]) -> list[Point]:
+    compressed: list[Point] = []
+    for point in points:
+        if not compressed:
+            compressed.append(point)
+            continue
+        if compressed[-1] == point:
+            continue
+        compressed.append(point)
+    if len(compressed) <= 2:
+        return compressed
+    reduced = [compressed[0]]
+    for index in range(1, len(compressed) - 1):
+        prev = reduced[-1]
+        current = compressed[index]
+        nxt = compressed[index + 1]
+        if (abs(prev.x - current.x) <= 1.0 and abs(current.x - nxt.x) <= 1.0) or (
+            abs(prev.y - current.y) <= 1.0 and abs(current.y - nxt.y) <= 1.0
+        ):
+            continue
+        reduced.append(current)
+    reduced.append(compressed[-1])
+    return reduced
+
+
+def orient_arrow_element(element: Element, processed: ProcessedImage) -> Element:
+    points = getattr(element.geometry, "points", ())
+    if len(points) != 2:
+        return element
+    start_ratio, end_ratio = line_endpoint_widening(element, processed.foreground_mask, processed.scale)
+    tip_on_max_axis = end_ratio >= start_ratio
+    start, end = points
+    horizontal = abs(end.x - start.x) >= abs(end.y - start.y)
+    if horizontal:
+        tip = max((start, end), key=lambda point: point.x) if tip_on_max_axis else min((start, end), key=lambda point: point.x)
+    else:
+        tip = max((start, end), key=lambda point: point.y) if tip_on_max_axis else min((start, end), key=lambda point: point.y)
+    tail = start if tip == end else end
+    geometry = PolylineGeometry(points=(tail, tip))
+    return replace(element, geometry=geometry, source_region=geometry.bbox)
+
+
+def polyline_is_axis_aligned(element: Element, *, tolerance: float) -> bool:
+    points = getattr(element.geometry, "points", ())
+    if len(points) < 2:
+        return False
+    return all(
+        abs(end.x - start.x) <= tolerance or abs(end.y - start.y) <= tolerance
+        for start, end in zip(points[:-1], points[1:], strict=True)
+    )
+
+
+def weak_connector_is_unanchored(element: Element, boxes: list[Element], processed: ProcessedImage) -> bool:
+    points = getattr(element.geometry, "points", ())
+    if len(points) < 2:
+        return True
+    hits = endpoint_box_hits(points[0], points[-1], boxes, margin=max(8.0, processed.scale.min_box_size * 0.45))
+    aspect = max(element.bbox.width, element.bbox.height) / max(1.0, min(element.bbox.width, element.bbox.height))
+    return hits == 0 and (
+        max(element.bbox.width, element.bbox.height) < processed.scale.min_linear_length * 2.4
+        or (max(element.bbox.width, element.bbox.height) < 90.0 and aspect < 5.0)
+    )
+
+
+def connector_loops_back_into_same_box(element: Element, boxes: list[Element], processed: ProcessedImage) -> bool:
+    points = getattr(element.geometry, "points", ())
+    if len(points) < 2:
+        return False
+    margin = max(8.0, processed.scale.min_box_size * 0.45)
+    start_boxes = [
+        box
+        for box in boxes
+        if box.kind in {"rect", "rounded_rect"} and box.bbox.expand(margin).contains_point(points[0])
+    ]
+    end_boxes = [
+        box
+        for box in boxes
+        if box.kind in {"rect", "rounded_rect"} and box.bbox.expand(margin).contains_point(points[-1])
+    ]
+    if not start_boxes or not end_boxes:
+        return False
+    return any(start is end for start in start_boxes for end in end_boxes)
+
+
+def line_endpoint_hits_boxes(element: Element, boxes: list[Element], processed: ProcessedImage) -> int:
+    points = getattr(element.geometry, "points", ())
+    if len(points) != 2:
+        return 0
+    return endpoint_box_hits(points[0], points[-1], boxes, margin=max(8.0, processed.scale.min_box_size * 0.45))
+
+
+def short_unanchored_line(element: Element, boxes: list[Element], processed: ProcessedImage) -> bool:
+    if not boxes:
+        return False
+    points = getattr(element.geometry, "points", ())
+    if len(points) != 2:
+        return False
+    hits = endpoint_box_hits(points[0], points[-1], boxes, margin=max(8.0, processed.scale.min_box_size * 0.45))
+    return hits == 0 and max(element.bbox.width, element.bbox.height) < max(60.0, processed.scale.min_linear_length * 1.25)
 
 
 def parallel_line_is_duplicate(element: Element, existing: list[Element], scale) -> bool:

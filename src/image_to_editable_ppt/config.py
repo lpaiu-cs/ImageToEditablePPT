@@ -11,6 +11,12 @@ class PipelineConfig:
     text_close_kernel_width: int = 15
     text_close_kernel_height: int = 5
     snap_box_endpoint_margin: float = 18.0
+    text_bridge_force_ratio: float = 0.50
+    global_graph_endpoint_margin: float = 20.0
+    global_graph_bridge_ratio: float = 0.12
+    global_graph_max_component: int = 10
+    global_connector_max_segments: int = 8
+    filled_panel_accept_confidence: float = 0.84
     fill_region_background_ratio: float = 0.68
     fill_region_uniformity_ratio: float = 0.84
     fill_region_edge_ratio: float = 0.82

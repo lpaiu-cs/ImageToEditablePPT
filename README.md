@@ -11,6 +11,7 @@
 - straight line 검출
 - weak / large residual component에 대한 outer contour 기반 box fallback
 - 채워진 solid region에서의 conservative filled-box fallback
+- image-wide Hough stroke를 global segment graph로 조립하는 connector proposal
 - 강한 근거가 있을 때만 수행하는 evidence-aware occlusion repair
 - `cv2.HoughLinesP` + collinear merge 기반의 conservative segment proposal
 - box edge 근처 segment endpoint를 box 외곽선으로 연장하는 conservative endpoint snapping
@@ -37,6 +38,7 @@
 - 검출보다 생략을 우선한다.
 - proposal 단계에서는 `definitely_non_diagram`만 제거하고, 애매한 residual은 후단 조립/선택으로 넘긴다.
 - text-like candidate는 글자 단위가 아니라 phrase/block 단위 mask로 먼저 묶어 suppression과 gap bridge에 함께 사용한다.
+- text block이 gap의 대부분을 차지하면 그 구간은 explicit bridge prior로 취급해 segment assembly와 repair를 밀어준다.
 - weak component는 전체 픽셀 덩어리 대신 outer contour로 다시 본다.
 - fill은 닫힌 박스에만 적용한다.
 - 비-다이어그램으로 보이는 복합 요소는 생략한다.
@@ -87,8 +89,8 @@ python tools/alignment_loop.py input.png
 1. 전처리: 배경 추정, foreground / boundary mask 구성, raw text-mask source 유지, mean-shift 기반 fill region mask 생성, speck 제거
 2. 구조 후보 탐지: 수평/수직 stroke 추출, 박스 후보 탐지
 3. non-diagram filtering: connected component feature와 text row cluster로 `text_like` / `icon_like`를 억제하고 `unknown`은 weak proposal로 유지
-4. primitive fitting: raw boundary 기반 box proposal + outer contour weak-box fallback + filled-region box fallback + Hough segment proposal + strong/weak residual line / arrow / connector fitting
-5. occlusion repair: 정렬, 폭, 명암, occluder, conflict를 함께 보는 evidence-aware merge
+4. primitive fitting: raw boundary 기반 box proposal + outer contour weak-box fallback + filled-region box fallback + Hough global segment graph proposal + strong/weak residual line / arrow / connector fitting
+5. occlusion repair: 정렬, 폭, 명암, occluder, conflict를 함께 보는 evidence-aware merge + text-block hard bridge merge
 6. topological repair: line / connector endpoint를 근처 box edge로 snap
 7. style extraction: 내부 detail pixel을 제외한 stroke / fill representative color 추정
 8. text extraction: text-like block crop 기반의 선택적 OCR + 구조적 역할 게이트
@@ -115,6 +117,7 @@ python tools/alignment_loop.py input.png
 - dense text-heavy rasterized diagram에서 text fragment suppression과 large container survival
 - text-like glyph를 phrase/block mask로 묶어 bridge region으로 재사용
 - explicit border가 약한 filled panel의 conservative box recovery
+- global segment graph longest-path 기반 connector recovery
 - near-box connector endpoint snapping
 - OCR off 상태에서 text glyph가 geometry primitive로 새지 않음
 - multi-segment orthogonal connector의 보수적 검출

@@ -197,6 +197,22 @@ def paper_like_multisegment_connector() -> Image.Image:
     return rasterize_fixture((280, 210), draw, seed=17, blur=0.7, compression_quality=78, noise_sigma=5.5)
 
 
+def paper_like_text_occluded_connector_graph() -> Image.Image:
+    def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
+        font = ImageFont.load_default()
+        draw.rectangle(scaled_box((28, 34, 94, 78), scale), outline="black", width=5 * scale)
+        draw.rectangle(scaled_box((222, 138, 292, 184), scale), outline="black", width=5 * scale)
+        draw.line(scaled_points((96, 56, 154, 56), scale), fill="black", width=5 * scale)
+        draw.line(scaled_points((154, 56, 154, 112), scale), fill="black", width=5 * scale)
+        draw.line(scaled_points((154, 112, 242, 112), scale), fill="black", width=5 * scale)
+        label = scaled_box((136, 94, 208, 130), scale)
+        draw.rounded_rectangle(label, radius=8 * scale, fill=(250, 250, 250))
+        draw.text((label[0] + 10 * scale, label[1] + 10 * scale), "bridge", fill=(28, 28, 28), font=font)
+        draw.line(scaled_points((242, 112, 242, 138), scale), fill="black", width=5 * scale)
+
+    return rasterize_fixture((330, 220), draw, seed=18, blur=0.55, compression_quality=80, noise_sigma=3.8)
+
+
 def paper_like_mixed_figure() -> Image.Image:
     def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
         draw.line(scaled_points((20, 28, 124, 28), scale), fill="black", width=7 * scale)

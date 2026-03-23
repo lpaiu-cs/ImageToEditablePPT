@@ -16,6 +16,7 @@ from image_to_editable_ppt.components import find_connected_components
 from image_to_editable_ppt.exporter import export_to_pptx
 from image_to_editable_ppt.fitter import (
     fit_component_box_from_outer_contour,
+    fit_hough_segment_elements,
     hough_axis_strokes,
     merge_parallel_strokes,
 )
@@ -200,6 +201,42 @@ def test_weak_geometry_with_conflict_does_not_trigger_repair() -> None:
 def test_multisegment_orthogonal_connector_is_detected_conservatively() -> None:
     result = build_elements(paper_like_multisegment_connector(), config=PipelineConfig())
     connectors = [element for element in result.elements if element.kind == "orthogonal_connector"]
+    assert connectors
+    assert any(len(element.geometry.points) >= 4 for element in connectors)
+
+
+def test_global_segment_graph_recovers_text_occluded_connector_path() -> None:
+    mask = np.zeros((220, 340), dtype=bool)
+    mask[54:61, 38:138] = True
+    mask[54:122, 136:143] = True
+    mask[116:123, 136:186] = True
+    mask[116:123, 230:288] = True
+    mask[116:168, 282:289] = True
+    bridge_mask = np.zeros_like(mask)
+    bridge_mask[96:146, 182:232] = True
+    array = np.full((220, 340, 3), 255, dtype=np.uint8)
+    array[mask] = 18
+    gray = np.full((220, 340), 255, dtype=np.float32)
+    gray[mask] = 18.0
+    scale = ScaleContext(
+        estimated_stroke_width=3.0,
+        min_component_area=18,
+        min_stroke_length=16,
+        min_linear_length=42,
+        min_box_size=24,
+    )
+    elements = fit_hough_segment_elements(
+        mask=mask,
+        array=array,
+        gray=gray,
+        bridge_mask=bridge_mask,
+        config=PipelineConfig(),
+        scale=scale,
+        structural_elements=[],
+        existing_elements=[],
+        start_index=1,
+    )
+    connectors = [element for element in elements if element.kind == "orthogonal_connector"]
     assert connectors
     assert any(len(element.geometry.points) >= 4 for element in connectors)
 
@@ -393,6 +430,49 @@ def test_endpoint_to_box_snapping_extends_connector_to_box_edges() -> None:
     assert snapped.inferred
     assert snapped.geometry.points[0].x == pytest.approx(120.0)
     assert snapped.geometry.points[-1].x == pytest.approx(210.0)
+
+
+def test_text_bridge_force_merge_ignores_large_gap_when_bridge_block_dominates() -> None:
+    image = complex_diagram()
+    config = PipelineConfig()
+    processed = preprocess_image(
+        image,
+        foreground_threshold=config.foreground_threshold,
+        min_component_area=config.min_component_area,
+        min_stroke_length=config.min_stroke_length,
+        min_box_size=config.min_box_size,
+        min_relative_line_length=config.min_relative_line_length,
+        min_relative_box_size=config.min_relative_box_size,
+        adaptive_background=config.adaptive_background,
+        background_blur_divisor=config.background_blur_divisor,
+    )
+    line_a = Element(
+        id="line-a",
+        kind="line",
+        geometry=PolylineGeometry(points=(Point(60.0, 92.0), Point(118.0, 92.0))),
+        stroke=StrokeStyle(color=(0, 0, 0), width=3.0),
+        fill=FillStyle(enabled=False, color=None),
+        text=None,
+        confidence=0.84,
+        source_region=BBox(60.0, 90.0, 118.0, 94.0),
+    )
+    line_b = Element(
+        id="line-b",
+        kind="line",
+        geometry=PolylineGeometry(points=(Point(196.0, 92.0), Point(254.0, 92.0))),
+        stroke=StrokeStyle(color=(0, 0, 0), width=3.0),
+        fill=FillStyle(enabled=False, color=None),
+        text=None,
+        confidence=0.84,
+        source_region=BBox(196.0, 90.0, 254.0, 94.0),
+    )
+    bridge_mask = np.zeros_like(processed.detail_mask, dtype=bool)
+    bridge_mask[74:112, 118:196] = True
+    repaired = repair_elements([line_a, line_b], processed, config, bridge_mask=bridge_mask)
+    merged_lines = [element for element in repaired if element.kind == "line"]
+    assert len(merged_lines) == 1
+    assert merged_lines[0].inferred
+    assert merged_lines[0].bbox.width >= 190
 
 
 def test_fill_region_fallback_recovers_borderless_panel() -> None:
