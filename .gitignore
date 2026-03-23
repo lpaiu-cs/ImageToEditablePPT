@@ -3,4 +3,7 @@ __pycache__/
 .DS_Store
 
 *.pptx
-workbench/
+workbench/**
+!workbench/**/
+!workbench/**/*.json
+

@@ -1,0 +1,68 @@
+[
+  {
+    "bbox": {
+      "x0": 2689.0,
+      "y0": 473.0,
+      "x1": 2694.0,
+      "y1": 520.0
+    },
+    "label": "unknown",
+    "reason": "rejected_as_too_small",
+    "area": 105
+  },
+  {
+    "bbox": {
+      "x0": 1817.0,
+      "y0": 540.0,
+      "x1": 1853.0,
+      "y1": 546.0
+    },
+    "label": "unknown",
+    "reason": "rejected_as_too_small",
+    "area": 73
+  },
+  {
+    "bbox": {
+      "x0": 0.0,
+      "y0": 768.0,
+      "x1": 29.0,
+      "y1": 822.0
+    },
+    "label": "unknown",
+    "reason": "rejected_as_too_small",
+    "area": 524
+  },
+  {
+    "bbox": {
+      "x0": 1095.0,
+      "y0": 1142.0,
+      "x1": 1111.0,
+      "y1": 1152.0
+    },
+    "label": "unknown",
+    "reason": "rejected_as_too_small",
+    "area": 108
+  },
+  {
+    "bbox": {
+      "x0": 1074.0,
+      "y0": 1143.0,
+      "x1": 1091.0,
+      "y1": 1153.0
+    },
+    "label": "unknown",
+    "reason": "rejected_as_too_small",
+    "area": 108
+  },
+  {
+    "bbox": {
+      "x0": 135.0,
+      "y0": 1297.0,
+      "x1": 178.0,
+      "y1": 1302.0
+    },
+    "label": "unknown",
+    "reason": "rejected_as_too_small",
+    "area": 95
+  }
+]
