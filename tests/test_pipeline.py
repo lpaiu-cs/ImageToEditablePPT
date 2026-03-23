@@ -5,6 +5,7 @@ import zipfile
 import xml.etree.ElementTree as ET
 
 from pptx import Presentation
+import pytest
 
 from image_to_editable_ppt.config import PipelineConfig
 from image_to_editable_ppt.exporter import export_to_pptx
@@ -13,6 +14,7 @@ from image_to_editable_ppt.pipeline import build_elements, convert_image
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
 from tests.synthetic import (
     complex_diagram,
+    directional_arrow,
     icon_only,
     occluded_box,
     open_contour,
@@ -38,6 +40,32 @@ XML_NS = {
     "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
     "p": "http://schemas.openxmlformats.org/presentationml/2006/main",
 }
+
+
+def assert_arrow_tip_points_to_direction(element: Element, direction: str) -> None:
+    start, end = element.geometry.points
+    if direction == "right":
+        assert end.x > start.x
+        return
+    if direction == "left":
+        assert end.x < start.x
+        return
+    if direction == "up":
+        assert end.y < start.y
+        return
+    if direction == "down":
+        assert end.y > start.y
+        return
+    raise ValueError(f"unsupported direction: {direction}")
+
+
+def assert_slide_connector_uses_tail_end_only(output_path: Path) -> None:
+    with zipfile.ZipFile(output_path) as archive:
+        slide_xml = ET.fromstring(archive.read("ppt/slides/slide1.xml"))
+    line = slide_xml.find(".//p:cxnSp/p:spPr/a:ln", XML_NS)
+    assert line is not None
+    assert line.find("a:tailEnd", XML_NS) is not None
+    assert line.find("a:headEnd", XML_NS) is None
 
 
 def test_acceptance_pipeline_detects_core_primitives_and_exports(tmp_path: Path) -> None:
@@ -127,12 +155,12 @@ def test_multisegment_orthogonal_connector_is_detected_conservatively() -> None:
     assert any(len(element.geometry.points) >= 4 for element in connectors)
 
 
-def test_arrow_detection_orders_points_toward_tip() -> None:
-    result = build_elements(complex_diagram(), config=PipelineConfig())
+@pytest.mark.parametrize("direction", ["right", "left", "up", "down"])
+def test_arrow_detection_orders_points_toward_tip(direction: str) -> None:
+    result = build_elements(directional_arrow(direction), config=PipelineConfig())
     arrows = [element for element in result.elements if element.kind == "arrow"]
     assert len(arrows) == 1
-    start, end = arrows[0].geometry.points
-    assert end.x > start.x
+    assert_arrow_tip_points_to_direction(arrows[0], direction)
 
 
 def test_mixed_figure_omits_non_diagram_region() -> None:
@@ -149,7 +177,7 @@ def test_no_fill_on_open_contour_under_noise() -> None:
     )
 
 
-def test_arrow_export_maps_tip_to_ooxml_tail_end(tmp_path: Path) -> None:
+def test_arrow_exporter_unit_maps_tip_to_ooxml_tail_end(tmp_path: Path) -> None:
     output_path = tmp_path / "arrow.pptx"
     export_to_pptx(
         [
@@ -168,9 +196,18 @@ def test_arrow_export_maps_tip_to_ooxml_tail_end(tmp_path: Path) -> None:
         output_path,
         PipelineConfig(),
     )
-    with zipfile.ZipFile(output_path) as archive:
-        slide_xml = ET.fromstring(archive.read("ppt/slides/slide1.xml"))
-    line = slide_xml.find(".//p:cxnSp/p:spPr/a:ln", XML_NS)
-    assert line is not None
-    assert line.find("a:tailEnd", XML_NS) is not None
-    assert line.find("a:headEnd", XML_NS) is None
+    assert_slide_connector_uses_tail_end_only(output_path)
+
+
+@pytest.mark.parametrize("direction", ["right", "left", "up", "down"])
+def test_arrow_convert_image_exports_tip_to_ooxml_tail_end(
+    tmp_path: Path,
+    direction: str,
+) -> None:
+    image_path = save_image(directional_arrow(direction), tmp_path / f"{direction}-arrow.png")
+    output_path = tmp_path / f"{direction}-arrow.pptx"
+    result = convert_image(image_path, output_path, config=PipelineConfig())
+    arrows = [element for element in result.elements if element.kind == "arrow"]
+    assert len(arrows) == 1
+    assert_arrow_tip_points_to_direction(arrows[0], direction)
+    assert_slide_connector_uses_tail_end_only(output_path)

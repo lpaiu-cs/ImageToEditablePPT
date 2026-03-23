@@ -27,6 +27,28 @@ def complex_diagram() -> Image.Image:
     return image
 
 
+def directional_arrow(direction: str) -> Image.Image:
+    image = Image.new("RGB", (220, 220), "white")
+    draw = ImageDraw.Draw(image)
+    if direction == "right":
+        draw.line((40, 110, 150, 110), fill="black", width=6)
+        draw.polygon(((150, 98), (180, 110), (150, 122)), fill="black")
+        return image
+    if direction == "left":
+        draw.line((70, 110, 180, 110), fill="black", width=6)
+        draw.polygon(((70, 98), (40, 110), (70, 122)), fill="black")
+        return image
+    if direction == "up":
+        draw.line((110, 70, 110, 180), fill="black", width=6)
+        draw.polygon(((98, 70), (110, 40), (122, 70)), fill="black")
+        return image
+    if direction == "down":
+        draw.line((110, 40, 110, 150), fill="black", width=6)
+        draw.polygon(((98, 150), (110, 180), (122, 150)), fill="black")
+        return image
+    raise ValueError(f"unsupported direction: {direction}")
+
+
 def occluded_box() -> Image.Image:
     image = Image.new("RGB", (220, 180), "white")
     draw = ImageDraw.Draw(image)
