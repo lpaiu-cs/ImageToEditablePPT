@@ -58,10 +58,13 @@ def main() -> int:
     print(f"edge_diff: {result.artifacts.edge_diff_png}")
     print(f"metrics: {result.artifacts.metrics_json}")
     print(
-        "precision={:.3f} recall={:.3f} f1={:.3f} shapes={}".format(
+        "precision={:.3f} recall={:.3f} f1={:.3f} coverage={:.3f} blank_penalty={:.3f} score={:.3f} shapes={}".format(
             result.metrics.precision,
             result.metrics.recall,
             result.metrics.f1,
+            result.metrics.coverage_ratio,
+            result.metrics.blank_output_penalty,
+            result.metrics.structure_score,
             result.metrics.rendered_shape_count,
         )
     )

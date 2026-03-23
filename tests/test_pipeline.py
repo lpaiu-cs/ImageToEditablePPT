@@ -12,8 +12,10 @@ from image_to_editable_ppt.config import PipelineConfig
 from image_to_editable_ppt.exporter import export_to_pptx
 from image_to_editable_ppt.ir import BBox, Element, FillStyle, Point, PolylineGeometry, StrokeStyle
 from image_to_editable_ppt.pipeline import build_elements, convert_image
+from image_to_editable_ppt.preprocess import preprocess_image
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
 from image_to_editable_ppt.validation import run_validation_iteration
+from image_to_editable_ppt.filtering import filter_residual_components
 from tests.synthetic import (
     boxed_text_cluster_diagram,
     complex_diagram,
@@ -24,6 +26,7 @@ from tests.synthetic import (
     paper_like_directional_arrow,
     paper_like_dense_text_diagram,
     paper_like_insufficient_widening,
+    paper_like_line_with_attached_label_blob,
     paper_like_mixed_arrow_with_connector,
     paper_like_mixed_figure,
     paper_like_multisegment_connector,
@@ -235,6 +238,34 @@ def test_dense_text_heavy_diagram_suppresses_text_fragments_with_ocr_off() -> No
     assert not any(element.kind == "text" for element in result.elements)
     assert len(result.elements) <= 8
     assert any(region.reason == "rejected_as_text_like" for region in result.rejected_regions)
+
+
+def test_unknown_component_is_kept_as_weak_proposal_until_line_fitting() -> None:
+    image = paper_like_line_with_attached_label_blob()
+    config = PipelineConfig()
+    processed = preprocess_image(
+        image,
+        foreground_threshold=config.foreground_threshold,
+        min_component_area=config.min_component_area,
+        min_stroke_length=config.min_stroke_length,
+        min_box_size=config.min_box_size,
+        min_relative_line_length=config.min_relative_line_length,
+        min_relative_box_size=config.min_relative_box_size,
+        adaptive_background=config.adaptive_background,
+        background_blur_divisor=config.background_blur_divisor,
+    )
+    filtered = filter_residual_components(
+        processed.detail_mask,
+        processed=processed,
+        config=config,
+        structural_elements=[],
+    )
+    assert filtered.diagram_components == []
+    assert filtered.weak_components
+    assert filtered.rejected_regions == []
+
+    result = build_elements(image, config=config)
+    assert any(element.kind == "line" for element in result.elements)
 
 
 def test_arrow_exporter_unit_maps_tip_to_ooxml_tail_end(tmp_path: Path) -> None:

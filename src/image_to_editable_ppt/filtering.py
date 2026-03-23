@@ -12,6 +12,7 @@ from .ir import BBox, Element
 from .preprocess import ProcessedImage, build_boundary_mask
 
 ComponentLabel = Literal["diagram_like", "text_like", "icon_like", "unknown"]
+ProposalStrength = Literal["strong", "weak"]
 
 
 @dataclass(slots=True)
@@ -37,6 +38,7 @@ class ComponentFeatures:
 class FilteredComponent:
     component: Component
     features: ComponentFeatures
+    strength: ProposalStrength = "strong"
 
 
 @dataclass(slots=True, frozen=True)
@@ -58,6 +60,7 @@ class RejectedRegion:
 @dataclass(slots=True)
 class FilteringResult:
     diagram_components: list[FilteredComponent]
+    weak_components: list[FilteredComponent]
     text_regions: list[BBox]
     rejected_regions: list[RejectedRegion]
 
@@ -74,6 +77,7 @@ def filter_residual_components(
     annotate_alignment(features, processed, config)
     text_indices, text_regions = detect_text_clusters(features, processed, config)
     diagram_components: list[FilteredComponent] = []
+    weak_components: list[FilteredComponent] = []
     rejected_regions: list[RejectedRegion] = []
     for index, feature in enumerate(features):
         if index in text_indices:
@@ -88,7 +92,10 @@ def filter_residual_components(
             continue
         label, reason = classify_component(feature, processed, config)
         if label == "diagram_like":
-            diagram_components.append(FilteredComponent(component=feature.component, features=feature))
+            diagram_components.append(FilteredComponent(component=feature.component, features=feature, strength="strong"))
+            continue
+        if label == "unknown" and reason != "rejected_as_too_small":
+            weak_components.append(FilteredComponent(component=feature.component, features=feature, strength="weak"))
             continue
         rejected_regions.append(
             RejectedRegion(
@@ -100,6 +107,7 @@ def filter_residual_components(
         )
     return FilteringResult(
         diagram_components=diagram_components,
+        weak_components=weak_components,
         text_regions=text_regions,
         rejected_regions=rejected_regions,
     )

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import math
 from statistics import median
 from typing import TYPE_CHECKING
@@ -960,6 +960,12 @@ def fit_branchy_component_lines(
     structural_elements: list[Element] | None = None,
 ) -> list[Element]:
     local_mask = component_mask(pixels, bbox)
+    y0 = max(0, int(math.floor(bbox.y0)))
+    y1 = min(array.shape[0], int(math.ceil(bbox.y1)))
+    x0 = max(0, int(math.floor(bbox.x0)))
+    x1 = min(array.shape[1], int(math.ceil(bbox.x1)))
+    local_array = array[y0:y1, x0:x1, :]
+    local_gray = local_array.astype(np.float32) @ np.asarray([0.299, 0.587, 0.114], dtype=np.float32)
     min_linear_length = scale.min_linear_length if scale is not None else max(
         config.min_stroke_length,
         int(round(max(array.shape[0], array.shape[1]) * config.min_relative_line_length)),
@@ -982,6 +988,15 @@ def fit_branchy_component_lines(
         segments.extend(split_stroke_by_blockers(stroke, horizontal_blockers))
     for stroke in verticals:
         segments.extend(split_stroke_by_blockers(stroke, vertical_blockers))
+    merge_gap = max(config.stroke_merge_gap, int(round(min_linear_length * 0.9)))
+    bridge_config = replace(config, stroke_merge_gap=merge_gap)
+    segments = merge_collinear_gaps(
+        segments,
+        bridge_config,
+        mask=local_mask,
+        array=local_array,
+        gray=local_gray,
+    )
     color = sample_component_stroke_color(array, pixels)
     deduped: list[Element] = []
     for index, stroke in enumerate(sorted(segments, key=lambda segment: segment.length, reverse=True), start=1):
@@ -1035,6 +1050,8 @@ def fit_global_stroke_lines(
             continue
         geometry = global_stroke_geometry(stroke)
         connection_count = stroke_connection_count(geometry.points[0], geometry.points[-1], structural_elements, scale)
+        if stroke_touches_border(stroke, array.shape, margin=max(16.0, scale.min_box_size * 1.2)) and connection_count < 2:
+            continue
         if connection_count == 0 and stroke.length < scale.min_linear_length * 2.8:
             continue
         if any(geometry.bbox.iou(existing.bbox) >= 0.72 for existing in elements):
@@ -1128,6 +1145,18 @@ def stroke_matches_box_edge(
         if overlap / max(1.0, min(stroke.length, box.height)) >= 0.68:
             return True
     return False
+
+
+def stroke_touches_border(
+    stroke: Stroke,
+    image_shape: tuple[int, ...],
+    *,
+    margin: float,
+) -> bool:
+    height, width = image_shape[:2]
+    if stroke.orientation == "horizontal":
+        return stroke.x0 <= margin or stroke.x1 >= width - margin or stroke.center_y <= margin or stroke.center_y >= height - margin
+    return stroke.center_x <= margin or stroke.center_x >= width - margin or stroke.y0 <= margin or stroke.y1 >= height - margin
 
 
 def split_stroke_by_blockers(stroke: Stroke, blockers: list[Stroke]) -> list[Stroke]:

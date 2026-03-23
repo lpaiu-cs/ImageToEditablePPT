@@ -5,7 +5,7 @@
 ## 현재 지원 범위
 
 - 단일 이미지 입력
-- text-like / icon-like residual을 geometry fitting 전에 보수적으로 제거하는 non-diagram filtering
+- text-like / icon-like residual을 geometry fitting 전에 억제하고, `unknown` residual은 weak proposal로 보류하는 non-diagram filtering
 - axis-aligned rectangle / rounded rectangle 검출
 - straight line 검출
 - 강한 근거가 있을 때만 수행하는 evidence-aware occlusion repair
@@ -30,6 +30,7 @@
 ## 설계 원칙
 
 - 검출보다 생략을 우선한다.
+- proposal 단계에서는 `definitely_non_diagram`만 제거하고, 애매한 residual은 후단 조립/선택으로 넘긴다.
 - fill은 닫힌 박스에만 적용한다.
 - 비-다이어그램으로 보이는 복합 요소는 생략한다.
 - OCR이 꺼져 있어도 text-like region은 geometry 후보에서 제거한다.
@@ -78,8 +79,8 @@ python tools/alignment_loop.py input.png
 
 1. 전처리: 배경 추정, foreground / boundary mask 구성, speck 제거
 2. 구조 후보 탐지: 수평/수직 stroke 추출, 박스 후보 탐지
-3. non-diagram filtering: connected component feature와 text row cluster로 text/icon residual 제거
-4. primitive fitting: box / line / arrow / connector fitting
+3. non-diagram filtering: connected component feature와 text row cluster로 `text_like` / `icon_like`를 억제하고 `unknown`은 weak proposal로 유지
+4. primitive fitting: raw boundary 기반 box proposal + strong/weak residual line / arrow / connector fitting
 5. occlusion repair: 정렬, 폭, 명암, occluder, conflict를 함께 보는 evidence-aware merge
 6. style extraction: 내부 detail pixel을 제외한 stroke / fill representative color 추정
 7. text extraction: text-like cluster crop 기반의 선택적 OCR + 구조적 역할 게이트

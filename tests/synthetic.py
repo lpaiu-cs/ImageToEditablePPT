@@ -291,6 +291,17 @@ def paper_like_dense_text_diagram() -> Image.Image:
     return jpeg_roundtrip(image, quality=76)
 
 
+def paper_like_line_with_attached_label_blob() -> Image.Image:
+    def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
+        draw.rectangle(scaled_box((34, 72, 118, 138), scale), outline=(24, 24, 24), width=6 * scale)
+        draw.line(scaled_points((120, 105, 316, 105), scale), fill=(26, 26, 26), width=6 * scale)
+        draw.rounded_rectangle(scaled_box((186, 84, 242, 126), scale), radius=7 * scale, fill=(32, 32, 32))
+        draw.rectangle(scaled_box((206, 70, 220, 88), scale), fill=(28, 28, 28))
+        draw.rectangle(scaled_box((226, 86, 238, 116), scale), fill=(36, 36, 36))
+
+    return rasterize_fixture((360, 220), draw, seed=85, blur=0.35, compression_quality=84, noise_sigma=2.1)
+
+
 def scaled_box(box: tuple[int, int, int, int], scale: int) -> tuple[int, int, int, int]:
     return tuple(value * scale for value in box)
 

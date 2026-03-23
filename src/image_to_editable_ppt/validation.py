@@ -44,6 +44,9 @@ class ValidationMetrics:
     precision: float
     recall: float
     f1: float
+    coverage_ratio: float
+    blank_output_penalty: float
+    structure_score: float
     input_edge_pixels: int
     output_edge_pixels: int
     overlap_pixels: int
@@ -303,12 +306,18 @@ def compare_input_to_render(
     recall_overlap = input_edges & output_dilated
     recall = float(recall_overlap.sum() / max(1, int(input_edges.sum())))
     f1 = 0.0 if precision + recall == 0.0 else float(2.0 * precision * recall / (precision + recall))
+    coverage_ratio = float(output_edges.sum() / max(1, int(input_edges.sum())))
+    blank_output_penalty = max(0.0, (0.02 - coverage_ratio) / 0.02)
+    structure_score = 20.0 * recall + 8.0 * precision - 30.0 * blank_output_penalty
     diff = edge_diff_image(input_edges, output_edges)
     return diff, ValidationMetrics(
         rendered_shape_count=rendered_shape_count,
         precision=precision,
         recall=recall,
         f1=f1,
+        coverage_ratio=coverage_ratio,
+        blank_output_penalty=blank_output_penalty,
+        structure_score=structure_score,
         input_edge_pixels=int(input_edges.sum()),
         output_edge_pixels=int(output_edges.sum()),
         overlap_pixels=int(overlap.sum()),

@@ -26,6 +26,7 @@ class ProcessedImage:
     background_color: tuple[int, int, int]
     foreground_mask: np.ndarray
     detail_mask: np.ndarray
+    boundary_mask_raw: np.ndarray
     boundary_mask: np.ndarray
     scale: ScaleContext
 
@@ -87,6 +88,7 @@ def preprocess_image(
         background_color=background,
         foreground_mask=foreground,
         detail_mask=detail,
+        boundary_mask_raw=boundary,
         boundary_mask=boundary,
         scale=scale,
     )

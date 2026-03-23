@@ -3,4 +3,4 @@ __pycache__/
 .DS_Store
 
 *.pptx
-workbench/input-alignment/*/*.png
+workbench/
