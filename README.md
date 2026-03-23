@@ -71,6 +71,7 @@ image-to-editable-ppt input.png output.pptx --debug-elements elements.json
 - `line`은 straight connector로 내보낸다.
 - `orthogonal_connector`는 open freeform polyline으로 내보낸다.
 - `arrow`는 먼저 straight connector + OOXML arrow ending을 시도한다.
+- DrawingML connector에서는 시작점이 `head`, 끝점이 `tail`이므로, 정규화된 arrow tip은 `tailEnd`에 매핑된다.
 - `python-pptx`가 공개 API로 arrowhead를 직접 노출하지 않기 때문에, semantic arrow ending 삽입이 실패하면 freeform arrow shape로 fallback한다.
 - 즉, arrow는 가능한 경우 더 semantic하게 내보내지만, 항상 spec-perfect하다고 주장하지 않는다.
 

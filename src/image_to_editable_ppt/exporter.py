@@ -156,6 +156,9 @@ def try_add_semantic_arrow(slide, element: Element, *, scale: float, offset_x: i
             to_emu(end.y, scale, offset_y),
         )
         apply_line_style(shape, element, scale=scale)
+        # DrawingML names the connector start as "head" and the connector end as "tail".
+        # Arrow geometry is normalized so geometry.points[1] is the arrow tip, which maps to
+        # the connector end and therefore needs a:tailEnd markup.
         add_connector_arrowhead(shape, end_at="tail")
         return True
     except Exception:

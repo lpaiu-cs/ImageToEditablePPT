@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 import zipfile
+import xml.etree.ElementTree as ET
 
 from pptx import Presentation
 
 from image_to_editable_ppt.config import PipelineConfig
-from image_to_editable_ppt.ir import BBox
+from image_to_editable_ppt.exporter import export_to_pptx
+from image_to_editable_ppt.ir import BBox, Element, FillStyle, Point, PolylineGeometry, StrokeStyle
 from image_to_editable_ppt.pipeline import build_elements, convert_image
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
 from tests.synthetic import (
@@ -30,6 +32,12 @@ class FakeOCRBackend(OCRBackend):
 
     def extract(self, image):
         return self._regions
+
+
+XML_NS = {
+    "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
+    "p": "http://schemas.openxmlformats.org/presentationml/2006/main",
+}
 
 
 def test_acceptance_pipeline_detects_core_primitives_and_exports(tmp_path: Path) -> None:
@@ -119,6 +127,14 @@ def test_multisegment_orthogonal_connector_is_detected_conservatively() -> None:
     assert any(len(element.geometry.points) >= 4 for element in connectors)
 
 
+def test_arrow_detection_orders_points_toward_tip() -> None:
+    result = build_elements(complex_diagram(), config=PipelineConfig())
+    arrows = [element for element in result.elements if element.kind == "arrow"]
+    assert len(arrows) == 1
+    start, end = arrows[0].geometry.points
+    assert end.x > start.x
+
+
 def test_mixed_figure_omits_non_diagram_region() -> None:
     result = build_elements(paper_like_mixed_figure(), config=PipelineConfig())
     assert any(element.kind in {"rect", "line"} for element in result.elements)
@@ -133,10 +149,28 @@ def test_no_fill_on_open_contour_under_noise() -> None:
     )
 
 
-def test_arrow_export_uses_arrowhead_markup_when_available(tmp_path: Path) -> None:
-    image_path = save_image(complex_diagram(), tmp_path / "arrow.png")
+def test_arrow_export_maps_tip_to_ooxml_tail_end(tmp_path: Path) -> None:
     output_path = tmp_path / "arrow.pptx"
-    convert_image(image_path, output_path, config=PipelineConfig())
+    export_to_pptx(
+        [
+            Element(
+                id="arrow-1",
+                kind="arrow",
+                geometry=PolylineGeometry(points=(Point(20.0, 40.0), Point(180.0, 40.0))),
+                stroke=StrokeStyle(color=(0, 0, 0), width=4.0),
+                fill=FillStyle(enabled=False, color=None),
+                text=None,
+                confidence=0.95,
+                source_region=BBox(20.0, 34.0, 180.0, 46.0),
+            )
+        ],
+        (200, 80),
+        output_path,
+        PipelineConfig(),
+    )
     with zipfile.ZipFile(output_path) as archive:
-        slide_xml = archive.read("ppt/slides/slide1.xml").decode("utf-8")
-    assert "tailEnd" in slide_xml or "headEnd" in slide_xml
+        slide_xml = ET.fromstring(archive.read("ppt/slides/slide1.xml"))
+    line = slide_xml.find(".//p:cxnSp/p:spPr/a:ln", XML_NS)
+    assert line is not None
+    assert line.find("a:tailEnd", XML_NS) is not None
+    assert line.find("a:headEnd", XML_NS) is None
