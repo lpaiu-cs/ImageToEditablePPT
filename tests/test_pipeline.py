@@ -19,9 +19,10 @@ from image_to_editable_ppt.fitter import (
     hough_axis_strokes,
     merge_parallel_strokes,
 )
-from image_to_editable_ppt.ir import BBox, Element, FillStyle, Point, PolylineGeometry, StrokeStyle
+from image_to_editable_ppt.ir import BBox, BoxGeometry, Element, FillStyle, Point, PolylineGeometry, StrokeStyle
 from image_to_editable_ppt.pipeline import build_elements, convert_image
 from image_to_editable_ppt.preprocess import ScaleContext, preprocess_image
+from image_to_editable_ppt.repair import repair_elements
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
 from image_to_editable_ppt.validation import run_validation_iteration
 from image_to_editable_ppt.filtering import filter_residual_components
@@ -43,6 +44,7 @@ from tests.synthetic import (
     paper_like_noisy_open_contour,
     paper_like_outer_contour_box_with_label,
     paper_like_occluded_box,
+    paper_like_filled_panel_without_border,
     paper_like_symmetric_wedge,
     paper_like_weak_gap_conflict,
     save_image,
@@ -314,6 +316,90 @@ def test_outer_contour_fallback_recovers_box_from_text_merged_component() -> Non
     assert element.kind in {"rect", "rounded_rect"}
     assert element.bbox.width > 220
     assert element.bbox.height > 140
+
+
+def test_text_cluster_closing_groups_glyphs_into_bridge_blocks() -> None:
+    image = boxed_text_cluster_diagram()
+    config = PipelineConfig()
+    processed = preprocess_image(
+        image,
+        foreground_threshold=config.foreground_threshold,
+        min_component_area=config.min_component_area,
+        min_stroke_length=config.min_stroke_length,
+        min_box_size=config.min_box_size,
+        min_relative_line_length=config.min_relative_line_length,
+        min_relative_box_size=config.min_relative_box_size,
+        adaptive_background=config.adaptive_background,
+        background_blur_divisor=config.background_blur_divisor,
+    )
+    filtered = filter_residual_components(
+        processed.detail_mask_raw,
+        processed=processed,
+        config=config,
+        structural_elements=[],
+    )
+    assert filtered.text_regions
+    assert any(region.width >= 75 and region.height >= 30 for region in filtered.text_regions)
+
+
+def test_endpoint_to_box_snapping_extends_connector_to_box_edges() -> None:
+    image = complex_diagram()
+    config = PipelineConfig()
+    processed = preprocess_image(
+        image,
+        foreground_threshold=config.foreground_threshold,
+        min_component_area=config.min_component_area,
+        min_stroke_length=config.min_stroke_length,
+        min_box_size=config.min_box_size,
+        min_relative_line_length=config.min_relative_line_length,
+        min_relative_box_size=config.min_relative_box_size,
+        adaptive_background=config.adaptive_background,
+        background_blur_divisor=config.background_blur_divisor,
+    )
+    boxes = [
+        Element(
+            id="box-1",
+            kind="rect",
+            geometry=BoxGeometry(BBox(40.0, 60.0, 120.0, 120.0)),
+            stroke=StrokeStyle(color=(0, 0, 0), width=3.0),
+            fill=FillStyle(enabled=False, color=None),
+            text=None,
+            confidence=0.95,
+            source_region=BBox(40.0, 60.0, 120.0, 120.0),
+        ),
+        Element(
+            id="box-2",
+            kind="rect",
+            geometry=BoxGeometry(BBox(210.0, 60.0, 290.0, 120.0)),
+            stroke=StrokeStyle(color=(0, 0, 0), width=3.0),
+            fill=FillStyle(enabled=False, color=None),
+            text=None,
+            confidence=0.95,
+            source_region=BBox(210.0, 60.0, 290.0, 120.0),
+        ),
+    ]
+    line = Element(
+        id="line-1",
+        kind="line",
+        geometry=PolylineGeometry(points=(Point(128.0, 90.0), Point(202.0, 90.0))),
+        stroke=StrokeStyle(color=(0, 0, 0), width=3.0),
+        fill=FillStyle(enabled=False, color=None),
+        text=None,
+        confidence=0.82,
+        source_region=BBox(128.0, 88.0, 202.0, 92.0),
+    )
+    repaired = repair_elements(boxes + [line], processed, config)
+    snapped = next(element for element in repaired if element.id == "line-1")
+    assert snapped.inferred
+    assert snapped.geometry.points[0].x == pytest.approx(120.0)
+    assert snapped.geometry.points[-1].x == pytest.approx(210.0)
+
+
+def test_fill_region_fallback_recovers_borderless_panel() -> None:
+    result = build_elements(paper_like_filled_panel_without_border(), config=PipelineConfig())
+    boxes = [element for element in result.elements if element.kind in {"rect", "rounded_rect"}]
+    assert boxes
+    assert any(box.fill.enabled and box.bbox.width > 240 and box.bbox.height > 140 for box in boxes)
 
 
 def test_hough_bridge_mask_merges_segments_across_text_gap() -> None:

@@ -6,6 +6,11 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageFilter
 
+try:
+    import cv2
+except ImportError:  # pragma: no cover - guarded by dependency/tests
+    cv2 = None
+
 from .components import find_connected_components, remove_small_components
 
 
@@ -22,11 +27,13 @@ class ScaleContext:
 class ProcessedImage:
     image: Image.Image
     array: np.ndarray
+    smoothed_array: np.ndarray
     gray: np.ndarray
     background_color: tuple[int, int, int]
     foreground_mask: np.ndarray
     detail_mask_raw: np.ndarray
     detail_mask: np.ndarray
+    fill_region_mask: np.ndarray
     boundary_mask_raw: np.ndarray
     boundary_mask: np.ndarray
     scale: ScaleContext
@@ -51,9 +58,13 @@ def preprocess_image(
     min_relative_box_size: float = 0.02,
     adaptive_background: bool = True,
     background_blur_divisor: float = 72.0,
+    fill_region_background_ratio: float = 0.68,
+    fill_region_uniformity_ratio: float = 0.84,
+    fill_region_edge_ratio: float = 0.82,
 ) -> ProcessedImage:
     array = np.asarray(image.convert("RGB"), dtype=np.uint8)
     gray = np.asarray(image.convert("L"), dtype=np.float32)
+    smoothed_array = smooth_color_regions(array)
     background = estimate_background_color(array)
     foreground, detail = build_foreground_mask(
         image=image,
@@ -80,16 +91,33 @@ def preprocess_image(
     )
     foreground = remove_small_components(foreground, scale.min_component_area)
     detail = remove_small_components(detail_raw, max(4, scale.min_component_area // 2))
+    fill_region_mask = build_fill_region_mask(
+        array=array,
+        smoothed_array=smoothed_array,
+        gray=gray,
+        background_color=background,
+        threshold=foreground_threshold,
+        scale=scale,
+        background_ratio=fill_region_background_ratio,
+        uniformity_ratio=fill_region_uniformity_ratio,
+        edge_ratio=fill_region_edge_ratio,
+    )
+    fill_region_mask = remove_small_components(
+        fill_region_mask,
+        max(scale.min_component_area * 4, int(round(scale.min_box_size * scale.min_box_size * 0.8))),
+    )
     boundary = build_boundary_mask(foreground)
     boundary = remove_small_components(boundary, max(4, scale.min_component_area // 2))
     return ProcessedImage(
         image=image,
         array=array,
+        smoothed_array=smoothed_array,
         gray=gray,
         background_color=background,
         foreground_mask=foreground,
         detail_mask_raw=detail_raw,
         detail_mask=detail,
+        fill_region_mask=fill_region_mask,
         boundary_mask_raw=boundary,
         boundary_mask=boundary,
         scale=scale,
@@ -136,6 +164,46 @@ def build_foreground_mask(
     foreground = diff > threshold
     foreground |= (local_diff > threshold * 0.72) & (edges > threshold * 0.34)
     return foreground, detail
+
+
+def smooth_color_regions(array: np.ndarray) -> np.ndarray:
+    if cv2 is None:
+        return array.copy()
+    max_dimension = max(array.shape[0], array.shape[1])
+    spatial_radius = max(6, int(round(max_dimension / 140.0)))
+    color_radius = max(14, int(round(max_dimension / 95.0)))
+    return cv2.pyrMeanShiftFiltering(array, sp=spatial_radius, sr=color_radius)
+
+
+def build_fill_region_mask(
+    *,
+    array: np.ndarray,
+    smoothed_array: np.ndarray,
+    gray: np.ndarray,
+    background_color: tuple[int, int, int],
+    threshold: float,
+    scale: ScaleContext,
+    background_ratio: float,
+    uniformity_ratio: float,
+    edge_ratio: float,
+) -> np.ndarray:
+    background = np.asarray(background_color, dtype=np.float32)
+    smoothed = smoothed_array.astype(np.float32)
+    raw = array.astype(np.float32)
+    diff = np.linalg.norm(smoothed - background[None, None, :], axis=2)
+    uniformity = np.linalg.norm(raw - smoothed, axis=2)
+    smoothed_gray = smoothed.mean(axis=2)
+    smoothed_edges = gray_edge_magnitude(smoothed_gray)
+    raw_edges = gray_edge_magnitude(gray)
+    fill_mask = diff > max(threshold * background_ratio, 18.0)
+    fill_mask &= uniformity <= max(threshold * uniformity_ratio, 16.0)
+    fill_mask &= smoothed_edges <= max(threshold * edge_ratio, 18.0)
+    fill_mask &= raw_edges <= max(threshold * 1.2, 36.0)
+    if cv2 is not None and fill_mask.any():
+        kernel_size = max(3, int(round(scale.estimated_stroke_width * 3.0)))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
+        fill_mask = cv2.morphologyEx(fill_mask.astype(np.uint8), cv2.MORPH_CLOSE, kernel) > 0
+    return fill_mask
 
 
 def gray_edge_magnitude(gray: np.ndarray) -> np.ndarray:

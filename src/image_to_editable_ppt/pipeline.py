@@ -61,6 +61,9 @@ def build_elements(
         min_relative_box_size=active_config.min_relative_box_size,
         adaptive_background=active_config.adaptive_background,
         background_blur_divisor=active_config.background_blur_divisor,
+        fill_region_background_ratio=active_config.fill_region_background_ratio,
+        fill_region_uniformity_ratio=active_config.fill_region_uniformity_ratio,
+        fill_region_edge_ratio=active_config.fill_region_edge_ratio,
     )
     detection = detect_elements_with_metadata(processed, active_config)
     elements = detection.elements

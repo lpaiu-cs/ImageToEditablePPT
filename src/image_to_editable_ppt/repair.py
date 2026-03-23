@@ -23,7 +23,8 @@ def repair_elements(
     processed: ProcessedImage,
     config: PipelineConfig,
 ) -> list[Element]:
-    return merge_collinear_lines(elements, processed, config)
+    merged = merge_collinear_lines(elements, processed, config)
+    return snap_linear_endpoints_to_boxes(merged, processed, config)
 
 
 def merge_collinear_lines(
@@ -53,6 +54,107 @@ def merge_collinear_lines(
             current = candidate
         merged.append(current)
     return merged
+
+
+def snap_linear_endpoints_to_boxes(
+    elements: list[Element],
+    processed: ProcessedImage,
+    config: PipelineConfig,
+) -> list[Element]:
+    boxes = [element for element in elements if element.kind in {"rect", "rounded_rect"}]
+    if not boxes:
+        return elements
+    snapped: list[Element] = []
+    margin = max(
+        config.snap_box_endpoint_margin,
+        processed.scale.estimated_stroke_width * 6.0,
+        processed.scale.min_box_size * 0.45,
+    )
+    for element in elements:
+        if element.kind not in {"line", "orthogonal_connector", "arrow"}:
+            snapped.append(element)
+            continue
+        if not isinstance(element.geometry, PolylineGeometry) or len(element.geometry.points) < 2:
+            snapped.append(element)
+            continue
+        points = list(element.geometry.points)
+        changed = False
+        start_hit = snap_endpoint_to_box(points[0], points[1], boxes, margin=margin)
+        end_hit = snap_endpoint_to_box(points[-1], points[-2], boxes, margin=margin)
+        if start_hit is not None and start_hit[1] != points[0]:
+            points[0] = start_hit[1]
+            changed = True
+        if end_hit is not None and end_hit[1] != points[-1]:
+            points[-1] = end_hit[1]
+            changed = True
+        if not changed:
+            snapped.append(element)
+            continue
+        geometry = PolylineGeometry(points=tuple(points))
+        snapped.append(
+            replace(
+                element,
+                geometry=geometry,
+                source_region=geometry.bbox,
+                inferred=True,
+                confidence=min(0.97, element.confidence + 0.04),
+            )
+        )
+    return snapped
+
+
+def snap_endpoint_to_box(
+    endpoint: Point,
+    neighbor: Point,
+    boxes: list[Element],
+    *,
+    margin: float,
+) -> tuple[Element, Point] | None:
+    orientation = dominant_orientation(endpoint, neighbor)
+    dx = neighbor.x - endpoint.x
+    dy = neighbor.y - endpoint.y
+    best: tuple[float, Element, Point] | None = None
+    for box in boxes:
+        candidate = projected_box_edge_point(endpoint, box, orientation=orientation, dx=dx, dy=dy, margin=margin)
+        if candidate is None:
+            continue
+        distance = gap_between_points(endpoint, candidate)
+        if best is None or distance < best[0]:
+            best = (distance, box, candidate)
+    if best is None:
+        return None
+    return best[1], best[2]
+
+
+def projected_box_edge_point(
+    point: Point,
+    box: Element,
+    *,
+    orientation: str,
+    dx: float,
+    dy: float,
+    margin: float,
+) -> Point | None:
+    bbox = box.bbox
+    if orientation == "horizontal":
+        if point.y < bbox.y0 - margin or point.y > bbox.y1 + margin:
+            return None
+        preferred_x = bbox.x1 if dx >= 0 else bbox.x0
+        fallback_x = bbox.x0 if dx >= 0 else bbox.x1
+        for edge_x in (preferred_x, fallback_x):
+            projected = Point(edge_x, min(max(point.y, bbox.y0), bbox.y1))
+            if gap_between_points(point, projected) <= margin:
+                return projected
+        return None
+    if point.x < bbox.x0 - margin or point.x > bbox.x1 + margin:
+        return None
+    preferred_y = bbox.y1 if dy >= 0 else bbox.y0
+    fallback_y = bbox.y0 if dy >= 0 else bbox.y1
+    for edge_y in (preferred_y, fallback_y):
+        projected = Point(min(max(point.x, bbox.x0), bbox.x1), edge_y)
+        if gap_between_points(point, projected) <= margin:
+            return projected
+    return None
 
 
 def try_merge_lines(

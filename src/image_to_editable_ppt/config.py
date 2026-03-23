@@ -8,6 +8,13 @@ class PipelineConfig:
     adaptive_background: bool = True
     background_blur_divisor: float = 72.0
     foreground_threshold: float = 32.0
+    text_close_kernel_width: int = 15
+    text_close_kernel_height: int = 5
+    snap_box_endpoint_margin: float = 18.0
+    fill_region_background_ratio: float = 0.68
+    fill_region_uniformity_ratio: float = 0.84
+    fill_region_edge_ratio: float = 0.82
+    fill_region_min_density: float = 0.56
     min_component_area: int = 18
     min_stroke_length: int = 18
     min_relative_line_length: float = 0.04

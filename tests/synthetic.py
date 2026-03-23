@@ -325,6 +325,27 @@ def paper_like_outer_contour_box_with_label() -> Image.Image:
     return jpeg_roundtrip(image, quality=82)
 
 
+def paper_like_filled_panel_without_border() -> Image.Image:
+    image = Image.new("RGB", (420, 280), (247, 246, 241))
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.load_default()
+    add_gradient_rect(
+        draw,
+        box=(60, 42, 350, 214),
+        scale=1,
+        top_color=(231, 239, 248),
+        bottom_color=(219, 229, 241),
+    )
+    draw.rounded_rectangle((58, 40, 352, 216), radius=28, fill=(226, 235, 246))
+    draw.rounded_rectangle((126, 26, 274, 84), radius=12, fill=(42, 54, 76))
+    draw.text((162, 48), "Cache block", fill=(250, 250, 250), font=font)
+    draw.text((112, 118), "context route", fill=(56, 62, 74), font=font)
+    draw.text((112, 146), "residual gate", fill=(56, 62, 74), font=font)
+    image = image.filter(ImageFilter.GaussianBlur(radius=0.55))
+    image = apply_noise(image, seed=87, sigma=2.8)
+    return jpeg_roundtrip(image, quality=80)
+
+
 def scaled_box(box: tuple[int, int, int, int], scale: int) -> tuple[int, int, int, int]:
     return tuple(value * scale for value in box)
 

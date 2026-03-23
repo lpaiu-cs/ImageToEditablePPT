@@ -13,6 +13,7 @@ except ImportError:  # pragma: no cover - guarded by dependency/tests
 
 import numpy as np
 
+from .components import find_connected_components, remove_small_components
 from .config import PipelineConfig
 from .ir import BBox, BoxGeometry, Element, Point, PolylineGeometry, StrokeStyle, FillStyle
 from .preprocess import ScaleContext, build_boundary_mask
@@ -417,6 +418,243 @@ def fit_boxes(
             continue
         deduped.append(candidate)
     return deduped
+
+
+def fit_fill_region_boxes(
+    *,
+    mask: np.ndarray,
+    boundary_mask: np.ndarray,
+    array: np.ndarray,
+    smoothed_array: np.ndarray,
+    detail_mask: np.ndarray,
+    background_color: tuple[int, int, int],
+    config: PipelineConfig,
+    scale: ScaleContext,
+    existing_elements: list[Element],
+    start_index: int,
+) -> list[Element]:
+    if not mask.any():
+        return []
+    candidate_masks = [mask, *quantized_fill_region_masks(mask, smoothed_array, background_color)]
+    min_area = max(
+        scale.min_component_area * 6,
+        int(round(scale.min_box_size * scale.min_box_size * 1.8)),
+    )
+    candidates: list[Element] = []
+    next_index = start_index
+    for candidate_mask in candidate_masks:
+        if not candidate_mask.any():
+            continue
+        for component in sorted(find_connected_components(candidate_mask), key=lambda candidate: candidate.area, reverse=True):
+            if component.area < min_area:
+                continue
+            if component.width < scale.min_box_size * 1.6 or component.height < scale.min_box_size * 1.2:
+                continue
+            candidate = fit_fill_region_box_from_component(
+                component.pixels,
+                bbox=component.bbox,
+                mask=candidate_mask,
+                boundary_mask=boundary_mask,
+                array=array,
+                smoothed_array=smoothed_array,
+                detail_mask=detail_mask,
+                background_color=background_color,
+                config=config,
+                scale=scale,
+                element_id=f"box-{next_index}",
+            )
+            if candidate is None:
+                continue
+            if any(boxes_equivalent(candidate, existing) for existing in existing_elements + candidates):
+                continue
+            if nested_fill_candidate(candidate, existing_elements + candidates, scale):
+                continue
+            candidates.append(candidate)
+            next_index += 1
+            if len(candidates) >= 8:
+                return candidates
+    return candidates
+
+
+def nested_fill_candidate(candidate: Element, existing: list[Element], scale: ScaleContext) -> bool:
+    margin = max(4.0, scale.estimated_stroke_width * 3.0)
+    for element in existing:
+        if element.kind not in {"rect", "rounded_rect"}:
+            continue
+        if candidate.bbox.area >= element.bbox.area * 0.7:
+            continue
+        expanded = element.bbox.expand(margin)
+        if (
+            expanded.contains_point(Point(candidate.bbox.x0, candidate.bbox.y0))
+            and expanded.contains_point(Point(candidate.bbox.x1, candidate.bbox.y1))
+        ):
+            return True
+    return False
+
+
+def quantized_fill_region_masks(
+    base_mask: np.ndarray,
+    smoothed_array: np.ndarray,
+    background_color: tuple[int, int, int],
+) -> list[np.ndarray]:
+    if not base_mask.any():
+        return []
+    step = 24
+    quantized = (smoothed_array // step).astype(np.int16)
+    keys = (
+        (quantized[:, :, 0].astype(np.int32) << 16)
+        | (quantized[:, :, 1].astype(np.int32) << 8)
+        | quantized[:, :, 2].astype(np.int32)
+    )
+    masked_keys = keys[base_mask]
+    if masked_keys.size == 0:
+        return []
+    unique, counts = np.unique(masked_keys, return_counts=True)
+    order = np.argsort(counts)[::-1]
+    masks: list[np.ndarray] = []
+    for key, count in zip(unique[order][:10], counts[order][:10], strict=False):
+        if int(count) < 400:
+            continue
+        color = (
+            int((key >> 16) & 0xFF),
+            int((key >> 8) & 0xFF),
+            int(key & 0xFF),
+        )
+        approx_color = tuple(int(channel * step + step / 2) for channel in color)
+        if color_distance(approx_color, background_color) < 24.0:
+            continue
+        color_mask = base_mask & (keys == key)
+        color_mask = remove_small_components(color_mask, 200)
+        if color_mask.any():
+            masks.append(color_mask)
+    return masks
+
+
+def fit_fill_region_box_from_component(
+    pixels: np.ndarray,
+    *,
+    bbox: BBox,
+    mask: np.ndarray,
+    boundary_mask: np.ndarray,
+    array: np.ndarray,
+    smoothed_array: np.ndarray,
+    detail_mask: np.ndarray,
+    background_color: tuple[int, int, int],
+    config: PipelineConfig,
+    scale: ScaleContext,
+    element_id: str,
+) -> Element | None:
+    local_mask = component_mask(pixels, bbox)
+    contour_points = outer_contour_points(local_mask)
+    if contour_points is None or len(contour_points) < 16:
+        return None
+    candidate_bbox = contour_bbox_from_percentiles(
+        contour_points,
+        bbox,
+        trim_ratio=min(config.outer_box_percentile_trim, 0.05),
+        scale=scale,
+    )
+    if candidate_bbox is None:
+        return None
+    if candidate_bbox.width < scale.min_box_size * 1.5 or candidate_bbox.height < scale.min_box_size:
+        return None
+    if bbox_touches_image_border(candidate_bbox, array.shape, margin=max(6.0, scale.estimated_stroke_width * 2.5)):
+        return None
+    density = component_fill_density(mask, candidate_bbox)
+    if density < config.fill_region_min_density:
+        return None
+    corner_hits = fill_region_corner_hits(local_mask, candidate_bbox, bbox, scale)
+    if corner_hits < 2:
+        return None
+    stroke_width = max(1.0, scale.estimated_stroke_width * 0.8)
+    top, right, bottom, left = strokes_from_bbox(candidate_bbox, max(1.0, scale.estimated_stroke_width))
+    supports = side_supports(boundary_mask, candidate_bbox, top, right, bottom, left)
+    if max(supports.values()) >= config.outer_box_min_side_support and min(supports.values()) < config.outer_box_min_side_support * 0.45:
+        return None
+    fill_enabled, fill_color = estimate_fill_color(
+        array=smoothed_array,
+        bbox=candidate_bbox,
+        stroke_width=stroke_width,
+        background_color=background_color,
+        delta_threshold=config.fill_delta_threshold,
+        homogeneity_threshold=config.fill_homogeneity_threshold * 0.85,
+        detail_mask=detail_mask,
+    )
+    if not fill_enabled or fill_color is None:
+        return None
+    border_color = sample_bbox_border_colors(array, candidate_bbox, stroke_width)
+    if color_distance(border_color, fill_color) < config.fill_delta_threshold * 0.6:
+        stroke_color = fill_color
+        stroke_width = 1.0
+    else:
+        stroke_color = border_color
+    rounded = corner_hits <= 3 or contour_looks_rounded(contour_points, candidate_bbox, bbox, config, scale)
+    confidence = min(
+        0.88,
+        0.62
+        + min(density, 0.92) * 0.16
+        + min(candidate_bbox.width, candidate_bbox.height) / max(scale.min_box_size * 5.0, 1.0) * 0.06,
+    )
+    return Element(
+        id=element_id,
+        kind="rounded_rect" if rounded else "rect",
+        geometry=BoxGeometry(
+            bbox=candidate_bbox,
+            corner_radius=max(6.0, min(candidate_bbox.width, candidate_bbox.height) * config.outer_box_corner_radius_ratio)
+            if rounded
+            else 0.0,
+        ),
+        stroke=StrokeStyle(color=stroke_color, width=stroke_width),
+        fill=FillStyle(enabled=True, color=fill_color),
+        text=None,
+        confidence=confidence,
+        source_region=candidate_bbox,
+        inferred=True,
+    )
+
+
+def component_fill_density(mask: np.ndarray, bbox: BBox) -> float:
+    x0 = max(0, int(math.floor(bbox.x0)))
+    y0 = max(0, int(math.floor(bbox.y0)))
+    x1 = min(mask.shape[1], int(math.ceil(bbox.x1)))
+    y1 = min(mask.shape[0], int(math.ceil(bbox.y1)))
+    if x1 <= x0 or y1 <= y0:
+        return 0.0
+    window = mask[y0:y1, x0:x1]
+    return float(window.mean()) if window.size else 0.0
+
+
+def fill_region_corner_hits(
+    local_mask: np.ndarray,
+    candidate_bbox: BBox,
+    component_bbox: BBox,
+    scale: ScaleContext,
+) -> int:
+    local_x0 = max(0, int(round(candidate_bbox.x0 - component_bbox.x0)))
+    local_y0 = max(0, int(round(candidate_bbox.y0 - component_bbox.y0)))
+    local_x1 = min(local_mask.shape[1] - 1, int(round(candidate_bbox.x1 - component_bbox.x0 - 1.0)))
+    local_y1 = min(local_mask.shape[0] - 1, int(round(candidate_bbox.y1 - component_bbox.y0 - 1.0)))
+    corner_band = max(
+        3,
+        int(round(scale.estimated_stroke_width * 3.0)),
+        int(round(min(candidate_bbox.width, candidate_bbox.height) * 0.12)),
+    )
+    hits = 0
+    for corner_x, corner_y in (
+        (local_x0, local_y0),
+        (local_x1, local_y0),
+        (local_x0, local_y1),
+        (local_x1, local_y1),
+    ):
+        x0 = max(0, corner_x - corner_band)
+        y0 = max(0, corner_y - corner_band)
+        x1 = min(local_mask.shape[1], corner_x + corner_band + 1)
+        y1 = min(local_mask.shape[0], corner_y + corner_band + 1)
+        if x1 <= x0 or y1 <= y0:
+            continue
+        if local_mask[y0:y1, x0:x1].any():
+            hits += 1
+    return hits
 
 
 def box_candidates_from_horizontal_pairs(

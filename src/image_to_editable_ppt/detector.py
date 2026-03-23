@@ -14,6 +14,7 @@ from .fitter import (
     fit_component_box_from_outer_contour,
     fit_boxes,
     fit_branchy_component_lines,
+    fit_fill_region_boxes,
     fit_global_stroke_lines,
     fit_hough_segment_elements,
     fit_linear_component,
@@ -62,6 +63,19 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
         config=config,
         scale=processed.scale,
     )
+    fill_boxes = fit_fill_region_boxes(
+        mask=processed.fill_region_mask,
+        boundary_mask=processed.boundary_mask_raw,
+        array=processed.array,
+        smoothed_array=processed.smoothed_array,
+        detail_mask=processed.detail_mask,
+        background_color=processed.background_color,
+        config=config,
+        scale=processed.scale,
+        existing_elements=boxes,
+        start_index=len(boxes) + 1,
+    )
+    boxes.extend(candidate for candidate in fill_boxes if not box_element_is_duplicate(candidate, boxes))
     text_filter = filter_residual_components(
         processed.detail_mask_raw,
         processed=processed,
@@ -273,9 +287,26 @@ def box_element_is_duplicate(element: Element, existing: list[Element]) -> bool:
         candidate.kind in {"rect", "rounded_rect"}
         and (
             boxes_equivalent(element, candidate)
-            or overlap_on_smaller_area(element.bbox, candidate.bbox) >= 0.82
+            or contained_overlap_is_duplicate(element.bbox, candidate.bbox)
         )
         for candidate in existing
+    )
+
+
+def contained_overlap_is_duplicate(first: BBox, second: BBox) -> bool:
+    overlap = overlap_on_smaller_area(first, second)
+    if overlap < 0.82:
+        return False
+    width_ratio = min(first.width, second.width) / max(1.0, max(first.width, second.width))
+    height_ratio = min(first.height, second.height) / max(1.0, max(first.height, second.height))
+    center_dx = abs(first.center.x - second.center.x)
+    center_dy = abs(first.center.y - second.center.y)
+    center_margin = max(min(first.width, second.width), min(first.height, second.height)) * 0.18
+    return (
+        width_ratio >= 0.74
+        and height_ratio >= 0.74
+        and center_dx <= center_margin
+        and center_dy <= center_margin
     )
 
 

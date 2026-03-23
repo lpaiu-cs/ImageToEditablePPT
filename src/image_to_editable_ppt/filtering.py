@@ -5,6 +5,10 @@ import math
 from typing import Literal
 
 import numpy as np
+try:
+    import cv2
+except ImportError:  # pragma: no cover - guarded by dependency/tests
+    cv2 = None
 
 from .components import Component, find_connected_components
 from .config import PipelineConfig
@@ -207,7 +211,86 @@ def detect_text_clusters(
         accepted.update(group)
         assigned.update(group)
         regions.append(union_bboxes(features[index].component.bbox for index in group).expand(processed.scale.estimated_stroke_width))
+    block_indices, block_regions = build_closed_text_blocks(glyph_indices, features, processed, config)
+    accepted.update(block_indices)
+    regions.extend(block_regions)
     return accepted, dedupe_regions(regions)
+
+
+def build_closed_text_blocks(
+    seed_indices: list[int],
+    features: list[ComponentFeatures],
+    processed: ProcessedImage,
+    config: PipelineConfig,
+) -> tuple[set[int], list[BBox]]:
+    if not seed_indices:
+        return set(), []
+    seed_mask = np.zeros_like(processed.detail_mask_raw, dtype=np.uint8)
+    for index in seed_indices:
+        component = features[index].component
+        seed_mask[component.pixels[:, 0], component.pixels[:, 1]] = 255
+    closed = close_text_seed_mask(seed_mask, processed, config)
+    accepted: set[int] = set()
+    regions: list[BBox] = []
+    for block in find_connected_components(closed):
+        overlapping = [
+            index
+            for index in seed_indices
+            if features[index].component.bbox.expand(processed.scale.estimated_stroke_width).overlaps(block.bbox)
+        ]
+        if not overlapping:
+            continue
+        region = block.bbox.expand(processed.scale.estimated_stroke_width * 0.8)
+        if not plausible_text_block(region, overlapping, features, processed, config):
+            continue
+        accepted.update(overlapping)
+        regions.append(region)
+    return accepted, regions
+
+
+def close_text_seed_mask(
+    seed_mask: np.ndarray,
+    processed: ProcessedImage,
+    config: PipelineConfig,
+) -> np.ndarray:
+    if cv2 is None:
+        return seed_mask > 0
+    kernel_width = max(
+        config.text_close_kernel_width,
+        int(round(processed.scale.estimated_stroke_width * 10.0)),
+        int(round(processed.scale.min_linear_length * 1.8)),
+    )
+    kernel_height = max(
+        config.text_close_kernel_height,
+        int(round(processed.scale.estimated_stroke_width * 3.0)),
+    )
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_width, kernel_height))
+    closed = cv2.morphologyEx(seed_mask, cv2.MORPH_CLOSE, kernel)
+    return closed > 0
+
+
+def plausible_text_block(
+    region: BBox,
+    indices: list[int],
+    features: list[ComponentFeatures],
+    processed: ProcessedImage,
+    config: PipelineConfig,
+) -> bool:
+    if len(indices) < max(2, config.text_cluster_min_components - 1):
+        return False
+    if region.width < max(processed.scale.estimated_stroke_width * 8.0, 24.0):
+        return False
+    if region.height > max(processed.scale.min_linear_length * 1.25, processed.size[1] * 0.15):
+        return False
+    if region.width > processed.size[0] * 0.7 or region.area > processed.size[0] * processed.size[1] * 0.18:
+        return False
+    heights = np.asarray([features[index].height for index in indices], dtype=np.float32)
+    if heights.size and float(heights.max() / max(1.0, heights.min())) > 2.4:
+        return False
+    mean_alignment = float(np.mean([features[index].alignment_score for index in indices]))
+    if len(indices) < config.text_cluster_min_components and mean_alignment < 1.0:
+        return False
+    return region.width >= region.height * 1.25 or len(indices) >= config.text_cluster_min_components
 
 
 def classify_component(
