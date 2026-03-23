@@ -18,10 +18,15 @@ from tests.synthetic import (
     icon_only,
     occluded_box,
     open_contour,
+    paper_like_directional_arrow,
+    paper_like_insufficient_widening,
+    paper_like_mixed_arrow_with_connector,
     paper_like_mixed_figure,
     paper_like_multisegment_connector,
+    paper_like_noisy_line_ending,
     paper_like_noisy_open_contour,
     paper_like_occluded_box,
+    paper_like_symmetric_wedge,
     paper_like_weak_gap_conflict,
     save_image,
     text_box_diagram,
@@ -59,13 +64,11 @@ def assert_arrow_tip_points_to_direction(element: Element, direction: str) -> No
     raise ValueError(f"unsupported direction: {direction}")
 
 
-def assert_slide_connector_uses_tail_end_only(output_path: Path) -> None:
+def assert_slide_connector_uses_tail_end_only(output_path: Path, *, expected_tail_count: int = 1) -> None:
     with zipfile.ZipFile(output_path) as archive:
         slide_xml = ET.fromstring(archive.read("ppt/slides/slide1.xml"))
-    line = slide_xml.find(".//p:cxnSp/p:spPr/a:ln", XML_NS)
-    assert line is not None
-    assert line.find("a:tailEnd", XML_NS) is not None
-    assert line.find("a:headEnd", XML_NS) is None
+    assert len(slide_xml.findall(".//a:tailEnd", XML_NS)) == expected_tail_count
+    assert slide_xml.findall(".//a:headEnd", XML_NS) == []
 
 
 def test_acceptance_pipeline_detects_core_primitives_and_exports(tmp_path: Path) -> None:
@@ -210,4 +213,64 @@ def test_arrow_convert_image_exports_tip_to_ooxml_tail_end(
     arrows = [element for element in result.elements if element.kind == "arrow"]
     assert len(arrows) == 1
     assert_arrow_tip_points_to_direction(arrows[0], direction)
+    assert_slide_connector_uses_tail_end_only(output_path)
+
+
+@pytest.mark.parametrize("direction", ["right", "left", "up", "down"])
+def test_paper_like_arrow_convert_image_exports_tip_to_ooxml_tail_end(
+    tmp_path: Path,
+    direction: str,
+) -> None:
+    image_path = save_image(paper_like_directional_arrow(direction), tmp_path / f"paper-like-{direction}-arrow.png")
+    output_path = tmp_path / f"paper-like-{direction}-arrow.pptx"
+    result = convert_image(image_path, output_path, config=PipelineConfig())
+    arrows = [element for element in result.elements if element.kind == "arrow"]
+    assert len(arrows) == 1
+    assert_arrow_tip_points_to_direction(arrows[0], direction)
+    assert_slide_connector_uses_tail_end_only(output_path)
+
+
+def test_paper_like_insufficient_widening_degrades_to_line(tmp_path: Path) -> None:
+    image_path = save_image(paper_like_insufficient_widening(), tmp_path / "insufficient-widening.png")
+    output_path = tmp_path / "insufficient-widening.pptx"
+    result = convert_image(image_path, output_path, config=PipelineConfig())
+    arrows = [element for element in result.elements if element.kind == "arrow"]
+    lines = [element for element in result.elements if element.kind == "line"]
+    assert arrows == []
+    assert lines
+    assert_slide_connector_uses_tail_end_only(output_path, expected_tail_count=0)
+
+
+def test_paper_like_symmetric_wedge_is_omitted(tmp_path: Path) -> None:
+    image_path = save_image(paper_like_symmetric_wedge(), tmp_path / "symmetric-wedge.png")
+    output_path = tmp_path / "symmetric-wedge.pptx"
+    result = convert_image(image_path, output_path, config=PipelineConfig())
+    assert result.elements == []
+    assert_slide_connector_uses_tail_end_only(output_path, expected_tail_count=0)
+
+
+def test_paper_like_noisy_line_ending_is_not_exported_as_arrow(tmp_path: Path) -> None:
+    image_path = save_image(paper_like_noisy_line_ending(), tmp_path / "noisy-line-ending.png")
+    output_path = tmp_path / "noisy-line-ending.pptx"
+    result = convert_image(image_path, output_path, config=PipelineConfig())
+    arrows = [element for element in result.elements if element.kind == "arrow"]
+    lines = [element for element in result.elements if element.kind == "line"]
+    assert arrows == []
+    assert lines
+    assert_slide_connector_uses_tail_end_only(output_path, expected_tail_count=0)
+
+
+def test_paper_like_mixed_arrow_exports_single_tail_end_marker(tmp_path: Path) -> None:
+    image_path = save_image(paper_like_mixed_arrow_with_connector(), tmp_path / "mixed-arrow.png")
+    output_path = tmp_path / "mixed-arrow.pptx"
+    result = convert_image(image_path, output_path, config=PipelineConfig())
+    arrows = [element for element in result.elements if element.kind == "arrow"]
+    other_linear = [
+        element
+        for element in result.elements
+        if element.kind in {"line", "orthogonal_connector"}
+    ]
+    assert len(arrows) == 1
+    assert_arrow_tip_points_to_direction(arrows[0], "right")
+    assert other_linear
     assert_slide_connector_uses_tail_end_only(output_path)

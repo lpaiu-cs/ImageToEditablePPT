@@ -49,6 +49,68 @@ def directional_arrow(direction: str) -> Image.Image:
     raise ValueError(f"unsupported direction: {direction}")
 
 
+def paper_like_directional_arrow(direction: str) -> Image.Image:
+    def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
+        shaft_color = (42, 42, 42)
+        head_color = (18, 18, 18)
+        shaft_width = 6 * scale
+        if direction == "right":
+            draw.line(scaled_points((40, 110, 150, 110), scale), fill=shaft_color, width=shaft_width)
+            draw.polygon(((150 * scale, 98 * scale), (180 * scale, 110 * scale), (150 * scale, 122 * scale)), fill=head_color)
+            return
+        if direction == "left":
+            draw.line(scaled_points((70, 110, 180, 110), scale), fill=shaft_color, width=shaft_width)
+            draw.polygon(((70 * scale, 98 * scale), (40 * scale, 110 * scale), (70 * scale, 122 * scale)), fill=head_color)
+            return
+        if direction == "up":
+            draw.line(scaled_points((110, 70, 110, 180), scale), fill=shaft_color, width=shaft_width)
+            draw.polygon(((98 * scale, 70 * scale), (110 * scale, 40 * scale), (122 * scale, 70 * scale)), fill=head_color)
+            return
+        if direction == "down":
+            draw.line(scaled_points((110, 40, 110, 150), scale), fill=shaft_color, width=shaft_width)
+            draw.polygon(((98 * scale, 150 * scale), (110 * scale, 180 * scale), (122 * scale, 150 * scale)), fill=head_color)
+            return
+        raise ValueError(f"unsupported direction: {direction}")
+
+    return rasterize_fixture((220, 220), draw, seed={"right": 61, "left": 62, "up": 63, "down": 64}[direction], blur=0.2, compression_quality=90, noise_sigma=1.0)
+
+
+def paper_like_insufficient_widening() -> Image.Image:
+    def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
+        draw.line(scaled_points((40, 110, 160, 110), scale), fill=(36, 36, 36), width=6 * scale)
+        draw.polygon(((160 * scale, 102 * scale), (176 * scale, 110 * scale), (160 * scale, 118 * scale)), fill=(20, 20, 20))
+
+    return rasterize_fixture((220, 220), draw, seed=71, blur=0.2, compression_quality=90, noise_sigma=1.0)
+
+
+def paper_like_symmetric_wedge() -> Image.Image:
+    def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
+        draw.line(scaled_points((40, 110, 146, 110), scale), fill=(36, 36, 36), width=6 * scale)
+        draw.polygon(((146 * scale, 94 * scale), (176 * scale, 110 * scale), (146 * scale, 126 * scale), (116 * scale, 110 * scale)), fill=(18, 18, 18))
+
+    return rasterize_fixture((220, 220), draw, seed=72, blur=0.22, compression_quality=89, noise_sigma=1.2)
+
+
+def paper_like_noisy_line_ending() -> Image.Image:
+    def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
+        draw.line(scaled_points((34, 110, 164, 110), scale), fill=(38, 38, 38), width=5 * scale)
+        for x, y, radius in ((166, 102, 3), (172, 109, 4), (168, 118, 3), (176, 104, 2), (178, 115, 2)):
+            draw.ellipse(((x - radius) * scale, (y - radius) * scale, (x + radius) * scale, (y + radius) * scale), fill=(52, 52, 52))
+
+    return rasterize_fixture((220, 220), draw, seed=73, blur=0.45, compression_quality=79, noise_sigma=3.2)
+
+
+def paper_like_mixed_arrow_with_connector() -> Image.Image:
+    def draw(draw: ImageDraw.ImageDraw, scale: int) -> None:
+        draw.line(scaled_points((28, 48, 110, 48), scale), fill=(30, 30, 30), width=5 * scale)
+        draw.line(scaled_points((42, 132, 118, 132), scale), fill=(40, 40, 40), width=6 * scale)
+        draw.polygon(((118 * scale, 118 * scale), (150 * scale, 132 * scale), (118 * scale, 146 * scale)), fill=(20, 20, 20))
+        draw.line(scaled_points((184, 44, 184, 90), scale), fill=(34, 34, 34), width=5 * scale)
+        draw.line(scaled_points((184, 90, 246, 90), scale), fill=(34, 34, 34), width=5 * scale)
+
+    return rasterize_fixture((300, 180), draw, seed=74, blur=0.2, compression_quality=90, noise_sigma=1.2)
+
+
 def occluded_box() -> Image.Image:
     image = Image.new("RGB", (220, 180), "white")
     draw = ImageDraw.Draw(image)
