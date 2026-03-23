@@ -28,6 +28,17 @@ class PipelineConfig:
     connector_min_segment_length: int = 12
     connector_min_coverage: float = 0.76
     connector_max_segments: int = 4
+    weak_line_aspect_ratio: float = 2.05
+    weak_line_continuity: float = 0.60
+    weak_line_min_length_ratio: float = 0.76
+    weak_line_orth_error_scale: float = 1.75
+    outer_box_percentile_trim: float = 0.06
+    outer_box_min_side_support: float = 0.26
+    outer_box_min_support: float = 0.56
+    outer_box_corner_radius_ratio: float = 0.11
+    hough_threshold_ratio: float = 0.26
+    hough_min_length_ratio: float = 0.34
+    hough_bridge_gap_ratio: float = 0.82
     text_cluster_min_components: int = 3
     text_spacing_ratio: float = 1.8
     text_baseline_tolerance_ratio: float = 0.65
@@ -37,5 +48,6 @@ class PipelineConfig:
     text_confidence: float = 0.92
     fill_delta_threshold: float = 14.0
     fill_homogeneity_threshold: float = 18.0
+    repair_bridge_fill_ratio: float = 0.14
     slide_padding_pt: float = 24.0
     text_margin: float = 10.0

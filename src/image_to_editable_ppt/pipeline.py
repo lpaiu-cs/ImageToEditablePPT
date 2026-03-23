@@ -7,7 +7,7 @@ from pathlib import Path
 from PIL import Image
 
 from .config import PipelineConfig
-from .detector import detect_elements_with_metadata
+from .detector import detect_elements_with_metadata, finalize_detected_elements
 from .exporter import export_to_pptx
 from .filtering import RejectedRegion
 from .gating import gate_elements
@@ -65,6 +65,7 @@ def build_elements(
     detection = detect_elements_with_metadata(processed, active_config)
     elements = detection.elements
     elements = repair_elements(elements, processed, active_config)
+    elements = finalize_detected_elements(elements, processed, active_config)
     backend = ocr_backend or get_ocr_backend(enable_ocr)
     text = extract_text_elements(
         image,

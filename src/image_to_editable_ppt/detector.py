@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+import math
 
 import numpy as np
 
@@ -8,10 +9,13 @@ from .components import remove_small_components
 from .config import PipelineConfig
 from .filtering import FilteredComponent, RejectedRegion, filter_residual_components
 from .fitter import (
+    boxes_equivalent,
     extract_strokes,
+    fit_component_box_from_outer_contour,
     fit_boxes,
     fit_branchy_component_lines,
     fit_global_stroke_lines,
+    fit_hough_segment_elements,
     fit_linear_component,
     fit_orthogonal_connector,
 )
@@ -59,7 +63,7 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
         scale=processed.scale,
     )
     text_filter = filter_residual_components(
-        processed.detail_mask,
+        processed.detail_mask_raw,
         processed=processed,
         config=config,
         structural_elements=boxes,
@@ -86,14 +90,47 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
         config=config,
         structural_elements=boxes,
     )
+    bridge_regions = text_filter.text_regions + [
+        region.bbox
+        for region in text_filter.rejected_regions
+        if region.reason == "rejected_as_too_small"
+        and region.area <= processed.scale.min_component_area * 2
+        and max(region.bbox.width, region.bbox.height) <= processed.scale.min_linear_length
+    ]
+    bridge_mask = np.zeros_like(processed.detail_mask, dtype=bool)
+    mark_regions(bridge_mask, bridge_regions, value=True)
+    hough_mask = processed.boundary_mask_raw.copy()
+    mark_regions(hough_mask, [box.bbox.expand(clear_margin) for box in boxes], value=False)
+    mark_regions(hough_mask, bridge_regions, value=False)
+    mark_regions(
+        hough_mask,
+        [
+            region.bbox
+            for region in filtered.rejected_regions
+            if region.label in {"text_like", "icon_like"}
+        ],
+        value=False,
+    )
+    hough_linear = fit_hough_segment_elements(
+        mask=hough_mask,
+        array=processed.array,
+        gray=processed.gray,
+        bridge_mask=bridge_mask,
+        config=config,
+        scale=processed.scale,
+        structural_elements=boxes,
+        existing_elements=[],
+        start_index=len(boxes) + 1,
+    )
     linear = detect_linear_elements(
         components=filtered.diagram_components + filtered.weak_components,
         processed=processed,
         config=config,
-        start_index=len(boxes) + 1,
+        start_index=len(boxes) + len(hough_linear) + 1,
         structural_elements=boxes,
+        existing_elements=hough_linear,
     )
-    if not linear and boxes and max(processed.size) >= 1800:
+    if not hough_linear and not linear and boxes and max(processed.size) >= 1800:
         linear = fit_global_stroke_lines(
             horizontal=horizontal,
             vertical=vertical,
@@ -104,8 +141,9 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
             structural_elements=boxes,
             start_index=len(boxes) + 1,
         )
+    elements = finalize_detected_elements(boxes + hough_linear + linear, processed, config)
     return DetectionResult(
-        elements=boxes + linear,
+        elements=elements,
         text_regions=text_filter.text_regions,
         rejected_regions=filtered.rejected_regions
         + [region for region in text_filter.rejected_regions if region.label == "text_like"],
@@ -119,6 +157,7 @@ def detect_linear_elements(
     config: PipelineConfig,
     start_index: int,
     structural_elements: list[Element],
+    existing_elements: list[Element],
 ) -> list[Element]:
     elements: list[Element] = []
     next_index = start_index
@@ -132,6 +171,26 @@ def detect_linear_elements(
     )
     for filtered in ordered:
         component = filtered.component
+        box_candidate = None
+        if should_try_outer_box_fallback(filtered, processed):
+            box_candidate = fit_component_box_from_outer_contour(
+                component.pixels,
+                bbox=component.bbox,
+                boundary_mask=processed.boundary_mask_raw,
+                array=processed.array,
+                detail_mask=processed.detail_mask,
+                background_color=processed.background_color,
+                config=config,
+                scale=processed.scale,
+                element_id=f"box-{next_index}",
+            )
+        if box_candidate is not None:
+            if box_element_is_duplicate(box_candidate, structural_elements + existing_elements + elements):
+                box_candidate = None
+            else:
+                elements.append(box_candidate)
+                next_index += 1
+                continue
         element = fit_orthogonal_connector(
             component.pixels,
             processed.array,
@@ -140,6 +199,7 @@ def detect_linear_elements(
             element_id=f"linear-{next_index}",
             scale=processed.scale,
             features=filtered.features,
+            proposal_strength=filtered.strength,
         )
         if element is None:
             element = fit_linear_component(
@@ -150,6 +210,7 @@ def detect_linear_elements(
                 element_id=f"linear-{next_index}",
                 scale=processed.scale,
                 features=filtered.features,
+                proposal_strength=filtered.strength,
             )
         if element is None:
             fallback = []
@@ -175,7 +236,7 @@ def detect_linear_elements(
                             processed.scale.min_linear_length,
                         ):
                             continue
-                    if linear_element_is_duplicate(candidate, elements):
+                    if linear_element_is_duplicate(candidate, existing_elements + elements):
                         continue
                     elements.append(candidate)
                     next_index += 1
@@ -190,7 +251,7 @@ def detect_linear_elements(
                 processed.scale.min_linear_length,
             ):
                 continue
-        if linear_element_is_duplicate(element, elements):
+        if linear_element_is_duplicate(element, existing_elements + elements):
             continue
         elements.append(element)
         next_index += 1
@@ -202,6 +263,30 @@ def linear_element_is_duplicate(element: Element, existing: list[Element]) -> bo
         element.kind == prior.kind
         and element.bbox.iou(prior.bbox) >= 0.74
         for prior in existing
+    )
+
+
+def box_element_is_duplicate(element: Element, existing: list[Element]) -> bool:
+    if element.kind not in {"rect", "rounded_rect"}:
+        return False
+    return any(
+        candidate.kind in {"rect", "rounded_rect"}
+        and (
+            boxes_equivalent(element, candidate)
+            or overlap_on_smaller_area(element.bbox, candidate.bbox) >= 0.82
+        )
+        for candidate in existing
+    )
+
+
+def should_try_outer_box_fallback(filtered: FilteredComponent, processed: ProcessedImage) -> bool:
+    feature = filtered.features
+    return (
+        filtered.strength == "weak"
+        and feature.width >= processed.scale.min_box_size * 1.2
+        and feature.height >= processed.scale.min_box_size * 0.9
+        and feature.aspect <= 10.0
+        and feature.long_axis >= processed.scale.min_box_size * 1.8
     )
 
 
@@ -251,3 +336,165 @@ def touches_image_border(element: Element, image_size: tuple[int, int], margin: 
         or bbox.x1 >= width - margin
         or bbox.y1 >= height - margin
     )
+
+
+def mark_regions(mask: np.ndarray, regions: list[BBox], *, value: bool) -> None:
+    for region in regions:
+        x0 = max(0, int(region.x0))
+        y0 = max(0, int(region.y0))
+        x1 = min(mask.shape[1], int(np.ceil(region.x1)))
+        y1 = min(mask.shape[0], int(np.ceil(region.y1)))
+        if x1 <= x0 or y1 <= y0:
+            continue
+        mask[y0:y1, x0:x1] = value
+
+
+def finalize_detected_elements(elements: list[Element], processed: ProcessedImage, config: PipelineConfig) -> list[Element]:
+    boxes: list[Element] = []
+    others: list[Element] = []
+    line_candidate_count = sum(1 for element in elements if element.kind == "line")
+    for element in sorted(elements, key=lambda candidate: candidate.confidence, reverse=True):
+        if element.kind in {"rect", "rounded_rect"}:
+            if box_element_is_duplicate(element, boxes):
+                continue
+            boxes.append(element)
+            continue
+        if element.kind == "line" and not boxes and line_candidate_count == 1 and isolated_line_too_short(element, processed):
+            continue
+        if element.kind == "line" and ambiguous_wedge_line(element, processed, config):
+            continue
+        if element.kind == "line" and line_matches_any_box_edge(element, boxes, processed.scale):
+            continue
+        if linear_element_is_duplicate(element, others) or parallel_line_is_duplicate(element, others, processed.scale):
+            continue
+        others.append(element)
+    return boxes + others
+
+
+def line_matches_any_box_edge(element: Element, boxes: list[Element], scale) -> bool:
+    if element.kind not in {"line", "arrow"}:
+        return False
+    points = getattr(element.geometry, "points", ())
+    if len(points) != 2:
+        return False
+    start, end = points
+    horizontal = abs(start.y - end.y) <= abs(start.x - end.x)
+    margin = max(8.0, scale.estimated_stroke_width * 6.0, scale.min_box_size * 0.95)
+    for box in boxes:
+        if box.kind not in {"rect", "rounded_rect"}:
+            continue
+        if horizontal:
+            if min(abs(start.y - box.bbox.y0), abs(start.y - box.bbox.y1)) > margin:
+                continue
+            overlap = min(max(start.x, end.x), box.bbox.x1) - max(min(start.x, end.x), box.bbox.x0)
+            if overlap > 0 and overlap / max(1.0, min(abs(end.x - start.x), box.bbox.width)) >= 0.68:
+                return True
+            continue
+        if min(abs(start.x - box.bbox.x0), abs(start.x - box.bbox.x1)) > margin:
+            continue
+        overlap = min(max(start.y, end.y), box.bbox.y1) - max(min(start.y, end.y), box.bbox.y0)
+        if overlap > 0 and overlap / max(1.0, min(abs(end.y - start.y), box.bbox.height)) >= 0.68:
+            return True
+    return False
+
+
+def parallel_line_is_duplicate(element: Element, existing: list[Element], scale) -> bool:
+    if element.kind not in {"line", "arrow"}:
+        return False
+    points = getattr(element.geometry, "points", ())
+    if len(points) != 2:
+        return False
+    start, end = points
+    horizontal = abs(start.y - end.y) <= abs(start.x - end.x)
+    margin = max(6.0, scale.estimated_stroke_width * 5.0)
+    for prior in existing:
+        if prior.kind not in {"line", "arrow"}:
+            continue
+        prior_points = getattr(prior.geometry, "points", ())
+        if len(prior_points) != 2:
+            continue
+        prior_start, prior_end = prior_points
+        prior_horizontal = abs(prior_start.y - prior_end.y) <= abs(prior_start.x - prior_end.x)
+        if horizontal != prior_horizontal:
+            continue
+        if horizontal:
+            if abs(start.y - prior_start.y) > margin:
+                continue
+            overlap = min(max(start.x, end.x), max(prior_start.x, prior_end.x)) - max(min(start.x, end.x), min(prior_start.x, prior_end.x))
+            if overlap > 0 and overlap / max(1.0, min(abs(end.x - start.x), abs(prior_end.x - prior_start.x))) >= 0.7:
+                return True
+            continue
+        if abs(start.x - prior_start.x) > margin:
+            continue
+        overlap = min(max(start.y, end.y), max(prior_start.y, prior_end.y)) - max(min(start.y, end.y), min(prior_start.y, prior_end.y))
+        if overlap > 0 and overlap / max(1.0, min(abs(end.y - start.y), abs(prior_end.y - prior_start.y))) >= 0.7:
+            return True
+    return False
+
+
+def overlap_on_smaller_area(first: BBox, second: BBox) -> float:
+    x0 = max(first.x0, second.x0)
+    y0 = max(first.y0, second.y0)
+    x1 = min(first.x1, second.x1)
+    y1 = min(first.y1, second.y1)
+    if x1 <= x0 or y1 <= y0:
+        return 0.0
+    intersection = (x1 - x0) * (y1 - y0)
+    return intersection / max(1.0, min(first.area, second.area))
+
+
+def ambiguous_wedge_line(element: Element, processed: ProcessedImage, config: PipelineConfig) -> bool:
+    if element.kind != "line":
+        return False
+    points = getattr(element.geometry, "points", ())
+    if len(points) != 2:
+        return False
+    start, end = points
+    if min(abs(end.x - start.x), abs(end.y - start.y)) > processed.scale.estimated_stroke_width * 3.5:
+        return False
+    if max(abs(end.x - start.x), abs(end.y - start.y)) < processed.scale.min_linear_length * 1.1:
+        return False
+    start_ratio, end_ratio = line_endpoint_widening(element, processed.foreground_mask, processed.scale)
+    return (
+        max(start_ratio, end_ratio) >= config.min_arrow_widen_ratio
+        and abs(start_ratio - end_ratio) <= 0.22
+    )
+
+
+def isolated_line_too_short(element: Element, processed: ProcessedImage) -> bool:
+    if element.kind != "line":
+        return False
+    return max(element.bbox.width, element.bbox.height) < processed.scale.min_linear_length * 4.5
+
+
+def line_endpoint_widening(element: Element, mask: np.ndarray, scale) -> tuple[float, float]:
+    start, end = element.geometry.points
+    band = max(3, int(round(scale.estimated_stroke_width * 2.6)))
+    if abs(end.x - start.x) >= abs(end.y - start.y):
+        x0 = max(0, int(math.floor(min(start.x, end.x))))
+        x1 = min(mask.shape[1], int(math.ceil(max(start.x, end.x))) + 1)
+        y = int(round((start.y + end.y) / 2.0))
+        y0 = max(0, y - band)
+        y1 = min(mask.shape[0], y + band + 1)
+        if x1 <= x0 or y1 <= y0:
+            return 1.0, 1.0
+        profile = mask[y0:y1, x0:x1].sum(axis=0)
+    else:
+        y0 = max(0, int(math.floor(min(start.y, end.y))))
+        y1 = min(mask.shape[0], int(math.ceil(max(start.y, end.y))) + 1)
+        x = int(round((start.x + end.x) / 2.0))
+        x0 = max(0, x - band)
+        x1 = min(mask.shape[1], x + band + 1)
+        if x1 <= x0 or y1 <= y0:
+            return 1.0, 1.0
+        profile = mask[y0:y1, x0:x1].sum(axis=1)
+    if profile.size < 6:
+        return 1.0, 1.0
+    span = max(2, profile.size // 5)
+    center_start = max(0, profile.size // 2 - span // 2)
+    center_end = min(profile.size, center_start + span)
+    core = float(np.median(profile[center_start:center_end])) if center_end > center_start else 1.0
+    core = max(1.0, core)
+    start_ratio = float(np.max(profile[:span])) / core
+    end_ratio = float(np.max(profile[-span:])) / core
+    return start_ratio, end_ratio

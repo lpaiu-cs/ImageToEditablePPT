@@ -302,6 +302,29 @@ def paper_like_line_with_attached_label_blob() -> Image.Image:
     return rasterize_fixture((360, 220), draw, seed=85, blur=0.35, compression_quality=84, noise_sigma=2.1)
 
 
+def paper_like_outer_contour_box_with_label() -> Image.Image:
+    image = Image.new("RGB", (420, 280), (248, 248, 244))
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.load_default()
+    add_gradient_rect(
+        draw,
+        box=(56, 48, 348, 214),
+        scale=1,
+        top_color=(236, 241, 247),
+        bottom_color=(229, 236, 244),
+    )
+    draw.rounded_rectangle((54, 46, 350, 216), radius=24, outline=(28, 28, 28), width=6)
+    draw.rounded_rectangle((138, 34, 278, 86), radius=10, fill=(34, 34, 34))
+    draw.text((166, 50), "STM cache", fill=(252, 252, 252), font=font)
+    draw.text((108, 112), "query route", fill=(48, 48, 48), font=font)
+    draw.text((110, 138), "context merge", fill=(48, 48, 48), font=font)
+    draw.line((350, 132, 396, 132), fill=(26, 26, 26), width=6)
+    draw.rectangle((190, 208, 214, 238), fill=(32, 32, 32))
+    image = image.filter(ImageFilter.GaussianBlur(radius=0.45))
+    image = apply_noise(image, seed=86, sigma=2.4)
+    return jpeg_roundtrip(image, quality=82)
+
+
 def scaled_box(box: tuple[int, int, int, int], scale: int) -> tuple[int, int, int, int]:
     return tuple(value * scale for value in box)
 

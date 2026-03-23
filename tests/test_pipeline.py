@@ -4,15 +4,24 @@ from pathlib import Path
 import zipfile
 import xml.etree.ElementTree as ET
 import json
+from dataclasses import replace
 
+import cv2
+import numpy as np
 from pptx import Presentation
 import pytest
 
 from image_to_editable_ppt.config import PipelineConfig
+from image_to_editable_ppt.components import find_connected_components
 from image_to_editable_ppt.exporter import export_to_pptx
+from image_to_editable_ppt.fitter import (
+    fit_component_box_from_outer_contour,
+    hough_axis_strokes,
+    merge_parallel_strokes,
+)
 from image_to_editable_ppt.ir import BBox, Element, FillStyle, Point, PolylineGeometry, StrokeStyle
 from image_to_editable_ppt.pipeline import build_elements, convert_image
-from image_to_editable_ppt.preprocess import preprocess_image
+from image_to_editable_ppt.preprocess import ScaleContext, preprocess_image
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
 from image_to_editable_ppt.validation import run_validation_iteration
 from image_to_editable_ppt.filtering import filter_residual_components
@@ -32,6 +41,7 @@ from tests.synthetic import (
     paper_like_multisegment_connector,
     paper_like_noisy_line_ending,
     paper_like_noisy_open_contour,
+    paper_like_outer_contour_box_with_label,
     paper_like_occluded_box,
     paper_like_symmetric_wedge,
     paper_like_weak_gap_conflict,
@@ -266,6 +276,84 @@ def test_unknown_component_is_kept_as_weak_proposal_until_line_fitting() -> None
 
     result = build_elements(image, config=config)
     assert any(element.kind == "line" for element in result.elements)
+
+
+def test_outer_contour_fallback_recovers_box_from_text_merged_component() -> None:
+    image = paper_like_outer_contour_box_with_label()
+    config = PipelineConfig()
+    processed = preprocess_image(
+        image,
+        foreground_threshold=config.foreground_threshold,
+        min_component_area=config.min_component_area,
+        min_stroke_length=config.min_stroke_length,
+        min_box_size=config.min_box_size,
+        min_relative_line_length=config.min_relative_line_length,
+        min_relative_box_size=config.min_relative_box_size,
+        adaptive_background=config.adaptive_background,
+        background_blur_divisor=config.background_blur_divisor,
+    )
+    components = [
+        component
+        for component in find_connected_components(processed.detail_mask)
+        if component.bbox.width > 180 and component.bbox.height > 120
+    ]
+    assert components
+    component = max(components, key=lambda candidate: candidate.area)
+    element = fit_component_box_from_outer_contour(
+        component.pixels,
+        bbox=component.bbox,
+        boundary_mask=processed.boundary_mask_raw,
+        array=processed.array,
+        detail_mask=processed.detail_mask,
+        background_color=processed.background_color,
+        config=config,
+        scale=processed.scale,
+        element_id="box-test",
+    )
+    assert element is not None
+    assert element.kind in {"rect", "rounded_rect"}
+    assert element.bbox.width > 220
+    assert element.bbox.height > 140
+
+
+def test_hough_bridge_mask_merges_segments_across_text_gap() -> None:
+    mask = np.zeros((140, 320), dtype=bool)
+    mask[64:73, 26:150] = True
+    mask[64:73, 190:294] = True
+    bridge_mask = np.zeros_like(mask)
+    bridge_mask[46:96, 150:190] = True
+    array = np.full((140, 320, 3), 255, dtype=np.uint8)
+    array[mask] = 18
+    gray = np.full((140, 320), 255, dtype=np.float32)
+    gray[mask] = 18.0
+    scale = ScaleContext(
+        estimated_stroke_width=3.0,
+        min_component_area=18,
+        min_stroke_length=16,
+        min_linear_length=42,
+        min_box_size=24,
+    )
+    detected = cv2.HoughLinesP(
+        (mask.astype(np.uint8) * 255),
+        1.0,
+        np.pi / 180.0,
+        threshold=16,
+        minLineLength=14,
+        maxLineGap=12,
+    )
+    assert detected is not None
+    raw_strokes = hough_axis_strokes(detected, mask=mask, scale=scale, min_length=14)
+    config = replace(PipelineConfig(), stroke_merge_gap=72)
+    merged = merge_parallel_strokes(
+        raw_strokes,
+        config,
+        mask=mask,
+        array=array,
+        gray=gray,
+        allow_gap_merge=True,
+        bridge_mask=bridge_mask,
+    )
+    assert any(stroke.orientation == "horizontal" and stroke.length >= 240 and stroke.inferred for stroke in merged)
 
 
 def test_arrow_exporter_unit_maps_tip_to_ooxml_tail_end(tmp_path: Path) -> None:

@@ -25,6 +25,7 @@ class ProcessedImage:
     gray: np.ndarray
     background_color: tuple[int, int, int]
     foreground_mask: np.ndarray
+    detail_mask_raw: np.ndarray
     detail_mask: np.ndarray
     boundary_mask_raw: np.ndarray
     boundary_mask: np.ndarray
@@ -65,7 +66,7 @@ def preprocess_image(
     )
     provisional_area = max(4, min_component_area // 2)
     foreground = remove_small_components(foreground, provisional_area)
-    detail = remove_small_components(detail, provisional_area)
+    detail_raw = remove_small_components(detail, provisional_area)
     boundary = build_boundary_mask(foreground)
     boundary = remove_small_components(boundary, provisional_area)
     scale = estimate_scale_context(
@@ -78,7 +79,7 @@ def preprocess_image(
         min_relative_box_size=min_relative_box_size,
     )
     foreground = remove_small_components(foreground, scale.min_component_area)
-    detail = remove_small_components(detail, max(4, scale.min_component_area // 2))
+    detail = remove_small_components(detail_raw, max(4, scale.min_component_area // 2))
     boundary = build_boundary_mask(foreground)
     boundary = remove_small_components(boundary, max(4, scale.min_component_area // 2))
     return ProcessedImage(
@@ -87,6 +88,7 @@ def preprocess_image(
         gray=gray,
         background_color=background,
         foreground_mask=foreground,
+        detail_mask_raw=detail_raw,
         detail_mask=detail,
         boundary_mask_raw=boundary,
         boundary_mask=boundary,

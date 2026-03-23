@@ -6,6 +6,11 @@ import math
 from statistics import median
 from typing import TYPE_CHECKING
 
+try:
+    import cv2
+except ImportError:  # pragma: no cover - guarded by dependency/tests
+    cv2 = None
+
 import numpy as np
 
 from .config import PipelineConfig
@@ -112,6 +117,7 @@ def merge_parallel_strokes(
     array: np.ndarray | None,
     gray: np.ndarray | None,
     allow_gap_merge: bool,
+    bridge_mask: np.ndarray | None = None,
 ) -> list[Stroke]:
     if not strokes:
         return []
@@ -140,7 +146,11 @@ def merge_parallel_strokes(
                 )
             else:
                 merged.append(stroke)
-        return merge_collinear_gaps(merged, config, mask=mask, array=array, gray=gray) if allow_gap_merge else merged
+        return (
+            merge_collinear_gaps(merged, config, mask=mask, array=array, gray=gray, bridge_mask=bridge_mask)
+            if allow_gap_merge
+            else merged
+        )
     strokes = sorted(strokes, key=lambda stroke: (stroke.x0, stroke.y0))
     merged = []
     for stroke in strokes:
@@ -165,7 +175,11 @@ def merge_parallel_strokes(
             )
         else:
             merged.append(stroke)
-    return merge_collinear_gaps(merged, config, mask=mask, array=array, gray=gray) if allow_gap_merge else merged
+    return (
+        merge_collinear_gaps(merged, config, mask=mask, array=array, gray=gray, bridge_mask=bridge_mask)
+        if allow_gap_merge
+        else merged
+    )
 
 
 def merge_collinear_gaps(
@@ -175,6 +189,7 @@ def merge_collinear_gaps(
     mask: np.ndarray,
     array: np.ndarray | None,
     gray: np.ndarray | None,
+    bridge_mask: np.ndarray | None = None,
 ) -> list[Stroke]:
     if not strokes:
         return []
@@ -199,6 +214,7 @@ def merge_collinear_gaps(
                 array=array,
                 gray=gray,
                 config=config,
+                bridge_mask=bridge_mask,
             ):
                 merged[-1] = Stroke(
                     orientation="horizontal",
@@ -220,6 +236,7 @@ def merge_collinear_gaps(
                 array=array,
                 gray=gray,
                 config=config,
+                bridge_mask=bridge_mask,
             ):
                 merged[-1] = Stroke(
                     orientation="vertical",
@@ -243,6 +260,7 @@ def should_merge_strokes(
     array: np.ndarray | None,
     gray: np.ndarray | None,
     config: PipelineConfig,
+    bridge_mask: np.ndarray | None = None,
 ) -> bool:
     if array is None or gray is None:
         return False
@@ -269,7 +287,7 @@ def should_merge_strokes(
     second_darkness = sample_stroke_darkness(gray, second)
     if abs(first_darkness - second_darkness) <= config.repair_darkness_delta:
         score += 1
-    has_occluder, has_conflict = inspect_stroke_gap(mask, first, second, config)
+    has_occluder, has_conflict = inspect_stroke_gap(mask, first, second, config, bridge_mask=bridge_mask)
     micro_gap = gap <= max(2.0, max(first.thickness, second.thickness) * 1.5)
     if micro_gap or has_occluder:
         score += 1
@@ -304,7 +322,10 @@ def inspect_stroke_gap(
     first: Stroke,
     second: Stroke,
     config: PipelineConfig,
+    *,
+    bridge_mask: np.ndarray | None = None,
 ) -> tuple[bool, bool]:
+    orientation = first.orientation
     band = max(2, int(round(max(first.thickness, second.thickness) * 1.6)))
     trim = max(2, int(round(max(first.thickness, second.thickness) * 2.5)))
     if first.orientation == "horizontal":
@@ -329,13 +350,23 @@ def inspect_stroke_gap(
         inner = window[trim:-trim, :] if window.shape[0] > trim * 2 else window
         fill_ratio = float(inner.mean()) if inner.size else 0.0
         cross_ratio = float(np.max(inner.sum(axis=1)) / max(1, inner.shape[1])) if inner.size else 0.0
-    if fill_ratio <= config.repair_occluder_fill_ratio:
+    bridge_ratio = 0.0
+    if bridge_mask is not None:
+        bridge_window = bridge_mask[y0:y1, x0:x1]
+        if orientation == "horizontal":
+            bridge_inner = bridge_window[:, trim:-trim] if bridge_window.shape[1] > trim * 2 else bridge_window
+        else:
+            bridge_inner = bridge_window[trim:-trim, :] if bridge_window.shape[0] > trim * 2 else bridge_window
+        bridge_ratio = float(bridge_inner.mean()) if bridge_inner.size else 0.0
+    if fill_ratio <= config.repair_occluder_fill_ratio and bridge_ratio < config.repair_bridge_fill_ratio:
         return False, False
     has_conflict = fill_ratio >= config.repair_conflict_fill_ratio or cross_ratio >= 0.84
     has_occluder = (
         config.repair_occluder_fill_ratio <= fill_ratio <= config.repair_conflict_fill_ratio
         and cross_ratio < 0.84
     )
+    if bridge_ratio >= config.repair_bridge_fill_ratio and not has_conflict:
+        has_occluder = True
     return has_occluder, has_conflict
 
 
@@ -668,6 +699,268 @@ def boxes_equivalent(first: Element, second: Element) -> bool:
     )
 
 
+def fit_component_box_from_outer_contour(
+    pixels: np.ndarray,
+    *,
+    bbox: BBox,
+    boundary_mask: np.ndarray,
+    array: np.ndarray,
+    detail_mask: np.ndarray,
+    background_color: tuple[int, int, int],
+    config: PipelineConfig,
+    scale: ScaleContext,
+    element_id: str,
+) -> Element | None:
+    local_mask = component_mask(pixels, bbox)
+    contour_points = outer_contour_points(local_mask)
+    if contour_points is None or len(contour_points) < 12:
+        return None
+    candidate_bbox = contour_bbox_from_percentiles(
+        contour_points,
+        bbox,
+        trim_ratio=config.outer_box_percentile_trim,
+        scale=scale,
+    )
+    if candidate_bbox is None:
+        return None
+    if candidate_bbox.width < scale.min_box_size or candidate_bbox.height < scale.min_box_size:
+        return None
+    if min(candidate_bbox.width, candidate_bbox.height) < scale.min_box_size * 0.9:
+        return None
+    if candidate_bbox.width / max(1.0, candidate_bbox.height) > 12.0:
+        return None
+    if candidate_bbox.height / max(1.0, candidate_bbox.width) > 12.0:
+        return None
+    if bbox_touches_image_border(candidate_bbox, array.shape, margin=max(4.0, scale.estimated_stroke_width * 2.0)):
+        return None
+    stroke_width = estimate_contour_stroke_width(local_mask, scale)
+    candidate_bbox = snap_box_edges_to_boundary(boundary_mask, candidate_bbox, stroke_width, scale)
+    top, right, bottom, left = strokes_from_bbox(candidate_bbox, stroke_width)
+    supports = side_supports(boundary_mask, candidate_bbox, top, right, bottom, left)
+    if min(supports.values()) < config.outer_box_min_side_support:
+        return None
+    average_support = sum(supports.values()) / len(supports)
+    if average_support < config.outer_box_min_support:
+        return None
+    fill_enabled, fill_color = estimate_fill_color(
+        array=array,
+        bbox=candidate_bbox,
+        stroke_width=stroke_width,
+        background_color=background_color,
+        delta_threshold=config.fill_delta_threshold,
+        homogeneity_threshold=config.fill_homogeneity_threshold,
+        detail_mask=detail_mask,
+    )
+    if average_support < config.min_box_support:
+        fill_enabled = False
+        fill_color = None
+    stroke_color = sample_bbox_border_colors(array, candidate_bbox, stroke_width)
+    inferred = min(supports.values()) < config.min_side_support or average_support < config.min_box_support
+    rounded = contour_looks_rounded(contour_points, candidate_bbox, bbox, config, scale)
+    confidence = min(
+        0.94,
+        0.70
+        + average_support * 0.20
+        + min(candidate_bbox.width, candidate_bbox.height) / max(scale.min_box_size * 4.0, 1.0) * 0.02
+        - (0.03 if inferred else 0.0),
+    )
+    return Element(
+        id=element_id,
+        kind="rounded_rect" if rounded else "rect",
+        geometry=BoxGeometry(
+            bbox=candidate_bbox,
+            corner_radius=max(6.0, min(candidate_bbox.width, candidate_bbox.height) * config.outer_box_corner_radius_ratio)
+            if rounded
+            else 0.0,
+        ),
+        stroke=StrokeStyle(color=stroke_color, width=stroke_width),
+        fill=FillStyle(enabled=fill_enabled, color=fill_color),
+        text=None,
+        confidence=confidence,
+        source_region=candidate_bbox,
+        inferred=inferred,
+    )
+
+
+def outer_contour_points(mask: np.ndarray) -> np.ndarray | None:
+    if cv2 is None:
+        return None
+    mask_u8 = (mask.astype(np.uint8) * 255)
+    contours, _ = cv2.findContours(mask_u8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    if not contours:
+        return None
+    contour = max(contours, key=cv2.contourArea)
+    if contour.ndim != 3 or contour.shape[1] != 1:
+        return None
+    return contour[:, 0, :].astype(np.float32)
+
+
+def contour_bbox_from_percentiles(
+    contour_points: np.ndarray,
+    bbox: BBox,
+    *,
+    trim_ratio: float,
+    scale: ScaleContext,
+) -> BBox | None:
+    if contour_points.size == 0:
+        return None
+    trim = float(np.clip(trim_ratio, 0.0, 0.18)) * 100.0
+    xs = contour_points[:, 0]
+    ys = contour_points[:, 1]
+    x0 = float(np.percentile(xs, trim))
+    x1 = float(np.percentile(xs, 100.0 - trim))
+    y0 = float(np.percentile(ys, trim))
+    y1 = float(np.percentile(ys, 100.0 - trim))
+    expand = max(1.0, scale.estimated_stroke_width * 1.4)
+    candidate = BBox(
+        bbox.x0 + max(0.0, x0 - expand),
+        bbox.y0 + max(0.0, y0 - expand),
+        bbox.x0 + min(bbox.width, x1 + expand + 1.0),
+        bbox.y0 + min(bbox.height, y1 + expand + 1.0),
+    )
+    if candidate.width <= 0 or candidate.height <= 0:
+        return None
+    return candidate
+
+
+def estimate_contour_stroke_width(mask: np.ndarray, scale: ScaleContext) -> float:
+    horizontal_profile = mask.sum(axis=1)
+    vertical_profile = mask.sum(axis=0)
+    bands = [
+        end - start
+        for start, end in profile_bands(horizontal_profile, threshold=max(1, int(round(mask.shape[1] * 0.18))))
+    ]
+    bands.extend(
+        end - start
+        for start, end in profile_bands(vertical_profile, threshold=max(1, int(round(mask.shape[0] * 0.18))))
+    )
+    if bands:
+        return float(np.clip(np.median(np.asarray(bands, dtype=np.float32)), 1.0, scale.estimated_stroke_width * 3.4))
+    return max(1.0, scale.estimated_stroke_width)
+
+
+def snap_box_edges_to_boundary(
+    boundary_mask: np.ndarray,
+    bbox: BBox,
+    stroke_width: float,
+    scale: ScaleContext,
+) -> BBox:
+    search = max(4, int(round(scale.min_box_size * 0.9)))
+    top_y = best_supported_edge(
+        boundary_mask,
+        bbox,
+        fixed=bbox.y0,
+        search=search,
+        orientation="horizontal",
+        stroke_width=stroke_width,
+    )
+    bottom_y = best_supported_edge(
+        boundary_mask,
+        bbox,
+        fixed=bbox.y1,
+        search=search,
+        orientation="horizontal",
+        stroke_width=stroke_width,
+    )
+    provisional = BBox(bbox.x0, min(top_y, bottom_y), bbox.x1, max(top_y, bottom_y))
+    left_x = best_supported_edge(
+        boundary_mask,
+        provisional,
+        fixed=provisional.x0,
+        search=search,
+        orientation="vertical",
+        stroke_width=stroke_width,
+    )
+    right_x = best_supported_edge(
+        boundary_mask,
+        provisional,
+        fixed=provisional.x1,
+        search=search,
+        orientation="vertical",
+        stroke_width=stroke_width,
+    )
+    snapped = BBox(min(left_x, right_x), provisional.y0, max(left_x, right_x), provisional.y1)
+    if snapped.width <= scale.min_box_size * 0.7 or snapped.height <= scale.min_box_size * 0.7:
+        return bbox
+    return snapped
+
+
+def best_supported_edge(
+    boundary_mask: np.ndarray,
+    bbox: BBox,
+    *,
+    fixed: float,
+    search: int,
+    orientation: str,
+    stroke_width: float,
+) -> float:
+    best_value = fixed
+    if orientation == "horizontal":
+        best_score = line_support(boundary_mask, bbox.x0, bbox.x1, fixed, orientation, stroke_width)
+        for delta in range(-search, search + 1):
+            candidate = fixed + delta
+            score = line_support(boundary_mask, bbox.x0, bbox.x1, candidate, orientation, stroke_width)
+            if score > best_score:
+                best_value = candidate
+                best_score = score
+        return best_value
+    best_score = line_support(boundary_mask, bbox.y0, bbox.y1, fixed, orientation, stroke_width)
+    for delta in range(-search, search + 1):
+        candidate = fixed + delta
+        score = line_support(boundary_mask, bbox.y0, bbox.y1, candidate, orientation, stroke_width)
+        if score > best_score:
+            best_value = candidate
+            best_score = score
+    return best_value
+
+
+def strokes_from_bbox(bbox: BBox, stroke_width: float) -> tuple[Stroke, Stroke, Stroke, Stroke]:
+    top = Stroke("horizontal", bbox.x0, bbox.y0, bbox.x1, bbox.y0 + stroke_width, stroke_width)
+    right = Stroke("vertical", bbox.x1 - stroke_width, bbox.y0, bbox.x1, bbox.y1, stroke_width)
+    bottom = Stroke("horizontal", bbox.x0, bbox.y1 - stroke_width, bbox.x1, bbox.y1, stroke_width)
+    left = Stroke("vertical", bbox.x0, bbox.y0, bbox.x0 + stroke_width, bbox.y1, stroke_width)
+    return top, right, bottom, left
+
+
+def contour_looks_rounded(
+    contour_points: np.ndarray,
+    bbox: BBox,
+    source_bbox: BBox,
+    config: PipelineConfig,
+    scale: ScaleContext,
+) -> bool:
+    local_x = contour_points[:, 0]
+    local_y = contour_points[:, 1]
+    local_x0 = bbox.x0 - source_bbox.x0
+    local_y0 = bbox.y0 - source_bbox.y0
+    local_x1 = bbox.x1 - source_bbox.x0
+    local_y1 = bbox.y1 - source_bbox.y0
+    width = max(1.0, local_x1 - local_x0)
+    height = max(1.0, local_y1 - local_y0)
+    corner_band = max(scale.estimated_stroke_width * 3.0, min(width, height) * config.outer_box_corner_radius_ratio)
+    corner_hits = 0
+    for corner_x, corner_y in (
+        (local_x0, local_y0),
+        (local_x1, local_y0),
+        (local_x0, local_y1),
+        (local_x1, local_y1),
+    ):
+        distances = np.hypot(local_x - corner_x, local_y - corner_y)
+        if np.any(distances <= corner_band):
+            corner_hits += 1
+    return corner_hits <= 2
+
+
+def bbox_touches_image_border(bbox: BBox, image_shape: tuple[int, ...], *, margin: float) -> bool:
+    height, width = image_shape[:2]
+    return (
+        bbox.x0 <= margin
+        or bbox.y0 <= margin
+        or bbox.x1 >= width - margin
+        or bbox.y1 >= height - margin
+    )
+
+
 def fit_linear_component(
     pixels: np.ndarray,
     array: np.ndarray,
@@ -677,14 +970,16 @@ def fit_linear_component(
     element_id: str,
     scale: ScaleContext | None = None,
     features: ComponentFeatures | None = None,
+    proposal_strength: str = "strong",
 ) -> Element | None:
-    points = np.column_stack((pixels[:, 1].astype(np.float32), pixels[:, 0].astype(np.float32)))
+    points = line_fitting_points(pixels, bbox, proposal_strength=proposal_strength)
     min_component_area = scale.min_component_area if scale is not None else config.min_component_area
     min_linear_length = scale.min_linear_length if scale is not None else max(
         config.min_stroke_length,
         int(round(max(array.shape[0], array.shape[1]) * config.min_relative_line_length)),
     )
-    if len(points) < min_component_area:
+    min_point_count = min_component_area if proposal_strength == "strong" else max(12, min_component_area // 3)
+    if len(points) < min_point_count:
         return None
     centroid = points.mean(axis=0)
     centered = points - centroid
@@ -700,7 +995,14 @@ def fit_linear_component(
     orth_error = float(np.sqrt(np.mean(minor_proj**2)))
     approx_width = max(1.0, float(np.percentile(np.abs(minor_proj), 80) * 2.0 + 1.0))
     aspect = length / max(1.0, approx_width)
-    if aspect < config.min_line_aspect_ratio:
+    aspect_threshold = config.min_line_aspect_ratio
+    continuity_threshold = 0.82
+    min_length_threshold = float(min_linear_length)
+    if proposal_strength == "weak":
+        aspect_threshold = min(aspect_threshold, config.weak_line_aspect_ratio)
+        continuity_threshold = config.weak_line_continuity
+        min_length_threshold *= config.weak_line_min_length_ratio
+    if aspect < aspect_threshold:
         return None
     bins = np.linspace(major_proj.min(), major_proj.max(), num=11)
     widths: list[float] = []
@@ -715,7 +1017,7 @@ def fit_linear_component(
         occupancy.append(1.0)
     core_width = median(width for width in widths[2:-2] if width > 0) if any(width > 0 for width in widths[2:-2]) else approx_width
     continuity = float(np.mean(occupancy)) if occupancy else 0.0
-    if length < min_linear_length:
+    if length < min_length_threshold:
         return None
     start_widen = max(widths[:2]) / max(1.0, core_width)
     end_widen = max(widths[-2:]) / max(1.0, core_width)
@@ -728,15 +1030,23 @@ def fit_linear_component(
         and abs(start_widen - end_widen) > 0.25
         and inner_widen <= 1.95
     )
+    ambiguous_wedge = (
+        max(start_widen, end_widen) >= config.min_arrow_widen_ratio
+        and abs(start_widen - end_widen) <= 0.25
+    )
+    if ambiguous_wedge:
+        return None
     straight_orth_limit = max(config.max_straight_orth_error, approx_width * (0.8 if arrow_candidate else 0.55))
+    if proposal_strength == "weak":
+        straight_orth_limit *= config.weak_line_orth_error_scale
     if orth_error > straight_orth_limit:
         return None
-    if continuity < 0.82:
+    if continuity < continuity_threshold:
         return None
     if features is not None:
-        if features.near_structure_count == 0 and length < min_linear_length * 1.5:
+        if features.near_structure_count == 0 and length < min_linear_length * (1.5 if proposal_strength == "strong" else 1.15):
             return None
-        if not arrow_candidate and features.branchiness > 0.45:
+        if not arrow_candidate and features.branchiness > (0.45 if proposal_strength == "strong" else 0.68):
             return None
     start = centroid + major * major_proj.min()
     end = centroid + major * major_proj.max()
@@ -781,15 +1091,20 @@ def fit_orthogonal_connector(
     element_id: str,
     scale: ScaleContext | None = None,
     features: ComponentFeatures | None = None,
+    proposal_strength: str = "strong",
 ) -> Element | None:
     local_mask_full = component_mask(pixels, bbox)
+    if proposal_strength == "weak":
+        contour_outline = outer_contour_outline_mask(local_mask_full)
+        if contour_outline is not None:
+            local_mask_full = contour_outline
     local_mask = build_boundary_mask(local_mask_full)
     min_stroke_length = scale.min_stroke_length if scale is not None else config.min_stroke_length
     min_linear_length = scale.min_linear_length if scale is not None else max(
         config.min_stroke_length,
         int(round(max(array.shape[0], array.shape[1]) * config.min_relative_line_length)),
     )
-    min_length = max(8, config.connector_min_segment_length // 2, min_stroke_length // 3)
+    min_length = max(8, config.connector_min_segment_length // 2, min_stroke_length // (4 if proposal_strength == "weak" else 3))
     horizontal = extract_strokes(
         local_mask,
         "horizontal",
@@ -816,15 +1131,17 @@ def fit_orthogonal_connector(
     if local_points is None:
         return None
     coverage = connector_pixel_coverage(local_mask_full, local_points, band=band)
-    if coverage < config.connector_min_coverage:
+    coverage_threshold = config.connector_min_coverage if proposal_strength == "strong" else max(0.60, config.connector_min_coverage - 0.12)
+    if coverage < coverage_threshold:
         return None
     path_length = polyline_length(local_points)
-    if path_length < min_linear_length * 1.1:
+    path_length_threshold = min_linear_length * (1.1 if proposal_strength == "strong" else 0.85)
+    if path_length < path_length_threshold:
         return None
     if features is not None:
-        if features.near_structure_count == 0 and path_length < min_linear_length * 1.5:
+        if features.near_structure_count == 0 and path_length < min_linear_length * (1.5 if proposal_strength == "strong" else 1.1):
             return None
-        if features.density > 0.48:
+        if features.density > (0.48 if proposal_strength == "strong" else 0.60):
             return None
     global_points = tuple(Point(point.x + bbox.x0, point.y + bbox.y0) for point in local_points)
     stroke_color = sample_component_stroke_color(array, pixels)
@@ -835,7 +1152,12 @@ def fit_orthogonal_connector(
         stroke=StrokeStyle(color=stroke_color, width=max(1.0, band * 1.5)),
         fill=FillStyle(enabled=False, color=None),
         text=None,
-        confidence=min(0.96, 0.72 + coverage * 0.24 + min(len(global_points), 5) * 0.01),
+        confidence=min(
+            0.96,
+            (0.72 if proposal_strength == "strong" else 0.68)
+            + coverage * 0.24
+            + min(len(global_points), 5) * 0.01,
+        ),
         source_region=bbox,
         inferred=False,
     )
@@ -849,6 +1171,36 @@ def component_mask(pixels: np.ndarray, bbox: BBox) -> np.ndarray:
     ys = pixels[:, 0] - int(math.floor(bbox.y0))
     mask[ys, xs] = True
     return mask
+
+
+def line_fitting_points(
+    pixels: np.ndarray,
+    bbox: BBox,
+    *,
+    proposal_strength: str,
+) -> np.ndarray:
+    if proposal_strength != "weak":
+        return np.column_stack((pixels[:, 1].astype(np.float32), pixels[:, 0].astype(np.float32)))
+    local_mask = component_mask(pixels, bbox)
+    contour_points = outer_contour_points(local_mask)
+    if contour_points is None or len(contour_points) < 8:
+        return np.column_stack((pixels[:, 1].astype(np.float32), pixels[:, 0].astype(np.float32)))
+    contour_points = contour_points.copy()
+    contour_points[:, 0] += float(bbox.x0)
+    contour_points[:, 1] += float(bbox.y0)
+    return contour_points.astype(np.float32)
+
+
+def outer_contour_outline_mask(mask: np.ndarray) -> np.ndarray | None:
+    if cv2 is None:
+        return None
+    mask_u8 = (mask.astype(np.uint8) * 255)
+    contours, _ = cv2.findContours(mask_u8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    if not contours:
+        return None
+    outline = np.zeros_like(mask_u8)
+    cv2.drawContours(outline, [max(contours, key=cv2.contourArea)], -1, 255, thickness=max(1, int(round(max(mask.shape) / 180.0))))
+    return outline.astype(bool)
 
 
 def projection_strokes(mask: np.ndarray, orientation: str, *, min_length: int) -> list[Stroke]:
@@ -1081,6 +1433,291 @@ def fit_global_stroke_lines(
         if len(elements) >= 6:
             break
     return elements
+
+
+def fit_hough_segment_elements(
+    *,
+    mask: np.ndarray,
+    array: np.ndarray,
+    gray: np.ndarray,
+    bridge_mask: np.ndarray | None,
+    config: PipelineConfig,
+    scale: ScaleContext,
+    structural_elements: list[Element],
+    existing_elements: list[Element],
+    start_index: int,
+) -> list[Element]:
+    if cv2 is None or not mask.any():
+        return []
+    mask_u8 = (mask.astype(np.uint8) * 255)
+    threshold = max(16, int(round(scale.min_linear_length * config.hough_threshold_ratio)))
+    min_length = max(10, int(round(scale.min_linear_length * config.hough_min_length_ratio)))
+    max_gap = max(config.stroke_merge_gap, int(round(scale.min_linear_length * config.hough_bridge_gap_ratio)))
+    detected = cv2.HoughLinesP(
+        mask_u8,
+        1.0,
+        np.pi / 180.0,
+        threshold=threshold,
+        minLineLength=min_length,
+        maxLineGap=max(4, int(round(scale.estimated_stroke_width * 4.0))),
+    )
+    if detected is None:
+        return []
+    raw_strokes = hough_axis_strokes(detected, mask=mask, scale=scale, min_length=min_length)
+    if not raw_strokes:
+        return []
+    bridge_config = replace(config, stroke_merge_gap=max_gap)
+    merged = merge_parallel_strokes(
+        raw_strokes,
+        bridge_config,
+        mask=mask,
+        array=array,
+        gray=gray,
+        allow_gap_merge=True,
+        bridge_mask=bridge_mask,
+    )
+    connector_config = replace(config, connector_max_segments=max(config.connector_max_segments, 5))
+    connectors, used_indices = hough_connector_elements(
+        merged,
+        mask=mask,
+        array=array,
+        config=connector_config,
+        scale=scale,
+        structural_elements=structural_elements,
+        existing_elements=existing_elements,
+        start_index=start_index,
+    )
+    elements = connectors[:]
+    next_index = start_index + len(connectors)
+    ordered = sorted(enumerate(merged), key=lambda item: item[1].length, reverse=True)
+    for original_index, stroke in ordered:
+        if original_index in used_indices:
+            continue
+        if stroke.length < scale.min_linear_length:
+            continue
+        if stroke_matches_box_edge(stroke, structural_elements, scale):
+            continue
+        if sample_stroke_darkness(gray, stroke) < 18.0:
+            continue
+        geometry = global_stroke_geometry(stroke)
+        connection_count = stroke_connection_count(geometry.points[0], geometry.points[-1], structural_elements, scale)
+        if stroke_touches_border(stroke, array.shape, margin=max(16.0, scale.min_box_size * 1.2)) and connection_count < 2:
+            continue
+        if connection_count == 0 and stroke.length < scale.min_linear_length * 1.8:
+            continue
+        if any(geometry.bbox.iou(existing.bbox) >= 0.72 for existing in existing_elements + elements):
+            continue
+        elements.append(
+            Element(
+                id=f"linear-{next_index}",
+                kind="line",
+                geometry=geometry,
+                stroke=StrokeStyle(color=sample_stroke_color(array, stroke), width=max(1.0, stroke.thickness)),
+                fill=FillStyle(enabled=False, color=None),
+                text=None,
+                confidence=min(
+                    0.92,
+                    0.72
+                    + min(stroke.length / max(1.0, scale.min_linear_length * 1.25), 2.2) * 0.05
+                    + min(connection_count, 2) * 0.03,
+                ),
+                source_region=geometry.bbox,
+                inferred=stroke.inferred,
+            )
+        )
+        next_index += 1
+    return elements
+
+
+def hough_axis_strokes(
+    detected: np.ndarray,
+    *,
+    mask: np.ndarray,
+    scale: ScaleContext,
+    min_length: int,
+) -> list[Stroke]:
+    strokes: list[Stroke] = []
+    axis_tolerance = max(3.0, scale.estimated_stroke_width * 2.8)
+    for candidate in detected[:, 0, :]:
+        x0, y0, x1, y1 = (float(value) for value in candidate)
+        dx = x1 - x0
+        dy = y1 - y0
+        length = math.hypot(dx, dy)
+        if length < min_length:
+            continue
+        if abs(dx) >= abs(dy):
+            if abs(dy) > axis_tolerance:
+                continue
+            y = (y0 + y1) / 2.0
+            thickness = estimate_hough_stroke_thickness(mask, "horizontal", x0=min(x0, x1), x1=max(x0, x1), fixed=y, scale=scale)
+            strokes.append(
+                Stroke(
+                    orientation="horizontal",
+                    x0=min(x0, x1),
+                    y0=y - thickness / 2.0,
+                    x1=max(x0, x1),
+                    y1=y + thickness / 2.0,
+                    thickness=thickness,
+                )
+            )
+            continue
+        if abs(dx) > axis_tolerance:
+            continue
+        x = (x0 + x1) / 2.0
+        thickness = estimate_hough_stroke_thickness(mask, "vertical", y0=min(y0, y1), y1=max(y0, y1), fixed=x, scale=scale)
+        strokes.append(
+            Stroke(
+                orientation="vertical",
+                x0=x - thickness / 2.0,
+                y0=min(y0, y1),
+                x1=x + thickness / 2.0,
+                y1=max(y0, y1),
+                thickness=thickness,
+            )
+        )
+    return strokes
+
+
+def estimate_hough_stroke_thickness(
+    mask: np.ndarray,
+    orientation: str,
+    *,
+    fixed: float,
+    scale: ScaleContext,
+    x0: float = 0.0,
+    x1: float = 0.0,
+    y0: float = 0.0,
+    y1: float = 0.0,
+) -> float:
+    band = max(2, int(round(scale.estimated_stroke_width * 2.0)))
+    if orientation == "horizontal":
+        ix0 = max(0, int(math.floor(x0)))
+        ix1 = min(mask.shape[1], int(math.ceil(x1)))
+        iy0 = max(0, int(round(fixed)) - band)
+        iy1 = min(mask.shape[0], int(round(fixed)) + band + 1)
+        if ix1 <= ix0 or iy1 <= iy0:
+            return max(1.0, scale.estimated_stroke_width)
+        profile = mask[iy0:iy1, ix0:ix1].sum(axis=1)
+    else:
+        ix0 = max(0, int(round(fixed)) - band)
+        ix1 = min(mask.shape[1], int(round(fixed)) + band + 1)
+        iy0 = max(0, int(math.floor(y0)))
+        iy1 = min(mask.shape[0], int(math.ceil(y1)))
+        if ix1 <= ix0 or iy1 <= iy0:
+            return max(1.0, scale.estimated_stroke_width)
+        profile = mask[iy0:iy1, ix0:ix1].sum(axis=0)
+    active = np.count_nonzero(profile > 0)
+    if active == 0:
+        return max(1.0, scale.estimated_stroke_width)
+    return float(np.clip(active, 1.0, scale.estimated_stroke_width * 3.4))
+
+
+def hough_connector_elements(
+    strokes: list[Stroke],
+    *,
+    mask: np.ndarray,
+    array: np.ndarray,
+    config: PipelineConfig,
+    scale: ScaleContext,
+    structural_elements: list[Element],
+    existing_elements: list[Element],
+    start_index: int,
+) -> tuple[list[Element], set[int]]:
+    groups = stroke_graph_components(strokes, scale)
+    elements: list[Element] = []
+    used: set[int] = set()
+    next_index = start_index
+    for group in groups:
+        if len(group) < 2:
+            continue
+        if any(index in used for index in group):
+            continue
+        horizontals = [strokes[index] for index in group if strokes[index].orientation == "horizontal"]
+        verticals = [strokes[index] for index in group if strokes[index].orientation == "vertical"]
+        if not horizontals or not verticals:
+            continue
+        local_points, band = orthogonal_chain_points(horizontals, verticals, config)
+        if local_points is None:
+            continue
+        coverage = connector_pixel_coverage(mask, local_points, band=max(1, band))
+        if coverage < max(0.58, config.connector_min_coverage - 0.16):
+            continue
+        path_length = polyline_length(local_points)
+        if path_length < scale.min_linear_length * 0.9:
+            continue
+        geometry = PolylineGeometry(points=local_points)
+        endpoint_hits = stroke_connection_count(geometry.points[0], geometry.points[-1], structural_elements, scale)
+        if endpoint_hits == 0 and path_length < scale.min_linear_length * 1.5:
+            continue
+        if any(
+            geometry.bbox.iou(existing.bbox) >= 0.72
+            for existing in existing_elements + elements
+            if existing.kind in {"line", "orthogonal_connector", "arrow"}
+        ):
+            continue
+        anchor = max((strokes[index] for index in group), key=lambda candidate: candidate.length)
+        elements.append(
+            Element(
+                id=f"linear-{next_index}",
+                kind="orthogonal_connector",
+                geometry=geometry,
+                stroke=StrokeStyle(color=sample_stroke_color(array, anchor), width=max(1.0, band * 1.5)),
+                fill=FillStyle(enabled=False, color=None),
+                text=None,
+                confidence=min(0.93, 0.70 + coverage * 0.22 + min(len(local_points), 5) * 0.01 + min(endpoint_hits, 2) * 0.02),
+                source_region=geometry.bbox,
+                inferred=any(strokes[index].inferred for index in group),
+            )
+        )
+        used.update(group)
+        next_index += 1
+    return elements, used
+
+
+def stroke_graph_components(strokes: list[Stroke], scale: ScaleContext) -> list[list[int]]:
+    adjacency: dict[int, set[int]] = {index: set() for index in range(len(strokes))}
+    tolerance = max(4.0, scale.estimated_stroke_width * 3.0)
+    for left in range(len(strokes)):
+        for right in range(left + 1, len(strokes)):
+            if not strokes_interact(strokes[left], strokes[right], tolerance=tolerance):
+                continue
+            adjacency[left].add(right)
+            adjacency[right].add(left)
+    groups: list[list[int]] = []
+    visited: set[int] = set()
+    for start in range(len(strokes)):
+        if start in visited:
+            continue
+        stack = [start]
+        group: list[int] = []
+        visited.add(start)
+        while stack:
+            current = stack.pop()
+            group.append(current)
+            for neighbor in adjacency[current]:
+                if neighbor in visited:
+                    continue
+                visited.add(neighbor)
+                stack.append(neighbor)
+        groups.append(sorted(group))
+    return groups
+
+
+def strokes_interact(first: Stroke, second: Stroke, *, tolerance: float) -> bool:
+    if first.orientation == second.orientation:
+        if first.orientation == "horizontal":
+            aligned = abs(first.center_y - second.center_y) <= tolerance
+            gap = max(first.x0, second.x0) - min(first.x1, second.x1)
+        else:
+            aligned = abs(first.center_x - second.center_x) <= tolerance
+            gap = max(first.y0, second.y0) - min(first.y1, second.y1)
+        return aligned and gap <= tolerance
+    horizontal = first if first.orientation == "horizontal" else second
+    vertical = second if first.orientation == "horizontal" else first
+    return (
+        horizontal.x0 - tolerance <= vertical.center_x <= horizontal.x1 + tolerance
+        and vertical.y0 - tolerance <= horizontal.center_y <= vertical.y1 + tolerance
+    )
 
 
 def global_stroke_geometry(stroke: Stroke) -> PolylineGeometry:
