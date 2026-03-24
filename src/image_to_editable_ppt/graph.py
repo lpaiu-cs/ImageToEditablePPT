@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 
 from .diagnostics import DiagnosticsRecorder
 from .ir import BBox
-from .schema import AuthoringGraph, GraphEdge, MotifHypothesis, ObjectHypothesis
+from .schema import AuthoringGraph, GraphEdge, MotifHypothesis, ObjectHypothesis, validate_stage_entities
 from .vlm_parser import VLMEdge
 
 
@@ -25,6 +25,8 @@ def build_authoring_graph(
     stage: str = "06_graph",
 ) -> GraphBuildResult:
     recorder = diagnostics or DiagnosticsRecorder()
+    validate_stage_entities(stage, "selected_hypotheses", selected, require_bbox=True)
+    validate_stage_entities(stage, "motifs", motifs)
     graph_edges: list[GraphEdge] = []
     hypothesis_by_vlm_id = {
         hypothesis.assigned_vlm_ids[0]: hypothesis

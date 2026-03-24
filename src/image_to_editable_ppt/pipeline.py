@@ -172,6 +172,7 @@ def build_elements_from_structure(
     selection_result = select_authoring_objects(
         image,
         all_hypotheses,
+        motif_result.motifs,
         config,
         diagnostics=recorder,
         stage="05_selection",
@@ -179,7 +180,7 @@ def build_elements_from_structure(
     graph_result = build_authoring_graph(
         image,
         selection_result.selected,
-        motif_result.motifs,
+        selection_result.selected_motifs,
         structure.edges,
         diagnostics=recorder,
         stage="06_graph",
@@ -193,6 +194,8 @@ def build_elements_from_structure(
         object_result.anchor_map,
         backend,
         config,
+        guide_result.snapped_candidates,
+        selection_result.selected_motifs,
         diagnostics=recorder,
         stage="07_emit",
     )
@@ -219,9 +222,11 @@ def build_elements_from_structure(
         "05_selection": {
             "selected": selection_result.selected,
             "suppressed": selection_result.suppressed,
+            "selected_motifs": selection_result.selected_motifs,
+            "motif_effects": selection_result.motif_effects,
             "conflicts": selection_result.conflict_graph,
         },
-        "06_graph": {"graph": graph_result.graph},
+        "06_graph": {"graph": graph_result.graph, "graph_nodes": selection_result.selected, "motifs": selection_result.selected_motifs},
         "07_emit": {
             "emission_records": emit_result.emission_records,
             "dropped_records": emit_result.dropped_records,

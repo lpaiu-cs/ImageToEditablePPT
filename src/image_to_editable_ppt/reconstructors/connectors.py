@@ -6,7 +6,6 @@ from PIL import Image
 
 from ..config import PipelineConfig
 from ..detector import RefinedNode, verify_edge_exists
-from ..graph import GraphBuildResult
 from ..ir import Element
 from ..router import generate_connections
 from ..schema import DropReason, EmissionRecord
@@ -14,21 +13,30 @@ from ..vlm_parser import VLMEdge
 
 
 @dataclass(slots=True)
+class ConnectorSpec:
+    edge: VLMEdge
+    graph_edge_id: str
+    source_hypothesis_id: str
+    target_hypothesis_id: str
+
+
+@dataclass(slots=True)
 class VerifiedConnectorSet:
-    verified_edges: list[VLMEdge]
+    verified_specs: list[ConnectorSpec]
     dropped_records: list[EmissionRecord]
 
 
 def verify_graph_connectors(
     image: Image.Image,
     nodes: list[RefinedNode],
-    candidate_edges: list[VLMEdge],
+    candidate_edges: list[ConnectorSpec],
     config: PipelineConfig,
 ) -> VerifiedConnectorSet:
     node_map = {node.id: node for node in nodes}
-    verified: list[VLMEdge] = []
+    verified: list[ConnectorSpec] = []
     dropped: list[EmissionRecord] = []
-    for index, edge in enumerate(candidate_edges, start=1):
+    for index, spec in enumerate(candidate_edges, start=1):
+        edge = spec.edge
         source = node_map.get(edge.source)
         target = node_map.get(edge.target)
         if source is None or target is None:
@@ -40,8 +48,10 @@ def verify_graph_connectors(
                     score_total=0.0,
                     score_terms={"missing_endpoint": 1.0},
                     source_ids=[edge.source, edge.target],
+                    provenance={"graph_edge_ids": [spec.graph_edge_id]},
                     primitive_kind="connector",
                     object_type="connector",
+                    graph_node_ids=[spec.source_hypothesis_id, spec.target_hypothesis_id],
                     hypothesis_ids=[edge.source, edge.target],
                     drop_reason=DropReason.NO_GEOMETRY_SUPPORT,
                 )
@@ -54,7 +64,7 @@ def verify_graph_connectors(
             config,
             expect_dashed=edge.type == "dashed_arrow",
         ):
-            verified.append(edge)
+            verified.append(spec)
             continue
         dropped.append(
             EmissionRecord(
@@ -64,13 +74,15 @@ def verify_graph_connectors(
                 score_total=0.0,
                 score_terms={"visual_verification_failed": 1.0},
                 source_ids=[edge.source, edge.target],
+                provenance={"graph_edge_ids": [spec.graph_edge_id]},
                 primitive_kind="connector",
                 object_type="connector",
+                graph_node_ids=[spec.source_hypothesis_id, spec.target_hypothesis_id],
                 hypothesis_ids=[edge.source, edge.target],
                 drop_reason=DropReason.EDGE_NOT_VERIFIED,
             )
         )
-    return VerifiedConnectorSet(verified_edges=verified, dropped_records=dropped)
+    return VerifiedConnectorSet(verified_specs=verified, dropped_records=dropped)
 
 
 def emit_connector_elements(

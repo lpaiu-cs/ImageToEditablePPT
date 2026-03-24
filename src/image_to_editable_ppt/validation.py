@@ -12,14 +12,16 @@ from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.util import Emu, Pt
 
 from .config import PipelineConfig
-from .diagnostics import build_recorder
-from .eval_debug import stage_items_from_entities, write_eval_debug_artifacts
+from .diagnostics import build_recorder, write_manifest
+from .eval_debug import discover_ground_truth, stage_items_from_entities, write_eval_debug_artifacts
 from .ir import BBox, Point
 from .pipeline import ConversionResult, convert_image
 from .preprocess import load_image, preprocess_image
 from .schema import StageEntity
 from .style import dilate_mask
+from .text import OCRBackend
 from .svg_exporter import SVG_NS, format_number, to_svg_color
+from .vlm_parser import StructureParser
 
 XML_NS = {
     "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
@@ -87,6 +89,9 @@ def run_validation_iteration(
     config: PipelineConfig | None = None,
     enable_ocr: bool = False,
     enable_diagnostics: bool = False,
+    ocr_backend: OCRBackend | None = None,
+    structure_parser: StructureParser | None = None,
+    diagnostics_root_dir: str | Path | None = None,
 ) -> ValidationRun:
     active_config = config or PipelineConfig()
     iteration_path = Path(iteration_dir)
@@ -98,6 +103,7 @@ def run_validation_iteration(
         enabled=enable_diagnostics,
         run_id=iteration_path.parent.name or "validation",
         slide_id=iteration_path.name,
+        root_dir=Path(diagnostics_root_dir) if diagnostics_root_dir is not None else Path("artifacts") / "diagnostics",
     )
     conversion = convert_image(
         input_path,
@@ -105,6 +111,8 @@ def run_validation_iteration(
         config=active_config,
         enable_ocr=enable_ocr,
         debug_elements_path=elements_path,
+        ocr_backend=ocr_backend,
+        structure_parser=structure_parser,
         diagnostics=recorder,
     )
     shapes = load_pptx_shapes(output_pptx, image_size=input_image.size, config=active_config)
@@ -126,13 +134,22 @@ def run_validation_iteration(
     oracle_json = None
     failure_taxonomy_json = None
     attrition_json = None
+    gt_annotation = discover_ground_truth(input_path)
     if conversion.diagnostics_dir is not None:
         eval_dir = conversion.diagnostics_dir / "08_eval"
         stage_eval = stage_eval_items(conversion)
-        write_eval_debug_artifacts(eval_dir, None, stage_eval)
+        write_eval_debug_artifacts(eval_dir, gt_annotation, stage_eval)
         oracle_json = eval_dir / "oracle_by_stage.json"
         failure_taxonomy_json = eval_dir / "failure_taxonomy.json"
         attrition_json = eval_dir / "attrition_by_stage.json"
+        write_manifest(
+            conversion.diagnostics_dir,
+            build_manifest_payload(
+                conversion=conversion,
+                gt_available=gt_annotation is not None,
+                raster_fallback_used=bool(conversion.stage_artifacts.get("07_emit", {}).get("fallback_regions", [])),
+            ),
+        )
     return ValidationRun(
         conversion=conversion,
         shapes=shapes,
@@ -165,9 +182,38 @@ def stage_eval_items(conversion: ConversionResult) -> dict[str, list]:
                     entities.extend(value)
                 elif isinstance(value, StageEntity):
                     entities.append(value)
+            if stage == "06_graph" and "graph_nodes" in payload:
+                graph_nodes = payload["graph_nodes"]
+                if isinstance(graph_nodes, list) and graph_nodes and isinstance(graph_nodes[0], StageEntity):
+                    entities = list(graph_nodes)
         if entities:
             stage_items[stage] = stage_items_from_entities(entities)
     return stage_items
+
+
+def build_manifest_payload(
+    *,
+    conversion: ConversionResult,
+    gt_available: bool,
+    raster_fallback_used: bool,
+) -> dict[str, object]:
+    stages = {}
+    for stage, payload in conversion.stage_artifacts.items():
+        entity_count = 0
+        if isinstance(payload, dict):
+            for value in payload.values():
+                if isinstance(value, list):
+                    entity_count += len(value)
+                elif isinstance(value, StageEntity):
+                    entity_count += 1
+        stages[stage] = {"status": "ok", "entity_count": entity_count}
+    return {
+        "status": "ok",
+        "pipeline_mode": conversion.pipeline_mode,
+        "gt_available": gt_available,
+        "raster_fallback_used": raster_fallback_used,
+        "stages": stages,
+    }
 
 
 def load_pptx_shapes(
@@ -406,6 +452,15 @@ def parse_shape(shape, transform: tuple[float, int, int]) -> ValidationShape | N
             stroke_color=(0, 0, 0),
             stroke_width=0.0,
             text=shape.text,
+        )
+    if shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
+        bbox = map_bbox(shape.left, shape.top, shape.width, shape.height, scale, offset_x, offset_y)
+        return ValidationShape(
+            kind="rect",
+            bbox=bbox,
+            stroke_color=(96, 96, 96),
+            stroke_width=1.0,
+            fill_color=(224, 224, 224),
         )
     if shape.shape_type == MSO_SHAPE_TYPE.LINE:
         points = connector_points(shape._element, scale, offset_x, offset_y)

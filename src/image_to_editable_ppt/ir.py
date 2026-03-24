@@ -10,6 +10,7 @@ ElementKind = Literal[
     "orthogonal_connector",
     "arrow",
     "text",
+    "raster_region",
 ]
 DashStyle = Literal["solid", "dash"]
 TextAlignment = Literal["left", "center", "right"]
@@ -138,6 +139,8 @@ class Element:
     confidence: float
     source_region: BBox
     inferred: bool = False
+    raster_image: bytes | None = None
+    raster_asset_id: str | None = None
 
     @property
     def bbox(self) -> BBox:
@@ -173,4 +176,6 @@ class Element:
             "confidence": self.confidence,
             "source_region": self.source_region.to_dict(),
             "inferred": self.inferred,
+            "raster_asset_id": self.raster_asset_id,
+            "raster_image_bytes": None if self.raster_image is None else len(self.raster_image),
         }

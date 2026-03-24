@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import math
 from pathlib import Path
 
@@ -62,6 +63,9 @@ def add_element(slide, element: Element, *, scale: float, offset_x: int, offset_
         return
     if element.kind == "text":
         add_textbox(slide, element, scale=scale, offset_x=offset_x, offset_y=offset_y)
+        return
+    if element.kind == "raster_region":
+        add_raster_region(slide, element, scale=scale, offset_x=offset_x, offset_y=offset_y)
 
 
 def add_box(slide, element: Element, *, scale: float, offset_x: int, offset_y: int) -> None:
@@ -205,6 +209,22 @@ def add_textbox(slide, element: Element, *, scale: float, offset_x: int, offset_
     paragraph.alignment = alignment_for_element(element)
     shape.fill.background()
     shape.line.fill.background()
+
+
+def add_raster_region(slide, element: Element, *, scale: float, offset_x: int, offset_y: int) -> None:
+    geometry = element.geometry
+    if not isinstance(geometry, BoxGeometry):
+        raise TypeError("raster element requires BoxGeometry")
+    if element.raster_image is None:
+        raise TypeError("raster element requires image payload")
+    bbox = geometry.bbox
+    slide.shapes.add_picture(
+        io.BytesIO(element.raster_image),
+        to_emu(bbox.x0, scale, offset_x),
+        to_emu(bbox.y0, scale, offset_y),
+        Emu(max(1, int(bbox.width * scale))),
+        Emu(max(1, int(bbox.height * scale))),
+    )
 
 
 def alignment_for_element(element: Element):

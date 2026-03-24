@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 from .config import PipelineConfig
 from .diagnostics import DiagnosticsRecorder
 from .ir import BBox, BoxGeometry, Element, FillStyle, Point, PolylineGeometry, StrokeStyle, TextPayload
-from .schema import OCRPhrase, OCRWord
+from .schema import OCRPhrase, OCRWord, validate_stage_entities
 
 
 @dataclass(slots=True, frozen=True)
@@ -277,6 +277,8 @@ def normalize_and_merge_ocr(
             )
         )
         normalization_rows.append({"id": phrase_id, "before": region.text, "after": normalize_ocr_text(region.text)})
+    words = list(validate_stage_entities(stage, "words", words, require_bbox=True))
+    phrases = list(validate_stage_entities(stage, "phrases", phrases, require_bbox=True))
     result = OCRNormalizationResult(
         words=words,
         phrases=phrases,

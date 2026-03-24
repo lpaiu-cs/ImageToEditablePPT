@@ -33,6 +33,10 @@ class FailureTag(StrEnum):
     HALLUCINATED_PREDICTION = "hallucinated_prediction"
 
 
+class StageContractError(ValueError):
+    """Raised when a stage artifact violates the expected machine-readable contract."""
+
+
 @dataclass(slots=True)
 class StageEntity:
     id: str
@@ -199,6 +203,7 @@ class EmissionRecord(StageEntity):
 class FallbackRegion(StageEntity):
     object_type: str = "fallback"
     strategy: str = "grow_fallback"
+    asset_id: str | None = None
 
 
 def bbox_to_row(bbox: BBox | None) -> dict[str, float] | None:
@@ -227,3 +232,91 @@ def as_serializable(value: Any) -> Any:
     if is_dataclass(value):
         return as_serializable(asdict(value))
     return value
+
+
+def validate_stage_entities(
+    stage: str,
+    name: str,
+    rows: list[StageEntity],
+    *,
+    require_bbox: bool = False,
+) -> list[StageEntity]:
+    validated: list[StageEntity] = []
+    for row in rows:
+        validate_stage_entity(stage, name, row, require_bbox=require_bbox)
+        validated.append(row)
+    return validated
+
+
+def validate_stage_entity(
+    stage: str,
+    name: str,
+    row: StageEntity,
+    *,
+    require_bbox: bool = False,
+) -> None:
+    if not isinstance(row, StageEntity):
+        raise StageContractError(f"{stage}/{name}: expected StageEntity, got {type(row)!r}")
+    if not row.id:
+        raise StageContractError(f"{stage}/{name}: missing id")
+    if not row.kind and not getattr(row, "object_type", ""):
+        raise StageContractError(f"{stage}/{name}:{row.id}: missing kind/object_type")
+    if not isinstance(row.score_total, (int, float)):
+        raise StageContractError(f"{stage}/{name}:{row.id}: missing score_total")
+    if not isinstance(row.score_terms, dict):
+        raise StageContractError(f"{stage}/{name}:{row.id}: missing score_terms")
+    if not isinstance(row.source_ids, list):
+        raise StageContractError(f"{stage}/{name}:{row.id}: missing source_ids")
+    if not isinstance(row.provenance, dict):
+        raise StageContractError(f"{stage}/{name}:{row.id}: missing provenance")
+    if require_bbox and row.bbox is None:
+        raise StageContractError(f"{stage}/{name}:{row.id}: spatial entity missing bbox")
+    if isinstance(row, Guide) and row.axis not in {"x", "y"}:
+        raise StageContractError(f"{stage}/{name}:{row.id}: invalid guide axis")
+    if isinstance(row, ObjectHypothesis):
+        if not row.assigned_vlm_ids and not row.assigned_text_ids and not row.fallback:
+            raise StageContractError(f"{stage}/{name}:{row.id}: hypothesis missing assignment links")
+        if not row.source_ids:
+            raise StageContractError(f"{stage}/{name}:{row.id}: hypothesis missing source_ids")
+    if isinstance(row, MotifHypothesis) and not row.member_ids:
+        raise StageContractError(f"{stage}/{name}:{row.id}: motif missing member_ids")
+    if isinstance(row, EmissionRecord):
+        if row.emitted_element_id is None and row.drop_reason is None:
+            raise StageContractError(f"{stage}/{name}:{row.id}: emission missing emitted_element_id/drop_reason")
+        if row.object_type != "connector" and row.drop_reason is None:
+            if not row.graph_node_ids or not row.hypothesis_ids:
+                raise StageContractError(f"{stage}/{name}:{row.id}: emission missing graph/hypothesis links")
+    if isinstance(row, FallbackRegion) and "grow_fallback" not in row.source_ids and row.strategy == "grow_fallback":
+        raise StageContractError(f"{stage}/{name}:{row.id}: fallback region missing grow_fallback source tag")
+
+
+def validate_emission_trace(
+    *,
+    emission_records: list[EmissionRecord],
+    graph: AuthoringGraph,
+    object_hypotheses: list[ObjectHypothesis],
+    motif_hypotheses: list[MotifHypothesis],
+    geometry_candidates: list[RectCandidate],
+    fallback_regions: list[FallbackRegion],
+) -> None:
+    hypothesis_ids = {hypothesis.id for hypothesis in object_hypotheses}
+    graph_node_ids = set(graph.node_ids)
+    geometry_ids = {candidate.id for candidate in geometry_candidates}
+    fallback_ids = {region.id for region in fallback_regions}
+    motif_ids = {motif.id for motif in motif_hypotheses}
+    for record in emission_records:
+        validate_stage_entity("07_emit", "emission_records", record, require_bbox=record.drop_reason is None)
+        for node_id in record.graph_node_ids:
+            if node_id not in graph_node_ids:
+                raise StageContractError(f"07_emit/emission_records:{record.id}: unknown graph node {node_id}")
+        for hypothesis_id in record.hypothesis_ids:
+            if hypothesis_id not in hypothesis_ids and hypothesis_id not in motif_ids:
+                raise StageContractError(f"07_emit/emission_records:{record.id}: unknown hypothesis {hypothesis_id}")
+        if record.drop_reason is not None:
+            continue
+        if record.object_type == "connector":
+            if len(record.graph_node_ids) < 2 or len(record.hypothesis_ids) < 2:
+                raise StageContractError(f"07_emit/emission_records:{record.id}: connector missing endpoint provenance")
+            continue
+        if not any(source_id in geometry_ids or source_id in fallback_ids or source_id == "grow_fallback" for source_id in record.source_ids):
+            raise StageContractError(f"07_emit/emission_records:{record.id}: no geometry/fallback source trace")

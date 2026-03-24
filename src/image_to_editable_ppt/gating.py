@@ -23,6 +23,7 @@ def gate_elements(elements: list[Element], config: PipelineConfig) -> list[Eleme
             "line",
             "orthogonal_connector",
             "arrow",
+            "raster_region",
         }:
             gated.append(element)
     return gated

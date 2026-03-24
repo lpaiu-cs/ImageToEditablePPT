@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 from .config import PipelineConfig
 from .diagnostics import DiagnosticsRecorder
 from .ir import BBox
-from .schema import ObjectHypothesis, OCRPhrase, RectCandidate
+from .schema import ObjectHypothesis, OCRPhrase, RectCandidate, validate_stage_entities
 from .text import OCRNormalizationResult, normalize_ocr_text
 from .vlm_parser import DiagramStructure, VLMNode
 
@@ -74,7 +74,7 @@ def build_object_hypotheses(
         )
     result = ObjectStageResult(
         vlm_nodes=anchored_nodes,
-        hypotheses=hypotheses,
+        hypotheses=list(validate_stage_entities(stage, "object_hypotheses", hypotheses, require_bbox=True)),
         anchor_map=anchor_map,
         candidate_rankings=candidate_rankings,
         schema_nodes=schema_nodes,

@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 
 from .diagnostics import DiagnosticsRecorder
 from .ir import BBox
-from .schema import Guide, GuideField, RectCandidate, SizeCluster, SpacingCluster
+from .schema import Guide, GuideField, RectCandidate, SizeCluster, SpacingCluster, validate_stage_entities
 
 
 @dataclass(slots=True)
@@ -113,6 +113,10 @@ def infer_guides(
         snapped_candidates=snapped_candidates,
         snap_records=snap_records,
     )
+    result.guide_field.guides = list(validate_stage_entities(stage, "guides", result.guide_field.guides))
+    result.guide_field.size_clusters = list(validate_stage_entities(stage, "size_clusters", result.guide_field.size_clusters))
+    result.guide_field.spacing_clusters = list(validate_stage_entities(stage, "spacing_clusters", result.guide_field.spacing_clusters))
+    result.snapped_candidates = list(validate_stage_entities(stage, "rect_candidates", result.snapped_candidates, require_bbox=True))
     if recorder.enabled:
         recorder.summary(
             stage,

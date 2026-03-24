@@ -7,7 +7,7 @@ from typing import Iterable
 
 from PIL import Image
 
-from .schema import as_serializable
+from .schema import StageEntity, as_serializable, validate_stage_entities
 
 
 class DiagnosticsRecorder:
@@ -48,6 +48,9 @@ class FilesystemDiagnosticsRecorder(DiagnosticsRecorder):
         path.write_text(json.dumps(as_serializable(payload), indent=2), encoding="utf-8")
 
     def items(self, stage: str, name: str, rows: Iterable[object]) -> None:
+        rows = list(rows)
+        if rows and isinstance(rows[0], StageEntity):
+            rows = validate_stage_entities(stage, name, rows)
         stage_dir = self._stage_dir(stage)
         path = stage_dir / f"{name}.jsonl"
         with path.open("w", encoding="utf-8") as handle:
@@ -79,3 +82,12 @@ def build_recorder(
     if not enabled:
         return NoOpDiagnosticsRecorder()
     return FilesystemDiagnosticsRecorder(run_id=run_id, slide_id=slide_id, root_dir=Path(root_dir))
+
+
+def write_manifest(
+    base_path: str | Path,
+    payload,
+) -> None:
+    path = Path(base_path) / "manifest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(as_serializable(payload), indent=2), encoding="utf-8")

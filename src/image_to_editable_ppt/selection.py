@@ -1,24 +1,27 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from PIL import Image, ImageDraw
 
 from .config import PipelineConfig
 from .diagnostics import DiagnosticsRecorder
-from .schema import ObjectHypothesis, SuppressionReason
+from .schema import MotifHypothesis, ObjectHypothesis, SuppressionReason, validate_stage_entities
 
 
 @dataclass(slots=True)
 class SelectionResult:
     selected: list[ObjectHypothesis]
     suppressed: list[ObjectHypothesis]
+    selected_motifs: list[MotifHypothesis]
+    motif_effects: list[dict[str, object]]
     conflict_graph: list[dict[str, object]]
 
 
 def select_authoring_objects(
     image: Image.Image,
     hypotheses: list[ObjectHypothesis],
+    motifs: list[MotifHypothesis],
     config: PipelineConfig,
     *,
     diagnostics: DiagnosticsRecorder | None = None,
@@ -54,21 +57,60 @@ def select_authoring_objects(
                 drop_reason=hypothesis.drop_reason,
             )
         )
-    result = SelectionResult(selected=selected, suppressed=suppressed, conflict_graph=conflict_graph)
+    selected, selected_motifs, motif_effects = apply_motifs(selected, motifs)
+    result = SelectionResult(
+        selected=list(validate_stage_entities(stage, "selected_hypotheses", selected, require_bbox=True)),
+        suppressed=list(validate_stage_entities(stage, "suppressed_hypotheses", suppressed, require_bbox=True)),
+        selected_motifs=list(validate_stage_entities(stage, "selected_motifs", selected_motifs)),
+        motif_effects=motif_effects,
+        conflict_graph=conflict_graph,
+    )
     if recorder.enabled:
         recorder.summary(
             stage,
             {
                 "selected_count": len(selected),
                 "suppressed_count": len(suppressed),
+                "selected_motif_count": len(selected_motifs),
                 "conflict_count": len(conflict_graph),
             },
         )
         recorder.items(stage, "selected_hypotheses", selected)
         recorder.items(stage, "suppressed_hypotheses", suppressed)
+        recorder.items(stage, "selected_motifs", selected_motifs)
         recorder.artifact(stage, "conflict_graph", conflict_graph)
+        recorder.artifact(stage, "motif_effects", motif_effects)
         recorder.overlay(stage, "overlay", draw_selection_overlay(image, selected, suppressed))
     return result
+
+
+def apply_motifs(
+    selected: list[ObjectHypothesis],
+    motifs: list[MotifHypothesis],
+) -> tuple[list[ObjectHypothesis], list[MotifHypothesis], list[dict[str, object]]]:
+    selected_lookup = {hypothesis.id: hypothesis for hypothesis in selected}
+    selected_motifs: list[MotifHypothesis] = []
+    motif_effects: list[dict[str, object]] = []
+    for motif in motifs:
+        member_ids = [member_id for member_id in motif.member_ids if member_id in selected_lookup]
+        if len(member_ids) < 2:
+            continue
+        selected_motifs.append(motif)
+        for member_id in member_ids:
+            member = selected_lookup[member_id]
+            if motif.id not in member.parent_ids:
+                selected_lookup[member_id] = replace(member, parent_ids=[*member.parent_ids, motif.id])
+        motif_effects.append(
+            {
+                "motif_id": motif.id,
+                "motif_kind": motif.kind,
+                "promoted_member_ids": member_ids,
+                "absorbed_member_ids": member_ids[1:],
+                "suppressed_member_ids": [],
+            }
+        )
+    ordered = [selected_lookup[hypothesis.id] for hypothesis in selected if hypothesis.id in selected_lookup]
+    return ordered, selected_motifs, motif_effects
 
 
 def first_conflict(
