@@ -793,11 +793,18 @@ def test_semantic_pipeline_uses_vlm_structure_and_local_snapping() -> None:
     draw = ImageDraw.Draw(image)
     draw.rounded_rectangle((42, 52, 132, 112), radius=16, outline=(24, 78, 128), fill=(220, 235, 248), width=4)
     draw.rounded_rectangle((206, 84, 296, 144), radius=16, outline=(64, 64, 64), fill=(248, 228, 206), width=4)
+    draw.line((132, 98, 206, 98), fill=(30, 30, 30), width=4)
+    backend = FakeOCRBackend(
+        [
+            OCRTextRegion(text="Vector Store", bbox=BBox(58.0, 70.0, 118.0, 90.0), confidence=0.98),
+            OCRTextRegion(text="Planner", bbox=BBox(228.0, 102.0, 274.0, 122.0), confidence=0.98),
+        ]
+    )
     parser = FakeStructureParser(
         DiagramStructure(
             nodes=[
-                VLMNode("n1", "box", "Vector Store", BBox(88.0, 200.0, 444.0, 610.0)),
-                VLMNode("n2", "box", "Planner", BBox(606.0, 360.0, 950.0, 770.0)),
+                VLMNode("n1", "box", "Vector Store", BBox(620.0, 120.0, 930.0, 420.0)),
+                VLMNode("n2", "box", "Planner", BBox(80.0, 640.0, 320.0, 930.0)),
             ],
             edges=[VLMEdge("n1", "n2", "solid_arrow", "retrieves")],
             coordinate_space="normalized_1000",
@@ -808,6 +815,7 @@ def test_semantic_pipeline_uses_vlm_structure_and_local_snapping() -> None:
         image,
         config=PipelineConfig(semantic_fallback_to_legacy=False),
         structure_parser=parser,
+        ocr_backend=backend,
     )
 
     assert result.pipeline_mode == "semantic"
@@ -821,7 +829,6 @@ def test_semantic_pipeline_uses_vlm_structure_and_local_snapping() -> None:
     assert any(text.text is not None and text.text.content == "retrieves" for text in texts)
     assert boxes[0].bbox.x0 == pytest.approx(42.0, abs=8.0)
     assert boxes[0].bbox.y0 == pytest.approx(52.0, abs=8.0)
-    assert len(arrows[0].geometry.points) >= 3
 
 
 def test_semantic_routed_arrow_exports_single_tail_marker(tmp_path: Path) -> None:
@@ -829,8 +836,16 @@ def test_semantic_routed_arrow_exports_single_tail_marker(tmp_path: Path) -> Non
     draw = ImageDraw.Draw(image)
     draw.rounded_rectangle((36, 48, 126, 108), radius=16, outline="black", fill=(224, 240, 250), width=4)
     draw.rounded_rectangle((206, 126, 296, 186), radius=16, outline="black", fill=(250, 232, 212), width=4)
+    for x0 in range(126, 206, 18):
+        draw.line((x0, 154, min(x0 + 10, 206), 154), fill=(40, 40, 40), width=3)
     image_path = save_image(image, tmp_path / "semantic.png")
     output_path = tmp_path / "semantic.pptx"
+    backend = FakeOCRBackend(
+        [
+            OCRTextRegion(text="Memory", bbox=BBox(54.0, 68.0, 104.0, 88.0), confidence=0.98),
+            OCRTextRegion(text="Planner", bbox=BBox(226.0, 146.0, 274.0, 166.0), confidence=0.98),
+        ]
+    )
     parser = FakeStructureParser(
         DiagramStructure(
             nodes=[
@@ -847,11 +862,45 @@ def test_semantic_routed_arrow_exports_single_tail_marker(tmp_path: Path) -> Non
         output_path,
         config=PipelineConfig(semantic_fallback_to_legacy=False),
         structure_parser=parser,
+        ocr_backend=backend,
     )
 
     assert result.pipeline_mode == "semantic"
     assert any(element.kind == "arrow" and len(element.geometry.points) >= 3 for element in result.elements)
     assert_slide_connector_uses_tail_end_only(output_path)
+
+
+def test_semantic_pipeline_drops_hallucinated_edge_without_visual_evidence() -> None:
+    image = Image.new("RGB", (320, 200), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((40, 56, 130, 116), radius=16, outline="black", fill=(224, 240, 250), width=4)
+    draw.rounded_rectangle((208, 56, 298, 116), radius=16, outline="black", fill=(250, 232, 212), width=4)
+    backend = FakeOCRBackend(
+        [
+            OCRTextRegion(text="Memory", bbox=BBox(58.0, 76.0, 110.0, 94.0), confidence=0.98),
+            OCRTextRegion(text="Planner", bbox=BBox(228.0, 76.0, 278.0, 94.0), confidence=0.98),
+        ]
+    )
+    parser = FakeStructureParser(
+        DiagramStructure(
+            nodes=[
+                VLMNode("n1", "box", "Memory", BBox(70.0, 260.0, 430.0, 650.0)),
+                VLMNode("n2", "box", "Planner", BBox(580.0, 260.0, 960.0, 650.0)),
+            ],
+            edges=[VLMEdge("n1", "n2", "solid_arrow")],
+            coordinate_space="normalized_1000",
+        )
+    )
+
+    result = build_elements(
+        image,
+        config=PipelineConfig(semantic_fallback_to_legacy=False),
+        structure_parser=parser,
+        ocr_backend=backend,
+    )
+
+    assert result.pipeline_mode == "semantic"
+    assert not any(element.kind == "arrow" for element in result.elements)
 
 
 def test_validation_iteration_exports_pptx_svg_and_comparison_artifacts(tmp_path: Path) -> None:

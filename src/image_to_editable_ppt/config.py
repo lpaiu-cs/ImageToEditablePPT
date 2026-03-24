@@ -15,6 +15,12 @@ class PipelineConfig:
     edge_label_offset: float = 10.0
     edge_label_height: float = 24.0
     edge_label_char_width: float = 7.5
+    semantic_ocr_confidence: float = 0.45
+    semantic_ocr_similarity: float = 0.56
+    semantic_ocr_hint_weight: float = 0.18
+    edge_verification_min_ratio: float = 0.12
+    edge_verification_dashed_ratio: float = 0.08
+    edge_verification_color_distance: float = 28.0
     adaptive_background: bool = True
     background_blur_divisor: float = 72.0
     foreground_threshold: float = 32.0

@@ -1,13 +1,20 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from difflib import SequenceMatcher
 import json
 from pathlib import Path
 
 from PIL import Image
 
 from .config import PipelineConfig
-from .detector import RefinedNode, detect_elements_with_metadata, finalize_detected_elements, refine_node_geometry
+from .detector import (
+    RefinedNode,
+    detect_elements_with_metadata,
+    finalize_detected_elements,
+    refine_node_geometry,
+    verify_edge_exists,
+)
 from .exporter import export_to_pptx
 from .filtering import RejectedRegion
 from .gating import gate_elements
@@ -15,8 +22,8 @@ from .ir import BBox, BoxGeometry, Element, FillStyle, StrokeStyle, TextPayload
 from .preprocess import load_image, preprocess_image
 from .repair import repair_elements
 from .router import generate_connections
-from .text import OCRBackend, extract_text_elements, get_ocr_backend
-from .vlm_parser import DiagramStructure, StructureParser, VLMError, denormalize_structure, extract_structure
+from .text import OCRBackend, OCRTextRegion, extract_text_elements, get_ocr_backend, merge_ocr_regions, normalize_ocr_text
+from .vlm_parser import DiagramStructure, StructureParser, VLMEdge, VLMError, VLMNode, denormalize_structure, extract_structure
 
 
 @dataclass(slots=True)
@@ -112,13 +119,19 @@ def build_elements_from_structure(
     enable_ocr: bool = False,
     ocr_backend: OCRBackend | None = None,
 ) -> ConversionResult:
-    backend = ocr_backend or get_ocr_backend(enable_ocr)
-    refined_nodes = [refine_node_geometry(image, node, config) for node in structure.nodes]
+    backend = ocr_backend or get_ocr_backend(True)
+    semantic_ocr = collect_semantic_ocr_regions(image, backend, config)
+    anchored_nodes, anchor_map = anchor_nodes_to_ocr(structure.nodes, semantic_ocr, config)
+    refined_nodes = [
+        refine_node_geometry(image, node, config, text_anchor=anchor_map.get(node.id).bbox if node.id in anchor_map else None)
+        for node in anchored_nodes
+    ]
     refined_nodes = hydrate_missing_node_texts(image, refined_nodes, backend)
+    verified_edges = verify_semantic_edges(image, refined_nodes, structure.edges, config)
     node_elements: list[Element] = []
     for index, node in enumerate(refined_nodes, start=1):
         node_elements.extend(node_to_elements(node, index=index, config=config))
-    edge_elements = generate_connections(refined_nodes, structure.edges, config)
+    edge_elements = generate_connections(refined_nodes, verified_edges, config)
     elements = gate_elements(node_elements + edge_elements, config)
     return ConversionResult(
         elements=elements,
@@ -203,6 +216,102 @@ def hydrate_missing_node_texts(
             continue
         hydrated.append(replace(node, text=content))
     return hydrated
+
+
+def collect_semantic_ocr_regions(
+    image: Image.Image,
+    backend: OCRBackend,
+    config: PipelineConfig,
+) -> list[OCRTextRegion]:
+    return merge_ocr_regions(
+        [
+            region
+            for region in backend.extract(image)
+            if region.confidence >= config.semantic_ocr_confidence and region.text.strip()
+        ]
+    )
+
+
+def anchor_nodes_to_ocr(
+    nodes: list[VLMNode],
+    ocr_regions: list[OCRTextRegion],
+    config: PipelineConfig,
+) -> tuple[list[VLMNode], dict[str, OCRTextRegion]]:
+    if not ocr_regions:
+        return nodes, {}
+    assignments: dict[str, OCRTextRegion] = {}
+    used_indices: set[int] = set()
+    for node in sorted(nodes, key=lambda candidate: len(candidate.text or ""), reverse=True):
+        anchor_index = find_best_ocr_anchor(node, ocr_regions, used_indices, config)
+        if anchor_index is None:
+            continue
+        used_indices.add(anchor_index)
+        assignments[node.id] = ocr_regions[anchor_index]
+    anchored = [
+        replace(node, text=assignments[node.id].text) if node.id in assignments else node
+        for node in nodes
+    ]
+    return anchored, assignments
+
+
+def find_best_ocr_anchor(
+    node: VLMNode,
+    ocr_regions: list[OCRTextRegion],
+    used_regions: set[int],
+    config: PipelineConfig,
+) -> int | None:
+    target = normalize_ocr_text(node.text)
+    if not target:
+        return None
+    best: tuple[float, int] | None = None
+    for index, region in enumerate(ocr_regions):
+        if index in used_regions:
+            continue
+        candidate_text = normalize_ocr_text(region.text)
+        if not candidate_text:
+            continue
+        similarity = SequenceMatcher(None, target, candidate_text).ratio()
+        if similarity < config.semantic_ocr_similarity:
+            continue
+        hint = ocr_hint_score(node.approx_bbox, region.bbox)
+        score = similarity * (1.0 - config.semantic_ocr_hint_weight) + hint * config.semantic_ocr_hint_weight
+        if best is None or score > best[0]:
+            best = (score, index)
+    return None if best is None else best[1]
+
+
+def ocr_hint_score(hint_bbox: BBox, region_bbox: BBox) -> float:
+    if hint_bbox.expand(max(20.0, min(hint_bbox.width, hint_bbox.height) * 0.35)).contains_point(region_bbox.center):
+        return 1.0
+    dx = hint_bbox.center.x - region_bbox.center.x
+    dy = hint_bbox.center.y - region_bbox.center.y
+    distance = (dx * dx + dy * dy) ** 0.5
+    diagonal = max(1.0, (hint_bbox.width * hint_bbox.width + hint_bbox.height * hint_bbox.height) ** 0.5)
+    return max(0.0, 1.0 - distance / (diagonal * 4.0))
+
+
+def verify_semantic_edges(
+    image: Image.Image,
+    nodes: list[RefinedNode],
+    edges: list[VLMEdge],
+    config: PipelineConfig,
+) -> list[VLMEdge]:
+    node_map = {node.id: node for node in nodes}
+    verified: list[VLMEdge] = []
+    for edge in edges:
+        source = node_map.get(edge.source)
+        target = node_map.get(edge.target)
+        if source is None or target is None:
+            continue
+        if verify_edge_exists(
+            image,
+            source.exact_bbox,
+            target.exact_bbox,
+            config,
+            expect_dashed=edge.type == "dashed_arrow",
+        ):
+            verified.append(edge)
+    return verified
 
 
 def node_to_elements(node: RefinedNode, *, index: int, config: PipelineConfig) -> list[Element]:

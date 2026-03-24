@@ -209,10 +209,16 @@ def refine_node_geometry(
     image: Image.Image,
     proposal: VLMNode,
     config: PipelineConfig,
+    *,
+    text_anchor: BBox | None = None,
 ) -> RefinedNode:
     array = np.asarray(image.convert("RGB"), dtype=np.uint8)
     approx_bbox = clamp_bbox(proposal.approx_bbox, width=array.shape[1], height=array.shape[0])
-    exact_bbox = snap_bbox_to_local_contour(array, approx_bbox, config)
+    exact_bbox = (
+        grow_container_from_text_anchor(array, text_anchor, approx_bbox, config)
+        if text_anchor is not None
+        else snap_bbox_to_local_contour(array, approx_bbox, config)
+    )
     stroke_width = estimate_local_stroke_width(exact_bbox)
     stroke_color = sample_bbox_border_colors(array, exact_bbox, stroke_width)
     background_color = estimate_surrounding_background(array, exact_bbox)
@@ -312,6 +318,80 @@ def snap_bbox_to_local_contour(
     return clamp_bbox(best_bbox, width=array.shape[1], height=array.shape[0])
 
 
+def grow_container_from_text_anchor(
+    array: np.ndarray,
+    text_anchor: BBox,
+    hint_bbox: BBox,
+    config: PipelineConfig,
+) -> BBox:
+    seed_padding = max(
+        config.local_refine_padding * 0.6,
+        text_anchor.height * 1.2,
+        text_anchor.width * 0.22,
+    )
+    seed_bbox = clamp_bbox(
+        text_anchor.expand(seed_padding),
+        width=array.shape[1],
+        height=array.shape[0],
+    )
+    if cv2 is None:
+        return snap_bbox_to_local_contour(array, merge_bboxes(seed_bbox, hint_bbox), config)
+    search_bbox = clamp_bbox(
+        merge_bboxes(seed_bbox.expand(seed_padding), hint_bbox.expand(config.local_refine_padding)),
+        width=array.shape[1],
+        height=array.shape[0],
+    )
+    x0 = int(math.floor(search_bbox.x0))
+    y0 = int(math.floor(search_bbox.y0))
+    x1 = int(math.ceil(search_bbox.x1))
+    y1 = int(math.ceil(search_bbox.y1))
+    crop = array[y0:y1, x0:x1]
+    if crop.size == 0:
+        return hint_bbox
+    smoothed = cv2.pyrMeanShiftFiltering(crop, sp=12, sr=18)
+    gray = cv2.cvtColor(smoothed, cv2.COLOR_RGB2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    sobel_x = cv2.Sobel(blurred, cv2.CV_32F, 1, 0, ksize=3)
+    sobel_y = cv2.Sobel(blurred, cv2.CV_32F, 0, 1, ksize=3)
+    gradient = cv2.magnitude(sobel_x, sobel_y)
+    threshold = max(
+        float(np.percentile(gradient, max(70.0, config.local_refine_gradient_percentile - 8.0))),
+        float(np.mean(gradient) + config.local_refine_threshold_bias * 0.7),
+    )
+    canny = cv2.Canny(blurred, 42, 132)
+    binary = np.zeros_like(gray, dtype=np.uint8)
+    binary[gradient >= threshold] = 255
+    binary = cv2.bitwise_or(binary, canny)
+    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, np.ones((5, 5), dtype=np.uint8), iterations=2)
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if not contours:
+        return snap_bbox_to_local_contour(array, merge_bboxes(seed_bbox, hint_bbox), config)
+    best_bbox = merge_bboxes(seed_bbox, hint_bbox)
+    best_score = -1.0
+    seed_center = text_anchor.center
+    for contour in contours:
+        rx, ry, rw, rh = cv2.boundingRect(contour)
+        candidate = BBox(x0 + rx, y0 + ry, x0 + rx + rw, y0 + ry + rh)
+        if candidate.width < max(18.0, text_anchor.width * 1.35):
+            continue
+        if candidate.height < max(18.0, text_anchor.height * 1.55):
+            continue
+        score = 0.0
+        if candidate.contains_point(seed_center):
+            score += 2.5
+        if bbox_contains(candidate, text_anchor.expand(3.0)):
+            score += 2.0
+        score += candidate.iou(hint_bbox) * 2.0
+        expansion_ratio = min(candidate.area, max(hint_bbox.area, seed_bbox.area)) / max(candidate.area, 1.0)
+        score += expansion_ratio
+        if score > best_score:
+            best_score = score
+            best_bbox = candidate
+    if best_score < 2.6:
+        return snap_bbox_to_local_contour(array, merge_bboxes(seed_bbox, hint_bbox), config)
+    return clamp_bbox(best_bbox, width=array.shape[1], height=array.shape[0])
+
+
 def estimate_local_stroke_width(bbox: BBox) -> float:
     return max(2.0, min(bbox.width, bbox.height) * 0.03)
 
@@ -361,6 +441,108 @@ def estimate_corner_radius(array: np.ndarray, bbox: BBox, proposal_type: str) ->
     if max(dark_ratio) < 0.18:
         return max(stroke_width * 2.0, min(bbox.width, bbox.height) * 0.08)
     return 0.0
+
+
+def merge_bboxes(first: BBox, second: BBox) -> BBox:
+    return BBox(
+        min(first.x0, second.x0),
+        min(first.y0, second.y0),
+        max(first.x1, second.x1),
+        max(first.y1, second.y1),
+    )
+
+
+def bbox_contains(container: BBox, inner: BBox) -> bool:
+    return (
+        container.x0 <= inner.x0
+        and container.y0 <= inner.y0
+        and container.x1 >= inner.x1
+        and container.y1 >= inner.y1
+    )
+
+
+def verify_edge_exists(
+    image: Image.Image,
+    source_bbox: BBox,
+    target_bbox: BBox,
+    config: PipelineConfig,
+    *,
+    expect_dashed: bool = False,
+) -> bool:
+    array = np.asarray(image.convert("RGB"), dtype=np.uint8)
+    gray = np.asarray(image.convert("L"), dtype=np.float32)
+    background = estimate_image_background(array)
+    if cv2 is not None:
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        sobel_x = cv2.Sobel(blurred, cv2.CV_32F, 1, 0, ksize=3)
+        sobel_y = cv2.Sobel(blurred, cv2.CV_32F, 0, 1, ksize=3)
+        gradient = cv2.magnitude(sobel_x, sobel_y)
+    else:
+        gradient = np.zeros_like(gray)
+    start, end = shortest_anchor_segment(source_bbox, target_bbox)
+    if math.hypot(end.x - start.x, end.y - start.y) < 12.0:
+        return False
+    steps = max(24, int(math.hypot(end.x - start.x, end.y - start.y) / 10.0))
+    evidence = 0
+    strongest = 0.0
+    color_threshold = config.edge_verification_color_distance
+    gradient_threshold = max(14.0, float(np.percentile(gradient, 72)))
+    for index in range(steps):
+        ratio = (index + 0.5) / steps
+        point = Point(
+            start.x + (end.x - start.x) * ratio,
+            start.y + (end.y - start.y) * ratio,
+        )
+        patch = sample_patch(array, point, radius=2)
+        patch_gradient = sample_patch(gradient, point, radius=2)
+        if patch.size == 0 or patch_gradient.size == 0:
+            continue
+        mean_gradient = float(np.mean(patch_gradient))
+        colors = patch.reshape(-1, 3)
+        contrast = float(np.percentile(np.linalg.norm(colors.astype(np.float32) - background[None, :], axis=1), 75))
+        strongest = max(strongest, mean_gradient, contrast)
+        if mean_gradient >= gradient_threshold or contrast >= color_threshold:
+            evidence += 1
+    ratio = evidence / max(1, steps)
+    required = config.edge_verification_dashed_ratio if expect_dashed else config.edge_verification_min_ratio
+    return ratio >= required and strongest >= min(color_threshold, gradient_threshold)
+
+
+def shortest_anchor_segment(source_bbox: BBox, target_bbox: BBox) -> tuple[Point, Point]:
+    source_center = source_bbox.center
+    target_center = target_bbox.center
+    dx = target_center.x - source_center.x
+    dy = target_center.y - source_center.y
+    if abs(dx) >= abs(dy):
+        source = Point(source_bbox.x1 if dx >= 0 else source_bbox.x0, source_center.y)
+        target = Point(target_bbox.x0 if dx >= 0 else target_bbox.x1, target_center.y)
+        return source, target
+    source = Point(source_center.x, source_bbox.y1 if dy >= 0 else source_bbox.y0)
+    target = Point(target_center.x, target_bbox.y0 if dy >= 0 else target_bbox.y1)
+    return source, target
+
+
+def estimate_image_background(array: np.ndarray) -> np.ndarray:
+    border = np.concatenate(
+        [
+            array[0, :, :],
+            array[-1, :, :],
+            array[:, 0, :],
+            array[:, -1, :],
+        ],
+        axis=0,
+    )
+    return np.median(border.astype(np.float32), axis=0)
+
+
+def sample_patch(array: np.ndarray, point: Point, *, radius: int) -> np.ndarray:
+    x = int(round(point.x))
+    y = int(round(point.y))
+    y0 = max(0, y - radius)
+    y1 = min(array.shape[0], y + radius + 1)
+    x0 = max(0, x - radius)
+    x1 = min(array.shape[1], x + radius + 1)
+    return array[y0:y1, x0:x1]
 
 
 def detect_linear_elements(
