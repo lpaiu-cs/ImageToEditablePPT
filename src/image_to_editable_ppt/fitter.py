@@ -55,6 +55,14 @@ class StrokeGraphEdge:
     bridge_ratio: float = 0.0
 
 
+@dataclass(slots=True)
+class FillRegionContourCandidate:
+    bbox: BBox
+    local_mask: np.ndarray
+    contour_points: np.ndarray | None = None
+    allow_nested: bool = False
+
+
 def extract_strokes(
     mask: np.ndarray,
     orientation: str,
@@ -457,46 +465,121 @@ def fit_fill_region_boxes(
                 continue
             if component.width < scale.min_box_size * 1.6 or component.height < scale.min_box_size * 1.2:
                 continue
-            candidate = fit_fill_region_box_from_component(
-                component.pixels,
-                bbox=component.bbox,
-                mask=candidate_mask,
-                boundary_mask=boundary_mask,
-                array=array,
-                smoothed_array=smoothed_array,
-                detail_mask=detail_mask,
-                background_color=background_color,
-                config=config,
-                scale=scale,
-                element_id=f"box-{next_index}",
-            )
-            if candidate is None:
-                continue
-            if any(boxes_equivalent(candidate, existing) for existing in existing_elements + candidates):
-                continue
-            if nested_fill_candidate(candidate, existing_elements + candidates, scale):
-                continue
-            candidates.append(candidate)
-            next_index += 1
-            if len(candidates) >= 8:
-                return candidates
+            for contour_candidate in fill_region_component_candidates(component, scale=scale, config=config):
+                candidate = fit_fill_region_box_from_mask(
+                    contour_candidate.local_mask,
+                    bbox=contour_candidate.bbox,
+                    boundary_mask=boundary_mask,
+                    array=array,
+                    smoothed_array=smoothed_array,
+                    detail_mask=detail_mask,
+                    background_color=background_color,
+                    config=config,
+                    scale=scale,
+                    element_id=f"box-{next_index}",
+                    contour_points=contour_candidate.contour_points,
+                )
+                if candidate is None:
+                    continue
+                if any(boxes_equivalent(candidate, existing) for existing in existing_elements + candidates):
+                    continue
+                if not contour_candidate.allow_nested and nested_fill_candidate(candidate, existing_elements + candidates, scale, config):
+                    continue
+                candidates.append(candidate)
+                next_index += 1
+                if len(candidates) >= 8:
+                    return candidates
     return candidates
 
 
-def nested_fill_candidate(candidate: Element, existing: list[Element], scale: ScaleContext) -> bool:
+def nested_fill_candidate(
+    candidate: Element,
+    existing: list[Element],
+    scale: ScaleContext,
+    config: PipelineConfig,
+) -> bool:
     margin = max(4.0, scale.estimated_stroke_width * 3.0)
     for element in existing:
         if element.kind not in {"rect", "rounded_rect"}:
             continue
-        if candidate.bbox.area >= element.bbox.area * 0.7:
+        if candidate.bbox.area >= element.bbox.area * 0.82:
             continue
         expanded = element.bbox.expand(margin)
         if (
             expanded.contains_point(Point(candidate.bbox.x0, candidate.bbox.y0))
             and expanded.contains_point(Point(candidate.bbox.x1, candidate.bbox.y1))
         ):
-            return True
+            area_ratio = candidate.bbox.area / max(1.0, element.bbox.area)
+            if area_ratio < max(0.12, config.nested_panel_min_area_ratio * 0.6):
+                return True
+            if (
+                abs(candidate.bbox.x0 - element.bbox.x0) <= margin
+                or abs(candidate.bbox.y0 - element.bbox.y0) <= margin
+                or abs(candidate.bbox.x1 - element.bbox.x1) <= margin
+                or abs(candidate.bbox.y1 - element.bbox.y1) <= margin
+            ):
+                return True
     return False
+
+
+def fill_region_component_candidates(
+    component,
+    *,
+    scale: ScaleContext,
+    config: PipelineConfig,
+) -> list[FillRegionContourCandidate]:
+    local_mask = component_mask(component.pixels, component.bbox)
+    candidates = [FillRegionContourCandidate(bbox=component.bbox, local_mask=local_mask)]
+    if cv2 is None:
+        return candidates
+    mask_u8 = (local_mask.astype(np.uint8) * 255)
+    contours, hierarchy = cv2.findContours(mask_u8, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    if not contours or hierarchy is None:
+        return candidates
+    hierarchy_nodes = hierarchy[0]
+    min_child_area = max(
+        scale.min_component_area * 3,
+        int(round(scale.min_box_size * scale.min_box_size * config.nested_panel_min_area_ratio)),
+    )
+    inset = max(2, int(round(scale.estimated_stroke_width * 2.0)))
+    for index, contour in enumerate(contours):
+        parent_index = int(hierarchy_nodes[index][3])
+        if parent_index < 0 or contour.ndim != 3 or contour.shape[1] != 1:
+            continue
+        area = float(cv2.contourArea(contour))
+        if area < min_child_area:
+            continue
+        x, y, width, height = cv2.boundingRect(contour)
+        if min(width, height) < scale.min_box_size * 1.35:
+            continue
+        aspect = max(width, height) / max(1.0, min(width, height))
+        if aspect > 4.0:
+            continue
+        rectangularity = area / max(1.0, float(width * height))
+        if rectangularity < config.nested_panel_rectangularity:
+            continue
+        parent_x, parent_y, parent_width, parent_height = cv2.boundingRect(contours[parent_index])
+        if (
+            x <= parent_x + inset
+            or y <= parent_y + inset
+            or x + width >= parent_x + parent_width - inset
+            or y + height >= parent_y + parent_height - inset
+        ):
+            continue
+        child_mask_u8 = np.zeros_like(mask_u8)
+        cv2.drawContours(child_mask_u8, contours, index, 255, thickness=-1)
+        child_mask = child_mask_u8 > 0
+        if not child_mask.any():
+            continue
+        candidates.append(
+            FillRegionContourCandidate(
+                bbox=component.bbox,
+                local_mask=child_mask,
+                contour_points=contour[:, 0, :].astype(np.float32),
+                allow_nested=True,
+            )
+        )
+    return candidates
 
 
 def quantized_fill_region_masks(
@@ -537,11 +620,10 @@ def quantized_fill_region_masks(
     return masks
 
 
-def fit_fill_region_box_from_component(
-    pixels: np.ndarray,
+def fit_fill_region_box_from_mask(
+    local_mask: np.ndarray,
     *,
     bbox: BBox,
-    mask: np.ndarray,
     boundary_mask: np.ndarray,
     array: np.ndarray,
     smoothed_array: np.ndarray,
@@ -550,9 +632,9 @@ def fit_fill_region_box_from_component(
     config: PipelineConfig,
     scale: ScaleContext,
     element_id: str,
+    contour_points: np.ndarray | None = None,
 ) -> Element | None:
-    local_mask = component_mask(pixels, bbox)
-    contour_points = outer_contour_points(local_mask)
+    contour_points = outer_contour_points(local_mask) if contour_points is None else contour_points
     if contour_points is None or len(contour_points) < 16:
         return None
     candidate_bbox = contour_bbox_from_percentiles(
@@ -565,9 +647,11 @@ def fit_fill_region_box_from_component(
         return None
     if candidate_bbox.width < scale.min_box_size * 1.5 or candidate_bbox.height < scale.min_box_size:
         return None
+    if max(candidate_bbox.width, candidate_bbox.height) / max(1.0, min(candidate_bbox.width, candidate_bbox.height)) > 4.0:
+        return None
     if bbox_touches_image_border(candidate_bbox, array.shape, margin=max(6.0, scale.estimated_stroke_width * 2.5)):
         return None
-    density = component_fill_density(mask, candidate_bbox)
+    density = local_component_fill_density(local_mask, candidate_bbox, component_bbox=bbox)
     if density < config.fill_region_min_density:
         return None
     corner_hits = fill_region_corner_hits(local_mask, candidate_bbox, bbox, scale)
@@ -623,11 +707,16 @@ def fit_fill_region_box_from_component(
     )
 
 
-def component_fill_density(mask: np.ndarray, bbox: BBox) -> float:
-    x0 = max(0, int(math.floor(bbox.x0)))
-    y0 = max(0, int(math.floor(bbox.y0)))
-    x1 = min(mask.shape[1], int(math.ceil(bbox.x1)))
-    y1 = min(mask.shape[0], int(math.ceil(bbox.y1)))
+def local_component_fill_density(
+    mask: np.ndarray,
+    candidate_bbox: BBox,
+    *,
+    component_bbox: BBox,
+) -> float:
+    x0 = max(0, int(math.floor(candidate_bbox.x0 - component_bbox.x0)))
+    y0 = max(0, int(math.floor(candidate_bbox.y0 - component_bbox.y0)))
+    x1 = min(mask.shape[1], int(math.ceil(candidate_bbox.x1 - component_bbox.x0)))
+    y1 = min(mask.shape[0], int(math.ceil(candidate_bbox.y1 - component_bbox.y0)))
     if x1 <= x0 or y1 <= y0:
         return 0.0
     window = mask[y0:y1, x0:x1]
@@ -1650,9 +1739,16 @@ def fit_global_stroke_lines(
             continue
         geometry = global_stroke_geometry(stroke)
         connection_count = stroke_connection_count(geometry.points[0], geometry.points[-1], structural_elements, scale)
-        if stroke_touches_border(stroke, array.shape, margin=max(16.0, scale.min_box_size * 1.2)) and connection_count < 2:
+        anchor_hits = box_edge_anchor_hits(
+            geometry.points[0],
+            geometry.points[-1],
+            structural_elements,
+            scale=scale,
+            config=config,
+        )
+        if stroke_touches_border(stroke, array.shape, margin=max(16.0, scale.min_box_size * 1.2)) and max(connection_count, anchor_hits) < 2:
             continue
-        if connection_count == 0 and stroke.length < scale.min_linear_length * 2.8:
+        if max(connection_count, anchor_hits) == 0 and stroke.length < scale.min_linear_length * 3.1:
             continue
         if any(geometry.bbox.iou(existing.bbox) >= 0.72 for existing in elements):
             continue
@@ -1672,6 +1768,7 @@ def fit_global_stroke_lines(
                     0.74
                     + min(stroke.length / max(1.0, scale.min_linear_length * 1.5), 2.0) * 0.05
                     + min(connection_count, 2) * 0.03,
+                    + min(anchor_hits, 2) * 0.04,
                 ),
                 source_region=geometry.bbox,
                 inferred=stroke.inferred,
@@ -1750,9 +1847,16 @@ def fit_hough_segment_elements(
             continue
         geometry = global_stroke_geometry(stroke)
         connection_count = stroke_connection_count(geometry.points[0], geometry.points[-1], structural_elements, scale)
-        if stroke_touches_border(stroke, array.shape, margin=max(16.0, scale.min_box_size * 1.2)) and connection_count < 2:
+        anchor_hits = box_edge_anchor_hits(
+            geometry.points[0],
+            geometry.points[-1],
+            structural_elements,
+            scale=scale,
+            config=config,
+        )
+        if stroke_touches_border(stroke, array.shape, margin=max(16.0, scale.min_box_size * 1.2)) and max(connection_count, anchor_hits) < 2:
             continue
-        if connection_count == 0 and stroke.length < scale.min_linear_length * 1.8:
+        if max(connection_count, anchor_hits) == 0 and stroke.length < scale.min_linear_length * 2.2:
             continue
         if any(geometry.bbox.iou(existing.bbox) >= 0.72 for existing in existing_elements + elements):
             continue
@@ -1769,6 +1873,7 @@ def fit_hough_segment_elements(
                     0.72
                     + min(stroke.length / max(1.0, scale.min_linear_length * 1.25), 2.2) * 0.05
                     + min(connection_count, 2) * 0.03,
+                    + min(anchor_hits, 2) * 0.04,
                 ),
                 source_region=geometry.bbox,
                 inferred=stroke.inferred,
@@ -1883,11 +1988,27 @@ def hough_connector_elements(
             continue
         if any(index in used for index in group):
             continue
-        path = longest_stroke_path(group, adjacency, strokes, config)
+        path = longest_stroke_path(
+            group,
+            adjacency,
+            strokes,
+            config,
+            structural_elements=structural_elements,
+            scale=scale,
+        )
         if len(path) < 2:
             continue
         geometry, path_kind, bridge_edges = stroke_path_geometry(path, adjacency, strokes, config)
         if geometry is None or path_kind is None:
+            continue
+        path_score, anchor_hits = anchored_path_score(
+            geometry,
+            bridge_edges=bridge_edges,
+            structural_elements=structural_elements,
+            scale=scale,
+            config=config,
+        )
+        if path_score < scale.min_linear_length * config.global_graph_min_path_score_ratio:
             continue
         band = max(1, int(round(median([strokes[index].thickness for index in path]))))
         coverage = connector_pixel_coverage(mask, geometry.points, band=max(1, band))
@@ -1900,11 +2021,11 @@ def hough_connector_elements(
         if path_length < scale.min_linear_length * (0.70 if bridge_edges > 0 else 0.85):
             continue
         endpoint_hits = stroke_connection_count(geometry.points[0], geometry.points[-1], structural_elements, scale)
-        if path_kind == "line" and endpoint_hits == 0 and bridge_edges == 0 and path_length < scale.min_linear_length * 1.6:
+        if path_kind == "line" and max(endpoint_hits, anchor_hits) == 0 and bridge_edges == 0 and path_length < scale.min_linear_length * 1.9:
             continue
         if (
             path_kind == "orthogonal_connector"
-            and endpoint_hits == 0
+            and max(endpoint_hits, anchor_hits) == 0
             and bridge_edges == 0
             and (
                 path_length < scale.min_linear_length * 2.2
@@ -1912,7 +2033,7 @@ def hough_connector_elements(
             )
         ):
             continue
-        if endpoint_hits == 0 and bridge_edges == 0 and path_length < scale.min_linear_length * 1.5:
+        if max(endpoint_hits, anchor_hits) == 0 and bridge_edges == 0 and path_length < scale.min_linear_length * 1.8:
             continue
         if any(
             geometry.bbox.iou(existing.bbox) >= 0.72
@@ -1941,6 +2062,7 @@ def hough_connector_elements(
                     + coverage * 0.20
                     + min(len(geometry.points), 6) * 0.01
                     + min(endpoint_hits, 2) * 0.02
+                    + min(anchor_hits, 2) * 0.03
                     + min(bridge_edges, 2) * 0.03,
                 ),
                 source_region=geometry.bbox,
@@ -2026,17 +2148,36 @@ def longest_stroke_path(
     adjacency: dict[int, list[StrokeGraphEdge]],
     strokes: list[Stroke],
     config: PipelineConfig,
+    *,
+    structural_elements: list[Element],
+    scale: ScaleContext,
 ) -> list[int]:
     node_set = set(group)
     degrees = {node: sum(1 for edge in adjacency[node] if edge.neighbor in node_set) for node in group}
     starts = [node for node in group if degrees[node] <= 1] or group
     if len(group) > config.global_graph_max_component:
-        return greedy_stroke_path(starts, adjacency, strokes, node_set)
+        return greedy_stroke_path(
+            starts,
+            adjacency,
+            strokes,
+            node_set,
+            structural_elements=structural_elements,
+            scale=scale,
+            config=config,
+        )
     best_path: list[int] = []
-    best_score = -1.0
+    best_score = float("-inf")
 
-    def dfs(node: int, visited: set[int], path: list[int], score: float) -> None:
+    def dfs(node: int, visited: set[int], path: list[int]) -> None:
         nonlocal best_path, best_score
+        score = score_stroke_path(
+            path,
+            adjacency,
+            strokes,
+            structural_elements=structural_elements,
+            scale=scale,
+            config=config,
+        )
         if score > best_score:
             best_score = score
             best_path = path[:]
@@ -2051,16 +2192,11 @@ def longest_stroke_path(
         )
         for edge in neighbors:
             visited.add(edge.neighbor)
-            dfs(
-                edge.neighbor,
-                visited,
-                path + [edge.neighbor],
-                score + strokes[edge.neighbor].length + edge.bridge_ratio * 40.0,
-            )
+            dfs(edge.neighbor, visited, path + [edge.neighbor])
             visited.remove(edge.neighbor)
 
     for start in starts:
-        dfs(start, {start}, [start], strokes[start].length)
+        dfs(start, {start}, [start])
     return best_path
 
 
@@ -2069,23 +2205,88 @@ def greedy_stroke_path(
     adjacency: dict[int, list[StrokeGraphEdge]],
     strokes: list[Stroke],
     node_set: set[int],
+    *,
+    structural_elements: list[Element],
+    scale: ScaleContext,
+    config: PipelineConfig,
 ) -> list[int]:
-    start = max(starts, key=lambda node: strokes[node].length)
-    path = [start]
-    visited = {start}
-    while True:
-        head = path[-1]
-        candidates = [
-            edge
-            for edge in adjacency[head]
-            if edge.neighbor in node_set and edge.neighbor not in visited
-        ]
-        if not candidates:
-            break
-        edge = max(candidates, key=lambda item: strokes[item.neighbor].length + item.bridge_ratio * 120.0)
-        path.append(edge.neighbor)
-        visited.add(edge.neighbor)
-    return path
+    best_path: list[int] = []
+    best_score = float("-inf")
+    for start in starts:
+        path = [start]
+        visited = {start}
+        while True:
+            head = path[-1]
+            candidates = [
+                edge
+                for edge in adjacency[head]
+                if edge.neighbor in node_set and edge.neighbor not in visited
+            ]
+            if not candidates:
+                break
+            edge = max(candidates, key=lambda item: strokes[item.neighbor].length + item.bridge_ratio * 120.0)
+            path.append(edge.neighbor)
+            visited.add(edge.neighbor)
+        score = score_stroke_path(
+            path,
+            adjacency,
+            strokes,
+            structural_elements=structural_elements,
+            scale=scale,
+            config=config,
+        )
+        if score > best_score:
+            best_score = score
+            best_path = path
+    return best_path
+
+
+def score_stroke_path(
+    path: list[int],
+    adjacency: dict[int, list[StrokeGraphEdge]],
+    strokes: list[Stroke],
+    *,
+    structural_elements: list[Element],
+    scale: ScaleContext,
+    config: PipelineConfig,
+) -> float:
+    geometry, _, bridge_edges = stroke_path_geometry(path, adjacency, strokes, config)
+    if geometry is None:
+        return float("-inf")
+    score, _ = anchored_path_score(
+        geometry,
+        bridge_edges=bridge_edges,
+        structural_elements=structural_elements,
+        scale=scale,
+        config=config,
+    )
+    return score
+
+
+def anchored_path_score(
+    geometry: PolylineGeometry,
+    *,
+    bridge_edges: int,
+    structural_elements: list[Element],
+    scale: ScaleContext,
+    config: PipelineConfig,
+) -> tuple[float, int]:
+    path_length = polyline_length(geometry.points)
+    anchor_hits = box_edge_anchor_hits(
+        geometry.points[0],
+        geometry.points[-1],
+        structural_elements,
+        scale=scale,
+        config=config,
+    )
+    if anchor_hits >= 2:
+        anchor_prior = max(config.global_graph_double_anchor_bonus, path_length * 0.32)
+    elif anchor_hits == 1:
+        anchor_prior = max(config.global_graph_anchor_bonus, path_length * 0.18)
+    else:
+        anchor_prior = -max(config.global_graph_floating_penalty, path_length * 1.15)
+    bridge_bonus = bridge_edges * max(12.0, scale.min_linear_length * 0.22)
+    return path_length + bridge_bonus + anchor_prior, anchor_hits
 
 
 def stroke_path_geometry(
@@ -2350,7 +2551,39 @@ def global_stroke_geometry(stroke: Stroke) -> PolylineGeometry:
             Point(float(stroke.center_x), float(stroke.y0)),
             Point(float(stroke.center_x), float(stroke.y1)),
         )
+        )
+
+
+def box_edge_anchor_hits(
+    start: Point,
+    end: Point,
+    structural_elements: list[Element],
+    *,
+    scale: ScaleContext,
+    config: PipelineConfig,
+) -> int:
+    margin = max(config.global_graph_anchor_margin, scale.estimated_stroke_width * 4.5)
+    return int(point_is_box_edge_anchored(start, structural_elements, margin=margin)) + int(
+        point_is_box_edge_anchored(end, structural_elements, margin=margin)
     )
+
+
+def point_is_box_edge_anchored(point: Point, structural_elements: list[Element], *, margin: float) -> bool:
+    for element in structural_elements:
+        if element.kind not in {"rect", "rounded_rect"}:
+            continue
+        box = element.bbox
+        on_horizontal_edge = (
+            box.x0 - margin <= point.x <= box.x1 + margin
+            and min(abs(point.y - box.y0), abs(point.y - box.y1)) <= margin
+        )
+        on_vertical_edge = (
+            box.y0 - margin <= point.y <= box.y1 + margin
+            and min(abs(point.x - box.x0), abs(point.x - box.x1)) <= margin
+        )
+        if on_horizontal_edge or on_vertical_edge:
+            return True
+    return False
 
 
 def stroke_connection_count(

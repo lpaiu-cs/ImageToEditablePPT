@@ -64,6 +64,9 @@ def build_elements(
         fill_region_background_ratio=active_config.fill_region_background_ratio,
         fill_region_uniformity_ratio=active_config.fill_region_uniformity_ratio,
         fill_region_edge_ratio=active_config.fill_region_edge_ratio,
+        non_diagram_edge_density=active_config.non_diagram_edge_density,
+        non_diagram_color_variance=active_config.non_diagram_color_variance,
+        non_diagram_side_support=active_config.non_diagram_side_support,
     )
     detection = detect_elements_with_metadata(processed, active_config)
     elements = detection.elements

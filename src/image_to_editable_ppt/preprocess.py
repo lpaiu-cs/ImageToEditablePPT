@@ -36,6 +36,7 @@ class ProcessedImage:
     fill_region_mask: np.ndarray
     boundary_mask_raw: np.ndarray
     boundary_mask: np.ndarray
+    non_diagram_mask: np.ndarray
     scale: ScaleContext
 
     @property
@@ -61,6 +62,9 @@ def preprocess_image(
     fill_region_background_ratio: float = 0.68,
     fill_region_uniformity_ratio: float = 0.84,
     fill_region_edge_ratio: float = 0.82,
+    non_diagram_edge_density: float = 0.12,
+    non_diagram_color_variance: float = 220.0,
+    non_diagram_side_support: float = 0.24,
 ) -> ProcessedImage:
     array = np.asarray(image.convert("RGB"), dtype=np.uint8)
     gray = np.asarray(image.convert("L"), dtype=np.float32)
@@ -78,11 +82,11 @@ def preprocess_image(
     provisional_area = max(4, min_component_area // 2)
     foreground = remove_small_components(foreground, provisional_area)
     detail_raw = remove_small_components(detail, provisional_area)
-    boundary = build_boundary_mask(foreground)
-    boundary = remove_small_components(boundary, provisional_area)
+    boundary_raw = build_boundary_mask(foreground)
+    boundary_raw = remove_small_components(boundary_raw, provisional_area)
     scale = estimate_scale_context(
         image_size=image.size,
-        boundary_mask=boundary,
+        boundary_mask=boundary_raw,
         min_component_area=min_component_area,
         min_stroke_length=min_stroke_length or 18,
         min_box_size=min_box_size or 24,
@@ -106,8 +110,26 @@ def preprocess_image(
         fill_region_mask,
         max(scale.min_component_area * 4, int(round(scale.min_box_size * scale.min_box_size * 0.8))),
     )
+    boundary_raw = build_boundary_mask(foreground)
+    boundary_raw = remove_small_components(boundary_raw, max(4, scale.min_component_area // 2))
+    non_diagram_mask = build_non_diagram_mask(
+        array=array,
+        gray=gray,
+        foreground_mask=foreground,
+        boundary_mask=boundary_raw,
+        scale=scale,
+        edge_density_threshold=non_diagram_edge_density,
+        color_variance_threshold=non_diagram_color_variance,
+        side_support_threshold=non_diagram_side_support,
+    )
+    if non_diagram_mask.any():
+        detail_raw = detail_raw & ~non_diagram_mask
+        detail = detail & ~non_diagram_mask
+        fill_region_mask = fill_region_mask & ~non_diagram_mask
     boundary = build_boundary_mask(foreground)
     boundary = remove_small_components(boundary, max(4, scale.min_component_area // 2))
+    if non_diagram_mask.any():
+        boundary = boundary & ~non_diagram_mask
     return ProcessedImage(
         image=image,
         array=array,
@@ -118,8 +140,9 @@ def preprocess_image(
         detail_mask_raw=detail_raw,
         detail_mask=detail,
         fill_region_mask=fill_region_mask,
-        boundary_mask_raw=boundary,
+        boundary_mask_raw=boundary_raw,
         boundary_mask=boundary,
+        non_diagram_mask=non_diagram_mask,
         scale=scale,
     )
 
@@ -204,6 +227,85 @@ def build_fill_region_mask(
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
         fill_mask = cv2.morphologyEx(fill_mask.astype(np.uint8), cv2.MORPH_CLOSE, kernel) > 0
     return fill_mask
+
+
+def build_non_diagram_mask(
+    *,
+    array: np.ndarray,
+    gray: np.ndarray,
+    foreground_mask: np.ndarray,
+    boundary_mask: np.ndarray,
+    scale: ScaleContext,
+    edge_density_threshold: float,
+    color_variance_threshold: float,
+    side_support_threshold: float,
+) -> np.ndarray:
+    if not foreground_mask.any():
+        return np.zeros_like(foreground_mask, dtype=bool)
+    edge_mask = canny_edge_mask(gray)
+    suppression = np.zeros_like(foreground_mask, dtype=bool)
+    min_bbox_area = max(
+        scale.min_component_area * 12,
+        int(round(scale.min_box_size * scale.min_box_size * 2.2)),
+    )
+    for component in find_connected_components(foreground_mask):
+        if component.area < scale.min_component_area * 4 or component.bbox.area < min_bbox_area:
+            continue
+        bbox = component.bbox.expand(max(2.0, scale.estimated_stroke_width * 1.6))
+        x0 = max(0, int(np.floor(bbox.x0)))
+        y0 = max(0, int(np.floor(bbox.y0)))
+        x1 = min(array.shape[1], int(np.ceil(bbox.x1)))
+        y1 = min(array.shape[0], int(np.ceil(bbox.y1)))
+        if x1 <= x0 or y1 <= y0:
+            continue
+        window = array[y0:y1, x0:x1, :]
+        if window.size == 0:
+            continue
+        edge_density = float(edge_mask[y0:y1, x0:x1].mean())
+        color_variance = float(np.var(window.reshape(-1, 3), axis=0).mean())
+        side_support = bbox_side_support(boundary_mask, x0=x0, y0=y0, x1=x1, y1=y1, scale=scale)
+        rectangularity = component.area / max(1.0, component.bbox.area)
+        if side_support >= side_support_threshold and rectangularity >= 0.34:
+            continue
+        if (
+            rectangularity >= 0.84
+            and edge_density < edge_density_threshold * 1.35
+            and color_variance < color_variance_threshold * 0.72
+        ):
+            continue
+        high_texture = edge_density >= edge_density_threshold and color_variance >= color_variance_threshold * 0.65
+        high_variance = color_variance >= color_variance_threshold and edge_density >= edge_density_threshold * 0.75
+        chaotic_edges = edge_density >= edge_density_threshold * 1.85 and side_support < side_support_threshold * 0.75
+        if not (high_texture or high_variance or chaotic_edges):
+            continue
+        suppression[y0:y1, x0:x1] = True
+    return suppression
+
+
+def canny_edge_mask(gray: np.ndarray) -> np.ndarray:
+    gray_u8 = np.clip(gray, 0.0, 255.0).astype(np.uint8)
+    if cv2 is not None:
+        return cv2.Canny(gray_u8, 48, 144) > 0
+    return gray_edge_magnitude(gray) >= 32.0
+
+
+def bbox_side_support(
+    mask: np.ndarray,
+    *,
+    x0: int,
+    y0: int,
+    x1: int,
+    y1: int,
+    scale: ScaleContext,
+) -> float:
+    if x1 <= x0 or y1 <= y0:
+        return 0.0
+    band = max(1, int(round(scale.estimated_stroke_width * 1.6)))
+    top = float(mask[y0 : min(mask.shape[0], y0 + band), x0:x1].mean()) if y0 < y1 else 0.0
+    bottom = float(mask[max(0, y1 - band) : y1, x0:x1].mean()) if y0 < y1 else 0.0
+    left = float(mask[y0:y1, x0 : min(mask.shape[1], x0 + band)].mean()) if x0 < x1 else 0.0
+    right = float(mask[y0:y1, max(0, x1 - band) : x1].mean()) if x0 < x1 else 0.0
+    return max(top, bottom, left, right)
 
 
 def gray_edge_magnitude(gray: np.ndarray) -> np.ndarray:

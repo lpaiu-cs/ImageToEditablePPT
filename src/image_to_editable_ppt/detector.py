@@ -54,6 +54,22 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
         gray=processed.gray,
         min_length=box_min_length,
     )
+    graph_horizontal = extract_strokes(
+        processed.boundary_mask,
+        "horizontal",
+        config,
+        array=processed.array,
+        gray=processed.gray,
+        min_length=box_min_length,
+    )
+    graph_vertical = extract_strokes(
+        processed.boundary_mask,
+        "vertical",
+        config,
+        array=processed.array,
+        gray=processed.gray,
+        min_length=box_min_length,
+    )
     boxes = fit_boxes(
         horizontal,
         vertical,
@@ -114,7 +130,7 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
     ]
     bridge_mask = np.zeros_like(processed.detail_mask, dtype=bool)
     mark_regions(bridge_mask, bridge_regions, value=True)
-    hough_mask = processed.boundary_mask_raw.copy()
+    hough_mask = processed.boundary_mask.copy()
     mark_regions(hough_mask, [box.bbox.expand(clear_margin) for box in boxes], value=False)
     mark_regions(hough_mask, bridge_regions, value=False)
     mark_regions(
@@ -147,8 +163,8 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
     )
     if not hough_linear and not linear and boxes and max(processed.size) >= 1800:
         linear = fit_global_stroke_lines(
-            horizontal=horizontal,
-            vertical=vertical,
+            horizontal=graph_horizontal,
+            vertical=graph_vertical,
             array=processed.array,
             gray=processed.gray,
             config=config,
@@ -244,6 +260,12 @@ def detect_linear_elements(
                 for candidate in fallback:
                     if filtered.strength == "weak":
                         candidate = weaken_linear_candidate(candidate)
+                        candidate = strengthen_box_anchored_linear_candidate(
+                            candidate,
+                            structural_elements,
+                            processed.scale.min_box_size,
+                            config,
+                        )
                         if not weak_linear_candidate_is_plausible(
                             candidate,
                             structural_elements,
@@ -259,6 +281,12 @@ def detect_linear_elements(
             continue
         if filtered.strength == "weak":
             element = weaken_linear_candidate(element)
+            element = strengthen_box_anchored_linear_candidate(
+                element,
+                structural_elements,
+                processed.scale.min_box_size,
+                config,
+            )
             if not weak_linear_candidate_is_plausible(
                 element,
                 structural_elements,
@@ -327,6 +355,23 @@ def weaken_linear_candidate(element: Element) -> Element:
     return replace(element, confidence=max(0.0, element.confidence - 0.12))
 
 
+def strengthen_box_anchored_linear_candidate(
+    element: Element,
+    structural_elements: list[Element],
+    min_box_size: int,
+    config: PipelineConfig,
+) -> Element:
+    if element.kind not in {"line", "orthogonal_connector", "arrow"}:
+        return element
+    points = getattr(element.geometry, "points", ())
+    if len(points) < 2:
+        return element
+    hits = endpoint_box_hits(points[0], points[-1], structural_elements, margin=max(8.0, min_box_size * 0.45))
+    if hits < 2:
+        return element
+    return replace(element, confidence=max(element.confidence, config.inclusion_confidence))
+
+
 def weak_linear_candidate_is_plausible(
     element: Element,
     structural_elements: list[Element],
@@ -358,6 +403,13 @@ def endpoint_box_hits(start, end, structural_elements: list[Element], margin: fl
         if expanded.contains_point(end):
             hits += 1
     return hits
+
+
+def element_endpoint_hits_boxes(element: Element, boxes: list[Element], margin: float) -> int:
+    points = getattr(element.geometry, "points", ())
+    if len(points) < 2:
+        return 0
+    return endpoint_box_hits(points[0], points[-1], boxes, margin)
 
 
 def touches_image_border(element: Element, image_size: tuple[int, int], margin: float) -> bool:
@@ -410,6 +462,14 @@ def finalize_detected_elements(elements: list[Element], processed: ProcessedImag
             continue
         if element.kind == "line" and line_matches_any_box_edge(element, boxes, processed.scale):
             continue
+        if element.kind in {"line", "orthogonal_connector", "arrow"}:
+            endpoint_hits = element_endpoint_hits_boxes(
+                element,
+                boxes,
+                margin=max(8.0, processed.scale.min_box_size * 0.45),
+            )
+            if endpoint_hits >= 2 and element.confidence < config.inclusion_confidence:
+                element = replace(element, confidence=config.inclusion_confidence)
         if linear_element_is_duplicate(element, others) or parallel_line_is_duplicate(element, others, processed.scale):
             continue
         others.append(element)

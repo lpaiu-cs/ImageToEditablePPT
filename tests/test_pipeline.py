@@ -9,6 +9,7 @@ from dataclasses import replace
 import cv2
 import numpy as np
 from pptx import Presentation
+from PIL import Image, ImageDraw
 import pytest
 
 from image_to_editable_ppt.config import PipelineConfig
@@ -16,9 +17,12 @@ from image_to_editable_ppt.components import find_connected_components
 from image_to_editable_ppt.exporter import export_to_pptx
 from image_to_editable_ppt.fitter import (
     fit_component_box_from_outer_contour,
+    fit_fill_region_boxes,
     fit_hough_segment_elements,
     hough_axis_strokes,
+    hough_connector_elements,
     merge_parallel_strokes,
+    Stroke,
 )
 from image_to_editable_ppt.ir import BBox, BoxGeometry, Element, FillStyle, Point, PolylineGeometry, StrokeStyle
 from image_to_editable_ppt.pipeline import build_elements, convert_image
@@ -480,6 +484,146 @@ def test_fill_region_fallback_recovers_borderless_panel() -> None:
     boxes = [element for element in result.elements if element.kind in {"rect", "rounded_rect"}]
     assert boxes
     assert any(box.fill.enabled and box.bbox.width > 240 and box.bbox.height > 140 for box in boxes)
+
+
+def test_preprocess_blacklists_textured_photo_region_for_graph_input() -> None:
+    image = Image.new("RGB", (280, 190), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((24, 36, 114, 118), outline="black", width=5)
+    rng = np.random.default_rng(91)
+    patch = rng.integers(0, 255, size=(110, 104, 3), dtype=np.uint8)
+    image_array = np.asarray(image).copy()
+    image_array[34:144, 152:256, :] = patch
+    image = Image.fromarray(image_array)
+    config = PipelineConfig()
+    processed = preprocess_image(
+        image,
+        foreground_threshold=config.foreground_threshold,
+        min_component_area=config.min_component_area,
+        min_stroke_length=config.min_stroke_length,
+        min_box_size=config.min_box_size,
+        min_relative_line_length=config.min_relative_line_length,
+        min_relative_box_size=config.min_relative_box_size,
+        adaptive_background=config.adaptive_background,
+        background_blur_divisor=config.background_blur_divisor,
+        fill_region_background_ratio=config.fill_region_background_ratio,
+        fill_region_uniformity_ratio=config.fill_region_uniformity_ratio,
+        fill_region_edge_ratio=config.fill_region_edge_ratio,
+        non_diagram_edge_density=config.non_diagram_edge_density,
+        non_diagram_color_variance=config.non_diagram_color_variance,
+        non_diagram_side_support=config.non_diagram_side_support,
+    )
+
+    assert float(processed.non_diagram_mask[34:144, 152:256].mean()) >= 0.72
+    assert float(processed.non_diagram_mask[24:124, 24:124].mean()) <= 0.08
+    assert float(processed.boundary_mask[34:144, 152:256].mean()) <= float(processed.boundary_mask_raw[34:144, 152:256].mean()) * 0.2
+
+
+def test_global_segment_graph_rejects_floating_chain_when_box_anchored_path_exists() -> None:
+    mask = np.zeros((220, 320), dtype=bool)
+    array = np.full((220, 320, 3), 255, dtype=np.uint8)
+
+    def draw_stroke(stroke: Stroke) -> None:
+        x0 = max(0, int(np.floor(stroke.x0)))
+        y0 = max(0, int(np.floor(stroke.y0)))
+        x1 = min(mask.shape[1], int(np.ceil(stroke.x1)))
+        y1 = min(mask.shape[0], int(np.ceil(stroke.y1)))
+        mask[y0:y1, x0:x1] = True
+        array[y0:y1, x0:x1, :] = 22
+
+    strokes = [
+        Stroke("horizontal", 70.0, 78.5, 126.0, 81.5, 3.0),
+        Stroke("vertical", 124.5, 80.0, 127.5, 160.0, 3.0),
+        Stroke("horizontal", 126.0, 158.5, 200.0, 161.5, 3.0),
+        Stroke("horizontal", 24.0, 18.5, 154.0, 21.5, 3.0),
+        Stroke("vertical", 152.5, 20.0, 155.5, 92.0, 3.0),
+        Stroke("horizontal", 154.0, 89.5, 300.0, 92.5, 3.0),
+    ]
+    for stroke in strokes:
+        draw_stroke(stroke)
+
+    scale = ScaleContext(
+        estimated_stroke_width=3.0,
+        min_component_area=18,
+        min_stroke_length=16,
+        min_linear_length=42,
+        min_box_size=24,
+    )
+    boxes = [
+        Element(
+            id="box-left",
+            kind="rect",
+            geometry=BoxGeometry(BBox(20.0, 50.0, 70.0, 110.0)),
+            stroke=StrokeStyle(color=(0, 0, 0), width=3.0),
+            fill=FillStyle(enabled=False, color=None),
+            text=None,
+            confidence=0.95,
+            source_region=BBox(20.0, 50.0, 70.0, 110.0),
+        ),
+        Element(
+            id="box-right",
+            kind="rect",
+            geometry=BoxGeometry(BBox(200.0, 130.0, 252.0, 190.0)),
+            stroke=StrokeStyle(color=(0, 0, 0), width=3.0),
+            fill=FillStyle(enabled=False, color=None),
+            text=None,
+            confidence=0.95,
+            source_region=BBox(200.0, 130.0, 252.0, 190.0),
+        ),
+    ]
+    elements, _ = hough_connector_elements(
+        strokes,
+        mask=mask,
+        array=array,
+        config=PipelineConfig(),
+        scale=scale,
+        bridge_mask=None,
+        structural_elements=boxes,
+        existing_elements=[],
+        start_index=1,
+    )
+
+    assert any(element.kind == "orthogonal_connector" and element.bbox.x0 <= 70.0 and element.bbox.x1 >= 200.0 for element in elements)
+    assert all(element.bbox.y0 >= 60.0 for element in elements)
+
+
+def test_fill_region_hierarchy_splits_nested_panel_from_parent_contour() -> None:
+    mask = np.zeros((220, 220), dtype=bool)
+    mask[20:190, 20:200] = True
+    mask[78:146, 84:152] = False
+    boundary_mask = np.zeros_like(mask)
+    boundary_mask[76:80, 84:152] = True
+    boundary_mask[144:148, 84:152] = True
+    boundary_mask[78:146, 82:86] = True
+    boundary_mask[78:146, 150:154] = True
+    array = np.full((220, 220, 3), 255, dtype=np.uint8)
+    array[20:190, 20:200, :] = (224, 233, 244)
+    array[78:146, 84:152, :] = (230, 238, 246)
+    smoothed = array.copy()
+    detail_mask = np.zeros_like(mask)
+    scale = ScaleContext(
+        estimated_stroke_width=3.0,
+        min_component_area=18,
+        min_stroke_length=16,
+        min_linear_length=42,
+        min_box_size=24,
+    )
+
+    boxes = fit_fill_region_boxes(
+        mask=mask,
+        boundary_mask=boundary_mask,
+        array=array,
+        smoothed_array=smoothed,
+        detail_mask=detail_mask,
+        background_color=(255, 255, 255),
+        config=PipelineConfig(),
+        scale=scale,
+        existing_elements=[],
+        start_index=1,
+    )
+
+    assert any(box.bbox.width >= 160 and box.bbox.height >= 140 for box in boxes)
+    assert any(60 <= box.bbox.x0 <= 95 and 70 <= box.bbox.y0 <= 90 and box.bbox.width >= 55 and box.bbox.height >= 55 for box in boxes)
 
 
 def test_hough_bridge_mask_merges_segments_across_text_gap() -> None:

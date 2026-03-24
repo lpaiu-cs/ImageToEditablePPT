@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 ocr = ["pytesseract>=0.3.10"]
+test = ["pytest>=8"]
 
 [project.scripts]
 image-to-editable-ppt = "image_to_editable_ppt.cli:main"
