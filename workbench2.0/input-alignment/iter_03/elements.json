@@ -1,0 +1,1930 @@
+[
+  {
+    "id": "node-1",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2337,
+        "y0": 47,
+        "x1": 2616,
+        "y1": 254
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        194,
+        158,
+        157
+      ],
+      "width": 6.21,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2337,
+      "y0": 47,
+      "x1": 2616,
+      "y1": 254
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-1",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2359.32,
+        "y0": 75.98,
+        "x1": 2593.68,
+        "y1": 225.01999999999998
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        194,
+        158,
+        157
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "User Input",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2359.32,
+      "y0": 75.98,
+      "x1": 2593.68,
+      "y1": 225.01999999999998
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-2",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1224,
+        "y0": 256,
+        "x1": 1395,
+        "y1": 496
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        211,
+        226,
+        246
+      ],
+      "width": 5.13,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1224,
+      "y0": 256,
+      "x1": 1395,
+      "y1": 496
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-2",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1237.68,
+        "y0": 289.6,
+        "x1": 1381.32,
+        "y1": 462.4
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        211,
+        226,
+        246
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Bot Orchestrator\n(Main Loop Controller)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1237.68,
+      "y0": 289.6,
+      "x1": 1381.32,
+      "y1": 462.4
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-3",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 467,
+        "y0": 53,
+        "x1": 806,
+        "y1": 118
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        234,
+        237,
+        242
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 467,
+      "y0": 53,
+      "x1": 806,
+      "y1": 118
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-3",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 494.12,
+        "y0": 62.1,
+        "x1": 778.88,
+        "y1": 108.9
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        234,
+        237,
+        242
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "1. PERCEIVE (\uc778\uc9c0 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 494.12,
+      "y0": 62.1,
+      "x1": 778.88,
+      "y1": 108.9
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-4",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 413.99999999999994,
+        "y0": 150.4,
+        "x1": 827.9999999999999,
+        "y1": 300.8
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        72,
+        74,
+        79
+      ],
+      "width": 4.512,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.82,
+    "source_region": {
+      "x0": 413.99999999999994,
+      "y0": 150.4,
+      "x1": 827.9999999999999,
+      "y1": 300.8
+    },
+    "inferred": false
+  },
+  {
+    "id": "node-text-4",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 447.11999999999995,
+        "y0": 171.45600000000002,
+        "x1": 794.8799999999999,
+        "y1": 279.744
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        72,
+        74,
+        79
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Boundary Redaction\n(Clause-level, target-aware)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 447.11999999999995,
+      "y0": 171.45600000000002,
+      "x1": 794.8799999999999,
+      "y1": 279.744
+    },
+    "inferred": false
+  },
+  {
+    "id": "node-5",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 332,
+        "y0": 352,
+        "x1": 586,
+        "y1": 485
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        151,
+        178,
+        207
+      ],
+      "width": 3.9899999999999998,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 332,
+      "y0": 352,
+      "x1": 586,
+      "y1": 485
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-5",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 352.32,
+        "y0": 370.62,
+        "x1": 565.68,
+        "y1": 466.38
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        151,
+        178,
+        207
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Sensory System\n(Delta ingest, durable cursor,\nchunking & embedding)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 352.32,
+      "y0": 370.62,
+      "x1": 565.68,
+      "y1": 466.38
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-6",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 656,
+        "y0": 267,
+        "x1": 1138,
+        "y1": 485
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        198,
+        216,
+        238
+      ],
+      "width": 6.54,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 656,
+      "y0": 267,
+      "x1": 1138,
+      "y1": 485
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-6",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 694.56,
+        "y0": 297.52,
+        "x1": 1099.44,
+        "y1": 454.48
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        198,
+        216,
+        238
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Identity & Fast Path\n(nickname mapping,\nFastPathMemoryWriter)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 694.56,
+      "y0": 297.52,
+      "x1": 1099.44,
+      "y1": 454.48
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-7",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1727,
+        "y0": 159,
+        "x1": 2689,
+        "y1": 443
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        213,
+        191,
+        173
+      ],
+      "width": 8.52,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1727,
+      "y0": 159,
+      "x1": 2689,
+      "y1": 443
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-7",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1803.96,
+        "y0": 198.76,
+        "x1": 2612.04,
+        "y1": 403.24
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        213,
+        191,
+        173
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "2. RETRIEVE (\uae30\uc5b5 \uc778\ucd9c \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1803.96,
+      "y0": 198.76,
+      "x1": 2612.04,
+      "y1": 403.24
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-8",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1760,
+        "y0": 342,
+        "x1": 2242,
+        "y1": 560
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        249,
+        215,
+        181
+      ],
+      "width": 6.54,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1760,
+      "y0": 342,
+      "x1": 2242,
+      "y1": 560
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-8",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1798.56,
+        "y0": 372.52,
+        "x1": 2203.44,
+        "y1": 529.48
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        249,
+        215,
+        181
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Working Memory (STM)\n(priority queue & semantic boost)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1798.56,
+      "y0": 372.52,
+      "x1": 2203.44,
+      "y1": 529.48
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-9",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2312,
+        "y0": 342,
+        "x1": 2687,
+        "y1": 560
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        216,
+        171,
+        133
+      ],
+      "width": 6.54,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2312,
+      "y0": 342,
+      "x1": 2687,
+      "y1": 560
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-9",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2342.0,
+        "y0": 372.52,
+        "x1": 2657.0,
+        "y1": 529.48
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        216,
+        171,
+        133
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "QueryPlanner\n(referent cache & role alias)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2342.0,
+      "y0": 372.52,
+      "x1": 2657.0,
+      "y1": 529.48
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-10",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2312,
+        "y0": 493,
+        "x1": 2720,
+        "y1": 710
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        203,
+        146,
+        99
+      ],
+      "width": 6.51,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2312,
+      "y0": 493,
+      "x1": 2720,
+      "y1": 710
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-10",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2344.64,
+        "y0": 523.38,
+        "x1": 2687.36,
+        "y1": 679.62
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        203,
+        146,
+        99
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "LTM Handler\n(claim-aware search,\nACL, context bundle)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2344.64,
+      "y0": 523.38,
+      "x1": 2687.36,
+      "y1": 679.62
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-11",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1727,
+        "y0": 610,
+        "x1": 2689,
+        "y1": 815
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        226,
+        205,
+        176
+      ],
+      "width": 6.1499999999999995,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1727,
+      "y0": 610,
+      "x1": 2689,
+      "y1": 815
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-11",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1803.96,
+        "y0": 638.7,
+        "x1": 2612.04,
+        "y1": 786.3
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        226,
+        205,
+        176
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "3. THINK (\uc0ac\uace0 \ubc0f \uc0dd\uc131 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1803.96,
+      "y0": 638.7,
+      "x1": 2612.04,
+      "y1": 786.3
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-12",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1727,
+        "y0": 820,
+        "x1": 2210,
+        "y1": 1044
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        139,
+        98,
+        161
+      ],
+      "width": 6.72,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1727,
+      "y0": 820,
+      "x1": 2210,
+      "y1": 1044
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-12",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1765.64,
+        "y0": 851.36,
+        "x1": 2171.36,
+        "y1": 1012.64
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        139,
+        98,
+        161
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Generation Stack\n(prompt reconstruction,\nmodel eval gate, fast/slow\nrouting, structured output)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1765.64,
+      "y0": 851.36,
+      "x1": 2171.36,
+      "y1": 1012.64
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-13",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 82,
+        "y0": 610,
+        "x1": 1033,
+        "y1": 781
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        134,
+        142,
+        166
+      ],
+      "width": 5.13,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 82,
+      "y0": 610,
+      "x1": 1033,
+      "y1": 781
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-13",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 158.07999999999998,
+        "y0": 633.94,
+        "x1": 956.92,
+        "y1": 757.06
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        134,
+        142,
+        166
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "4. ACT (\ud589\ub3d9 \ubc0f \ubc18\uc601 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 158.07999999999998,
+      "y0": 633.94,
+      "x1": 956.92,
+      "y1": 757.06
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-14",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 278,
+        "y0": 890,
+        "x1": 586,
+        "y1": 1011
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        193,
+        227,
+        204
+      ],
+      "width": 3.63,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 278,
+      "y0": 890,
+      "x1": 586,
+      "y1": 1011
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-14",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 302.64,
+        "y0": 906.94,
+        "x1": 561.36,
+        "y1": 994.06
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        193,
+        227,
+        204
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Boundary Enforcement\n(memory-safe text,\nuser-visible repair)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 302.64,
+      "y0": 906.94,
+      "x1": 561.36,
+      "y1": 994.06
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-15",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 656,
+        "y0": 805,
+        "x1": 1138,
+        "y1": 1011
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        167,
+        179,
+        170
+      ],
+      "width": 6.18,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 656,
+      "y0": 805,
+      "x1": 1138,
+      "y1": 1011
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-15",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 694.56,
+        "y0": 833.84,
+        "x1": 1099.44,
+        "y1": 982.16
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        167,
+        179,
+        170
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "SocialManager\n(event-based relation\nupdate, fulfillment-aware\nreliability)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 694.56,
+      "y0": 833.84,
+      "x1": 1099.44,
+      "y1": 982.16
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-16",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1208,
+        "y0": 794,
+        "x1": 1690,
+        "y1": 1011
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        180,
+        181,
+        196
+      ],
+      "width": 6.51,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1208,
+      "y0": 794,
+      "x1": 1690,
+      "y1": 1011
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-16",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1246.56,
+        "y0": 824.38,
+        "x1": 1651.44,
+        "y1": 980.62
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        180,
+        181,
+        196
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Reflection Handler\n(claims/l / notes/l extraction,\nbackground consolidation)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1246.56,
+      "y0": 824.38,
+      "x1": 1651.44,
+      "y1": 980.62
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-17",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1749,
+        "y0": 984,
+        "x1": 2170,
+        "y1": 1173
+      },
+      "corner_radius": 34.019999999999996
+    },
+    "stroke": {
+      "color": [
+        157,
+        115,
+        175
+      ],
+      "width": 5.67,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1749,
+      "y0": 984,
+      "x1": 2170,
+      "y1": 1173
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-17",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1782.68,
+        "y0": 1010.46,
+        "x1": 2136.32,
+        "y1": 1146.54
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        157,
+        115,
+        175
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Memory Graph DB\n(Entity-Claim-Note-Episode)\n(snapshot + delta, public\nboundary projection)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1782.68,
+      "y0": 1010.46,
+      "x1": 2136.32,
+      "y1": 1146.54
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-18",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2336,
+        "y0": 944,
+        "x1": 2688,
+        "y1": 1162
+      },
+      "corner_radius": 39.24
+    },
+    "stroke": {
+      "color": [
+        233,
+        201,
+        86
+      ],
+      "width": 6.54,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2336,
+      "y0": 944,
+      "x1": 2688,
+      "y1": 1162
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-18",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2364.16,
+        "y0": 974.52,
+        "x1": 2659.84,
+        "y1": 1131.48
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        233,
+        201,
+        86
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Canonical State DB (SQLite)\n(active claims, open loops,\ninteraction policy, relation state,\nencrypted boundary payload)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2364.16,
+      "y0": 974.52,
+      "x1": 2659.84,
+      "y1": 1131.48
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2337,
+          "y": 150.5
+        },
+        {
+          "x": 1309.5,
+          "y": 150.5
+        },
+        {
+          "x": 1309.5,
+          "y": 227.01999999999998
+        },
+        {
+          "x": 1309.5,
+          "y": 256
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        194,
+        158,
+        157
+      ],
+      "width": 6.21,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1309.5,
+      "y0": 150.5,
+      "x1": 2337,
+      "y1": 256
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-2",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1309.5,
+          "y": 256
+        },
+        {
+          "x": 1309.5,
+          "y": 232.06
+        },
+        {
+          "x": 829.94,
+          "y": 232.06
+        },
+        {
+          "x": 829.94,
+          "y": 85.5
+        },
+        {
+          "x": 806,
+          "y": 85.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        211,
+        226,
+        246
+      ],
+      "width": 5.13,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 806,
+      "y0": 85.5,
+      "x1": 1309.5,
+      "y1": 256
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-3",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 620.9999999999999,
+          "y": 300.8
+        },
+        {
+          "x": 620.9999999999999,
+          "y": 321.856
+        },
+        {
+          "x": 607.056,
+          "y": 321.856
+        },
+        {
+          "x": 607.056,
+          "y": 418.5
+        },
+        {
+          "x": 586,
+          "y": 418.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        72,
+        74,
+        79
+      ],
+      "width": 4.512,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.82,
+    "source_region": {
+      "x0": 586,
+      "y0": 300.8,
+      "x1": 620.9999999999999,
+      "y1": 418.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-4",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 620.9999999999999,
+          "y": 300.8
+        },
+        {
+          "x": 620.9999999999999,
+          "y": 321.856
+        },
+        {
+          "x": 634.944,
+          "y": 321.856
+        },
+        {
+          "x": 634.944,
+          "y": 376.0
+        },
+        {
+          "x": 656,
+          "y": 376.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        72,
+        74,
+        79
+      ],
+      "width": 6.54,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.82,
+    "source_region": {
+      "x0": 620.9999999999999,
+      "y0": 300.8,
+      "x1": 656,
+      "y1": 376.0
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-5",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2208.0,
+          "y": 443
+        },
+        {
+          "x": 2208.0,
+          "y": 482.76
+        },
+        {
+          "x": 2281.76,
+          "y": 482.76
+        },
+        {
+          "x": 2281.76,
+          "y": 451.0
+        },
+        {
+          "x": 2242,
+          "y": 451.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        213,
+        191,
+        173
+      ],
+      "width": 8.52,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2208.0,
+      "y0": 443,
+      "x1": 2281.76,
+      "y1": 482.76
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-6",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2208.0,
+          "y": 443
+        },
+        {
+          "x": 2208.0,
+          "y": 482.76
+        },
+        {
+          "x": 2272.24,
+          "y": 482.76
+        },
+        {
+          "x": 2272.24,
+          "y": 451.0
+        },
+        {
+          "x": 2312,
+          "y": 451.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        216,
+        171,
+        133
+      ],
+      "width": 8.52,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2208.0,
+      "y0": 443,
+      "x1": 2312,
+      "y1": 482.76
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-7",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2499.5,
+          "y": 560
+        },
+        {
+          "x": 2499.5,
+          "y": 526.5
+        },
+        {
+          "x": 2516.0,
+          "y": 526.5
+        },
+        {
+          "x": 2516.0,
+          "y": 462.48
+        },
+        {
+          "x": 2516.0,
+          "y": 493
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        203,
+        146,
+        99
+      ],
+      "width": 6.54,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2499.5,
+      "y0": 462.48,
+      "x1": 2516.0,
+      "y1": 560
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-8",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1309.5,
+          "y": 496
+        },
+        {
+          "x": 1309.5,
+          "y": 519.94
+        },
+        {
+          "x": 1703.06,
+          "y": 519.94
+        },
+        {
+          "x": 1703.06,
+          "y": 712.5
+        },
+        {
+          "x": 1727,
+          "y": 712.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        226,
+        205,
+        176
+      ],
+      "width": 6.1499999999999995,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1309.5,
+      "y0": 496,
+      "x1": 1727,
+      "y1": 712.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-9",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2208.0,
+          "y": 815
+        },
+        {
+          "x": 2208.0,
+          "y": 843.7
+        },
+        {
+          "x": 2238.7,
+          "y": 843.7
+        },
+        {
+          "x": 2238.7,
+          "y": 932.0
+        },
+        {
+          "x": 2210,
+          "y": 932.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        139,
+        98,
+        161
+      ],
+      "width": 6.72,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2208.0,
+      "y0": 815,
+      "x1": 2238.7,
+      "y1": 932.0
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-10",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 557.5,
+          "y": 781
+        },
+        {
+          "x": 557.5,
+          "y": 804.94
+        },
+        {
+          "x": 632.06,
+          "y": 804.94
+        },
+        {
+          "x": 632.06,
+          "y": 908.0
+        },
+        {
+          "x": 656,
+          "y": 908.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        134,
+        142,
+        166
+      ],
+      "width": 6.18,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 557.5,
+      "y0": 781,
+      "x1": 656,
+      "y1": 908.0
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-11",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1033,
+          "y": 695.5
+        },
+        {
+          "x": 1120.5,
+          "y": 695.5
+        },
+        {
+          "x": 1120.5,
+          "y": 902.5
+        },
+        {
+          "x": 1184.06,
+          "y": 902.5
+        },
+        {
+          "x": 1208,
+          "y": 902.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        134,
+        142,
+        166
+      ],
+      "width": 6.51,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1033,
+      "y0": 695.5,
+      "x1": 1208,
+      "y1": 902.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-12",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2170,
+          "y": 1078.5
+        },
+        {
+          "x": 2253.0,
+          "y": 1078.5
+        },
+        {
+          "x": 2253.0,
+          "y": 1053.0
+        },
+        {
+          "x": 2309.54,
+          "y": 1053.0
+        },
+        {
+          "x": 2336,
+          "y": 1053.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        157,
+        115,
+        175
+      ],
+      "width": 6.54,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2170,
+      "y0": 1053.0,
+      "x1": 2336,
+      "y1": 1078.5
+    },
+    "inferred": true
+  }
+]

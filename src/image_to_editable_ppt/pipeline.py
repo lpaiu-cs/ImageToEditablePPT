@@ -122,8 +122,21 @@ def build_elements_from_structure(
     backend = ocr_backend or get_ocr_backend(True)
     semantic_ocr = collect_semantic_ocr_regions(image, backend, config)
     anchored_nodes, anchor_map = anchor_nodes_to_ocr(structure.nodes, semantic_ocr, config)
+    geometry_candidates = detect_global_geometry_candidates(image, config)
+    candidate_assignments = assign_geometry_candidates_to_nodes(
+        anchored_nodes,
+        anchor_map,
+        geometry_candidates,
+        semantic_ocr,
+        config,
+    )
     refined_nodes = [
-        refine_node_geometry(image, node, config, text_anchor=anchor_map.get(node.id).bbox if node.id in anchor_map else None)
+        refine_node_geometry(
+            image,
+            replace(node, approx_bbox=candidate_assignments[node.id].bbox) if node.id in candidate_assignments else node,
+            config,
+            text_anchor=anchor_map.get(node.id).bbox if node.id not in candidate_assignments and node.id in anchor_map else None,
+        )
         for node in anchored_nodes
     ]
     refined_nodes = hydrate_missing_node_texts(image, refined_nodes, backend)
@@ -312,6 +325,181 @@ def verify_semantic_edges(
         ):
             verified.append(edge)
     return verified
+
+
+def detect_global_geometry_candidates(
+    image: Image.Image,
+    config: PipelineConfig,
+) -> list[Element]:
+    processed = preprocess_image(
+        image,
+        foreground_threshold=config.foreground_threshold,
+        min_component_area=config.min_component_area,
+        min_stroke_length=config.min_stroke_length,
+        min_box_size=config.min_box_size,
+        min_relative_line_length=config.min_relative_line_length,
+        min_relative_box_size=config.min_relative_box_size,
+        adaptive_background=config.adaptive_background,
+        background_blur_divisor=config.background_blur_divisor,
+        fill_region_background_ratio=config.fill_region_background_ratio,
+        fill_region_uniformity_ratio=config.fill_region_uniformity_ratio,
+        fill_region_edge_ratio=config.fill_region_edge_ratio,
+        non_diagram_edge_density=config.non_diagram_edge_density,
+        non_diagram_color_variance=config.non_diagram_color_variance,
+        non_diagram_side_support=config.non_diagram_side_support,
+    )
+    detection = detect_elements_with_metadata(processed, config)
+    boxes = [element for element in detection.elements if element.kind in {"rect", "rounded_rect"}]
+    return snap_candidates_to_guides(boxes, tolerance=max(8.0, config.snap_box_endpoint_margin * 0.75))
+
+
+def snap_candidates_to_guides(candidates: list[Element], *, tolerance: float) -> list[Element]:
+    if not candidates:
+        return []
+    xs = [candidate.bbox.x0 for candidate in candidates] + [candidate.bbox.x1 for candidate in candidates]
+    ys = [candidate.bbox.y0 for candidate in candidates] + [candidate.bbox.y1 for candidate in candidates]
+    x_guides = cluster_guides(xs, tolerance=tolerance)
+    y_guides = cluster_guides(ys, tolerance=tolerance)
+    snapped: list[Element] = []
+    for candidate in candidates:
+        bbox = BBox(
+            snap_value(candidate.bbox.x0, x_guides),
+            snap_value(candidate.bbox.y0, y_guides),
+            snap_value(candidate.bbox.x1, x_guides),
+            snap_value(candidate.bbox.y1, y_guides),
+        )
+        if bbox.width <= 1.0 or bbox.height <= 1.0:
+            snapped.append(candidate)
+            continue
+        geometry = BoxGeometry(bbox=bbox, corner_radius=getattr(candidate.geometry, "corner_radius", 0.0))
+        snapped.append(
+            replace(
+                candidate,
+                geometry=geometry,
+                source_region=bbox,
+            )
+        )
+    return snapped
+
+
+def cluster_guides(values: list[float], *, tolerance: float) -> list[float]:
+    if not values:
+        return []
+    ordered = sorted(values)
+    clusters: list[list[float]] = [[ordered[0]]]
+    for value in ordered[1:]:
+        if abs(value - clusters[-1][-1]) <= tolerance:
+            clusters[-1].append(value)
+        else:
+            clusters.append([value])
+    return [sum(cluster) / len(cluster) for cluster in clusters]
+
+
+def snap_value(value: float, guides: list[float]) -> float:
+    if not guides:
+        return value
+    return min(guides, key=lambda guide: abs(guide - value))
+
+
+def assign_geometry_candidates_to_nodes(
+    nodes: list[VLMNode],
+    anchor_map: dict[str, OCRTextRegion],
+    candidates: list[Element],
+    ocr_regions: list[OCRTextRegion],
+    config: PipelineConfig,
+) -> dict[str, Element]:
+    assigned: dict[str, Element] = {}
+    used_candidates: set[str] = set()
+    ordered_nodes = sorted(
+        nodes,
+        key=lambda node: (
+            anchor_map[node.id].bbox.area if node.id in anchor_map else node.approx_bbox.area,
+            len(node.text or ""),
+        ),
+    )
+    for node in ordered_nodes:
+        candidate = select_candidate_for_node(node, anchor_map.get(node.id), candidates, used_candidates, ocr_regions, config)
+        if candidate is None:
+            continue
+        assigned[node.id] = candidate
+        used_candidates.add(candidate.id)
+    return assigned
+
+
+def select_candidate_for_node(
+    node: VLMNode,
+    anchor: OCRTextRegion | None,
+    candidates: list[Element],
+    used_candidates: set[str],
+    ocr_regions: list[OCRTextRegion],
+    config: PipelineConfig,
+) -> Element | None:
+    best: tuple[float, Element] | None = None
+    for candidate in candidates:
+        if candidate.id in used_candidates:
+            continue
+        score = candidate_score(node, anchor, candidate, ocr_regions, config)
+        if score is None:
+            continue
+        if best is None or score > best[0]:
+            best = (score, candidate)
+    return None if best is None or best[0] < 1.35 else best[1]
+
+
+def candidate_score(
+    node: VLMNode,
+    anchor: OCRTextRegion | None,
+    candidate: Element,
+    ocr_regions: list[OCRTextRegion],
+    config: PipelineConfig,
+) -> float | None:
+    bbox = candidate.bbox
+    score = candidate.confidence * 0.8
+    if anchor is not None:
+        if not bbox.expand(max(12.0, config.text_margin)).contains_point(anchor.bbox.center):
+            return None
+        score += 2.6
+        score += bbox.iou(anchor.bbox.expand(config.text_margin * 1.5)) * 0.4
+        margins = (
+            anchor.bbox.x0 - bbox.x0,
+            anchor.bbox.y0 - bbox.y0,
+            bbox.x1 - anchor.bbox.x1,
+            bbox.y1 - anchor.bbox.y1,
+        )
+        if min(margins) < 0:
+            return None
+        score += min(margins) / max(8.0, config.text_margin) * 0.08
+    else:
+        overlap = bbox.iou(node.approx_bbox)
+        if overlap < 0.05:
+            return None
+        score += overlap * 1.2
+    score += bbox.iou(node.approx_bbox) * 0.75
+    anchor_area = anchor.bbox.area if anchor is not None else max(1.0, node.approx_bbox.area * 0.2)
+    area_ratio = bbox.area / max(1.0, anchor_area)
+    score -= min(3.2, max(0.0, area_ratio - 1.0) * 0.06)
+    score -= composite_box_penalty(bbox, anchor, ocr_regions)
+    return score
+
+
+def composite_box_penalty(
+    bbox: BBox,
+    anchor: OCRTextRegion | None,
+    ocr_regions: list[OCRTextRegion],
+) -> float:
+    penalty = 0.0
+    anchor_center = None if anchor is None else anchor.bbox.center
+    extras = 0
+    for region in ocr_regions:
+        center = region.bbox.center
+        if not bbox.contains_point(center):
+            continue
+        if anchor_center is not None and abs(center.x - anchor_center.x) < 6.0 and abs(center.y - anchor_center.y) < 6.0:
+            continue
+        extras += 1
+    if extras > 0:
+        penalty += extras * 0.85
+    return penalty
 
 
 def node_to_elements(node: RefinedNode, *, index: int, config: PipelineConfig) -> list[Element]:
