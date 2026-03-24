@@ -9,7 +9,7 @@ from .config import PipelineConfig
 from .diagnostics import DiagnosticsRecorder
 from .gating import gate_elements
 from .graph import GraphBuildResult
-from .ir import Element
+from .ir import Element, FillStyle, Point, PolylineGeometry, StrokeStyle
 from .reconstructors import (
     build_raster_fallback_regions,
     emit_connector_elements,
@@ -20,7 +20,7 @@ from .reconstructors import (
 )
 from .reconstructors.connectors import ConnectorSpec
 from .reconstructors.raster_regions import prune_raster_fallback_against_native
-from .schema import DropReason, EmissionRecord, MotifHypothesis, ObjectHypothesis, RectCandidate, validate_emission_trace, validate_stage_entities
+from .schema import ConnectorCandidate, DropReason, EmissionRecord, MotifHypothesis, ObjectHypothesis, RectCandidate, validate_emission_trace, validate_stage_entities
 from .text import OCRBackend
 from .vlm_parser import VLMEdge, VLMNode
 
@@ -42,6 +42,7 @@ def emit_shapes(
     backend: OCRBackend,
     config: PipelineConfig,
     geometry_candidates: list[RectCandidate],
+    connector_candidates: list[ConnectorCandidate],
     motif_hypotheses: list[MotifHypothesis],
     *,
     diagnostics: DiagnosticsRecorder | None = None,
@@ -49,6 +50,7 @@ def emit_shapes(
 ) -> EmitStageResult:
     recorder = diagnostics or DiagnosticsRecorder()
     selected_by_hypothesis_id = {hypothesis.id: hypothesis for hypothesis in selected}
+    connector_candidate_by_id = {candidate.id: candidate for candidate in connector_candidates}
     node_order = {node_id: index for index, node_id in enumerate(node_lookup)}
     ordered_selected = sorted(
         selected,
@@ -61,7 +63,16 @@ def emit_shapes(
         for record in raster_fallback.emission_records
         if record.hypothesis_ids
     }
-    native_selected = [hypothesis for hypothesis in ordered_selected if hypothesis.id not in raster_hypothesis_ids]
+    direct_connector_hypotheses = [
+        hypothesis
+        for hypothesis in ordered_selected
+        if hypothesis.id not in raster_hypothesis_ids and hypothesis.object_type == "connector"
+    ]
+    native_selected = [
+        hypothesis
+        for hypothesis in ordered_selected
+        if hypothesis.id not in raster_hypothesis_ids and hypothesis.object_type != "connector"
+    ]
 
     refined_nodes = []
     node_hypothesis_pairs: list[tuple[VLMNode, ObjectHypothesis]] = []
@@ -129,6 +140,50 @@ def emit_shapes(
                 )
             )
 
+    for index, hypothesis in enumerate(direct_connector_hypotheses, start=1):
+        candidate = None if hypothesis.candidate_id is None else connector_candidate_by_id.get(hypothesis.candidate_id)
+        if candidate is None or candidate.bbox is None:
+            dropped_records.append(
+                EmissionRecord(
+                    id=f"emit-drop:{hypothesis.id}",
+                    kind="drop",
+                    bbox=hypothesis.bbox,
+                    score_total=0.0,
+                    score_terms={"missing_connector_candidate": 1.0},
+                    source_ids=list(hypothesis.source_ids),
+                    provenance=hypothesis.provenance,
+                    object_type=hypothesis.object_type,
+                    primitive_kind="none",
+                    graph_node_ids=[hypothesis.id],
+                    hypothesis_ids=[hypothesis.id],
+                    drop_reason=DropReason.EMISSION_UNSUPPORTED,
+                )
+            )
+            continue
+        element = emit_direct_connector_element(candidate, hypothesis, index=index)
+        elements.append(element)
+        emission_records.append(
+            EmissionRecord(
+                id=f"emit:{element.id}",
+                kind=element.kind,
+                bbox=element.bbox,
+                score_total=element.confidence,
+                score_terms={"confidence": element.confidence},
+                source_ids=list(hypothesis.source_ids),
+                provenance={
+                    "graph_node_ids": [hypothesis.id],
+                    "hypothesis_ids": [hypothesis.id],
+                    "candidate_ids": [candidate.id],
+                },
+                assigned_vlm_ids=list(hypothesis.assigned_vlm_ids),
+                object_type="connector",
+                primitive_kind=element.kind,
+                graph_node_ids=[hypothesis.id],
+                hypothesis_ids=[hypothesis.id],
+                emitted_element_id=element.id,
+            )
+        )
+
     raster_fallback = prune_raster_fallback_against_native(raster_fallback, elements, config)
     elements.extend(raster_fallback.elements)
     emission_records.extend(raster_fallback.emission_records)
@@ -161,7 +216,7 @@ def emit_shapes(
         graph=graph_result.graph,
         object_hypotheses=selected,
         motif_hypotheses=motif_hypotheses,
-        geometry_candidates=geometry_candidates,
+        geometry_candidates=[*geometry_candidates, *connector_candidates],
         fallback_regions=raster_fallback.regions,
     )
 
@@ -194,6 +249,33 @@ def emit_shapes(
         recorder.overlay(stage, "raster_overlay", draw_emit_overlay(image, [element for element in gated if element.kind == "raster_region"]))
         recorder.overlay(stage, "overlay", draw_emit_overlay(image, gated))
     return result
+
+
+def emit_direct_connector_element(
+    candidate: ConnectorCandidate,
+    hypothesis: ObjectHypothesis,
+    *,
+    index: int,
+) -> Element:
+    bbox = hypothesis.bbox or candidate.bbox
+    if bbox is None:
+        raise ValueError("connector emission requires a bbox")
+    if bbox.width >= bbox.height:
+        points = (Point(bbox.x0, bbox.center.y), Point(bbox.x1, bbox.center.y))
+    else:
+        points = (Point(bbox.center.x, bbox.y0), Point(bbox.center.x, bbox.y1))
+    kind = "arrow" if candidate.edge_type == "arrow" else "line"
+    return Element(
+        id=f"direct-connector-{index}",
+        kind=kind,
+        geometry=PolylineGeometry(points),
+        stroke=StrokeStyle(color=(48, 48, 48), width=max(2.0, min(bbox.width, bbox.height, 6.0))),
+        fill=FillStyle(enabled=False, color=None),
+        text=None,
+        confidence=max(0.78, candidate.score_total),
+        source_region=bbox,
+        inferred=True,
+    )
 
 
 def graph_edges_to_connector_specs(

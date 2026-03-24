@@ -28,9 +28,10 @@ def build_authoring_graph(
     validate_stage_entities(stage, "selected_hypotheses", selected, require_bbox=True)
     validate_stage_entities(stage, "motifs", motifs)
     graph_edges: list[GraphEdge] = []
+    node_hypotheses = [hypothesis for hypothesis in selected if hypothesis.object_type != "connector"]
     hypothesis_by_vlm_id = {
         hypothesis.assigned_vlm_ids[0]: hypothesis
-        for hypothesis in selected
+        for hypothesis in node_hypotheses
         if hypothesis.assigned_vlm_ids
     }
     next_index = 1
@@ -66,10 +67,10 @@ def build_authoring_graph(
             )
         )
         next_index += 1
-    for index, first in enumerate(selected):
+    for index, first in enumerate(node_hypotheses):
         if first.bbox is None:
             continue
-        for second in selected[index + 1 :]:
+        for second in node_hypotheses[index + 1 :]:
             if second.bbox is None:
                 continue
             if abs(first.bbox.center.x - second.bbox.center.x) <= 8.0:

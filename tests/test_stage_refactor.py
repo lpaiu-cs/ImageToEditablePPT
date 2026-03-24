@@ -11,16 +11,17 @@ from image_to_editable_ppt.config import PipelineConfig
 from image_to_editable_ppt.diagnostics import build_recorder
 from image_to_editable_ppt.detector import clamp_bbox as detector_clamp_bbox, grow_container_from_text_anchor as detector_grow_container_from_text_anchor
 from image_to_editable_ppt.eval_debug import EvalItem, attrition_by_stage, failure_taxonomy, oracle_upper_bound_by_stage, write_eval_debug_artifacts
+from image_to_editable_ppt.geometry import build_text_seed_rect_candidates
 from image_to_editable_ppt.graph import build_authoring_graph
 from image_to_editable_ppt.guides import GuideField
 from image_to_editable_ppt.ir import BBox
-from image_to_editable_ppt.pipeline import build_elements
+from image_to_editable_ppt.pipeline import ConversionResult, build_elements
 from image_to_editable_ppt.reconstructors import build_motif_hypotheses
 from image_to_editable_ppt.reconstructors.raster_regions import build_raster_fallback_regions
-from image_to_editable_ppt.schema import AuthoringGraph, EmissionRecord, ObjectHypothesis, StageContractError, validate_emission_trace
+from image_to_editable_ppt.schema import AuthoringGraph, ConnectorCandidate, EmissionRecord, LinePrimitive, ObjectHypothesis, RectCandidate, StageContractError, validate_emission_trace
 from image_to_editable_ppt.selection import select_authoring_objects
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
-from image_to_editable_ppt.validation import run_validation_iteration
+from image_to_editable_ppt.validation import run_validation_iteration, stage_eval_items
 from image_to_editable_ppt.vlm_parser import DiagramStructure, VLMEdge, VLMNode
 
 
@@ -249,6 +250,213 @@ def test_eval_debug_reports_stage_oracle_failure_taxonomy_and_attrition(tmp_path
     assert oracle_payload["stages"]["01_geometry_raw"]["recoverable_count"] == 3
 
 
+def test_oracle_matching_is_one_to_one_and_does_not_reuse_predictions() -> None:
+    ground_truth = [
+        EvalItem("gt-a", "container", BBox(0.0, 0.0, 40.0, 40.0)),
+        EvalItem("gt-b", "container", BBox(0.0, 0.0, 40.0, 40.0)),
+    ]
+    stage_artifacts = {
+        "07_emit": [EvalItem("pred-shared", "container", BBox(0.0, 0.0, 40.0, 40.0))],
+    }
+
+    oracle = oracle_upper_bound_by_stage(ground_truth, stage_artifacts)
+
+    assert oracle["07_emit"]["recoverable_count"] == 1
+    matched_ids = [row["artifact_id"] for row in oracle["07_emit"]["matches"] if row["artifact_id"] is not None]
+    assert matched_ids == ["pred-shared"]
+
+
+def test_stage_eval_items_filter_out_non_evaluable_primitives_and_keep_candidates() -> None:
+    conversion = ConversionResult(
+        elements=[],
+        image_size=(120, 80),
+        rejected_regions=[],
+        stage_artifacts={
+            "01_geometry_raw": {
+                "rect_candidates": [
+                    RectCandidate(
+                        id="rect-candidate:a",
+                        kind="rect",
+                        bbox=BBox(0.0, 0.0, 30.0, 20.0),
+                        score_total=0.9,
+                        score_terms={"confidence": 0.9},
+                        source_ids=["rect-candidate:a"],
+                        provenance={"source_ids": ["rect-candidate:a"]},
+                    )
+                ],
+                "connector_candidates": [],
+                "line_primitives": [
+                    LinePrimitive(
+                        id="line-primitive:a",
+                        kind="line",
+                        bbox=BBox(0.0, 0.0, 40.0, 4.0),
+                        score_total=0.7,
+                        score_terms={"confidence": 0.7},
+                        source_ids=["line-primitive:a"],
+                        provenance={"source_ids": ["line-primitive:a"]},
+                    )
+                ],
+            },
+            "02_guides": {"rect_candidates": []},
+            "03_objects": {"hypotheses": [], "fallback_hypotheses": []},
+            "05_selection": {"selected": []},
+            "06_graph": {"graph_nodes": []},
+            "07_emit": {"emission_records": []},
+        },
+    )
+
+    items = stage_eval_items(conversion)
+
+    assert [row.id for row in items["01_geometry_raw"]] == ["rect-candidate:a"]
+
+
+def test_connector_matching_uses_connector_aware_similarity() -> None:
+    ground_truth = [EvalItem("gt-connector", "connector", BBox(0.0, 0.0, 100.0, 6.0))]
+    stage_artifacts = {
+        "01_geometry_raw": [
+            EvalItem(
+                "cand-connector",
+                "connector",
+                BBox(0.0, 10.0, 100.0, 16.0),
+                source_ids=("connector-candidate:cand-connector",),
+            )
+        ]
+    }
+
+    oracle = oracle_upper_bound_by_stage(ground_truth, stage_artifacts)
+
+    assert oracle["01_geometry_raw"]["recoverable_count"] == 1
+
+
+def test_stage_oracle_and_attrition_filter_gt_by_stage_applicability() -> None:
+    ground_truth = [
+        EvalItem("gt-box", "container", BBox(0.0, 0.0, 40.0, 40.0)),
+        EvalItem("gt-edge", "connector", BBox(60.0, 0.0, 120.0, 6.0)),
+    ]
+    stage_artifacts = {
+        "01_geometry_raw": [EvalItem("edge", "connector", BBox(60.0, 0.0, 120.0, 6.0), source_ids=("connector-candidate:edge",))],
+        "02_guides": [],
+        "03_objects": [],
+        "07_emit": [],
+    }
+
+    oracle = oracle_upper_bound_by_stage(ground_truth, stage_artifacts)
+    attrition = attrition_by_stage(ground_truth, stage_artifacts)
+
+    assert oracle["02_guides"]["ground_truth_count"] == 1
+    gt_edge_row = next(row for row in attrition["ground_truth"] if row["gt_id"] == "gt-edge")
+    assert gt_edge_row["presence"]["02_guides"] is None
+    assert gt_edge_row["lost_at"] == "03_objects"
+
+
+def test_no_grow_fallback_ablation_is_respected() -> None:
+    image = Image.new("RGB", (320, 200), "white")
+    backend = FakeOCRBackend([OCRTextRegion(text="Lonely Node", bbox=BBox(92.0, 92.0, 180.0, 112.0), confidence=0.99)])
+    parser = FakeStructureParser(
+        DiagramStructure(
+            nodes=[VLMNode("n1", "box", "Lonely Node", BBox(200.0, 320.0, 720.0, 760.0))],
+            edges=[],
+            coordinate_space="normalized_1000",
+        )
+    )
+
+    result = build_elements(
+        image,
+        config=PipelineConfig(semantic_fallback_to_legacy=False, enable_grow_fallback=False),
+        structure_parser=parser,
+        ocr_backend=backend,
+    )
+
+    assert result.stage_artifacts["03_objects"]["fallback_hypotheses"] == []
+
+
+def test_manifest_source_attribution_marks_fallback_only_objects(tmp_path: Path) -> None:
+    image = Image.new("RGB", (320, 200), "white")
+    image_path = tmp_path / "input.png"
+    image.save(image_path)
+    backend = FakeOCRBackend([OCRTextRegion(text="Lonely Node", bbox=BBox(92.0, 92.0, 180.0, 112.0), confidence=0.99)])
+    parser = FakeStructureParser(
+        DiagramStructure(
+            nodes=[VLMNode("n1", "box", "Lonely Node", BBox(200.0, 320.0, 720.0, 760.0))],
+            edges=[],
+            coordinate_space="normalized_1000",
+        )
+    )
+
+    run = run_validation_iteration(
+        image_path,
+        tmp_path / "iter-fallback",
+        config=PipelineConfig(semantic_fallback_to_legacy=False),
+        enable_diagnostics=True,
+        ocr_backend=backend,
+        structure_parser=parser,
+        diagnostics_root_dir=tmp_path / "diagnostics",
+    )
+
+    manifest_payload = json.loads((run.artifacts.diagnostics_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest_payload["source_attribution"]["05_selection"]["selected_count_by_source_bucket"]["fallback_only"] >= 1
+
+
+def test_geometry_audit_distinguishes_missing_raw_candidate_and_fallback_rescue(tmp_path: Path) -> None:
+    ground_truth = [EvalItem("gt-a", "container", BBox(0.0, 0.0, 40.0, 40.0))]
+    fallback_prediction = EvalItem(
+        "object-hypothesis:gt-a:fallback",
+        "container",
+        BBox(0.0, 0.0, 40.0, 40.0),
+        source_ids=("grow_fallback", "gt-a"),
+        source_bucket="fallback_only",
+    )
+    stage_artifacts = {
+        "01_geometry_raw": [],
+        "02_guides": [],
+        "03_objects": [fallback_prediction],
+        "05_selection": [fallback_prediction],
+        "07_emit": [fallback_prediction],
+    }
+
+    write_eval_debug_artifacts(tmp_path, ground_truth, stage_artifacts)
+    audit_payload = json.loads((tmp_path / "geometry_audit.json").read_text(encoding="utf-8"))
+    row = audit_payload["ground_truth"][0]
+
+    assert row["status"] == "no_raw_candidate"
+    assert row["fallback_rescued"] is True
+
+
+def test_text_seed_geometry_candidates_expand_from_text_region() -> None:
+    image = Image.new("RGB", (180, 140), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((30, 24, 150, 112), radius=14, outline=(0, 0, 0), width=3)
+    draw.rectangle((66, 56, 112, 74), fill=(0, 0, 0))
+
+    candidates = build_text_seed_rect_candidates(
+        image,
+        [BBox(66.0, 56.0, 112.0, 74.0)],
+        [],
+        PipelineConfig(),
+    )
+
+    assert candidates
+    assert candidates[0].bbox is not None
+    assert candidates[0].bbox.area > BBox(66.0, 56.0, 112.0, 74.0).area
+
+
+def test_geometry_connector_candidates_reach_emit_without_fallback() -> None:
+    image = Image.new("RGB", (220, 120), "white")
+    draw = ImageDraw.Draw(image)
+    draw.line((24, 60, 196, 60), fill=(0, 0, 0), width=4)
+    parser = FakeStructureParser(DiagramStructure(nodes=[], edges=[], coordinate_space="normalized_1000"))
+
+    result = build_elements(
+        image,
+        config=PipelineConfig(semantic_fallback_to_legacy=False, enable_grow_fallback=False),
+        structure_parser=parser,
+    )
+
+    connector_hypotheses = [row for row in result.stage_artifacts["03_objects"]["hypotheses"] if row.object_type == "connector"]
+    assert connector_hypotheses
+    assert any(element.kind in {"line", "arrow"} for element in result.elements)
+
+
 def test_write_eval_debug_artifacts_marks_unavailable_without_gt(tmp_path: Path) -> None:
     eval_dir = tmp_path / "eval"
     payload = write_eval_debug_artifacts(eval_dir, None, {})
@@ -350,6 +558,9 @@ def test_validation_iteration_discovers_gt_sidecar_and_writes_real_eval(tmp_path
     assert "07_emit" in oracle_payload["stages"]
     assert failure_payload["status"] == "ok"
     assert manifest_payload["gt_available"] is True
+    assert run.artifacts.geometry_audit_json is not None
+    audit_payload = json.loads(run.artifacts.geometry_audit_json.read_text(encoding="utf-8"))
+    assert audit_payload["status"] == "ok"
 
 
 def test_failure_taxonomy_reports_machine_readable_categories() -> None:

@@ -78,6 +78,14 @@ def build_geometry_candidates(
         for element in observations.detection.elements
         if element.kind in {"rect", "rounded_rect"}
     ]
+    rect_candidates.extend(
+        build_text_seed_rect_candidates(
+            image,
+            observations.detection.text_regions,
+            rect_candidates,
+            config,
+        )
+    )
     connector_candidates = [
         connector_candidate_from_element(element)
         for element in observations.detection.elements
@@ -126,6 +134,49 @@ def build_geometry_candidates(
         )
         recorder.overlay(stage, "overlay", draw_geometry_overlay(image, rect_candidates, connector_candidates))
     return result
+
+
+def build_text_seed_rect_candidates(
+    image: Image.Image,
+    text_regions: list[BBox],
+    existing_candidates: list[RectCandidate],
+    config: PipelineConfig,
+) -> list[RectCandidate]:
+    if not text_regions:
+        return []
+    from .fallback import grow_container_from_text_anchor
+
+    array = np.asarray(image.convert("RGB"), dtype=np.uint8)
+    candidates: list[RectCandidate] = []
+    for index, region in enumerate(text_regions, start=1):
+        if region.width < 32.0 or region.height < 10.0:
+            continue
+        hint_padding = max(config.text_margin * 2.5, region.height * 2.2, region.width * 0.32)
+        hint_bbox = clamp_bbox(region.expand(hint_padding), width=array.shape[1], height=array.shape[0])
+        candidate_bbox = grow_container_from_text_anchor(array, region, hint_bbox, config)
+        if candidate_bbox.width < max(32.0, config.min_box_size) or candidate_bbox.height < max(24.0, config.min_box_size):
+            continue
+        if candidate_bbox.area <= region.area * 1.35:
+            continue
+        if any(candidate.bbox is not None and candidate_bbox.iou(candidate.bbox) >= 0.84 for candidate in [*existing_candidates, *candidates]):
+            continue
+        area_ratio = candidate_bbox.area / max(region.area, 1.0)
+        candidates.append(
+            RectCandidate(
+                id=f"rect-candidate:text-seed-{index:03d}",
+                kind="rect",
+                bbox=candidate_bbox,
+                score_total=min(0.82, 0.48 + min(0.28, math.log1p(area_ratio) * 0.11)),
+                score_terms={
+                    "text_seed": 1.0,
+                    "area_ratio": round(area_ratio, 4),
+                },
+                source_ids=[f"text-region:{index:03d}"],
+                provenance={"text_region_ids": [f"text-region:{index:03d}"]},
+                object_type="container",
+            )
+        )
+    return candidates
 
 
 def rect_candidate_from_element(element: Element) -> RectCandidate:

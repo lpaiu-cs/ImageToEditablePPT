@@ -1,0 +1,17 @@
+[
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n8"
+    ],
+    "panel_id": "object-hypothesis:n8"
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n8"
+    ]
+  }
+]

@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 from .config import PipelineConfig
 from .diagnostics import DiagnosticsRecorder
 from .ir import BBox
-from .schema import ObjectHypothesis, OCRPhrase, RectCandidate, validate_stage_entities
+from .schema import ConnectorCandidate, ObjectHypothesis, OCRPhrase, RectCandidate, validate_stage_entities
 from .text import OCRNormalizationResult, normalize_ocr_text
 from .vlm_parser import DiagramStructure, VLMNode
 
@@ -28,6 +28,7 @@ def build_object_hypotheses(
     structure: DiagramStructure,
     ocr: OCRNormalizationResult,
     candidates: list[RectCandidate],
+    connector_candidates: list[ConnectorCandidate] | None,
     config: PipelineConfig,
     *,
     diagnostics: DiagnosticsRecorder | None = None,
@@ -72,6 +73,21 @@ def build_object_hypotheses(
                 candidate_id=candidate.id,
             )
         )
+    for candidate in connector_candidates or []:
+        hypotheses.append(
+            ObjectHypothesis(
+                id=f"object-hypothesis:{candidate.id}",
+                kind="connector",
+                object_type="connector",
+                bbox=candidate.bbox,
+                score_total=candidate.score_total,
+                score_terms={"candidate_confidence": candidate.score_total, **candidate.score_terms},
+                source_ids=[candidate.id, *candidate.source_ids],
+                provenance={**candidate.provenance, "candidate_ids": [candidate.id]},
+                assigned_vlm_ids=[candidate.id],
+                candidate_id=candidate.id,
+            )
+        )
     result = ObjectStageResult(
         vlm_nodes=anchored_nodes,
         hypotheses=list(validate_stage_entities(stage, "object_hypotheses", hypotheses, require_bbox=True)),
@@ -87,6 +103,7 @@ def build_object_hypotheses(
                 "vlm_node_count": len(structure.nodes),
                 "anchored_node_count": len(anchor_map),
                 "hypothesis_count": len(hypotheses),
+                "connector_hypothesis_count": len(connector_candidates or []),
                 "unmatched_vlm_node_count": len(unmatched),
             },
         )

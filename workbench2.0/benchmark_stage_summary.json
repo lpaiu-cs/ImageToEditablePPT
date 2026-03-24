@@ -4,75 +4,141 @@
   "slide_count": 1,
   "gt_backed_slide_count": 1,
   "gt_unavailable_slide_count": 0,
+  "gt_coverage_notice": "single_gt_backed_slide_only",
   "stage_oracle": {
     "01_geometry_raw": {
-      "recoverable_count": 0.0,
+      "recoverable_count": 3.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.0
+      "recoverable_ratio": 0.1
     },
     "02_guides": {
       "recoverable_count": 0.0,
-      "ground_truth_count": 30.0,
+      "ground_truth_count": 18.0,
       "recoverable_ratio": 0.0
     },
     "03_objects": {
-      "recoverable_count": 13.0,
+      "recoverable_count": 6.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.43333333333333335
+      "recoverable_ratio": 0.2
     },
     "05_selection": {
-      "recoverable_count": 13.0,
+      "recoverable_count": 6.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.43333333333333335
+      "recoverable_ratio": 0.2
     },
     "06_graph": {
-      "recoverable_count": 13.0,
+      "recoverable_count": 6.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.43333333333333335
+      "recoverable_ratio": 0.2
     },
     "07_emit": {
-      "recoverable_count": 17.0,
+      "recoverable_count": 7.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.5666666666666667
+      "recoverable_ratio": 0.23333333333333334
+    }
+  },
+  "stage_oracle_by_source_bucket": {
+    "01_geometry_raw": {
+      "geometry_only": 3,
+      "fallback_only": 0,
+      "mixed_geometry_fallback": 0,
+      "other": 0
+    },
+    "02_guides": {
+      "geometry_only": 0,
+      "fallback_only": 0,
+      "mixed_geometry_fallback": 0,
+      "other": 0
+    },
+    "03_objects": {
+      "geometry_only": 3,
+      "fallback_only": 3,
+      "mixed_geometry_fallback": 0,
+      "other": 0
+    },
+    "05_selection": {
+      "geometry_only": 3,
+      "fallback_only": 3,
+      "mixed_geometry_fallback": 0,
+      "other": 0
+    },
+    "06_graph": {
+      "geometry_only": 3,
+      "fallback_only": 3,
+      "mixed_geometry_fallback": 0,
+      "other": 0
+    },
+    "07_emit": {
+      "geometry_only": 2,
+      "fallback_only": 5,
+      "mixed_geometry_fallback": 0,
+      "other": 0
     }
   },
   "stage_attrition": {},
   "failure_taxonomy": {
     "ground_truth": {
-      "near_miss_geometry": 2,
-      "merged_into_parent": 3,
-      "missing": 5,
-      "merged_siblings": 3
+      "wrong_type": 15,
+      "near_miss_geometry": 4,
+      "missing": 1,
+      "split_fragments": 3
     },
     "predictions": {
-      "wrong_attachment": 8,
-      "near_miss_geometry": 2,
-      "split_fragments": 1,
-      "hallucinated_prediction": 14
+      "wrong_attachment": 9,
+      "hallucinated_prediction": 14,
+      "split_fragments": 8,
+      "wrong_type": 20,
+      "near_miss_geometry": 4
     }
   },
-  "native_object_count": 49,
+  "geometry_audit_status_counts": {
+    "raw_candidate_below_threshold": 27,
+    "fallback_rescued": 1,
+    "recovered": 2
+  },
+  "native_object_count": 75,
   "raster_region_count": 0,
-  "dropped_hypothesis_count": 3,
-  "grow_fallback_hypothesis_count": 18,
-  "native_area_ratio_mean": 0.524083740267499,
+  "dropped_hypothesis_count": 1,
+  "grow_fallback_hypothesis_count": 16,
+  "native_area_ratio_mean": 0.43710665577782915,
   "raster_area_ratio_mean": 0.0,
   "raster_native_overlap_area_ratio_mean": 0.0,
+  "selection_count_by_source_bucket": {
+    "geometry_only": 29,
+    "fallback_only": 16,
+    "mixed_geometry_fallback": 0,
+    "other": 0
+  },
+  "native_emit_count_by_source_bucket": {
+    "geometry_only": 29,
+    "fallback_only": 46,
+    "mixed_geometry_fallback": 0,
+    "other": 0
+  },
+  "final_matched_gt_by_source_bucket": {
+    "geometry_only": 2,
+    "fallback_only": 5,
+    "mixed_geometry_fallback": 0,
+    "other": 0
+  },
+  "ablation_counts": {
+    "grow+motifs": 1
+  },
   "motif_accounting": {
     "repeated_cards": {
-      "proposed": 17,
+      "proposed": 15,
       "accepted": 0,
-      "rejected": 17,
+      "rejected": 15,
       "absorbed_members": 0,
       "suppressed_members": 0
     },
     "titled_panel": {
-      "proposed": 18,
+      "proposed": 16,
       "accepted": 0,
-      "rejected": 18,
+      "rejected": 16,
       "absorbed_members": 0,
       "suppressed_members": 0
     }
   },
-  "dominant_loss_stage": "01_geometry_raw"
+  "dominant_loss_stage": "02_guides"
 }

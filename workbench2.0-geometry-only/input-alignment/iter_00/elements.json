@@ -1,0 +1,80 @@
+[
+  {
+    "id": "node-1",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1778,
+        "y0": 549,
+        "x1": 2145,
+        "y1": 688
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        203,
+        151,
+        106
+      ],
+      "width": 4.17,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1778,
+      "y0": 549,
+      "x1": 2145,
+      "y1": 688
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-1",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1807.36,
+        "y0": 568.46,
+        "x1": 2115.64,
+        "y1": 668.54
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        203,
+        151,
+        106
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Working Memory (STM)\n(priority queue & semantic boost)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1807.36,
+      "y0": 568.46,
+      "x1": 2115.64,
+      "y1": 668.54
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  }
+]

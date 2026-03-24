@@ -1,0 +1,212 @@
+[
+  {
+    "candidate_id": "rect-candidate:box-12",
+    "snapped_id": "rect-candidate:box-12:snapped",
+    "before_bbox": {
+      "x0": 590.5,
+      "y0": 528.5,
+      "x1": 1016.5,
+      "y1": 669.5
+    },
+    "after_bbox": {
+      "x0": 590.5,
+      "y0": 528.5,
+      "x1": 1018.0,
+      "y1": 672.375
+    },
+    "guide_ids": [
+      "guide-x-004",
+      "guide-x-005",
+      "guide-x-008",
+      "guide-y-006",
+      "guide-y-008",
+      "guide-y-009"
+    ]
+  },
+  {
+    "candidate_id": "rect-candidate:box-9",
+    "snapped_id": "rect-candidate:box-9:snapped",
+    "before_bbox": {
+      "x0": 286.0,
+      "y0": 1349.0,
+      "x1": 687.0,
+      "y1": 1482.5
+    },
+    "after_bbox": {
+      "x0": 286.0,
+      "y0": 1346.5,
+      "x1": 687.0,
+      "y1": 1482.5
+    },
+    "guide_ids": [
+      "guide-x-002",
+      "guide-x-006",
+      "guide-y-003",
+      "guide-y-010",
+      "guide-y-012",
+      "guide-y-013"
+    ]
+  },
+  {
+    "candidate_id": "rect-candidate:box-14",
+    "snapped_id": "rect-candidate:box-14:snapped",
+    "before_bbox": {
+      "x0": 1806.5,
+      "y0": 555.5,
+      "x1": 2116.5,
+      "y1": 681.5
+    },
+    "after_bbox": {
+      "x0": 1806.5,
+      "y0": 555.5,
+      "x1": 2116.5,
+      "y1": 672.375
+    },
+    "guide_ids": [
+      "guide-x-006",
+      "guide-x-010",
+      "guide-x-011",
+      "guide-y-007",
+      "guide-y-009"
+    ]
+  },
+  {
+    "candidate_id": "rect-candidate:box-1",
+    "snapped_id": "rect-candidate:box-1:snapped",
+    "before_bbox": {
+      "x0": 76.0,
+      "y0": 165.5,
+      "x1": 1241.0,
+      "y1": 699.5
+    },
+    "after_bbox": {
+      "x0": 82.16666666666667,
+      "y0": 165.5,
+      "x1": 1241.0,
+      "y1": 699.5
+    },
+    "guide_ids": [
+      "guide-x-001",
+      "guide-x-006",
+      "guide-x-009",
+      "guide-y-001",
+      "guide-y-010"
+    ]
+  },
+  {
+    "candidate_id": "rect-candidate:box-3",
+    "snapped_id": "rect-candidate:box-3:snapped",
+    "before_bbox": {
+      "x0": 898.5,
+      "y0": 292.0,
+      "x1": 1019.5,
+      "y1": 669.0
+    },
+    "after_bbox": {
+      "x0": 898.25,
+      "y0": 292.0,
+      "x1": 1018.0,
+      "y1": 672.375
+    },
+    "guide_ids": [
+      "guide-x-002",
+      "guide-x-005",
+      "guide-x-007",
+      "guide-x-008",
+      "guide-y-003",
+      "guide-y-009"
+    ]
+  },
+  {
+    "candidate_id": "rect-candidate:box-6",
+    "snapped_id": "rect-candidate:box-6:snapped",
+    "before_bbox": {
+      "x0": 89.5,
+      "y0": 528.5,
+      "x1": 590.5,
+      "y1": 669.5
+    },
+    "after_bbox": {
+      "x0": 82.16666666666667,
+      "y0": 528.5,
+      "x1": 590.5,
+      "y1": 672.375
+    },
+    "guide_ids": [
+      "guide-x-001",
+      "guide-x-004",
+      "guide-x-005",
+      "guide-y-006",
+      "guide-y-008",
+      "guide-y-009"
+    ]
+  },
+  {
+    "candidate_id": "rect-candidate:box-9",
+    "snapped_id": "rect-candidate:box-9:snapped",
+    "before_bbox": {
+      "x0": 663.0,
+      "y0": 1281.219999933243,
+      "x1": 898.0,
+      "y1": 1344.0
+    },
+    "after_bbox": {
+      "x0": 663.0,
+      "y0": 1281.219999933243,
+      "x1": 898.25,
+      "y1": 1346.5
+    },
+    "guide_ids": [
+      "guide-x-005",
+      "guide-x-007",
+      "guide-y-009",
+      "guide-y-011",
+      "guide-y-012"
+    ]
+  },
+  {
+    "candidate_id": "rect-candidate:box-10",
+    "snapped_id": "rect-candidate:box-10:snapped",
+    "before_bbox": {
+      "x0": 2153.219999933243,
+      "y0": 445.0,
+      "x1": 2335.0,
+      "y1": 594.7800000667572
+    },
+    "after_bbox": {
+      "x0": 2153.219999933243,
+      "y0": 445.0,
+      "x1": 2335.0,
+      "y1": 594.7800000667572
+    },
+    "guide_ids": [
+      "guide-x-004",
+      "guide-x-012",
+      "guide-x-013",
+      "guide-y-005",
+      "guide-y-008"
+    ]
+  },
+  {
+    "candidate_id": "rect-candidate:text-seed-001",
+    "snapped_id": "rect-candidate:text-seed-001:snapped",
+    "before_bbox": {
+      "x0": 81,
+      "y0": 259,
+      "x1": 383,
+      "y1": 343
+    },
+    "after_bbox": {
+      "x0": 82.16666666666667,
+      "y0": 259.0,
+      "x1": 383.0,
+      "y1": 343.0
+    },
+    "guide_ids": [
+      "guide-x-001",
+      "guide-x-003",
+      "guide-y-002",
+      "guide-y-004"
+    ]
+  }
+]

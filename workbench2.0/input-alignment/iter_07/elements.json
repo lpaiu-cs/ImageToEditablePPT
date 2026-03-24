@@ -1,0 +1,2230 @@
+[
+  {
+    "id": "node-1",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2309,
+        "y0": 19,
+        "x1": 2644,
+        "y1": 282
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        241,
+        217,
+        190
+      ],
+      "width": 7.89,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2309,
+      "y0": 19,
+      "x1": 2644,
+      "y1": 282
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-1",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2335.8,
+        "y0": 55.82,
+        "x1": 2617.2,
+        "y1": 245.18
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        241,
+        217,
+        190
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "User Input",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2335.8,
+      "y0": 55.82,
+      "x1": 2617.2,
+      "y1": 245.18
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-2",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1196,
+        "y0": 228,
+        "x1": 1423,
+        "y1": 512
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        215,
+        216,
+        209
+      ],
+      "width": 6.81,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": true,
+      "color": [
+        237,
+        241,
+        249
+      ]
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1196,
+      "y0": 228,
+      "x1": 1423,
+      "y1": 512
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-2",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1214.16,
+        "y0": 267.76,
+        "x1": 1404.84,
+        "y1": 472.24
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        215,
+        216,
+        209
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Bot Orchestrator\n(Main Loop Controller)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1214.16,
+      "y0": 267.76,
+      "x1": 1404.84,
+      "y1": 472.24
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-3",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 81,
+        "y0": 259,
+        "x1": 1110,
+        "y1": 520
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        112,
+        148,
+        187
+      ],
+      "width": 7.83,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 81,
+      "y0": 259,
+      "x1": 1110,
+      "y1": 520
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-3",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 163.32,
+        "y0": 295.54,
+        "x1": 1027.68,
+        "y1": 483.46
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        112,
+        148,
+        187
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "1. PERCEIVE (\uc778\uc9c0 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 163.32,
+      "y0": 295.54,
+      "x1": 1027.68,
+      "y1": 483.46
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-4",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 375,
+        "y0": 293,
+        "x1": 581,
+        "y1": 331
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        182,
+        189,
+        197
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 375,
+      "y0": 293,
+      "x1": 581,
+      "y1": 331
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-4",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 391.48,
+        "y0": 299.5,
+        "x1": 564.52,
+        "y1": 324.5
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        182,
+        189,
+        197
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Boundary Redaction\n(Clause-level, target-aware)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 391.48,
+      "y0": 299.5,
+      "x1": 564.52,
+      "y1": 324.5
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-5",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 138.0,
+        "y0": 300.8,
+        "x1": 413.99999999999994,
+        "y1": 376.0
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        207,
+        223,
+        239
+      ],
+      "width": 2.256,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.82,
+    "source_region": {
+      "x0": 138.0,
+      "y0": 300.8,
+      "x1": 413.99999999999994,
+      "y1": 376.0
+    },
+    "inferred": false,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-5",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 160.07999999999998,
+        "y0": 311.32800000000003,
+        "x1": 391.91999999999996,
+        "y1": 365.472
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        207,
+        223,
+        239
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Sensory System\n(Delta ingest, durable cursor,\nchunking & embedding)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 160.07999999999998,
+      "y0": 311.32800000000003,
+      "x1": 391.91999999999996,
+      "y1": 365.472
+    },
+    "inferred": false,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-6",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 690,
+        "y0": 290,
+        "x1": 775,
+        "y1": 339
+      },
+      "corner_radius": 4.0
+    },
+    "stroke": {
+      "color": [
+        201,
+        216,
+        227
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 690,
+      "y0": 290,
+      "x1": 775,
+      "y1": 339
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-6",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 700.0,
+        "y0": 296.86,
+        "x1": 765.0,
+        "y1": 332.14
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        201,
+        216,
+        227
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Identity & Fast Path\n(nickname mapping,\nFastPathMemoryWriter)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 700.0,
+      "y0": 296.86,
+      "x1": 765.0,
+      "y1": 332.14
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-7",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1811,
+        "y0": 180,
+        "x1": 2720,
+        "y1": 647
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        195,
+        151,
+        115
+      ],
+      "width": 14.01,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1811,
+      "y0": 180,
+      "x1": 2720,
+      "y1": 647
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-7",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1883.72,
+        "y0": 245.38,
+        "x1": 2647.28,
+        "y1": 581.62
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        195,
+        151,
+        115
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "2. RETRIEVE (\uae30\uc5b5 \uc778\ucd9c \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1883.72,
+      "y0": 245.38,
+      "x1": 2647.28,
+      "y1": 581.62
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-8",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2014,
+        "y0": 345,
+        "x1": 2402,
+        "y1": 508
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        248,
+        212,
+        175
+      ],
+      "width": 4.89,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2014,
+      "y0": 345,
+      "x1": 2402,
+      "y1": 508
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-8",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2045.04,
+        "y0": 367.82,
+        "x1": 2370.96,
+        "y1": 485.18
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        248,
+        212,
+        175
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Working Memory (STM)\n(priority queue & semantic boost)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2045.04,
+      "y0": 367.82,
+      "x1": 2370.96,
+      "y1": 485.18
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-9",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2290,
+        "y0": 320,
+        "x1": 2678,
+        "y1": 508
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        130,
+        133,
+        133
+      ],
+      "width": 5.64,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2290,
+      "y0": 320,
+      "x1": 2678,
+      "y1": 508
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-9",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2321.04,
+        "y0": 346.32,
+        "x1": 2646.96,
+        "y1": 481.68
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        130,
+        133,
+        133
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "QueryPlanner\n(referent cache & role alias)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2321.04,
+      "y0": 346.32,
+      "x1": 2646.96,
+      "y1": 481.68
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-10",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2421,
+        "y0": 400,
+        "x1": 2601,
+        "y1": 535
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        252,
+        252,
+        251
+      ],
+      "width": 4.05,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2421,
+      "y0": 400,
+      "x1": 2601,
+      "y1": 535
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-10",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2435.4,
+        "y0": 418.9,
+        "x1": 2586.6,
+        "y1": 516.1
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        252,
+        252,
+        251
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "LTM Handler\n(claim-aware search,\nACL, context bundle)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2435.4,
+      "y0": 418.9,
+      "x1": 2586.6,
+      "y1": 516.1
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-11",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1811,
+        "y0": 481,
+        "x1": 2720,
+        "y1": 815
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        238,
+        212,
+        185
+      ],
+      "width": 10.02,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1811,
+      "y0": 481,
+      "x1": 2720,
+      "y1": 815
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-11",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1883.72,
+        "y0": 527.76,
+        "x1": 2647.28,
+        "y1": 768.24
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        238,
+        212,
+        185
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "3. THINK (\uc0ac\uace0 \ubc0f \uc0dd\uc131 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1883.72,
+      "y0": 527.76,
+      "x1": 2647.28,
+      "y1": 768.24
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-12",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1973,
+        "y0": 580,
+        "x1": 2719,
+        "y1": 814
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        217,
+        190,
+        162
+      ],
+      "width": 7.02,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1973,
+      "y0": 580,
+      "x1": 2719,
+      "y1": 814
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-12",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2032.68,
+        "y0": 612.76,
+        "x1": 2659.32,
+        "y1": 781.24
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        217,
+        190,
+        162
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Generation Stack\n(prompt reconstruction,\nmodel eval gate, fast/slow\nrouting, structured output)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2032.68,
+      "y0": 612.76,
+      "x1": 2659.32,
+      "y1": 781.24
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-13",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 82,
+        "y0": 458,
+        "x1": 1110,
+        "y1": 787
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        206,
+        222,
+        240
+      ],
+      "width": 9.87,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 82,
+      "y0": 458,
+      "x1": 1110,
+      "y1": 787
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-13",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 164.24,
+        "y0": 504.06,
+        "x1": 1027.76,
+        "y1": 740.94
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        206,
+        222,
+        240
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "4. ACT (\ud589\ub3d9 \ubc0f \ubc18\uc601 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 164.24,
+      "y0": 504.06,
+      "x1": 1027.76,
+      "y1": 740.94
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-14",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 82,
+        "y0": 604,
+        "x1": 625,
+        "y1": 744
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        54,
+        52,
+        50
+      ],
+      "width": 4.2,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 82,
+      "y0": 604,
+      "x1": 625,
+      "y1": 744
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-14",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 125.44,
+        "y0": 623.6,
+        "x1": 581.56,
+        "y1": 724.4
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        54,
+        52,
+        50
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Boundary Enforcement\n(memory-safe text,\nuser-visible repair)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 125.44,
+      "y0": 623.6,
+      "x1": 581.56,
+      "y1": 724.4
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-15",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 479,
+        "y0": 696,
+        "x1": 1039,
+        "y1": 781
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        207,
+        224,
+        239
+      ],
+      "width": 2.55,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 479,
+      "y0": 696,
+      "x1": 1039,
+      "y1": 781
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-15",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 523.8,
+        "y0": 707.9,
+        "x1": 994.2,
+        "y1": 769.1
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        207,
+        224,
+        239
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "SocialManager\n(event-based relation\nupdate, fulfillment-aware\nreliability)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 523.8,
+      "y0": 707.9,
+      "x1": 994.2,
+      "y1": 769.1
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-16",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 82,
+        "y0": 609,
+        "x1": 1109,
+        "y1": 787
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        173,
+        181,
+        189
+      ],
+      "width": 5.34,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 82,
+      "y0": 609,
+      "x1": 1109,
+      "y1": 787
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-16",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 164.16,
+        "y0": 633.92,
+        "x1": 1026.84,
+        "y1": 762.08
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        173,
+        181,
+        189
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Reflection Handler\n(claims/notes extraction,\nbackground consolidation)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 164.16,
+      "y0": 633.92,
+      "x1": 1026.84,
+      "y1": 762.08
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-17",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1870,
+        "y0": 841,
+        "x1": 2209,
+        "y1": 1114
+      },
+      "corner_radius": 49.14
+    },
+    "stroke": {
+      "color": [
+        136,
+        91,
+        158
+      ],
+      "width": 8.19,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1870,
+      "y0": 841,
+      "x1": 2209,
+      "y1": 1114
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-17",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1897.12,
+        "y0": 879.22,
+        "x1": 2181.88,
+        "y1": 1075.78
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        136,
+        91,
+        158
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Memory Graph DB\n(Entity-Claim-Note-Episode)\n(snapshot + delta, public\nboundary projection)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1897.12,
+      "y0": 879.22,
+      "x1": 2181.88,
+      "y1": 1075.78
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-18",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 2306,
+        "y0": 905,
+        "x1": 2678,
+        "y1": 1109
+      },
+      "corner_radius": 36.72
+    },
+    "stroke": {
+      "color": [
+        168,
+        143,
+        47
+      ],
+      "width": 6.12,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2306,
+      "y0": 905,
+      "x1": 2678,
+      "y1": 1109
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "node-text-18",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 2335.76,
+        "y0": 933.56,
+        "x1": 2648.24,
+        "y1": 1080.44
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        168,
+        143,
+        47
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Canonical State DB (SQLite)\n(active claims, open loops,\ninteraction policy, relation state,\nencrypted boundary payload)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 2335.76,
+      "y0": 933.56,
+      "x1": 2648.24,
+      "y1": 1080.44
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2309,
+          "y": 150.5
+        },
+        {
+          "x": 1309.5,
+          "y": 150.5
+        },
+        {
+          "x": 1309.5,
+          "y": 191.18
+        },
+        {
+          "x": 1309.5,
+          "y": 228
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        215,
+        216,
+        209
+      ],
+      "width": 7.89,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1309.5,
+      "y0": 150.5,
+      "x1": 2309,
+      "y1": 228
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1196,
+          "y": 370.0
+        },
+        {
+          "x": 1153.0,
+          "y": 370.0
+        },
+        {
+          "x": 1153.0,
+          "y": 389.5
+        },
+        {
+          "x": 1141.78,
+          "y": 389.5
+        },
+        {
+          "x": 1110,
+          "y": 389.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        112,
+        148,
+        187
+      ],
+      "width": 7.83,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1110,
+      "y0": 370.0,
+      "x1": 1196,
+      "y1": 389.5
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 595.5,
+          "y": 259
+        },
+        {
+          "x": 595.5,
+          "y": 222.45999999999998
+        },
+        {
+          "x": 617.54,
+          "y": 222.45999999999998
+        },
+        {
+          "x": 617.54,
+          "y": 312.0
+        },
+        {
+          "x": 581,
+          "y": 312.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        112,
+        148,
+        187
+      ],
+      "width": 7.83,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 581,
+      "y0": 222.45999999999998,
+      "x1": 617.54,
+      "y1": 312.0
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 375,
+          "y": 312.0
+        },
+        {
+          "x": 394.5,
+          "y": 312.0
+        },
+        {
+          "x": 394.5,
+          "y": 338.4
+        },
+        {
+          "x": 431.99999999999994,
+          "y": 338.4
+        },
+        {
+          "x": 413.99999999999994,
+          "y": 338.4
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        182,
+        189,
+        197
+      ],
+      "width": 2.256,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.82,
+    "source_region": {
+      "x0": 375,
+      "y0": 312.0,
+      "x1": 431.99999999999994,
+      "y1": 338.4
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 581,
+          "y": 312.0
+        },
+        {
+          "x": 635.5,
+          "y": 312.0
+        },
+        {
+          "x": 635.5,
+          "y": 314.5
+        },
+        {
+          "x": 672.0,
+          "y": 314.5
+        },
+        {
+          "x": 690,
+          "y": 314.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        182,
+        189,
+        197
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 581,
+      "y0": 312.0,
+      "x1": 690,
+      "y1": 314.5
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1423,
+          "y": 370.0
+        },
+        {
+          "x": 1617.0,
+          "y": 370.0
+        },
+        {
+          "x": 1617.0,
+          "y": 413.5
+        },
+        {
+          "x": 1779.22,
+          "y": 413.5
+        },
+        {
+          "x": 1811,
+          "y": 413.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        195,
+        151,
+        115
+      ],
+      "width": 14.01,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1423,
+      "y0": 370.0,
+      "x1": 1811,
+      "y1": 413.5
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2265.5,
+          "y": 647
+        },
+        {
+          "x": 2265.5,
+          "y": 642.88
+        },
+        {
+          "x": 2208.0,
+          "y": 642.88
+        },
+        {
+          "x": 2208.0,
+          "y": 573.38
+        },
+        {
+          "x": 2208.0,
+          "y": 508
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        195,
+        151,
+        115
+      ],
+      "width": 14.01,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2208.0,
+      "y0": 508,
+      "x1": 2265.5,
+      "y1": 647
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2720,
+          "y": 413.5
+        },
+        {
+          "x": 2764.38,
+          "y": 413.5
+        },
+        {
+          "x": 2764.38,
+          "y": 414.0
+        },
+        {
+          "x": 2743.38,
+          "y": 414.0
+        },
+        {
+          "x": 2678,
+          "y": 414.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        130,
+        133,
+        133
+      ],
+      "width": 14.01,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2678,
+      "y0": 413.5,
+      "x1": 2764.38,
+      "y1": 414.0
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2720,
+          "y": 413.5
+        },
+        {
+          "x": 2725.88,
+          "y": 413.5
+        },
+        {
+          "x": 2725.88,
+          "y": 467.5
+        },
+        {
+          "x": 2666.38,
+          "y": 467.5
+        },
+        {
+          "x": 2601,
+          "y": 467.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        195,
+        151,
+        115
+      ],
+      "width": 14.01,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2601,
+      "y0": 413.5,
+      "x1": 2725.88,
+      "y1": 467.5
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1309.5,
+          "y": 512
+        },
+        {
+          "x": 1309.5,
+          "y": 543.78
+        },
+        {
+          "x": 1779.22,
+          "y": 543.78
+        },
+        {
+          "x": 1779.22,
+          "y": 648.0
+        },
+        {
+          "x": 1811,
+          "y": 648.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        238,
+        212,
+        185
+      ],
+      "width": 10.02,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1309.5,
+      "y0": 512,
+      "x1": 1811,
+      "y1": 648.0
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2720,
+          "y": 648.0
+        },
+        {
+          "x": 2766.26,
+          "y": 648.0
+        },
+        {
+          "x": 2766.26,
+          "y": 697.0
+        },
+        {
+          "x": 2765.76,
+          "y": 697.0
+        },
+        {
+          "x": 2719,
+          "y": 697.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        217,
+        190,
+        162
+      ],
+      "width": 10.02,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2719,
+      "y0": 648.0,
+      "x1": 2766.26,
+      "y1": 697.0
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1309.5,
+          "y": 512
+        },
+        {
+          "x": 1309.5,
+          "y": 543.78
+        },
+        {
+          "x": 1141.78,
+          "y": 543.78
+        },
+        {
+          "x": 1141.78,
+          "y": 622.5
+        },
+        {
+          "x": 1110,
+          "y": 622.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        215,
+        216,
+        209
+      ],
+      "width": 9.87,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1110,
+      "y0": 512,
+      "x1": 1309.5,
+      "y1": 622.5
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 82,
+          "y": 622.5
+        },
+        {
+          "x": 35.94,
+          "y": 622.5
+        },
+        {
+          "x": 35.94,
+          "y": 674.0
+        },
+        {
+          "x": 82,
+          "y": 674.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        54,
+        52,
+        50
+      ],
+      "width": 9.87,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 35.94,
+      "y0": 622.5,
+      "x1": 82,
+      "y1": 674.0
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 596.0,
+          "y": 787
+        },
+        {
+          "x": 596.0,
+          "y": 833.06
+        },
+        {
+          "x": 432.94,
+          "y": 833.06
+        },
+        {
+          "x": 432.94,
+          "y": 738.5
+        },
+        {
+          "x": 479,
+          "y": 738.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        206,
+        222,
+        240
+      ],
+      "width": 9.87,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 432.94,
+      "y0": 738.5,
+      "x1": 596.0,
+      "y1": 833.06
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 596.0,
+          "y": 787
+        },
+        {
+          "x": 596.0,
+          "y": 833.06
+        },
+        {
+          "x": 595.5,
+          "y": 833.06
+        },
+        {
+          "x": 595.5,
+          "y": 787
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        173,
+        181,
+        189
+      ],
+      "width": 9.87,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 595.5,
+      "y0": 787,
+      "x1": 596.0,
+      "y1": 833.06
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 2209,
+          "y": 977.5
+        },
+        {
+          "x": 2257.5,
+          "y": 977.5
+        },
+        {
+          "x": 2257.5,
+          "y": 1007.0
+        },
+        {
+          "x": 2267.78,
+          "y": 1007.0
+        },
+        {
+          "x": 2306,
+          "y": 1007.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        168,
+        143,
+        47
+      ],
+      "width": 8.19,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 2209,
+      "y0": 977.5,
+      "x1": 2306,
+      "y1": 1007.0
+    },
+    "inferred": true,
+    "raster_asset_id": null,
+    "raster_image_bytes": null
+  }
+]

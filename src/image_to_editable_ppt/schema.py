@@ -296,7 +296,7 @@ def validate_emission_trace(
     graph: AuthoringGraph,
     object_hypotheses: list[ObjectHypothesis],
     motif_hypotheses: list[MotifHypothesis],
-    geometry_candidates: list[RectCandidate],
+    geometry_candidates: list[StageEntity],
     fallback_regions: list[FallbackRegion],
 ) -> None:
     hypothesis_ids = {hypothesis.id for hypothesis in object_hypotheses}
@@ -315,8 +315,8 @@ def validate_emission_trace(
         if record.drop_reason is not None:
             continue
         if record.object_type == "connector":
-            if len(record.graph_node_ids) < 2 or len(record.hypothesis_ids) < 2:
-                raise StageContractError(f"07_emit/emission_records:{record.id}: connector missing endpoint provenance")
+            if len(record.graph_node_ids) < 1 or len(record.hypothesis_ids) < 1:
+                raise StageContractError(f"07_emit/emission_records:{record.id}: connector missing hypothesis provenance")
             continue
         if not any(source_id in geometry_ids or source_id in fallback_ids or source_id == "grow_fallback" for source_id in record.source_ids):
             raise StageContractError(f"07_emit/emission_records:{record.id}: no geometry/fallback source trace")

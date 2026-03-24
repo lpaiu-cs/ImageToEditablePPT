@@ -10,7 +10,7 @@ from .config import PipelineConfig
 from .diagnostics import DiagnosticsRecorder
 from .emit import emit_shapes
 from .exporter import export_to_pptx
-from .fallback import build_grow_fallback_hypotheses
+from .fallback import FallbackStageResult, build_grow_fallback_hypotheses
 from .filtering import RejectedRegion
 from .gating import gate_elements
 from .geometry import build_geometry_candidates
@@ -149,22 +149,27 @@ def build_elements_from_structure(
         structure,
         text_result,
         guide_result.snapped_candidates,
+        geometry_result.connector_candidates,
         config,
         diagnostics=recorder,
         stage="03_objects",
     )
-    fallback_result = build_grow_fallback_hypotheses(
-        image,
-        [node for node in object_result.vlm_nodes if node.id in set(object_result.unmatched_vlm_node_ids)],
-        anchor_bboxes=object_result.anchor_map,
-        config=config,
-        diagnostics=recorder,
-        stage="03_objects",
-    )
+    if config.enable_grow_fallback:
+        fallback_result = build_grow_fallback_hypotheses(
+            image,
+            [node for node in object_result.vlm_nodes if node.id in set(object_result.unmatched_vlm_node_ids)],
+            anchor_bboxes=object_result.anchor_map,
+            config=config,
+            diagnostics=recorder,
+            stage="03_objects",
+        )
+    else:
+        fallback_result = FallbackStageResult(refined_nodes=[], fallback_regions=[], hypotheses=[])
     all_hypotheses = [*object_result.hypotheses, *fallback_result.hypotheses]
+    motif_candidates = [hypothesis for hypothesis in all_hypotheses if hypothesis.object_type != "connector"]
     motif_result = build_motif_hypotheses(
         image,
-        all_hypotheses,
+        motif_candidates,
         guide_result.guide_field,
         config,
         diagnostics=recorder,
@@ -196,6 +201,7 @@ def build_elements_from_structure(
         backend,
         config,
         guide_result.snapped_candidates,
+        geometry_result.connector_candidates,
         selection_result.selected_motifs,
         diagnostics=recorder,
         stage="07_emit",

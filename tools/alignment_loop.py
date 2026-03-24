@@ -26,6 +26,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--ocr", action="store_true", help="Enable optional OCR")
     parser.add_argument("--legacy", action="store_true", help="Force the legacy bottom-up CV pipeline")
+    parser.add_argument("--no-grow-fallback", action="store_true", help="Disable grow fallback to measure geometry-only recovery")
     parser.add_argument("--no-motifs", action="store_true", help="Disable all motif grouping")
     parser.add_argument(
         "--disable-motif-family",
@@ -59,6 +60,7 @@ def main() -> int:
         iteration_dir,
         config=PipelineConfig(
             semantic_mode=not args.legacy,
+            enable_grow_fallback=not args.no_grow_fallback,
             enable_motifs=not args.no_motifs,
             enable_titled_panel_motif="titled_panel" not in set(args.disable_motif_family),
             enable_repeated_cards_motif="repeated_cards" not in set(args.disable_motif_family),
@@ -88,6 +90,12 @@ def main() -> int:
     )
     print(f"benchmark_summary: {summary_path}")
     print(f"benchmark_rollup: {rollup_path}")
+    print(
+        "ablations: grow_fallback={} motifs={}".format(
+            "on" if not args.no_grow_fallback else "off",
+            "on" if not args.no_motifs else "off",
+        )
+    )
     print(format_benchmark_summary(summary))
     return 0
 

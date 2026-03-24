@@ -93,6 +93,7 @@ class PipelineConfig:
     enable_motifs: bool = True
     enable_titled_panel_motif: bool = True
     enable_repeated_cards_motif: bool = True
+    enable_grow_fallback: bool = True
     motif_titled_panel_min_children: int = 2
     motif_titled_panel_min_title_score: float = 0.75
     motif_repeated_cards_min_members: int = 3

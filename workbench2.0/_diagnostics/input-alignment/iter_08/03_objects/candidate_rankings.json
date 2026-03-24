@@ -1,0 +1,42 @@
+{
+  "n7": [],
+  "n1": [],
+  "n6": [],
+  "n3": [
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": -2.319808246224507
+    }
+  ],
+  "n10": [],
+  "n16": [],
+  "n9": [],
+  "n2": [],
+  "n4": [
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": -1.1651293286250097
+    }
+  ],
+  "n15": [],
+  "n11": [],
+  "n5": [
+    {
+      "candidate_id": "rect-candidate:box-3:snapped",
+      "score": 0.9622187562594913
+    },
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": -1.2374029927623234
+    }
+  ],
+  "n8": [
+    {
+      "candidate_id": "rect-candidate:box-10:snapped",
+      "score": 1.168798282428243
+    }
+  ],
+  "n12": [],
+  "n13": [],
+  "n14": []
+}

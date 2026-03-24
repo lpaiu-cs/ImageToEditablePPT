@@ -1,0 +1,27 @@
+{
+  "id": "authoring-graph",
+  "kind": "authoring_graph",
+  "bbox": {
+    "x0": 1806.5,
+    "y0": 555.5,
+    "x1": 2116.5,
+    "y1": 672.375
+  },
+  "score_total": 0.0,
+  "score_terms": {
+    "edge_count": 0.0,
+    "node_count": 1.0
+  },
+  "source_ids": [
+    "object-hypothesis:n8"
+  ],
+  "provenance": {},
+  "parent_ids": [],
+  "guide_ids": [],
+  "assigned_text_ids": [],
+  "assigned_vlm_ids": [],
+  "node_ids": [
+    "object-hypothesis:n8"
+  ],
+  "edges": []
+}

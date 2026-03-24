@@ -1,0 +1,1177 @@
+{
+  "status": "ok",
+  "gt_available": true,
+  "ground_truth_count": 30,
+  "stages": {
+    "01_geometry_raw": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 37,
+      "recoverable_count": 3,
+      "recoverable_ratio": 0.1,
+      "recoverable_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 0,
+        "mixed_geometry_fallback": 0,
+        "other": 3
+      },
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": "connector-candidate:linear-17",
+          "similarity": 0.5880382030861125,
+          "source_bucket": "other"
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": "connector-candidate:linear-27",
+          "similarity": 0.5948077741523621,
+          "source_bucket": "other"
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": "connector-candidate:linear-62-3",
+          "similarity": 0.5544888597640891,
+          "source_bucket": "other"
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        }
+      ]
+    },
+    "02_guides": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 8,
+      "recoverable_count": 0,
+      "recoverable_ratio": 0.0,
+      "recoverable_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 0,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      },
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        }
+      ]
+    },
+    "03_objects": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 1,
+      "recoverable_count": 0,
+      "recoverable_ratio": 0.0,
+      "recoverable_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 0,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      },
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        }
+      ]
+    },
+    "05_selection": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 1,
+      "recoverable_count": 0,
+      "recoverable_ratio": 0.0,
+      "recoverable_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 0,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      },
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        }
+      ]
+    },
+    "06_graph": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 1,
+      "recoverable_count": 0,
+      "recoverable_ratio": 0.0,
+      "recoverable_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 0,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      },
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        }
+      ]
+    },
+    "07_emit": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 2,
+      "recoverable_count": 0,
+      "recoverable_ratio": 0.0,
+      "recoverable_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 0,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      },
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "similarity": 0.0,
+          "source_bucket": null
+        }
+      ]
+    }
+  }
+}

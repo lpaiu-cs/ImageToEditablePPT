@@ -1,0 +1,1297 @@
+{
+  "status": "ok",
+  "gt_available": true,
+  "ground_truth_count": 30,
+  "ground_truth": [
+    {
+      "gt_id": "node-1",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n1:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n1:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.9076,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-2",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-1",
+        "score_total": 0.9367,
+        "similarity": 0.0062,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-1:snapped",
+        "score_total": 0.9367,
+        "similarity": 0.0062,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n2:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n2:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-2",
+        "score_total": 0.97,
+        "similarity": 0.7759,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-3",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-3",
+        "score_total": 0.9,
+        "similarity": 0.9846,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-4",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-1",
+        "score_total": 0.9367,
+        "similarity": 0.0891,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-1:snapped",
+        "score_total": 0.9367,
+        "similarity": 0.0896,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n4:fallback",
+        "score_total": 0.82,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n4:fallback",
+        "score_total": 0.82,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-4",
+        "score_total": 0.82,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-5",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-1",
+        "score_total": 0.9367,
+        "similarity": 0.0543,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-1:snapped",
+        "score_total": 0.9367,
+        "similarity": 0.0546,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n5:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n5:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-5",
+        "score_total": 0.97,
+        "similarity": 0.7244,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-6",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-3",
+        "score_total": 0.9364,
+        "similarity": 0.1834,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-3:snapped",
+        "score_total": 0.9364,
+        "similarity": 0.1812,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n6:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n6:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-6",
+        "score_total": 0.97,
+        "similarity": 0.8385,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-7",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n7:fallback",
+        "score_total": 0.9,
+        "similarity": 0.6286,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n7:fallback",
+        "score_total": 0.9,
+        "similarity": 0.6286,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-7",
+        "score_total": 0.97,
+        "similarity": 0.6573,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-8",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-10",
+        "score_total": 0.7529,
+        "similarity": 0.0836,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-10:snapped",
+        "score_total": 0.7529,
+        "similarity": 0.0836,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n8:fallback",
+        "score_total": 0.9,
+        "similarity": 0.2233,
+        "passes": false,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n8:fallback",
+        "score_total": 0.9,
+        "similarity": 0.2233,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-8",
+        "score_total": 0.97,
+        "similarity": 0.2126,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-9",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-10",
+        "score_total": 0.7529,
+        "similarity": 0.0249,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-10:snapped",
+        "score_total": 0.7529,
+        "similarity": 0.0249,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n8:fallback",
+        "score_total": 0.9,
+        "similarity": 0.4884,
+        "passes": false,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n8:fallback",
+        "score_total": 0.9,
+        "similarity": 0.4884,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-8",
+        "score_total": 0.97,
+        "similarity": 0.4696,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-10",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-10",
+        "score_total": 0.7529,
+        "similarity": 0.0206,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-10:snapped",
+        "score_total": 0.7529,
+        "similarity": 0.0206,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n11:fallback",
+        "score_total": 0.9,
+        "similarity": 0.1919,
+        "passes": false,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n11:fallback",
+        "score_total": 0.9,
+        "similarity": 0.1919,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-11",
+        "score_total": 0.9,
+        "similarity": 0.2711,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-11",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-14",
+        "score_total": 0.9481,
+        "similarity": 0.1035,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-14:snapped",
+        "score_total": 0.9481,
+        "similarity": 0.0903,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n11:fallback",
+        "score_total": 0.9,
+        "similarity": 0.6444,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n11:fallback",
+        "score_total": 0.9,
+        "similarity": 0.6444,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-11",
+        "score_total": 0.9,
+        "similarity": 0.6258,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-12",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n16:fallback",
+        "score_total": 0.9,
+        "similarity": 0.0947,
+        "passes": false,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n16:fallback",
+        "score_total": 0.9,
+        "similarity": 0.0947,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-16",
+        "score_total": 0.9,
+        "similarity": 0.1122,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-13",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-6",
+        "score_total": 0.9222,
+        "similarity": 0.1465,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-6:snapped",
+        "score_total": 0.9222,
+        "similarity": 0.1554,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n13:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n13:fallback",
+        "score_total": 0.9,
+        "similarity": 1.0,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-13",
+        "score_total": 0.9,
+        "similarity": 0.6228,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-14",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n14:fallback",
+        "score_total": 0.9,
+        "similarity": 0.4587,
+        "passes": false,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n14:fallback",
+        "score_total": 0.9,
+        "similarity": 0.4587,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-14",
+        "score_total": 0.97,
+        "similarity": 0.4757,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-15",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n15:fallback",
+        "score_total": 0.9,
+        "similarity": 0.6471,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n15:fallback",
+        "score_total": 0.9,
+        "similarity": 0.6471,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-15",
+        "score_total": 0.97,
+        "similarity": 0.6416,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-16",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n16:fallback",
+        "score_total": 0.9,
+        "similarity": 0.6817,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n16:fallback",
+        "score_total": 0.9,
+        "similarity": 0.6817,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-16",
+        "score_total": 0.97,
+        "similarity": 0.6759,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-17",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n16:fallback",
+        "score_total": 0.9,
+        "similarity": 0.0149,
+        "passes": false,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n16:fallback",
+        "score_total": 0.9,
+        "similarity": 0.0149,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-16",
+        "score_total": 0.9,
+        "similarity": 0.0396,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-18",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n17:fallback",
+        "score_total": 0.9,
+        "similarity": 0.7911,
+        "passes": true,
+        "source_bucket": "fallback_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n17:fallback",
+        "score_total": 0.9,
+        "similarity": 0.7911,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-17",
+        "score_total": 0.97,
+        "similarity": 0.8502,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-1",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.588,
+        "passes": true,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.588,
+        "passes": true,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.588,
+        "passes": true,
+        "source_bucket": "geometry_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.8426,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": false,
+      "status": "recovered"
+    },
+    {
+      "gt_id": "edge-2",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-27",
+        "score_total": 0.0,
+        "similarity": 0.5948,
+        "passes": true,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-27",
+        "score_total": 0.0,
+        "similarity": 0.5948,
+        "passes": true,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-27",
+        "score_total": 0.0,
+        "similarity": 0.5948,
+        "passes": true,
+        "source_bucket": "geometry_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.863,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": true,
+      "status": "fallback_rescued"
+    },
+    {
+      "gt_id": "edge-3",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1969,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1969,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1969,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.82,
+        "similarity": 0.7605,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-4",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1189,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1189,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1189,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.82,
+        "similarity": 0.6072,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-5",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0254,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0254,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0254,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.2128,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-6",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0254,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0254,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0254,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.2128,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-7",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1541,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1541,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-36",
+        "score_total": 0.0,
+        "similarity": 0.1541,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.2092,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-8",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-62-3",
+        "score_total": 0.8,
+        "similarity": 0.5545,
+        "passes": true,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-62-3",
+        "score_total": 0.8,
+        "similarity": 0.5545,
+        "passes": true,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-62-3",
+        "score_total": 0.8,
+        "similarity": 0.5545,
+        "passes": true,
+        "source_bucket": "geometry_only",
+        "matched": true
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.6671,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": true
+      },
+      "fallback_rescued": false,
+      "status": "recovered"
+    },
+    {
+      "gt_id": "edge-9",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.3038,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.3038,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.3038,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.5051,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-10",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.2147,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.2147,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.2147,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.6743,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-11",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.2027,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.2027,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-48",
+        "score_total": 0.0,
+        "similarity": 0.2027,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.813,
+        "passes": true,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "edge-12",
+      "kind": "connector",
+      "raw_geometry": {
+        "artifact_id": "connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0436,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": null,
+        "score_total": 0.0,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": null
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0436,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:connector-candidate:linear-17",
+        "score_total": 0.0,
+        "similarity": 0.0436,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:edge-1",
+        "score_total": 0.9,
+        "similarity": 0.0765,
+        "passes": false,
+        "source_bucket": "fallback_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "status": "raw_candidate_below_threshold"
+    }
+  ]
+}

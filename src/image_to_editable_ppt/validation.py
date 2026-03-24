@@ -18,6 +18,7 @@ from .ir import BBox, Point
 from .pipeline import ConversionResult, convert_image
 from .preprocess import load_image, preprocess_image
 from .schema import StageEntity
+from .source_attribution import count_source_buckets
 from .style import dilate_mask
 from .text import OCRBackend
 from .svg_exporter import SVG_NS, format_number, to_svg_color
@@ -72,6 +73,7 @@ class ValidationArtifacts:
     oracle_json: Path | None = None
     failure_taxonomy_json: Path | None = None
     attrition_json: Path | None = None
+    geometry_audit_json: Path | None = None
 
 
 @dataclass(slots=True, frozen=True)
@@ -134,20 +136,24 @@ def run_validation_iteration(
     oracle_json = None
     failure_taxonomy_json = None
     attrition_json = None
+    geometry_audit_json = None
     gt_annotation = discover_ground_truth(input_path)
     if conversion.diagnostics_dir is not None:
         eval_dir = conversion.diagnostics_dir / "08_eval"
         stage_eval = stage_eval_items(conversion)
-        write_eval_debug_artifacts(eval_dir, gt_annotation, stage_eval)
+        eval_payload = write_eval_debug_artifacts(eval_dir, gt_annotation, stage_eval)
         oracle_json = eval_dir / "oracle_by_stage.json"
         failure_taxonomy_json = eval_dir / "failure_taxonomy.json"
         attrition_json = eval_dir / "attrition_by_stage.json"
+        geometry_audit_json = eval_dir / "geometry_audit.json"
         write_manifest(
             conversion.diagnostics_dir,
             build_manifest_payload(
                 conversion=conversion,
+                config=active_config,
                 gt_available=gt_annotation is not None,
                 raster_fallback_used=bool(conversion.stage_artifacts.get("07_emit", {}).get("fallback_regions", [])),
+                eval_payload=eval_payload,
             ),
         )
     return ValidationRun(
@@ -168,34 +174,53 @@ def run_validation_iteration(
             oracle_json=oracle_json,
             failure_taxonomy_json=failure_taxonomy_json,
             attrition_json=attrition_json,
+            geometry_audit_json=geometry_audit_json,
         ),
     )
 
 
 def stage_eval_items(conversion: ConversionResult) -> dict[str, list]:
     stage_items: dict[str, list] = {}
-    for stage, payload in conversion.stage_artifacts.items():
-        entities: list[StageEntity] = []
-        if isinstance(payload, dict):
-            for value in payload.values():
-                if isinstance(value, list) and value and isinstance(value[0], StageEntity):
-                    entities.extend(value)
-                elif isinstance(value, StageEntity):
-                    entities.append(value)
-            if stage == "06_graph" and "graph_nodes" in payload:
-                graph_nodes = payload["graph_nodes"]
-                if isinstance(graph_nodes, list) and graph_nodes and isinstance(graph_nodes[0], StageEntity):
-                    entities = list(graph_nodes)
+    geometry_stage = conversion.stage_artifacts.get("01_geometry_raw", {})
+    if isinstance(geometry_stage, dict):
+        entities = [*geometry_stage.get("rect_candidates", []), *geometry_stage.get("connector_candidates", [])]
         if entities:
-            stage_items[stage] = stage_items_from_entities(entities)
+            stage_items["01_geometry_raw"] = stage_items_from_entities(entities)
+    guide_stage = conversion.stage_artifacts.get("02_guides", {})
+    if isinstance(guide_stage, dict):
+        entities = [*guide_stage.get("rect_candidates", [])]
+        if entities:
+            stage_items["02_guides"] = stage_items_from_entities(entities)
+    object_stage = conversion.stage_artifacts.get("03_objects", {})
+    if isinstance(object_stage, dict):
+        entities = [*object_stage.get("hypotheses", []), *object_stage.get("fallback_hypotheses", [])]
+        if entities:
+            stage_items["03_objects"] = stage_items_from_entities(entities)
+    selection_stage = conversion.stage_artifacts.get("05_selection", {})
+    if isinstance(selection_stage, dict):
+        entities = [*selection_stage.get("selected", [])]
+        if entities:
+            stage_items["05_selection"] = stage_items_from_entities(entities)
+    graph_stage = conversion.stage_artifacts.get("06_graph", {})
+    if isinstance(graph_stage, dict):
+        entities = [row for row in graph_stage.get("graph_nodes", []) if isinstance(row, StageEntity)]
+        if entities:
+            stage_items["06_graph"] = stage_items_from_entities(entities)
+    emit_stage = conversion.stage_artifacts.get("07_emit", {})
+    if isinstance(emit_stage, dict):
+        entities = [*emit_stage.get("emission_records", [])]
+        if entities:
+            stage_items["07_emit"] = stage_items_from_entities(entities)
     return stage_items
 
 
 def build_manifest_payload(
     *,
     conversion: ConversionResult,
+    config: PipelineConfig,
     gt_available: bool,
     raster_fallback_used: bool,
+    eval_payload: dict[str, object] | None = None,
 ) -> dict[str, object]:
     stages = {}
     for stage, payload in conversion.stage_artifacts.items():
@@ -211,10 +236,18 @@ def build_manifest_payload(
         "status": "ok",
         "pipeline_mode": conversion.pipeline_mode,
         "gt_available": gt_available,
+        "gt_eval_status": "ok" if gt_available else "unavailable",
         "raster_fallback_used": raster_fallback_used,
+        "ablation_flags": {
+            "grow_fallback_enabled": config.enable_grow_fallback,
+            "motifs_enabled": config.enable_motifs,
+            "titled_panel_motif_enabled": config.enable_titled_panel_motif,
+            "repeated_cards_motif_enabled": config.enable_repeated_cards_motif,
+        },
         "emit_accounting": build_emit_accounting(conversion),
         "motif_accounting": build_motif_accounting(conversion),
         "fallback_accounting": build_fallback_accounting(conversion),
+        "source_attribution": build_source_attribution(conversion, eval_payload),
         "stages": stages,
     }
 
@@ -280,6 +313,44 @@ def build_fallback_accounting(conversion: ConversionResult) -> dict[str, object]
     return {
         "grow_fallback_hypothesis_count": len(fallback_hypotheses),
         "grow_fallback_region_count": len(fallback_regions),
+    }
+
+
+def build_source_attribution(
+    conversion: ConversionResult,
+    eval_payload: dict[str, object] | None,
+) -> dict[str, object]:
+    object_stage = conversion.stage_artifacts.get("03_objects", {})
+    selection_stage = conversion.stage_artifacts.get("05_selection", {})
+    emit_stage = conversion.stage_artifacts.get("07_emit", {})
+    object_hypotheses = [*object_stage.get("hypotheses", []), *object_stage.get("fallback_hypotheses", [])] if isinstance(object_stage, dict) else []
+    selected_hypotheses = selection_stage.get("selected", []) if isinstance(selection_stage, dict) else []
+    native_records = [
+        record
+        for record in (emit_stage.get("emission_records", []) if isinstance(emit_stage, dict) else [])
+        if getattr(record, "object_type", "") != "raster_region"
+    ]
+    oracle_stages = {}
+    if isinstance(eval_payload, dict):
+        oracle = eval_payload.get("oracle")
+        if isinstance(oracle, dict):
+            oracle_stages = oracle.get("stages", {}) if isinstance(oracle.get("stages"), dict) else {}
+    return {
+        "03_objects": {
+            "count_by_source_bucket": count_source_buckets(object_hypotheses),
+            "recoverable_gt_by_source_bucket": (
+                oracle_stages.get("03_objects", {}).get("recoverable_by_source_bucket", {}) if isinstance(oracle_stages.get("03_objects"), dict) else {}
+            ),
+        },
+        "05_selection": {
+            "selected_count_by_source_bucket": count_source_buckets(selected_hypotheses),
+        },
+        "07_emit": {
+            "native_count_by_source_bucket": count_source_buckets(native_records),
+            "matched_gt_by_source_bucket": (
+                oracle_stages.get("07_emit", {}).get("recoverable_by_source_bucket", {}) if isinstance(oracle_stages.get("07_emit"), dict) else {}
+            ),
+        },
     }
 
 

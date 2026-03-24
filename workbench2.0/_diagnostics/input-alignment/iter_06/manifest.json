@@ -1,0 +1,113 @@
+{
+  "status": "ok",
+  "pipeline_mode": "semantic",
+  "gt_available": true,
+  "gt_eval_status": "ok",
+  "raster_fallback_used": false,
+  "ablation_flags": {
+    "grow_fallback_enabled": true,
+    "motifs_enabled": true,
+    "titled_panel_motif_enabled": true,
+    "repeated_cards_motif_enabled": true
+  },
+  "emit_accounting": {
+    "native_object_count": 49,
+    "raster_region_count": 0,
+    "native_area_ratio": 0.49218328158726476,
+    "raster_area_ratio": 0.0,
+    "raster_native_overlap_area_ratio": 0.0,
+    "dropped_hypothesis_count": 3
+  },
+  "motif_accounting": {
+    "titled_panel": {
+      "proposed": 18,
+      "accepted": 0,
+      "rejected": 18,
+      "absorbed_members": 0,
+      "suppressed_members": 0
+    },
+    "repeated_cards": {
+      "proposed": 18,
+      "accepted": 0,
+      "rejected": 18,
+      "absorbed_members": 0,
+      "suppressed_members": 0
+    }
+  },
+  "fallback_accounting": {
+    "grow_fallback_hypothesis_count": 18,
+    "grow_fallback_region_count": 18
+  },
+  "source_attribution": {
+    "03_objects": {
+      "count_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 18,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      },
+      "recoverable_gt_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 9,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      }
+    },
+    "05_selection": {
+      "selected_count_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 18,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      }
+    },
+    "07_emit": {
+      "native_count_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 49,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      },
+      "matched_gt_by_source_bucket": {
+        "geometry_only": 0,
+        "fallback_only": 10,
+        "mixed_geometry_fallback": 0,
+        "other": 0
+      }
+    }
+  },
+  "stages": {
+    "00_text": {
+      "status": "ok",
+      "entity_count": 0
+    },
+    "01_geometry_raw": {
+      "status": "ok",
+      "entity_count": 74
+    },
+    "02_guides": {
+      "status": "ok",
+      "entity_count": 17
+    },
+    "03_objects": {
+      "status": "ok",
+      "entity_count": 36
+    },
+    "04_motifs": {
+      "status": "ok",
+      "entity_count": 36
+    },
+    "05_selection": {
+      "status": "ok",
+      "entity_count": 18
+    },
+    "06_graph": {
+      "status": "ok",
+      "entity_count": 19
+    },
+    "07_emit": {
+      "status": "ok",
+      "entity_count": 52
+    }
+  }
+}

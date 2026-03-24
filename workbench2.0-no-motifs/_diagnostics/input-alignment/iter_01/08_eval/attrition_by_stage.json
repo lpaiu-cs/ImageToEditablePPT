@@ -1,0 +1,715 @@
+{
+  "status": "ok",
+  "gt_available": true,
+  "ground_truth_count": 30,
+  "ground_truth": [
+    {
+      "gt_id": "node-1",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n1:fallback",
+        "05_selection": "object-hypothesis:n1:fallback",
+        "06_graph": "object-hypothesis:n1:fallback",
+        "07_emit": "emit:node-text-1"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-2",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n2:fallback",
+        "05_selection": "object-hypothesis:n2:fallback",
+        "06_graph": "object-hypothesis:n2:fallback",
+        "07_emit": "emit:node-text-2"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-3",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n3:fallback",
+        "05_selection": "object-hypothesis:n3:fallback",
+        "06_graph": "object-hypothesis:n3:fallback",
+        "07_emit": "emit:node-3"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-4",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n4:fallback",
+        "05_selection": "object-hypothesis:n4:fallback",
+        "06_graph": "object-hypothesis:n4:fallback",
+        "07_emit": "emit:node-4"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-5",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n5:fallback",
+        "05_selection": "object-hypothesis:n5:fallback",
+        "06_graph": "object-hypothesis:n5:fallback",
+        "07_emit": "emit:node-text-5"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-6",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n6:fallback",
+        "05_selection": "object-hypothesis:n6:fallback",
+        "06_graph": "object-hypothesis:n6:fallback",
+        "07_emit": "emit:node-text-6"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-7",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n7:fallback",
+        "05_selection": "object-hypothesis:n7:fallback",
+        "06_graph": "object-hypothesis:n7:fallback",
+        "07_emit": "emit:node-text-7"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-8",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-9",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-10",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-11",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n11:fallback",
+        "05_selection": "object-hypothesis:n11:fallback",
+        "06_graph": "object-hypothesis:n11:fallback",
+        "07_emit": "emit:node-11"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-12",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-13",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n13:fallback",
+        "05_selection": "object-hypothesis:n13:fallback",
+        "06_graph": "object-hypothesis:n13:fallback",
+        "07_emit": "emit:node-13"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-14",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-15",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n15:fallback",
+        "05_selection": "object-hypothesis:n15:fallback",
+        "06_graph": "object-hypothesis:n15:fallback",
+        "07_emit": "emit:node-text-15"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-16",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n16:fallback",
+        "05_selection": "object-hypothesis:n16:fallback",
+        "06_graph": "object-hypothesis:n16:fallback",
+        "07_emit": "emit:node-text-16"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-17",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-18",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "03_objects": "object-hypothesis:n17:fallback",
+        "05_selection": "object-hypothesis:n17:fallback",
+        "06_graph": "object-hypothesis:n17:fallback",
+        "07_emit": "emit:node-text-17"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-1",
+      "presence": {
+        "01_geometry_raw": true,
+        "02_guides": null,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "01_geometry_raw": "connector-candidate:linear-17",
+        "03_objects": "object-hypothesis:connector-candidate:linear-17",
+        "05_selection": "object-hypothesis:connector-candidate:linear-17",
+        "06_graph": "object-hypothesis:connector-candidate:linear-17",
+        "07_emit": "emit:direct-connector-11"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-2",
+      "presence": {
+        "01_geometry_raw": true,
+        "02_guides": null,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "01_geometry_raw": "connector-candidate:linear-27",
+        "03_objects": "object-hypothesis:connector-candidate:linear-27",
+        "05_selection": "object-hypothesis:connector-candidate:linear-27",
+        "06_graph": "object-hypothesis:connector-candidate:linear-27",
+        "07_emit": "emit:edge-1"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-3",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-4",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-5",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-6",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-7",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-8",
+      "presence": {
+        "01_geometry_raw": true,
+        "02_guides": null,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "01_geometry_raw": "connector-candidate:linear-62-3",
+        "03_objects": "object-hypothesis:connector-candidate:linear-62-3",
+        "05_selection": "object-hypothesis:connector-candidate:linear-62-3",
+        "06_graph": "object-hypothesis:connector-candidate:linear-62-3",
+        "07_emit": "emit:direct-connector-6"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-9",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-10",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-11",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-12",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    }
+  ]
+}
