@@ -4,10 +4,12 @@ from dataclasses import dataclass
 import math
 import re
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from .config import PipelineConfig
+from .diagnostics import DiagnosticsRecorder
 from .ir import BBox, BoxGeometry, Element, FillStyle, Point, PolylineGeometry, StrokeStyle, TextPayload
+from .schema import OCRPhrase, OCRWord
 
 
 @dataclass(slots=True, frozen=True)
@@ -15,6 +17,15 @@ class OCRTextRegion:
     text: str
     bbox: BBox
     confidence: float
+
+
+@dataclass(slots=True)
+class OCRNormalizationResult:
+    words: list[OCRWord]
+    phrases: list[OCRPhrase]
+    raw_regions: list[OCRTextRegion]
+    merged_regions: list[OCRTextRegion]
+    word_to_phrase: dict[str, str]
 
 
 class OCRBackend:
@@ -147,9 +158,16 @@ def extract_candidate_regions(
 
 
 def merge_ocr_regions(regions: list[OCRTextRegion]) -> list[OCRTextRegion]:
+    merged, _ = merge_ocr_regions_with_provenance(regions)
+    return merged
+
+
+def merge_ocr_regions_with_provenance(
+    regions: list[OCRTextRegion],
+) -> tuple[list[OCRTextRegion], list[list[OCRTextRegion]]]:
     filtered = [region for region in regions if region.text.strip()]
     if not filtered:
-        return []
+        return [], []
     lines: list[list[OCRTextRegion]] = []
     for region in sorted(filtered, key=lambda candidate: (candidate.bbox.center.y, candidate.bbox.x0)):
         placed = False
@@ -163,6 +181,7 @@ def merge_ocr_regions(regions: list[OCRTextRegion]) -> list[OCRTextRegion]:
         if not placed:
             lines.append([region])
     merged_lines: list[OCRTextRegion] = []
+    merged_line_groups: list[list[OCRTextRegion]] = []
     for line in lines:
         words = sorted(line, key=lambda candidate: candidate.bbox.x0)
         group: list[OCRTextRegion] = [words[0]]
@@ -174,24 +193,111 @@ def merge_ocr_regions(regions: list[OCRTextRegion]) -> list[OCRTextRegion]:
                 group.append(region)
                 continue
             merged_lines.append(_merge_ocr_group(group, separator=" "))
+            merged_line_groups.append(list(group))
             group = [region]
         merged_lines.append(_merge_ocr_group(group, separator=" "))
+        merged_line_groups.append(list(group))
     if len(merged_lines) <= 1:
-        return merged_lines
-    blocks: list[list[OCRTextRegion]] = []
-    for region in sorted(merged_lines, key=lambda candidate: (candidate.bbox.y0, candidate.bbox.x0)):
+        return merged_lines, merged_line_groups
+    blocks: list[list[int]] = []
+    for index, region in sorted(enumerate(merged_lines), key=lambda pair: (pair[1].bbox.y0, pair[1].bbox.x0)):
         placed = False
         for block in blocks:
-            reference = block[-1]
+            reference = merged_lines[block[-1]]
             gap = region.bbox.y0 - reference.bbox.y1
             overlap = horizontal_overlap_ratio(reference.bbox, region.bbox)
             if overlap >= 0.45 and gap <= max(reference.bbox.height, region.bbox.height) * 1.4:
-                block.append(region)
+                block.append(index)
                 placed = True
                 break
         if not placed:
-            blocks.append([region])
-    return [_merge_ocr_group(block, separator="\n") for block in blocks]
+            blocks.append([index])
+    merged_blocks = [_merge_ocr_group([merged_lines[index] for index in block], separator="\n") for block in blocks]
+    block_groups = [
+        [item for index in block for item in merged_line_groups[index]]
+        for block in blocks
+    ]
+    return merged_blocks, block_groups
+
+
+def normalize_and_merge_ocr(
+    image: Image.Image,
+    backend: OCRBackend,
+    config: PipelineConfig,
+    *,
+    diagnostics: DiagnosticsRecorder | None = None,
+    stage: str = "00_text",
+) -> OCRNormalizationResult:
+    recorder = diagnostics or DiagnosticsRecorder()
+    raw_regions = [
+        region
+        for region in backend.extract(image)
+        if region.confidence >= config.semantic_ocr_confidence and region.text.strip()
+    ]
+    merged_regions, groups = merge_ocr_regions_with_provenance(raw_regions)
+    words: list[OCRWord] = []
+    phrases: list[OCRPhrase] = []
+    word_to_phrase: dict[str, str] = {}
+    normalization_rows: list[dict[str, object]] = []
+    for index, region in enumerate(raw_regions, start=1):
+        word_id = f"ocr-word-{index:03d}"
+        normalized = normalize_ocr_text(region.text)
+        words.append(
+            OCRWord(
+                id=word_id,
+                kind="ocr_word",
+                bbox=region.bbox,
+                score_total=region.confidence,
+                score_terms={"confidence": region.confidence},
+                source_ids=[],
+                text=region.text,
+                normalized_text=normalized,
+                confidence=region.confidence,
+            )
+        )
+        normalization_rows.append({"id": word_id, "before": region.text, "after": normalized})
+    region_lookup = {id(region): word.id for region, word in zip(raw_regions, words, strict=True)}
+    for index, (region, group) in enumerate(zip(merged_regions, groups, strict=True), start=1):
+        phrase_id = f"ocr-phrase-{index:03d}"
+        word_ids = [region_lookup[id(item)] for item in group if id(item) in region_lookup]
+        for word_id in word_ids:
+            word_to_phrase[word_id] = phrase_id
+        phrases.append(
+            OCRPhrase(
+                id=phrase_id,
+                kind="ocr_phrase",
+                bbox=region.bbox,
+                score_total=region.confidence,
+                score_terms={"confidence": region.confidence, "word_count": float(len(word_ids))},
+                source_ids=word_ids,
+                provenance={"ocr_words": word_ids},
+                text=region.text,
+                normalized_text=normalize_ocr_text(region.text),
+                word_ids=word_ids,
+            )
+        )
+        normalization_rows.append({"id": phrase_id, "before": region.text, "after": normalize_ocr_text(region.text)})
+    result = OCRNormalizationResult(
+        words=words,
+        phrases=phrases,
+        raw_regions=raw_regions,
+        merged_regions=merged_regions,
+        word_to_phrase=word_to_phrase,
+    )
+    if recorder.enabled:
+        recorder.summary(
+            stage,
+            {
+                "raw_word_count": len(words),
+                "merged_phrase_count": len(phrases),
+            },
+        )
+        recorder.items(stage, "words", words)
+        recorder.items(stage, "phrases", phrases)
+        recorder.artifact(stage, "word_to_phrase", word_to_phrase)
+        recorder.artifact(stage, "normalization", normalization_rows)
+        recorder.overlay(stage, "overlay", draw_ocr_overlay(image, words, phrases))
+    return result
 
 
 def normalize_ocr_text(text: str) -> str:
@@ -218,6 +324,24 @@ def _merge_ocr_group(group: list[OCRTextRegion], *, separator: str) -> OCRTextRe
     )
     confidence = sum(region.confidence for region in group) / max(1, len(group))
     return OCRTextRegion(text=text, bbox=bbox, confidence=confidence)
+
+
+def draw_ocr_overlay(
+    image: Image.Image,
+    words: list[OCRWord],
+    phrases: list[OCRPhrase],
+) -> Image.Image:
+    overlay = image.convert("RGB").copy()
+    draw = ImageDraw.Draw(overlay)
+    for word in words:
+        if word.bbox is None:
+            continue
+        draw.rectangle((word.bbox.x0, word.bbox.y0, word.bbox.x1, word.bbox.y1), outline=(255, 140, 0), width=1)
+    for phrase in phrases:
+        if phrase.bbox is None:
+            continue
+        draw.rectangle((phrase.bbox.x0, phrase.bbox.y0, phrase.bbox.x1, phrase.bbox.y1), outline=(220, 20, 60), width=2)
+    return overlay
 
 
 def plausible_text_box(bbox: BBox, config: PipelineConfig) -> bool:

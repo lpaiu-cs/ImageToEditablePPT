@@ -1,10 +1,15 @@
 __pycache__/
 *.py[cod]
 .DS_Store
+.pytest_cache/
 
 *.pptx
 workbench/**
 !workbench/**/
 !workbench/**/*.json
+workbench2.0/**
+!workbench2.0/**/
+!workbench2.0/**/*.json
+artifacts/
 
 .env

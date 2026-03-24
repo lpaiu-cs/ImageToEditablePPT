@@ -12,9 +12,12 @@ from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.util import Emu, Pt
 
 from .config import PipelineConfig
+from .diagnostics import build_recorder
+from .eval_debug import stage_items_from_entities, write_eval_debug_artifacts
 from .ir import BBox, Point
 from .pipeline import ConversionResult, convert_image
 from .preprocess import load_image, preprocess_image
+from .schema import StageEntity
 from .style import dilate_mask
 from .svg_exporter import SVG_NS, format_number, to_svg_color
 
@@ -63,6 +66,10 @@ class ValidationArtifacts:
     metrics_json: Path
     elements_json: Path
     rejections_json: Path
+    diagnostics_dir: Path | None = None
+    oracle_json: Path | None = None
+    failure_taxonomy_json: Path | None = None
+    attrition_json: Path | None = None
 
 
 @dataclass(slots=True, frozen=True)
@@ -79,6 +86,7 @@ def run_validation_iteration(
     *,
     config: PipelineConfig | None = None,
     enable_ocr: bool = False,
+    enable_diagnostics: bool = False,
 ) -> ValidationRun:
     active_config = config or PipelineConfig()
     iteration_path = Path(iteration_dir)
@@ -86,12 +94,18 @@ def run_validation_iteration(
     elements_path = iteration_path / "elements.json"
     output_pptx = iteration_path / "output.pptx"
     input_image = load_image(input_path)
+    recorder = build_recorder(
+        enabled=enable_diagnostics,
+        run_id=iteration_path.parent.name or "validation",
+        slide_id=iteration_path.name,
+    )
     conversion = convert_image(
         input_path,
         output_pptx,
         config=active_config,
         enable_ocr=enable_ocr,
         debug_elements_path=elements_path,
+        diagnostics=recorder,
     )
     shapes = load_pptx_shapes(output_pptx, image_size=input_image.size, config=active_config)
     output_svg = iteration_path / "output.svg"
@@ -108,6 +122,17 @@ def run_validation_iteration(
     metrics_json = iteration_path / "comparison.json"
     with metrics_json.open("w", encoding="utf-8") as handle:
         json.dump(asdict(metrics), handle, indent=2)
+    eval_dir = None
+    oracle_json = None
+    failure_taxonomy_json = None
+    attrition_json = None
+    if conversion.diagnostics_dir is not None:
+        eval_dir = conversion.diagnostics_dir / "08_eval"
+        stage_eval = stage_eval_items(conversion)
+        write_eval_debug_artifacts(eval_dir, None, stage_eval)
+        oracle_json = eval_dir / "oracle_by_stage.json"
+        failure_taxonomy_json = eval_dir / "failure_taxonomy.json"
+        attrition_json = eval_dir / "attrition_by_stage.json"
     return ValidationRun(
         conversion=conversion,
         shapes=shapes,
@@ -122,8 +147,27 @@ def run_validation_iteration(
             metrics_json=metrics_json,
             elements_json=elements_path,
             rejections_json=elements_path.with_name(f"{elements_path.stem}.rejections{elements_path.suffix}"),
+            diagnostics_dir=conversion.diagnostics_dir,
+            oracle_json=oracle_json,
+            failure_taxonomy_json=failure_taxonomy_json,
+            attrition_json=attrition_json,
         ),
     )
+
+
+def stage_eval_items(conversion: ConversionResult) -> dict[str, list]:
+    stage_items: dict[str, list] = {}
+    for stage, payload in conversion.stage_artifacts.items():
+        entities: list[StageEntity] = []
+        if isinstance(payload, dict):
+            for value in payload.values():
+                if isinstance(value, list) and value and isinstance(value[0], StageEntity):
+                    entities.extend(value)
+                elif isinstance(value, StageEntity):
+                    entities.append(value)
+        if entities:
+            stage_items[stage] = stage_items_from_entities(entities)
+    return stage_items
 
 
 def load_pptx_shapes(

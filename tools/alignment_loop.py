@@ -50,6 +50,7 @@ def main() -> int:
         iteration_dir,
         config=PipelineConfig(semantic_mode=not args.legacy),
         enable_ocr=args.ocr,
+        enable_diagnostics=True,
     )
     print(f"iteration: {iteration_dir.name}")
     print(f"pptx: {result.artifacts.output_pptx}")
