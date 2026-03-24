@@ -14,6 +14,7 @@ class SelectionResult:
     selected: list[ObjectHypothesis]
     suppressed: list[ObjectHypothesis]
     selected_motifs: list[MotifHypothesis]
+    rejected_motifs: list[dict[str, object]]
     motif_effects: list[dict[str, object]]
     conflict_graph: list[dict[str, object]]
 
@@ -57,11 +58,12 @@ def select_authoring_objects(
                 drop_reason=hypothesis.drop_reason,
             )
         )
-    selected, selected_motifs, motif_effects = apply_motifs(selected, motifs)
+    selected, selected_motifs, rejected_motifs, motif_effects = apply_motifs(selected, motifs)
     result = SelectionResult(
         selected=list(validate_stage_entities(stage, "selected_hypotheses", selected, require_bbox=True)),
         suppressed=list(validate_stage_entities(stage, "suppressed_hypotheses", suppressed, require_bbox=True)),
         selected_motifs=list(validate_stage_entities(stage, "selected_motifs", selected_motifs)),
+        rejected_motifs=rejected_motifs,
         motif_effects=motif_effects,
         conflict_graph=conflict_graph,
     )
@@ -72,12 +74,14 @@ def select_authoring_objects(
                 "selected_count": len(selected),
                 "suppressed_count": len(suppressed),
                 "selected_motif_count": len(selected_motifs),
+                "rejected_motif_count": len(rejected_motifs),
                 "conflict_count": len(conflict_graph),
             },
         )
         recorder.items(stage, "selected_hypotheses", selected)
         recorder.items(stage, "suppressed_hypotheses", suppressed)
         recorder.items(stage, "selected_motifs", selected_motifs)
+        recorder.artifact(stage, "rejected_motifs", rejected_motifs)
         recorder.artifact(stage, "conflict_graph", conflict_graph)
         recorder.artifact(stage, "motif_effects", motif_effects)
         recorder.overlay(stage, "overlay", draw_selection_overlay(image, selected, suppressed))
@@ -87,13 +91,22 @@ def select_authoring_objects(
 def apply_motifs(
     selected: list[ObjectHypothesis],
     motifs: list[MotifHypothesis],
-) -> tuple[list[ObjectHypothesis], list[MotifHypothesis], list[dict[str, object]]]:
+) -> tuple[list[ObjectHypothesis], list[MotifHypothesis], list[dict[str, object]], list[dict[str, object]]]:
     selected_lookup = {hypothesis.id: hypothesis for hypothesis in selected}
     selected_motifs: list[MotifHypothesis] = []
+    rejected_motifs: list[dict[str, object]] = []
     motif_effects: list[dict[str, object]] = []
     for motif in motifs:
         member_ids = [member_id for member_id in motif.member_ids if member_id in selected_lookup]
         if len(member_ids) < 2:
+            rejected_motifs.append(
+                {
+                    "motif_id": motif.id,
+                    "motif_kind": motif.kind,
+                    "reason": "insufficient_selected_members",
+                    "member_ids": member_ids,
+                }
+            )
             continue
         selected_motifs.append(motif)
         for member_id in member_ids:
@@ -110,7 +123,7 @@ def apply_motifs(
             }
         )
     ordered = [selected_lookup[hypothesis.id] for hypothesis in selected if hypothesis.id in selected_lookup]
-    return ordered, selected_motifs, motif_effects
+    return ordered, selected_motifs, rejected_motifs, motif_effects
 
 
 def first_conflict(

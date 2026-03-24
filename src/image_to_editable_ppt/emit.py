@@ -19,6 +19,7 @@ from .reconstructors import (
     verify_graph_connectors,
 )
 from .reconstructors.connectors import ConnectorSpec
+from .reconstructors.raster_regions import prune_raster_fallback_against_native
 from .schema import DropReason, EmissionRecord, MotifHypothesis, ObjectHypothesis, RectCandidate, validate_emission_trace, validate_stage_entities
 from .text import OCRBackend
 from .vlm_parser import VLMEdge, VLMNode
@@ -128,6 +129,7 @@ def emit_shapes(
                 )
             )
 
+    raster_fallback = prune_raster_fallback_against_native(raster_fallback, elements, config)
     elements.extend(raster_fallback.elements)
     emission_records.extend(raster_fallback.emission_records)
 
@@ -177,15 +179,19 @@ def emit_shapes(
                 "emission_record_count": len(emission_records),
                 "dropped_record_count": len(dropped_records),
                 "raster_fallback_count": len(raster_fallback.regions),
+                "raster_dropped_count": len(raster_fallback.dropped_regions),
             },
         )
         recorder.items(stage, "emission_records", emission_records)
         recorder.items(stage, "dropped_records", dropped_records)
         recorder.items(stage, "raster_fallback_regions", raster_fallback.regions)
+        recorder.artifact(stage, "raster_dropped_regions", raster_fallback.dropped_regions)
         for region, element in zip(raster_fallback.regions, raster_fallback.elements, strict=True):
             if element.raster_image is None:
                 continue
             recorder.overlay(stage, f"fallback_asset_{region.asset_id}", Image.open(io.BytesIO(element.raster_image)))
+        recorder.overlay(stage, "native_overlay", draw_emit_overlay(image, [element for element in gated if element.kind != "raster_region"]))
+        recorder.overlay(stage, "raster_overlay", draw_emit_overlay(image, [element for element in gated if element.kind == "raster_region"]))
         recorder.overlay(stage, "overlay", draw_emit_overlay(image, gated))
     return result
 

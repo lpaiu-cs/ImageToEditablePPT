@@ -1,0 +1,199 @@
+{
+  "status": "ok",
+  "gt_available": true,
+  "ground_truth_count": 30,
+  "ground_truth": [
+    {
+      "gt_id": "node-8",
+      "tag": "near_miss_geometry",
+      "best_prediction_id": "emit:node-text-8"
+    },
+    {
+      "gt_id": "node-9",
+      "tag": "merged_into_parent",
+      "best_prediction_id": "emit:node-text-8"
+    },
+    {
+      "gt_id": "node-10",
+      "tag": "missing",
+      "best_prediction_id": "emit:node-8"
+    },
+    {
+      "gt_id": "node-14",
+      "tag": "merged_into_parent",
+      "best_prediction_id": "emit:node-text-14"
+    },
+    {
+      "gt_id": "node-17",
+      "tag": "missing",
+      "best_prediction_id": "emit:node-12"
+    },
+    {
+      "gt_id": "edge-4",
+      "tag": "merged_into_parent",
+      "best_prediction_id": "emit:edge-1"
+    },
+    {
+      "gt_id": "edge-5",
+      "tag": "merged_siblings",
+      "best_prediction_id": "emit:node-text-8"
+    },
+    {
+      "gt_id": "edge-6",
+      "tag": "merged_siblings",
+      "best_prediction_id": "emit:node-text-8"
+    },
+    {
+      "gt_id": "edge-7",
+      "tag": "merged_siblings",
+      "best_prediction_id": "emit:node-text-8"
+    },
+    {
+      "gt_id": "edge-9",
+      "tag": "missing",
+      "best_prediction_id": "emit:node-12"
+    },
+    {
+      "gt_id": "edge-10",
+      "tag": "near_miss_geometry",
+      "best_prediction_id": "emit:edge-1"
+    },
+    {
+      "gt_id": "edge-11",
+      "tag": "missing",
+      "best_prediction_id": "emit:edge-1"
+    },
+    {
+      "gt_id": "edge-12",
+      "tag": "missing",
+      "best_prediction_id": "emit:node-17"
+    }
+  ],
+  "predictions": [
+    {
+      "prediction_id": "emit:node-8",
+      "tag": "wrong_attachment",
+      "best_gt_id": "node-9"
+    },
+    {
+      "prediction_id": "emit:node-text-8",
+      "tag": "wrong_attachment",
+      "best_gt_id": "node-9"
+    },
+    {
+      "prediction_id": "emit:node-9",
+      "tag": "near_miss_geometry",
+      "best_gt_id": "node-9"
+    },
+    {
+      "prediction_id": "emit:node-text-9",
+      "tag": "split_fragments",
+      "best_gt_id": "node-9"
+    },
+    {
+      "prediction_id": "emit:node-10",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    },
+    {
+      "prediction_id": "emit:node-text-10",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    },
+    {
+      "prediction_id": "emit:node-text-11",
+      "tag": "wrong_attachment",
+      "best_gt_id": "node-11"
+    },
+    {
+      "prediction_id": "emit:node-14",
+      "tag": "wrong_attachment",
+      "best_gt_id": "node-14"
+    },
+    {
+      "prediction_id": "emit:node-text-14",
+      "tag": "wrong_attachment",
+      "best_gt_id": "node-14"
+    },
+    {
+      "prediction_id": "emit:node-15",
+      "tag": "wrong_attachment",
+      "best_gt_id": "node-15"
+    },
+    {
+      "prediction_id": "emit:node-16",
+      "tag": "wrong_attachment",
+      "best_gt_id": "node-16"
+    },
+    {
+      "prediction_id": "emit:node-18",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    },
+    {
+      "prediction_id": "emit:node-text-18",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "near_miss_geometry",
+      "best_gt_id": "edge-4"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-7"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-10"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-9"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "wrong_attachment",
+      "best_gt_id": "edge-10"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "edge-11"
+    },
+    {
+      "prediction_id": "emit:edge-1",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-18"
+    },
+    {
+      "prediction_id": "emit-edge-drop:3",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    },
+    {
+      "prediction_id": "emit-edge-drop:11",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    },
+    {
+      "prediction_id": "emit-edge-drop:13",
+      "tag": "hallucinated_prediction",
+      "best_gt_id": "node-1"
+    }
+  ]
+}

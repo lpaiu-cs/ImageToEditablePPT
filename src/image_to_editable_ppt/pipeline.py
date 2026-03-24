@@ -166,6 +166,7 @@ def build_elements_from_structure(
         image,
         all_hypotheses,
         guide_result.guide_field,
+        config,
         diagnostics=recorder,
         stage="04_motifs",
     )
@@ -218,11 +219,12 @@ def build_elements_from_structure(
             "fallback_regions": fallback_result.fallback_regions,
             "candidate_rankings": object_result.candidate_rankings,
         },
-        "04_motifs": {"motifs": motif_result.motifs},
+        "04_motifs": {"motifs": motif_result.motifs, "rejected": motif_result.rejected, "motif_summary": motif_result.summary},
         "05_selection": {
             "selected": selection_result.selected,
             "suppressed": selection_result.suppressed,
             "selected_motifs": selection_result.selected_motifs,
+            "rejected_motifs": selection_result.rejected_motifs,
             "motif_effects": selection_result.motif_effects,
             "conflicts": selection_result.conflict_graph,
         },

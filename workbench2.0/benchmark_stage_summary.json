@@ -1,0 +1,78 @@
+{
+  "status": "ok",
+  "benchmark_root": "workbench2.0",
+  "slide_count": 1,
+  "gt_backed_slide_count": 1,
+  "gt_unavailable_slide_count": 0,
+  "stage_oracle": {
+    "01_geometry_raw": {
+      "recoverable_count": 0.0,
+      "ground_truth_count": 30.0,
+      "recoverable_ratio": 0.0
+    },
+    "02_guides": {
+      "recoverable_count": 0.0,
+      "ground_truth_count": 30.0,
+      "recoverable_ratio": 0.0
+    },
+    "03_objects": {
+      "recoverable_count": 13.0,
+      "ground_truth_count": 30.0,
+      "recoverable_ratio": 0.43333333333333335
+    },
+    "05_selection": {
+      "recoverable_count": 13.0,
+      "ground_truth_count": 30.0,
+      "recoverable_ratio": 0.43333333333333335
+    },
+    "06_graph": {
+      "recoverable_count": 13.0,
+      "ground_truth_count": 30.0,
+      "recoverable_ratio": 0.43333333333333335
+    },
+    "07_emit": {
+      "recoverable_count": 17.0,
+      "ground_truth_count": 30.0,
+      "recoverable_ratio": 0.5666666666666667
+    }
+  },
+  "stage_attrition": {},
+  "failure_taxonomy": {
+    "ground_truth": {
+      "near_miss_geometry": 2,
+      "merged_into_parent": 3,
+      "missing": 5,
+      "merged_siblings": 3
+    },
+    "predictions": {
+      "wrong_attachment": 8,
+      "near_miss_geometry": 2,
+      "split_fragments": 1,
+      "hallucinated_prediction": 14
+    }
+  },
+  "native_object_count": 49,
+  "raster_region_count": 0,
+  "dropped_hypothesis_count": 3,
+  "grow_fallback_hypothesis_count": 18,
+  "native_area_ratio_mean": 0.524083740267499,
+  "raster_area_ratio_mean": 0.0,
+  "raster_native_overlap_area_ratio_mean": 0.0,
+  "motif_accounting": {
+    "repeated_cards": {
+      "proposed": 17,
+      "accepted": 0,
+      "rejected": 17,
+      "absorbed_members": 0,
+      "suppressed_members": 0
+    },
+    "titled_panel": {
+      "proposed": 18,
+      "accepted": 0,
+      "rejected": 18,
+      "absorbed_members": 0,
+      "suppressed_members": 0
+    }
+  },
+  "dominant_loss_stage": "01_geometry_raw"
+}

@@ -212,8 +212,115 @@ def build_manifest_payload(
         "pipeline_mode": conversion.pipeline_mode,
         "gt_available": gt_available,
         "raster_fallback_used": raster_fallback_used,
+        "emit_accounting": build_emit_accounting(conversion),
+        "motif_accounting": build_motif_accounting(conversion),
+        "fallback_accounting": build_fallback_accounting(conversion),
         "stages": stages,
     }
+
+
+def build_emit_accounting(conversion: ConversionResult) -> dict[str, object]:
+    emit_stage = conversion.stage_artifacts.get("07_emit", {})
+    emission_records = emit_stage.get("emission_records", []) if isinstance(emit_stage, dict) else []
+    dropped_records = emit_stage.get("dropped_records", []) if isinstance(emit_stage, dict) else []
+    fallback_regions = emit_stage.get("fallback_regions", []) if isinstance(emit_stage, dict) else []
+    image_area = float(max(1, conversion.image_size[0] * conversion.image_size[1]))
+    native_boxes = [record.bbox for record in emission_records if getattr(record, "object_type", "") != "raster_region" and record.bbox is not None]
+    raster_boxes = [region.bbox for region in fallback_regions if region.bbox is not None]
+    native_area = bbox_union_area(native_boxes)
+    raster_area = bbox_union_area(raster_boxes)
+    overlap_area = bbox_overlap_union_area(native_boxes, raster_boxes)
+    return {
+        "native_object_count": sum(1 for record in emission_records if getattr(record, "object_type", "") != "raster_region"),
+        "raster_region_count": len(fallback_regions),
+        "native_area_ratio": native_area / image_area,
+        "raster_area_ratio": raster_area / image_area,
+        "raster_native_overlap_area_ratio": overlap_area / image_area,
+        "dropped_hypothesis_count": len(dropped_records),
+    }
+
+
+def build_motif_accounting(conversion: ConversionResult) -> dict[str, object]:
+    motif_stage = conversion.stage_artifacts.get("04_motifs", {})
+    selection_stage = conversion.stage_artifacts.get("05_selection", {})
+    motif_summary = motif_stage.get("motif_summary", {}) if isinstance(motif_stage, dict) else {}
+    selected_motifs = selection_stage.get("selected_motifs", []) if isinstance(selection_stage, dict) else []
+    rejected_motifs = selection_stage.get("rejected_motifs", []) if isinstance(selection_stage, dict) else []
+    motif_effects = selection_stage.get("motif_effects", []) if isinstance(selection_stage, dict) else []
+    family_counts: dict[str, dict[str, int]] = {}
+    for family, payload in motif_summary.items() if isinstance(motif_summary, dict) else []:
+        if not isinstance(payload, dict):
+            continue
+        family_counts[family] = {
+            "proposed": int(payload.get("proposed", 0)),
+            "accepted": int(payload.get("accepted", 0)),
+            "rejected": int(payload.get("rejected", 0)),
+            "absorbed_members": 0,
+            "suppressed_members": 0,
+        }
+    for motif in selected_motifs:
+        family_counts.setdefault(motif.kind, {"proposed": 0, "accepted": 0, "rejected": 0, "absorbed_members": 0, "suppressed_members": 0})
+        family_counts[motif.kind]["accepted"] += 0
+    for rejection in rejected_motifs:
+        family = str(rejection.get("motif_kind", "unknown"))
+        family_counts.setdefault(family, {"proposed": 0, "accepted": 0, "rejected": 0, "absorbed_members": 0, "suppressed_members": 0})
+        family_counts[family]["rejected"] += 1
+    for effect in motif_effects:
+        family = str(effect.get("motif_kind", "unknown"))
+        family_counts.setdefault(family, {"proposed": 0, "accepted": 0, "rejected": 0, "absorbed_members": 0, "suppressed_members": 0})
+        family_counts[family]["absorbed_members"] += len(effect.get("absorbed_member_ids", []))
+        family_counts[family]["suppressed_members"] += len(effect.get("suppressed_member_ids", []))
+    return family_counts
+
+
+def build_fallback_accounting(conversion: ConversionResult) -> dict[str, object]:
+    object_stage = conversion.stage_artifacts.get("03_objects", {})
+    fallback_hypotheses = object_stage.get("fallback_hypotheses", []) if isinstance(object_stage, dict) else []
+    fallback_regions = object_stage.get("fallback_regions", []) if isinstance(object_stage, dict) else []
+    return {
+        "grow_fallback_hypothesis_count": len(fallback_hypotheses),
+        "grow_fallback_region_count": len(fallback_regions),
+    }
+
+
+def bbox_union_area(boxes: list[BBox]) -> float:
+    if not boxes:
+        return 0.0
+    x_coords = sorted({coord for box in boxes for coord in (box.x0, box.x1)})
+    area = 0.0
+    for left, right in zip(x_coords, x_coords[1:]):
+        if right <= left:
+            continue
+        intervals: list[tuple[float, float]] = []
+        for box in boxes:
+            if box.x0 < right and box.x1 > left:
+                intervals.append((box.y0, box.y1))
+        if not intervals:
+            continue
+        intervals.sort()
+        merged_start, merged_end = intervals[0]
+        for start, end in intervals[1:]:
+            if start <= merged_end:
+                merged_end = max(merged_end, end)
+                continue
+            area += (right - left) * max(0.0, merged_end - merged_start)
+            merged_start, merged_end = start, end
+        area += (right - left) * max(0.0, merged_end - merged_start)
+    return area
+
+
+def bbox_overlap_union_area(first: list[BBox], second: list[BBox]) -> float:
+    intersections: list[BBox] = []
+    for left in first:
+        for right in second:
+            x0 = max(left.x0, right.x0)
+            y0 = max(left.y0, right.y0)
+            x1 = min(left.x1, right.x1)
+            y1 = min(left.y1, right.y1)
+            if x1 <= x0 or y1 <= y0:
+                continue
+            intersections.append(BBox(x0, y0, x1, y1))
+    return bbox_union_area(intersections)
 
 
 def load_pptx_shapes(

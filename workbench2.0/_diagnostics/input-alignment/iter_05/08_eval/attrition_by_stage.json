@@ -1,0 +1,367 @@
+{
+  "status": "ok",
+  "gt_available": true,
+  "ground_truth_count": 30,
+  "ground_truth": [
+    {
+      "gt_id": "node-1",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-2",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-3",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-4",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-5",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-6",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-7",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-8",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-9",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-10",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-11",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-12",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-13",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-14",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-15",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-16",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-17",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-18",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-1",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-2",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-3",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-4",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-5",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-6",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-7",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-8",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": true
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-9",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-10",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-11",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-12",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "lost_at": null
+    }
+  ]
+}

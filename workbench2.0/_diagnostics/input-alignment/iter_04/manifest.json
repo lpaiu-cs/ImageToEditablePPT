@@ -1,0 +1,68 @@
+{
+  "status": "ok",
+  "pipeline_mode": "semantic",
+  "gt_available": true,
+  "raster_fallback_used": true,
+  "emit_accounting": {
+    "native_object_count": 10,
+    "raster_region_count": 12,
+    "native_area_ratio": 0.1562784266111625,
+    "raster_area_ratio": 0.17807055581251927,
+    "raster_native_overlap_area_ratio": 0.0,
+    "dropped_hypothesis_count": 14
+  },
+  "motif_accounting": {
+    "titled_panel": {
+      "proposed": 18,
+      "accepted": 0,
+      "rejected": 18,
+      "absorbed_members": 0,
+      "suppressed_members": 0
+    },
+    "repeated_cards": {
+      "proposed": 18,
+      "accepted": 0,
+      "rejected": 18,
+      "absorbed_members": 0,
+      "suppressed_members": 0
+    }
+  },
+  "fallback_accounting": {
+    "grow_fallback_hypothesis_count": 18,
+    "grow_fallback_region_count": 18
+  },
+  "stages": {
+    "00_text": {
+      "status": "ok",
+      "entity_count": 0
+    },
+    "01_geometry_raw": {
+      "status": "ok",
+      "entity_count": 74
+    },
+    "02_guides": {
+      "status": "ok",
+      "entity_count": 17
+    },
+    "03_objects": {
+      "status": "ok",
+      "entity_count": 36
+    },
+    "04_motifs": {
+      "status": "ok",
+      "entity_count": 36
+    },
+    "05_selection": {
+      "status": "ok",
+      "entity_count": 18
+    },
+    "06_graph": {
+      "status": "ok",
+      "entity_count": 19
+    },
+    "07_emit": {
+      "status": "ok",
+      "entity_count": 48
+    }
+  }
+}

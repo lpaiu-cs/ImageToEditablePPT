@@ -1,0 +1,24 @@
+[
+  {
+    "fallback_region_id": "fallback-region:raster-asset-001",
+    "reason": "covered_by_native",
+    "native_overlap_ratio": 1.0,
+    "bbox": {
+      "x0": 1876,
+      "y0": 47,
+      "x1": 2687,
+      "y1": 560
+    }
+  },
+  {
+    "fallback_region_id": "fallback-region:raster-asset-007",
+    "reason": "covered_by_native",
+    "native_overlap_ratio": 1.0,
+    "bbox": {
+      "x0": 1876,
+      "y0": 493,
+      "x1": 2720,
+      "y1": 815
+    }
+  }
+]

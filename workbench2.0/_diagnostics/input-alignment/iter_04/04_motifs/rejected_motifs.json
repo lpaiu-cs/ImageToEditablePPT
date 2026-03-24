@@ -1,0 +1,272 @@
+[
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n1:fallback"
+    ],
+    "panel_id": "object-hypothesis:n1:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n2:fallback"
+    ],
+    "panel_id": "object-hypothesis:n2:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n3:fallback"
+    ],
+    "panel_id": "object-hypothesis:n3:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n4:fallback"
+    ],
+    "panel_id": "object-hypothesis:n4:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n5:fallback"
+    ],
+    "panel_id": "object-hypothesis:n5:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n6:fallback"
+    ],
+    "panel_id": "object-hypothesis:n6:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n7:fallback"
+    ],
+    "panel_id": "object-hypothesis:n7:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n8:fallback"
+    ],
+    "panel_id": "object-hypothesis:n8:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n9:fallback"
+    ],
+    "panel_id": "object-hypothesis:n9:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n10:fallback"
+    ],
+    "panel_id": "object-hypothesis:n10:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n11:fallback"
+    ],
+    "panel_id": "object-hypothesis:n11:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n12:fallback"
+    ],
+    "panel_id": "object-hypothesis:n12:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n13:fallback"
+    ],
+    "panel_id": "object-hypothesis:n13:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n14:fallback"
+    ],
+    "panel_id": "object-hypothesis:n14:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n15:fallback"
+    ],
+    "panel_id": "object-hypothesis:n15:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n16:fallback"
+    ],
+    "panel_id": "object-hypothesis:n16:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n17:fallback"
+    ],
+    "panel_id": "object-hypothesis:n17:fallback"
+  },
+  {
+    "motif_kind": "titled_panel",
+    "reason": "insufficient_children",
+    "member_ids": [
+      "object-hypothesis:n18:fallback"
+    ],
+    "panel_id": "object-hypothesis:n18:fallback"
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n1:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n2:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n3:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n4:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n5:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n6:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n7:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n8:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n9:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n10:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n11:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n12:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n13:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n14:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n15:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n16:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n17:fallback"
+    ]
+  },
+  {
+    "motif_kind": "repeated_cards",
+    "reason": "insufficient_members",
+    "member_ids": [
+      "object-hypothesis:n18:fallback"
+    ]
+  }
+]

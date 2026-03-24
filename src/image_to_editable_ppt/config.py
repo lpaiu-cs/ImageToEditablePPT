@@ -90,3 +90,16 @@ class PipelineConfig:
     repair_bridge_fill_ratio: float = 0.14
     slide_padding_pt: float = 24.0
     text_margin: float = 10.0
+    enable_motifs: bool = True
+    enable_titled_panel_motif: bool = True
+    enable_repeated_cards_motif: bool = True
+    motif_titled_panel_min_children: int = 2
+    motif_titled_panel_min_title_score: float = 0.75
+    motif_repeated_cards_min_members: int = 3
+    motif_repeated_cards_max_spacing_delta: float = 18.0
+    motif_repeated_cards_min_shared_guides: int = 1
+    motif_repeated_cards_max_size_delta_ratio: float = 0.18
+    raster_fallback_confidence_threshold: float = 0.86
+    raster_fallback_merge_iou: float = 0.22
+    raster_fallback_merge_gap: float = 24.0
+    raster_fallback_native_overlap_threshold: float = 0.72

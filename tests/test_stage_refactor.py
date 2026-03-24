@@ -16,6 +16,7 @@ from image_to_editable_ppt.guides import GuideField
 from image_to_editable_ppt.ir import BBox
 from image_to_editable_ppt.pipeline import build_elements
 from image_to_editable_ppt.reconstructors import build_motif_hypotheses
+from image_to_editable_ppt.reconstructors.raster_regions import build_raster_fallback_regions
 from image_to_editable_ppt.schema import AuthoringGraph, EmissionRecord, ObjectHypothesis, StageContractError, validate_emission_trace
 from image_to_editable_ppt.selection import select_authoring_objects
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
@@ -139,7 +140,11 @@ def test_diagnostics_recorder_creates_stage_directories_and_files(tmp_path: Path
     recorder = build_recorder(enabled=True, run_id="run-1", slide_id="slide-a", root_dir=tmp_path)
     result = build_elements(
         image,
-        config=PipelineConfig(semantic_fallback_to_legacy=False),
+        config=PipelineConfig(
+            semantic_fallback_to_legacy=False,
+            inclusion_confidence=0.95,
+            raster_fallback_confidence_threshold=0.95,
+        ),
         structure_parser=parser,
         ocr_backend=backend,
         diagnostics=recorder,
@@ -159,7 +164,11 @@ def test_noop_diagnostics_recorder_leaves_filesystem_unchanged(tmp_path: Path) -
     recorder = build_recorder(enabled=False, run_id="noop", slide_id="slide-a", root_dir=root_dir)
     result = build_elements(
         image,
-        config=PipelineConfig(semantic_fallback_to_legacy=False),
+        config=PipelineConfig(
+            semantic_fallback_to_legacy=False,
+            inclusion_confidence=0.95,
+            raster_fallback_confidence_threshold=0.95,
+        ),
         structure_parser=parser,
         ocr_backend=backend,
         diagnostics=recorder,
@@ -253,6 +262,36 @@ def test_write_eval_debug_artifacts_marks_unavailable_without_gt(tmp_path: Path)
 
 def test_raster_fallback_emits_real_regions_and_diagnostics(tmp_path: Path) -> None:
     image = Image.new("RGB", (320, 200), "white")
+    hypotheses = [
+        make_hypothesis(
+            "fallback-low",
+            "container",
+            BBox(60.0, 60.0, 180.0, 140.0),
+            score_total=0.62,
+            source_ids=["grow_fallback", "rect-candidate:fallback-low"],
+        )
+    ]
+
+    raster = build_raster_fallback_regions(
+        image,
+        hypotheses,
+        PipelineConfig(
+            inclusion_confidence=0.95,
+            raster_fallback_confidence_threshold=0.95,
+        ),
+    )
+
+    assert any(element.kind == "raster_region" for element in raster.elements)
+    fallback_regions = raster.regions
+    emission_records = raster.emission_records
+    assert fallback_regions
+    raster_record = next(record for record in emission_records if record.object_type == "raster_region")
+    assert raster_record.provenance["fallback_region_ids"] == [fallback_regions[0].id]
+    assert "grow_fallback" in raster_record.source_ids
+
+
+def test_high_confidence_grow_fallback_prefers_native_emission() -> None:
+    image = Image.new("RGB", (320, 200), "white")
     backend = FakeOCRBackend([OCRTextRegion(text="Lonely Node", bbox=BBox(92.0, 92.0, 180.0, 112.0), confidence=0.99)])
     parser = FakeStructureParser(
         DiagramStructure(
@@ -261,26 +300,16 @@ def test_raster_fallback_emits_real_regions_and_diagnostics(tmp_path: Path) -> N
             coordinate_space="normalized_1000",
         )
     )
-    recorder = build_recorder(enabled=True, run_id="run-raster", slide_id="slide-a", root_dir=tmp_path)
 
     result = build_elements(
         image,
         config=PipelineConfig(semantic_fallback_to_legacy=False),
         structure_parser=parser,
         ocr_backend=backend,
-        diagnostics=recorder,
     )
 
-    assert any(element.kind == "raster_region" for element in result.elements)
-    fallback_regions = result.stage_artifacts["07_emit"]["fallback_regions"]
-    emission_records = result.stage_artifacts["07_emit"]["emission_records"]
-    assert fallback_regions
-    raster_record = next(record for record in emission_records if record.object_type == "raster_region")
-    assert raster_record.provenance["fallback_region_ids"] == [fallback_regions[0].id]
-    assert "grow_fallback" in raster_record.source_ids
-    emit_stage_dir = result.diagnostics_dir / "07_emit"
-    assert (emit_stage_dir / "raster_fallback_regions.jsonl").exists()
-    assert any(path.name.startswith("fallback_asset_") and path.suffix == ".png" for path in emit_stage_dir.iterdir())
+    assert any(element.kind == "rect" for element in result.elements)
+    assert not any(element.kind == "raster_region" for element in result.elements)
 
 
 def test_validation_iteration_discovers_gt_sidecar_and_writes_real_eval(tmp_path: Path) -> None:
@@ -408,7 +437,7 @@ def test_motif_builders_change_grouping_and_graph_edges(tmp_path: Path) -> None:
     ]
     recorder = build_recorder(enabled=True, run_id="run-motif", slide_id="slide-a", root_dir=tmp_path)
     guide_field = empty_guide_field()
-    motif_result = build_motif_hypotheses(image, hypotheses, guide_field, diagnostics=recorder)
+    motif_result = build_motif_hypotheses(image, hypotheses, guide_field, PipelineConfig(), diagnostics=recorder)
     selection_result = select_authoring_objects(image, hypotheses, motif_result.motifs, PipelineConfig(), diagnostics=recorder)
     graph_result = build_authoring_graph(image, selection_result.selected, selection_result.selected_motifs, [], diagnostics=recorder)
 

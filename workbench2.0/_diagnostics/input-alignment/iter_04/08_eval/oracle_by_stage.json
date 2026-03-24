@@ -1,0 +1,961 @@
+{
+  "status": "ok",
+  "gt_available": true,
+  "ground_truth_count": 30,
+  "stages": {
+    "01_geometry_raw": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 74,
+      "recoverable_count": 0,
+      "recoverable_ratio": 0.0,
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "iou": 0.0
+        }
+      ]
+    },
+    "02_guides": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 9,
+      "recoverable_count": 0,
+      "recoverable_ratio": 0.0,
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "iou": 0.0
+        }
+      ]
+    },
+    "03_objects": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 36,
+      "recoverable_count": 16,
+      "recoverable_ratio": 0.5333333333333333,
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": "object-hypothesis:n1:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": "object-hypothesis:n2:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": "object-hypothesis:n3:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": "object-hypothesis:n4:fallback",
+          "iou": 0.9999999999999996
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": "object-hypothesis:n5:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": "object-hypothesis:n6:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": "object-hypothesis:n7:fallback",
+          "iou": 0.7690990014933677
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": "object-hypothesis:n8:fallback",
+          "iou": 0.5548387096774193
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": "object-hypothesis:n9:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": "object-hypothesis:n10:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": "object-hypothesis:n11:fallback",
+          "iou": 0.7889457938238426
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": "object-hypothesis:n12:fallback",
+          "iou": 0.6575532386867791
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": "object-hypothesis:n13:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": "object-hypothesis:n14:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": "object-hypothesis:n15:fallback",
+          "iou": 0.5548387096774193
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": "object-hypothesis:n17:fallback",
+          "iou": 0.6084781761741381
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "iou": 0.0
+        }
+      ]
+    },
+    "05_selection": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 18,
+      "recoverable_count": 16,
+      "recoverable_ratio": 0.5333333333333333,
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": "object-hypothesis:n1:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": "object-hypothesis:n2:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": "object-hypothesis:n3:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": "object-hypothesis:n4:fallback",
+          "iou": 0.9999999999999996
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": "object-hypothesis:n5:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": "object-hypothesis:n6:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": "object-hypothesis:n7:fallback",
+          "iou": 0.7690990014933677
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": "object-hypothesis:n8:fallback",
+          "iou": 0.5548387096774193
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": "object-hypothesis:n9:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": "object-hypothesis:n10:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": "object-hypothesis:n11:fallback",
+          "iou": 0.7889457938238426
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": "object-hypothesis:n12:fallback",
+          "iou": 0.6575532386867791
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": "object-hypothesis:n13:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": "object-hypothesis:n14:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": "object-hypothesis:n15:fallback",
+          "iou": 0.5548387096774193
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": "object-hypothesis:n17:fallback",
+          "iou": 0.6084781761741381
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "iou": 0.0
+        }
+      ]
+    },
+    "06_graph": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 18,
+      "recoverable_count": 16,
+      "recoverable_ratio": 0.5333333333333333,
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": "object-hypothesis:n1:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": "object-hypothesis:n2:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": "object-hypothesis:n3:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": "object-hypothesis:n4:fallback",
+          "iou": 0.9999999999999996
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": "object-hypothesis:n5:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": "object-hypothesis:n6:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": "object-hypothesis:n7:fallback",
+          "iou": 0.7690990014933677
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": "object-hypothesis:n8:fallback",
+          "iou": 0.5548387096774193
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": "object-hypothesis:n9:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": "object-hypothesis:n10:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": "object-hypothesis:n11:fallback",
+          "iou": 0.7889457938238426
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": "object-hypothesis:n12:fallback",
+          "iou": 0.6575532386867791
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": "object-hypothesis:n13:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": "object-hypothesis:n14:fallback",
+          "iou": 1.0
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": "object-hypothesis:n15:fallback",
+          "iou": 0.5548387096774193
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": "object-hypothesis:n17:fallback",
+          "iou": 0.6084781761741381
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "iou": 0.0
+        }
+      ]
+    },
+    "07_emit": {
+      "status": "ok",
+      "ground_truth_count": 30,
+      "artifact_count": 48,
+      "recoverable_count": 4,
+      "recoverable_ratio": 0.13333333333333333,
+      "matches": [
+        {
+          "gt_id": "node-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-7",
+          "artifact_id": "emit:node-text-1",
+          "iou": 0.8087612778542358
+        },
+        {
+          "gt_id": "node-8",
+          "artifact_id": "emit:node-text-2",
+          "iou": 0.540915069534017
+        },
+        {
+          "gt_id": "node-9",
+          "artifact_id": "emit:node-text-3",
+          "iou": 0.8329594128440363
+        },
+        {
+          "gt_id": "node-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-11",
+          "artifact_id": "emit:node-4",
+          "iou": 0.7090174966352625
+        },
+        {
+          "gt_id": "node-12",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-13",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-14",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-15",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-16",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-17",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "node-18",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-1",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-2",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-3",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-4",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-5",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-6",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-7",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-8",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-9",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-10",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-11",
+          "artifact_id": null,
+          "iou": 0.0
+        },
+        {
+          "gt_id": "edge-12",
+          "artifact_id": null,
+          "iou": 0.0
+        }
+      ]
+    }
+  }
+}

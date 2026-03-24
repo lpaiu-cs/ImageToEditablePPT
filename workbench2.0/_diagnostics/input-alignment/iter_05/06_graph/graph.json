@@ -1,0 +1,1445 @@
+{
+  "id": "authoring-graph",
+  "kind": "authoring_graph",
+  "bbox": {
+    "x0": 82,
+    "y0": 47,
+    "x1": 2760,
+    "y1": 1312
+  },
+  "score_total": 89.0,
+  "score_terms": {
+    "edge_count": 89.0,
+    "node_count": 18.0
+  },
+  "source_ids": [
+    "object-hypothesis:n1:fallback",
+    "object-hypothesis:n2:fallback",
+    "object-hypothesis:n3:fallback",
+    "object-hypothesis:n5:fallback",
+    "object-hypothesis:n6:fallback",
+    "object-hypothesis:n7:fallback",
+    "object-hypothesis:n8:fallback",
+    "object-hypothesis:n9:fallback",
+    "object-hypothesis:n10:fallback",
+    "object-hypothesis:n11:fallback",
+    "object-hypothesis:n12:fallback",
+    "object-hypothesis:n13:fallback",
+    "object-hypothesis:n14:fallback",
+    "object-hypothesis:n15:fallback",
+    "object-hypothesis:n16:fallback",
+    "object-hypothesis:n17:fallback",
+    "object-hypothesis:n18:fallback",
+    "object-hypothesis:n4:fallback"
+  ],
+  "provenance": {},
+  "parent_ids": [],
+  "guide_ids": [],
+  "assigned_text_ids": [],
+  "assigned_vlm_ids": [],
+  "node_ids": [
+    "object-hypothesis:n1:fallback",
+    "object-hypothesis:n2:fallback",
+    "object-hypothesis:n3:fallback",
+    "object-hypothesis:n5:fallback",
+    "object-hypothesis:n6:fallback",
+    "object-hypothesis:n7:fallback",
+    "object-hypothesis:n8:fallback",
+    "object-hypothesis:n9:fallback",
+    "object-hypothesis:n10:fallback",
+    "object-hypothesis:n11:fallback",
+    "object-hypothesis:n12:fallback",
+    "object-hypothesis:n13:fallback",
+    "object-hypothesis:n14:fallback",
+    "object-hypothesis:n15:fallback",
+    "object-hypothesis:n16:fallback",
+    "object-hypothesis:n17:fallback",
+    "object-hypothesis:n18:fallback",
+    "object-hypothesis:n4:fallback"
+  ],
+  "edges": [
+    {
+      "id": "graph-edge-001",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n1:fallback",
+      "target_id": "object-hypothesis:n2:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n1",
+        "n2"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-002",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n3:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n2",
+        "n3"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-003",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n3:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 0.82,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n3",
+        "n4"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-004",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n4:fallback",
+      "target_id": "object-hypothesis:n5:fallback",
+      "score_total": 0.82,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n4",
+        "n5"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-005",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n4:fallback",
+      "target_id": "object-hypothesis:n6:fallback",
+      "score_total": 0.82,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n4",
+        "n6"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-006",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n7:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n2",
+        "n7"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-007",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n8:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n7",
+        "n8"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-008",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n9:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n7",
+        "n9"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-009",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n9:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n9",
+        "n10"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-010",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n11:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n2",
+        "n11"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-011",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n11:fallback",
+      "target_id": "object-hypothesis:n12:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n11",
+        "n12"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-012",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n13:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n2",
+        "n13"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-013",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n14:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n13",
+        "n14"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-014",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n15:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n13",
+        "n15"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-015",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n16:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n13",
+        "n16"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-016",
+      "edge_type": "attaches",
+      "source_id": "object-hypothesis:n17:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 0.9,
+      "score_terms": {
+        "semantic_edge": 1.0
+      },
+      "source_ids": [
+        "n17",
+        "n18"
+      ],
+      "metadata": {
+        "connector_type": "solid_arrow",
+        "label": ""
+      }
+    },
+    {
+      "id": "graph-edge-017",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n1:fallback",
+      "target_id": "object-hypothesis:n2:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 16713
+      },
+      "source_ids": [
+        "object-hypothesis:n1:fallback",
+        "object-hypothesis:n2:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-018",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n1:fallback",
+      "target_id": "object-hypothesis:n3:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 35718
+      },
+      "source_ids": [
+        "object-hypothesis:n1:fallback",
+        "object-hypothesis:n3:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-019",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n1:fallback",
+      "target_id": "object-hypothesis:n5:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 23971
+      },
+      "source_ids": [
+        "object-hypothesis:n1:fallback",
+        "object-hypothesis:n5:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-020",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n1:fallback",
+      "target_id": "object-hypothesis:n9:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 41033
+      },
+      "source_ids": [
+        "object-hypothesis:n1:fallback",
+        "object-hypothesis:n9:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-021",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n1:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 56097
+      },
+      "source_ids": [
+        "object-hypothesis:n1:fallback",
+        "object-hypothesis:n10:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-022",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n1:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 8533
+      },
+      "source_ids": [
+        "object-hypothesis:n1:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-023",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n3:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 19005
+      },
+      "source_ids": [
+        "object-hypothesis:n2:fallback",
+        "object-hypothesis:n3:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-024",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n5:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 7258
+      },
+      "source_ids": [
+        "object-hypothesis:n2:fallback",
+        "object-hypothesis:n5:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-025",
+      "edge_type": "align_y",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n6:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "center_delta": 0.0
+      },
+      "source_ids": [
+        "object-hypothesis:n2:fallback",
+        "object-hypothesis:n6:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-026",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n9:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 24320
+      },
+      "source_ids": [
+        "object-hypothesis:n2:fallback",
+        "object-hypothesis:n9:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-027",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n2:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 39384
+      },
+      "source_ids": [
+        "object-hypothesis:n2:fallback",
+        "object-hypothesis:n10:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-028",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n3:fallback",
+      "target_id": "object-hypothesis:n9:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 5315
+      },
+      "source_ids": [
+        "object-hypothesis:n3:fallback",
+        "object-hypothesis:n9:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-029",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n3:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 20379
+      },
+      "source_ids": [
+        "object-hypothesis:n3:fallback",
+        "object-hypothesis:n10:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-030",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n5:fallback",
+      "target_id": "object-hypothesis:n9:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 17062
+      },
+      "source_ids": [
+        "object-hypothesis:n5:fallback",
+        "object-hypothesis:n9:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-031",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n5:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 32126
+      },
+      "source_ids": [
+        "object-hypothesis:n5:fallback",
+        "object-hypothesis:n10:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-032",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n6:fallback",
+      "target_id": "object-hypothesis:n9:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 88356
+      },
+      "source_ids": [
+        "object-hypothesis:n6:fallback",
+        "object-hypothesis:n9:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-033",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n6:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 103420
+      },
+      "source_ids": [
+        "object-hypothesis:n6:fallback",
+        "object-hypothesis:n10:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-034",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n6:fallback",
+      "target_id": "object-hypothesis:n12:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 11954
+      },
+      "source_ids": [
+        "object-hypothesis:n6:fallback",
+        "object-hypothesis:n12:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-035",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n6:fallback",
+      "target_id": "object-hypothesis:n14:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 23833
+      },
+      "source_ids": [
+        "object-hypothesis:n6:fallback",
+        "object-hypothesis:n14:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-036",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n6:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 28340
+      },
+      "source_ids": [
+        "object-hypothesis:n6:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-037",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n6:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 55856
+      },
+      "source_ids": [
+        "object-hypothesis:n6:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-038",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n6:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 42810.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n6:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-039",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n8:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 30892
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n8:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-040",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n9:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 168252
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n9:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-041",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 183316
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n10:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-042",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n11:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 77758
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n11:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-043",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n12:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 91850
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n12:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-044",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n13:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 22351
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n13:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-045",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n14:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 103729
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n14:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-046",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n15:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 31534
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n15:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-047",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n16:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 31534
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n16:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-048",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 108236
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-049",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 135752
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-050",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n7:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 122706.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n7:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-051",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n9:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 137360
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n9:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-052",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 152424
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n10:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-053",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n11:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 46866
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n11:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-054",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n12:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 60958
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n12:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-055",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n14:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 72837
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n14:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-056",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n15:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 642
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n15:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-057",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n16:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 642
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n16:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-058",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 77344
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-059",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 104860
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-060",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n8:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 91814.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n8:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-061",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n9:fallback",
+      "target_id": "object-hypothesis:n10:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 15064
+      },
+      "source_ids": [
+        "object-hypothesis:n9:fallback",
+        "object-hypothesis:n10:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-062",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n11:fallback",
+      "target_id": "object-hypothesis:n12:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 14092
+      },
+      "source_ids": [
+        "object-hypothesis:n11:fallback",
+        "object-hypothesis:n12:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-063",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n11:fallback",
+      "target_id": "object-hypothesis:n14:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 25971
+      },
+      "source_ids": [
+        "object-hypothesis:n11:fallback",
+        "object-hypothesis:n14:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-064",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n11:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 30478
+      },
+      "source_ids": [
+        "object-hypothesis:n11:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-065",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n11:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 57994
+      },
+      "source_ids": [
+        "object-hypothesis:n11:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-066",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n11:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 44948.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n11:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-067",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n12:fallback",
+      "target_id": "object-hypothesis:n14:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 11879
+      },
+      "source_ids": [
+        "object-hypothesis:n12:fallback",
+        "object-hypothesis:n14:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-068",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n12:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 16386
+      },
+      "source_ids": [
+        "object-hypothesis:n12:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-069",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n12:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 43902
+      },
+      "source_ids": [
+        "object-hypothesis:n12:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-070",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n12:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 30856.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n12:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-071",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n14:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 81378
+      },
+      "source_ids": [
+        "object-hypothesis:n13:fallback",
+        "object-hypothesis:n14:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-072",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n15:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 9183
+      },
+      "source_ids": [
+        "object-hypothesis:n13:fallback",
+        "object-hypothesis:n15:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-073",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n16:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 9183
+      },
+      "source_ids": [
+        "object-hypothesis:n13:fallback",
+        "object-hypothesis:n16:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-074",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 85885
+      },
+      "source_ids": [
+        "object-hypothesis:n13:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-075",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 113401
+      },
+      "source_ids": [
+        "object-hypothesis:n13:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-076",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n13:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 100355.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n13:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-077",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n14:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 4507
+      },
+      "source_ids": [
+        "object-hypothesis:n14:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-078",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n14:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 32023
+      },
+      "source_ids": [
+        "object-hypothesis:n14:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-079",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n14:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 18977.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n14:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-080",
+      "edge_type": "align_y",
+      "source_id": "object-hypothesis:n15:fallback",
+      "target_id": "object-hypothesis:n16:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "center_delta": 0.0
+      },
+      "source_ids": [
+        "object-hypothesis:n15:fallback",
+        "object-hypothesis:n16:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-081",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n15:fallback",
+      "target_id": "object-hypothesis:n16:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 0
+      },
+      "source_ids": [
+        "object-hypothesis:n15:fallback",
+        "object-hypothesis:n16:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-082",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n15:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 76702
+      },
+      "source_ids": [
+        "object-hypothesis:n15:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-083",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n15:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 104218
+      },
+      "source_ids": [
+        "object-hypothesis:n15:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-084",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n15:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 91172.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n15:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-085",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n16:fallback",
+      "target_id": "object-hypothesis:n17:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 76702
+      },
+      "source_ids": [
+        "object-hypothesis:n16:fallback",
+        "object-hypothesis:n17:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-086",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n16:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 104218
+      },
+      "source_ids": [
+        "object-hypothesis:n16:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-087",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n16:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 91172.40000000001
+      },
+      "source_ids": [
+        "object-hypothesis:n16:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-088",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n17:fallback",
+      "target_id": "object-hypothesis:n18:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 27516
+      },
+      "source_ids": [
+        "object-hypothesis:n17:fallback",
+        "object-hypothesis:n18:fallback"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "graph-edge-089",
+      "edge_type": "z_before",
+      "source_id": "object-hypothesis:n17:fallback",
+      "target_id": "object-hypothesis:n4:fallback",
+      "score_total": 1.0,
+      "score_terms": {
+        "area_order": 14470.400000000009
+      },
+      "source_ids": [
+        "object-hypothesis:n17:fallback",
+        "object-hypothesis:n4:fallback"
+      ],
+      "metadata": {}
+    }
+  ]
+}
