@@ -5,6 +5,16 @@ from dataclasses import dataclass
 
 @dataclass(slots=True)
 class PipelineConfig:
+    semantic_mode: bool = False
+    semantic_fallback_to_legacy: bool = True
+    local_refine_padding: float = 28.0
+    local_refine_gradient_percentile: float = 82.0
+    local_refine_min_iou: float = 0.12
+    local_refine_threshold_bias: float = 8.0
+    router_margin: float = 18.0
+    edge_label_offset: float = 10.0
+    edge_label_height: float = 24.0
+    edge_label_char_width: float = 7.5
     adaptive_background: bool = True
     background_blur_divisor: float = 72.0
     foreground_threshold: float = 32.0

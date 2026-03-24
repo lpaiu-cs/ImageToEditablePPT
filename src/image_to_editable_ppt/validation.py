@@ -400,6 +400,8 @@ def parse_shape(shape, transform: tuple[float, int, int]) -> ValidationShape | N
             stroke_width=max(1.0, emu_to_px(line_width(shape._element), scale)),
             fill_color=fill_color_from_element(shape._element),
             points=points,
+            arrow_start=has_arrowhead(shape._element, at="head"),
+            arrow_end=has_arrowhead(shape._element, at="tail"),
         )
     return None
 

@@ -31,6 +31,7 @@ from image_to_editable_ppt.repair import repair_elements
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
 from image_to_editable_ppt.validation import run_validation_iteration
 from image_to_editable_ppt.filtering import filter_residual_components
+from image_to_editable_ppt.vlm_parser import DiagramStructure, VLMEdge, VLMNode
 from tests.synthetic import (
     boxed_text_cluster_diagram,
     complex_diagram,
@@ -80,6 +81,16 @@ class CropAwareOCRBackend(OCRBackend):
                 confidence=0.97,
             )
         ]
+
+
+class FakeStructureParser:
+    def __init__(self, structure: DiagramStructure) -> None:
+        self.structure = structure
+        self.calls: list[tuple[int, int]] = []
+
+    def extract_structure(self, image, *, image_path=None):
+        self.calls.append(image.size)
+        return self.structure
 
 
 XML_NS = {
@@ -775,6 +786,70 @@ def test_convert_image_debug_dump_serializes_slot_dataclasses(tmp_path: Path) ->
     assert isinstance(data, list)
     assert data
     assert "geometry" in data[0]
+
+
+def test_semantic_pipeline_uses_vlm_structure_and_local_snapping() -> None:
+    image = Image.new("RGB", (320, 200), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((42, 52, 132, 112), radius=16, outline=(24, 78, 128), fill=(220, 235, 248), width=4)
+    draw.rounded_rectangle((206, 84, 296, 144), radius=16, outline=(64, 64, 64), fill=(248, 228, 206), width=4)
+    parser = FakeStructureParser(
+        DiagramStructure(
+            nodes=[
+                VLMNode("n1", "box", "Vector Store", BBox(28.0, 40.0, 142.0, 122.0)),
+                VLMNode("n2", "box", "Planner", BBox(194.0, 72.0, 304.0, 154.0)),
+            ],
+            edges=[VLMEdge("n1", "n2", "solid_arrow", "retrieves")],
+        )
+    )
+
+    result = build_elements(
+        image,
+        config=PipelineConfig(semantic_fallback_to_legacy=False),
+        structure_parser=parser,
+    )
+
+    assert result.pipeline_mode == "semantic"
+    boxes = [element for element in result.elements if element.kind in {"rect", "rounded_rect"}]
+    texts = [element for element in result.elements if element.kind == "text"]
+    arrows = [element for element in result.elements if element.kind == "arrow"]
+    assert len(boxes) == 2
+    assert len(arrows) == 1
+    assert any(text.text is not None and text.text.content == "Vector Store" for text in texts)
+    assert any(text.text is not None and text.text.content == "Planner" for text in texts)
+    assert any(text.text is not None and text.text.content == "retrieves" for text in texts)
+    assert boxes[0].bbox.x0 == pytest.approx(42.0, abs=8.0)
+    assert boxes[0].bbox.y0 == pytest.approx(52.0, abs=8.0)
+    assert len(arrows[0].geometry.points) >= 3
+
+
+def test_semantic_routed_arrow_exports_single_tail_marker(tmp_path: Path) -> None:
+    image = Image.new("RGB", (320, 220), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((36, 48, 126, 108), radius=16, outline="black", fill=(224, 240, 250), width=4)
+    draw.rounded_rectangle((206, 126, 296, 186), radius=16, outline="black", fill=(250, 232, 212), width=4)
+    image_path = save_image(image, tmp_path / "semantic.png")
+    output_path = tmp_path / "semantic.pptx"
+    parser = FakeStructureParser(
+        DiagramStructure(
+            nodes=[
+                VLMNode("n1", "box", "Memory", BBox(24.0, 36.0, 138.0, 120.0)),
+                VLMNode("n2", "box", "Planner", BBox(194.0, 116.0, 306.0, 194.0)),
+            ],
+            edges=[VLMEdge("n1", "n2", "dashed_arrow")],
+        )
+    )
+
+    result = convert_image(
+        image_path,
+        output_path,
+        config=PipelineConfig(semantic_fallback_to_legacy=False),
+        structure_parser=parser,
+    )
+
+    assert result.pipeline_mode == "semantic"
+    assert any(element.kind == "arrow" and len(element.geometry.points) >= 3 for element in result.elements)
+    assert_slide_connector_uses_tail_end_only(output_path)
 
 
 def test_validation_iteration_exports_pptx_svg_and_comparison_artifacts(tmp_path: Path) -> None:

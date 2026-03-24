@@ -119,8 +119,11 @@ def add_open_polyline(slide, element: Element, *, scale: float, offset_x: int, o
 
 def add_arrow(slide, element: Element, *, scale: float, offset_x: int, offset_y: int) -> None:
     geometry = element.geometry
-    if not isinstance(geometry, PolylineGeometry) or len(geometry.points) != 2:
-        raise TypeError("arrow element requires 2-point PolylineGeometry")
+    if not isinstance(geometry, PolylineGeometry) or len(geometry.points) < 2:
+        raise TypeError("arrow element requires PolylineGeometry")
+    if len(geometry.points) > 2:
+        add_routed_arrow(slide, element, scale=scale, offset_x=offset_x, offset_y=offset_y)
+        return
     if try_add_semantic_arrow(slide, element, scale=scale, offset_x=offset_x, offset_y=offset_y):
         return
     # python-pptx does not expose arrowheads directly, so freeform is the conservative fallback.
@@ -140,6 +143,26 @@ def add_arrow(slide, element: Element, *, scale: float, offset_x: int, offset_y:
     shape.fill.fore_color.rgb = rgb
     shape.line.color.rgb = rgb
     shape.line.width = Emu(max(1, int(element.stroke.width * scale * 0.6)))
+
+
+def add_routed_arrow(slide, element: Element, *, scale: float, offset_x: int, offset_y: int) -> None:
+    geometry = element.geometry
+    if not isinstance(geometry, PolylineGeometry) or len(geometry.points) < 2:
+        raise TypeError("routed arrow element requires PolylineGeometry")
+    start = geometry.points[0]
+    builder = slide.shapes.build_freeform(
+        start_x=to_emu(start.x, scale, offset_x),
+        start_y=to_emu(start.y, scale, offset_y),
+    )
+    vertices = [
+        (to_emu(point.x, scale, offset_x), to_emu(point.y, scale, offset_y))
+        for point in geometry.points[1:]
+    ]
+    builder.add_line_segments(vertices, close=False)
+    shape = builder.convert_to_shape()
+    apply_line_style(shape, element, scale=scale)
+    shape.fill.background()
+    add_connector_arrowhead(shape, end_at="tail")
 
 
 def try_add_semantic_arrow(slide, element: Element, *, scale: float, offset_x: int, offset_y: int) -> bool:

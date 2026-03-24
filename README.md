@@ -2,6 +2,8 @@
 
 이 저장소는 논문용 구조적 다이어그램에서 **확실한 primitive만 보수적으로 추출**해 PowerPoint의 editable object로 내보내는 MVP 골격을 제공한다.
 
+현재 CLI와 workbench 러너의 기본 경로는 **VLM proposal + local CV snapping + explicit routing** 기반의 semantic-first 하이브리드 파이프라인이다. `VLM_API_KEY`가 없을 때만 기존 bottom-up CV 파이프라인으로 fallback한다.
+
 ## 현재 지원 범위
 
 - 단일 이미지 입력
@@ -43,7 +45,7 @@
 - fill은 닫힌 박스에만 적용한다.
 - 비-다이어그램으로 보이는 복합 요소는 생략한다.
 - OCR이 꺼져 있어도 text-like region은 geometry 후보에서 제거한다.
-- MVP는 결정적 heuristic 파이프라인으로 시작한다.
+- semantic prior가 있을 때는 픽셀보다 문맥을 먼저 믿는다.
 - OCR은 기본 비활성화에 가까운 선택 기능이며, 없으면 텍스트를 생략한다.
 - gap repair는 작은 거리만으로 허용하지 않고, 정렬/두께/명암/occluder/conflict 여부를 함께 본다.
 
@@ -53,6 +55,14 @@
 python -m pip install -e .
 image-to-editable-ppt input.png output.pptx
 ```
+
+semantic-first 모드 사용 전:
+
+```bash
+cp .env.example .env
+```
+
+`.env`에 `VLM_API_KEY`를 채우면 CLI와 workbench runner가 semantic-first로 동작한다. 키 없이 실행하면 legacy CV fallback을 사용한다.
 
 선택적 OCR:
 
@@ -67,13 +77,19 @@ JSON 디버그 출력:
 image-to-editable-ppt input.png output.pptx --debug-elements elements.json
 ```
 
+legacy 강제 실행:
+
+```bash
+image-to-editable-ppt input.png output.pptx --legacy
+```
+
 검증 workbench 생성:
 
 ```bash
 python tools/alignment_loop.py input.png
 ```
 
-위 스크립트는 `workbench/input-alignment/iter_XX/` 아래에 다음 artifact를 남긴다.
+위 스크립트는 `workbench2.0/input-alignment/iter_XX/` 아래에 다음 artifact를 남긴다.
 
 - `output.pptx`
 - `output.svg`
@@ -86,23 +102,22 @@ python tools/alignment_loop.py input.png
 
 ## 파이프라인
 
-1. 전처리: 배경 추정, foreground / boundary mask 구성, raw text-mask source 유지, mean-shift 기반 fill region mask 생성, speck 제거
-2. 구조 후보 탐지: 수평/수직 stroke 추출, 박스 후보 탐지
-3. non-diagram filtering: connected component feature와 text row cluster로 `text_like` / `icon_like`를 억제하고 `unknown`은 weak proposal로 유지
-4. primitive fitting: raw boundary 기반 box proposal + outer contour weak-box fallback + filled-region box fallback + Hough global segment graph proposal + strong/weak residual line / arrow / connector fitting
-5. occlusion repair: 정렬, 폭, 명암, occluder, conflict를 함께 보는 evidence-aware merge + text-block hard bridge merge
-6. topological repair: line / connector endpoint를 근처 box edge로 snap
-7. style extraction: 내부 detail pixel을 제외한 stroke / fill representative color 추정
-8. text extraction: text-like block crop 기반의 선택적 OCR + 구조적 역할 게이트
-9. confidence gating: 낮은 신뢰도 primitive 생략
-10. PPT export: primitive별 editable object 생성
+1. semantic proposal: VLM이 node/edge topology와 coarse bbox를 JSON으로 추출
+2. local geometry snapping: node별 crop 안에서만 contour/gradient를 다시 보고 `exact_bbox`를 보정
+3. style extraction: 보정된 bbox 기준으로 stroke / fill representative color 추정
+4. text hydration: VLM text를 우선 사용하고, 비어 있는 node만 선택적 OCR로 보충
+5. explicit routing: edge topology를 기준으로 connector/arrow 경로를 프로그래밍 방식으로 생성
+6. confidence gating: 낮은 신뢰도 primitive 생략
+7. PPT export: primitive별 editable object 생성
+
+legacy fallback은 기존 bottom-up CV 경로를 유지한다.
 
 ## Export Semantics
 
 - `rect` / `rounded_rect`는 PowerPoint 기본 도형으로 내보낸다.
 - `line`은 straight connector로 내보낸다.
 - `orthogonal_connector`는 open freeform polyline으로 내보낸다.
-- `arrow`는 먼저 straight connector + OOXML arrow ending을 시도한다.
+- `arrow`는 straight connector가 가능하면 connector로, elbow route면 freeform polyline + OOXML arrow ending으로 내보낸다.
 - DrawingML connector에서는 시작점이 `head`, 끝점이 `tail`이므로, 정규화된 arrow tip은 `tailEnd`에 매핑된다.
 - `python-pptx`가 공개 API로 arrowhead를 직접 노출하지 않기 때문에, semantic arrow ending 삽입이 실패하면 freeform arrow shape로 fallback한다.
 - 즉, arrow는 가능한 경우 더 semantic하게 내보내지만, 항상 spec-perfect하다고 주장하지 않는다.
@@ -115,6 +130,7 @@ python tools/alignment_loop.py input.png
 - noisy open contour에서 fill 금지
 - mixed figure에서 non-diagram region omission
 - dense text-heavy rasterized diagram에서 text fragment suppression과 large container survival
+- semantic proposal이 있을 때 coarse bbox fallback으로 node 자체를 버리지 않음
 - text-like glyph를 phrase/block mask로 묶어 bridge region으로 재사용
 - explicit border가 약한 filled panel의 conservative box recovery
 - global segment graph longest-path 기반 connector recovery
@@ -125,6 +141,8 @@ python tools/alignment_loop.py input.png
 
 ## 현재 한계
 
+- semantic-first 경로는 VLM proposal 품질에 크게 의존한다.
+- 현재 API 호출은 OpenAI-compatible chat completions 형식을 기본 가정한다.
 - 박스/커넥터는 axis-aligned 구조에 강하게 편향되어 있다.
 - orthogonal connector는 단순한 chain만 지원하며, branch/T-junction/loop는 생략한다.
 - arrow는 shaft + 한쪽 끝 widening 신호를 사용하는 단순 검출이다.

@@ -9,7 +9,7 @@ from image_to_editable_ppt.validation import run_validation_iteration
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run input.png -> output.pptx -> output.svg validation iterations.")
+    parser = argparse.ArgumentParser(description="Run semantic-first input -> PPTX -> SVG validation iterations.")
     parser.add_argument(
         "input_image",
         nargs="?",
@@ -20,10 +20,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--workbench",
         type=Path,
-        default=Path("workbench") / "input-alignment",
+        default=Path("workbench2.0") / "input-alignment",
         help="Directory where iteration artifacts are written",
     )
     parser.add_argument("--ocr", action="store_true", help="Enable optional OCR")
+    parser.add_argument("--legacy", action="store_true", help="Force the legacy bottom-up CV pipeline")
     return parser
 
 
@@ -47,7 +48,7 @@ def main() -> int:
     result = run_validation_iteration(
         input_image,
         iteration_dir,
-        config=PipelineConfig(),
+        config=PipelineConfig(semantic_mode=not args.legacy),
         enable_ocr=args.ocr,
     )
     print(f"iteration: {iteration_dir.name}")

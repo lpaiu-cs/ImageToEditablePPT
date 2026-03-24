@@ -4,6 +4,12 @@ from dataclasses import dataclass, replace
 import math
 
 import numpy as np
+from PIL import Image
+
+try:
+    import cv2
+except ImportError:  # pragma: no cover - guarded by dependency/tests
+    cv2 = None
 
 from .components import remove_small_components
 from .config import PipelineConfig
@@ -22,6 +28,8 @@ from .fitter import (
 )
 from .ir import BBox, Element, Point, PolylineGeometry
 from .preprocess import ProcessedImage
+from .style import estimate_fill_color, median_color, sample_bbox_border_colors
+from .vlm_parser import VLMNode
 
 
 @dataclass(slots=True)
@@ -30,6 +38,21 @@ class DetectionResult:
     text_regions: list[BBox]
     rejected_regions: list[RejectedRegion]
     bridge_mask: np.ndarray
+
+
+@dataclass(slots=True, frozen=True)
+class RefinedNode:
+    id: str
+    type: str
+    text: str
+    approx_bbox: BBox
+    exact_bbox: BBox
+    confidence: float
+    stroke_color: tuple[int, int, int]
+    stroke_width: float
+    fill_enabled: bool
+    fill_color: tuple[int, int, int] | None
+    corner_radius: float
 
 
 def detect_elements(processed: ProcessedImage, config: PipelineConfig) -> list[Element]:
@@ -180,6 +203,164 @@ def detect_elements_with_metadata(processed: ProcessedImage, config: PipelineCon
         + [region for region in text_filter.rejected_regions if region.label == "text_like"],
         bridge_mask=bridge_mask,
     )
+
+
+def refine_node_geometry(
+    image: Image.Image,
+    proposal: VLMNode,
+    config: PipelineConfig,
+) -> RefinedNode:
+    array = np.asarray(image.convert("RGB"), dtype=np.uint8)
+    approx_bbox = clamp_bbox(proposal.approx_bbox, width=array.shape[1], height=array.shape[0])
+    exact_bbox = snap_bbox_to_local_contour(array, approx_bbox, config)
+    stroke_width = estimate_local_stroke_width(exact_bbox)
+    stroke_color = sample_bbox_border_colors(array, exact_bbox, stroke_width)
+    background_color = estimate_surrounding_background(array, exact_bbox)
+    fill_enabled, fill_color = estimate_fill_color(
+        array=array,
+        bbox=exact_bbox,
+        stroke_width=stroke_width,
+        background_color=background_color,
+        delta_threshold=14.0,
+        homogeneity_threshold=24.0,
+        detail_mask=None,
+    )
+    if proposal.type == "text_only":
+        fill_enabled = False
+        fill_color = None
+    corner_radius = estimate_corner_radius(array, exact_bbox, proposal.type)
+    return RefinedNode(
+        id=proposal.id,
+        type=proposal.type,
+        text=proposal.text,
+        approx_bbox=approx_bbox,
+        exact_bbox=exact_bbox,
+        confidence=0.90 if exact_bbox != approx_bbox else 0.82,
+        stroke_color=stroke_color,
+        stroke_width=stroke_width,
+        fill_enabled=fill_enabled,
+        fill_color=fill_color,
+        corner_radius=corner_radius,
+    )
+
+
+def clamp_bbox(bbox: BBox, *, width: int, height: int) -> BBox:
+    x0 = min(max(0.0, bbox.x0), float(width - 1))
+    y0 = min(max(0.0, bbox.y0), float(height - 1))
+    x1 = min(max(x0 + 1.0, bbox.x1), float(width))
+    y1 = min(max(y0 + 1.0, bbox.y1), float(height))
+    return BBox(x0, y0, x1, y1)
+
+
+def snap_bbox_to_local_contour(
+    array: np.ndarray,
+    approx_bbox: BBox,
+    config: PipelineConfig,
+) -> BBox:
+    if cv2 is None:
+        return approx_bbox
+    padding = max(config.local_refine_padding, max(approx_bbox.width, approx_bbox.height) * 0.08)
+    crop_bbox = clamp_bbox(
+        approx_bbox.expand(padding),
+        width=array.shape[1],
+        height=array.shape[0],
+    )
+    x0 = int(math.floor(crop_bbox.x0))
+    y0 = int(math.floor(crop_bbox.y0))
+    x1 = int(math.ceil(crop_bbox.x1))
+    y1 = int(math.ceil(crop_bbox.y1))
+    crop = array[y0:y1, x0:x1]
+    if crop.size == 0:
+        return approx_bbox
+    gray = cv2.cvtColor(crop, cv2.COLOR_RGB2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    sobel_x = cv2.Sobel(blurred, cv2.CV_32F, 1, 0, ksize=3)
+    sobel_y = cv2.Sobel(blurred, cv2.CV_32F, 0, 1, ksize=3)
+    gradient = cv2.magnitude(sobel_x, sobel_y)
+    threshold = max(
+        float(np.percentile(gradient, config.local_refine_gradient_percentile)),
+        float(np.mean(gradient) + config.local_refine_threshold_bias),
+    )
+    canny = cv2.Canny(blurred, 48, 144)
+    binary = np.zeros_like(gray, dtype=np.uint8)
+    binary[gradient >= threshold] = 255
+    binary = cv2.bitwise_or(binary, canny)
+    kernel = np.ones((5, 5), dtype=np.uint8)
+    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations=2)
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if not contours:
+        return approx_bbox
+    target_center = approx_bbox.center
+    best_bbox = approx_bbox
+    best_score = -1.0
+    approx_area = max(approx_bbox.area, 1.0)
+    for contour in contours:
+        rx, ry, rw, rh = cv2.boundingRect(contour)
+        candidate = BBox(x0 + rx, y0 + ry, x0 + rx + rw, y0 + ry + rh)
+        if candidate.width < 8 or candidate.height < 8:
+            continue
+        score = candidate.iou(approx_bbox) * 4.0
+        if candidate.contains_point(target_center):
+            score += 1.5
+        area_ratio = min(candidate.area, approx_area) / max(candidate.area, approx_area)
+        score += area_ratio
+        if score > best_score:
+            best_score = score
+            best_bbox = candidate
+    if best_score < config.local_refine_min_iou * 4.0:
+        return approx_bbox
+    return clamp_bbox(best_bbox, width=array.shape[1], height=array.shape[0])
+
+
+def estimate_local_stroke_width(bbox: BBox) -> float:
+    return max(2.0, min(bbox.width, bbox.height) * 0.03)
+
+
+def estimate_surrounding_background(array: np.ndarray, bbox: BBox) -> tuple[int, int, int]:
+    outer = clamp_bbox(bbox.expand(max(6.0, min(bbox.width, bbox.height) * 0.08)), width=array.shape[1], height=array.shape[0])
+    x0 = int(math.floor(outer.x0))
+    y0 = int(math.floor(outer.y0))
+    x1 = int(math.ceil(outer.x1))
+    y1 = int(math.ceil(outer.y1))
+    ix0 = int(math.floor(bbox.x0))
+    iy0 = int(math.floor(bbox.y0))
+    ix1 = int(math.ceil(bbox.x1))
+    iy1 = int(math.ceil(bbox.y1))
+    ring = array[y0:y1, x0:x1].copy()
+    ring[iy0 - y0 : iy1 - y0, ix0 - x0 : ix1 - x0] = 0
+    mask = np.ones(ring.shape[:2], dtype=bool)
+    mask[iy0 - y0 : iy1 - y0, ix0 - x0 : ix1 - x0] = False
+    colors = ring[mask]
+    if colors.size == 0:
+        colors = array.reshape(-1, 3)
+    return median_color(colors)
+
+
+def estimate_corner_radius(array: np.ndarray, bbox: BBox, proposal_type: str) -> float:
+    if proposal_type == "cylinder":
+        return min(bbox.width, bbox.height) * 0.18
+    if proposal_type == "document":
+        return 0.0
+    stroke_width = estimate_local_stroke_width(bbox)
+    sample = max(4, int(round(min(bbox.width, bbox.height) * 0.12)))
+    x0 = int(math.floor(bbox.x0))
+    y0 = int(math.floor(bbox.y0))
+    x1 = int(math.ceil(bbox.x1))
+    y1 = int(math.ceil(bbox.y1))
+    if x1 - x0 < sample * 2 or y1 - y0 < sample * 2:
+        return 0.0
+    gray = np.asarray(array[y0:y1, x0:x1].mean(axis=2), dtype=np.float32)
+    edge_threshold = np.percentile(gray, 30)
+    corners = [
+        gray[:sample, :sample],
+        gray[:sample, -sample:],
+        gray[-sample:, :sample],
+        gray[-sample:, -sample:],
+    ]
+    dark_ratio = [float((corner <= edge_threshold).mean()) for corner in corners]
+    if max(dark_ratio) < 0.18:
+        return max(stroke_width * 2.0, min(bbox.width, bbox.height) * 0.08)
+    return 0.0
 
 
 def detect_linear_elements(
