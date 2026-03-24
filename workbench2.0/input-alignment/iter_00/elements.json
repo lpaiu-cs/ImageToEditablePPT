@@ -1,0 +1,2134 @@
+[
+  {
+    "id": "node-1",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1022,
+        "y0": 70,
+        "x1": 1101,
+        "y1": 118
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        200,
+        200,
+        200
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1022,
+      "y0": 70,
+      "x1": 1101,
+      "y1": 118
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-1",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1032.0,
+        "y0": 76.72,
+        "x1": 1091.0,
+        "y1": 111.28
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        200,
+        200,
+        200
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "User Input",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1032.0,
+      "y0": 76.72,
+      "x1": 1091.0,
+      "y1": 111.28
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-2",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 707,
+        "y0": 178,
+        "x1": 828,
+        "y1": 217
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        233,
+        236,
+        240
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 707,
+      "y0": 178,
+      "x1": 828,
+      "y1": 217
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-2",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 717.0,
+        "y0": 184.5,
+        "x1": 818.0,
+        "y1": 210.5
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        233,
+        236,
+        240
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Bot Orchestrator\n(Main Loop Controller)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 717.0,
+      "y0": 184.5,
+      "x1": 818.0,
+      "y1": 210.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-3",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 46,
+        "y0": 156,
+        "x1": 428,
+        "y1": 228
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        223,
+        224,
+        225
+      ],
+      "width": 2.16,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 46,
+      "y0": 156,
+      "x1": 428,
+      "y1": 228
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-3",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 76.56,
+        "y0": 166.08,
+        "x1": 397.44,
+        "y1": 217.92
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        223,
+        224,
+        225
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "1. PERCEIVE\n(\uc778\uc9c0 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 76.56,
+      "y0": 166.08,
+      "x1": 397.44,
+      "y1": 217.92
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-4",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 172,
+        "y0": 156,
+        "x1": 378,
+        "y1": 166
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        222,
+        222,
+        223
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 172,
+      "y0": 156,
+      "x1": 378,
+      "y1": 166
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-4",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 172,
+        "y0": 156,
+        "x1": 378,
+        "y1": 166
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        222,
+        222,
+        223
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Boundary Redaction\n(Clause-level, target-aware)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 172,
+      "y0": 156,
+      "x1": 378,
+      "y1": 166
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-5",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 81,
+        "y0": 259,
+        "x1": 278,
+        "y1": 378
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        186,
+        207,
+        227
+      ],
+      "width": 3.57,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": true,
+      "color": [
+        209,
+        225,
+        242
+      ]
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 81,
+      "y0": 259,
+      "x1": 278,
+      "y1": 378
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-5",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 96.76,
+        "y0": 275.66,
+        "x1": 262.24,
+        "y1": 361.34
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        186,
+        207,
+        227
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Sensory System\n(Delta ingest, durable cursor,\nchunking & embedding)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 96.76,
+      "y0": 275.66,
+      "x1": 262.24,
+      "y1": 361.34
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-6",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 374,
+        "y0": 293,
+        "x1": 528,
+        "y1": 332
+      },
+      "corner_radius": 4.0
+    },
+    "stroke": {
+      "color": [
+        199,
+        212,
+        221
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 374,
+      "y0": 293,
+      "x1": 528,
+      "y1": 332
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-6",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 386.32,
+        "y0": 299.5,
+        "x1": 515.68,
+        "y1": 325.5
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        199,
+        212,
+        221
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Identity & Fast Path\n(nickname mapping,\nFastPathMemoryWriter)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 386.32,
+      "y0": 299.5,
+      "x1": 515.68,
+      "y1": 325.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-7",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 872,
+        "y0": 259,
+        "x1": 1028,
+        "y1": 328
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        208,
+        224,
+        241
+      ],
+      "width": 2.07,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": true,
+      "color": [
+        209,
+        225,
+        242
+      ]
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 872,
+      "y0": 259,
+      "x1": 1028,
+      "y1": 328
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-7",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 884.48,
+        "y0": 268.66,
+        "x1": 1015.52,
+        "y1": 318.34
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        208,
+        224,
+        241
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "2. RETRIEVE\n(\uae30\uc5b5 \uc778\ucd9c \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 884.48,
+      "y0": 268.66,
+      "x1": 1015.52,
+      "y1": 318.34
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-8",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 872,
+        "y0": 322,
+        "x1": 1128,
+        "y1": 478
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        209,
+        224,
+        241
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 872,
+      "y0": 322,
+      "x1": 1128,
+      "y1": 478
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-8",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 892.48,
+        "y0": 343.84000000000003,
+        "x1": 1107.52,
+        "y1": 456.15999999999997
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        209,
+        224,
+        241
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Working Memory (STM)\n(priority queue & semantic boost)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 892.48,
+      "y0": 343.84000000000003,
+      "x1": 1107.52,
+      "y1": 456.15999999999997
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-9",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1122,
+        "y0": 366,
+        "x1": 1306,
+        "y1": 478
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        229,
+        236,
+        247
+      ],
+      "width": 3.36,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1122,
+      "y0": 366,
+      "x1": 1306,
+      "y1": 478
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-9",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1136.72,
+        "y0": 381.68,
+        "x1": 1291.28,
+        "y1": 462.32
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        229,
+        236,
+        247
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "QueryPlanner\n(referent cache & role alias)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1136.72,
+      "y0": 381.68,
+      "x1": 1291.28,
+      "y1": 462.32
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-10",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 1143,
+        "y0": 472,
+        "x1": 1378,
+        "y1": 628
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1143,
+      "y0": 472,
+      "x1": 1378,
+      "y1": 628
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-10",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 1161.8,
+        "y0": 493.84000000000003,
+        "x1": 1359.2,
+        "y1": 606.16
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "LTM Handler\n(claim-aware search,\nACL, context bundle)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 1161.8,
+      "y0": 493.84000000000003,
+      "x1": 1359.2,
+      "y1": 606.16
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-11",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 585,
+        "y0": 472,
+        "x1": 828,
+        "y1": 628
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        156,
+        178,
+        204
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 585,
+      "y0": 472,
+      "x1": 828,
+      "y1": 628
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-11",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 604.44,
+        "y0": 493.84000000000003,
+        "x1": 808.56,
+        "y1": 606.16
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        156,
+        178,
+        204
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "3. THINK\n(\uc0ac\uace0 \ubc0f \uc0dd\uc131 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 604.44,
+      "y0": 493.84000000000003,
+      "x1": 808.56,
+      "y1": 606.16
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-12",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 572,
+        "y0": 699,
+        "x1": 828,
+        "y1": 707
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        149,
+        178,
+        208
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": true,
+      "color": [
+        94,
+        131,
+        173
+      ]
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 572,
+      "y0": 699,
+      "x1": 828,
+      "y1": 707
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-12",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 572,
+        "y0": 699,
+        "x1": 828,
+        "y1": 707
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        149,
+        178,
+        208
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Generation Stack\n(prompt reconstruction,\nmodel eval gate, fast/slow\nrouting, structured output)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 572,
+      "y0": 699,
+      "x1": 828,
+      "y1": 707
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-13",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 116,
+        "y0": 522,
+        "x1": 278,
+        "y1": 628
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        122,
+        152,
+        186
+      ],
+      "width": 3.1799999999999997,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 116,
+      "y0": 522,
+      "x1": 278,
+      "y1": 628
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-13",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 128.96,
+        "y0": 536.84,
+        "x1": 265.04,
+        "y1": 613.16
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        122,
+        152,
+        186
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "4. ACT\n(\ud589\ub3d9 \ubc0f \ubc18\uc601 \ub2e8\uacc4)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 128.96,
+      "y0": 536.84,
+      "x1": 265.04,
+      "y1": 613.16
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-14",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 81,
+        "y0": 622,
+        "x1": 278,
+        "y1": 708
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        165,
+        185,
+        210
+      ],
+      "width": 2.58,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 81,
+      "y0": 622,
+      "x1": 278,
+      "y1": 708
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-14",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 96.76,
+        "y0": 634.04,
+        "x1": 262.24,
+        "y1": 695.96
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        165,
+        185,
+        210
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Boundary Enforcement\n(memory-safe text,\nuser-visible repair)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 96.76,
+      "y0": 634.04,
+      "x1": 262.24,
+      "y1": 695.96
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-15",
+    "kind": "rect",
+    "geometry": {
+      "bbox": {
+        "x0": 272,
+        "y0": 669,
+        "x1": 528,
+        "y1": 744
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        183,
+        203,
+        222
+      ],
+      "width": 2.25,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 272,
+      "y0": 669,
+      "x1": 528,
+      "y1": 744
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-15",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 292.48,
+        "y0": 679.5,
+        "x1": 507.52,
+        "y1": 733.5
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        183,
+        203,
+        222
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "SocialManager\n(event-based relation\nupdate, fulfillment-aware\nreliability)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 292.48,
+      "y0": 679.5,
+      "x1": 507.52,
+      "y1": 733.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-16",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 272,
+        "y0": 546,
+        "x1": 528,
+        "y1": 628
+      },
+      "corner_radius": 6.5600000000000005
+    },
+    "stroke": {
+      "color": [
+        248,
+        248,
+        246
+      ],
+      "width": 2.46,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 272,
+      "y0": 546,
+      "x1": 528,
+      "y1": 628
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-16",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 292.48,
+        "y0": 557.48,
+        "x1": 507.52,
+        "y1": 616.52
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        248,
+        248,
+        246
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Reflection Handler\n(claims/notes extraction,\nbackground consolidation)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 292.48,
+      "y0": 557.48,
+      "x1": 507.52,
+      "y1": 616.52
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-17",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 872,
+        "y0": 622,
+        "x1": 1128,
+        "y1": 778
+      },
+      "corner_radius": 28.08
+    },
+    "stroke": {
+      "color": [
+        142,
+        150,
+        164
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 872,
+      "y0": 622,
+      "x1": 1128,
+      "y1": 778
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-17",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 892.48,
+        "y0": 643.84,
+        "x1": 1107.52,
+        "y1": 756.16
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        142,
+        150,
+        164
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Memory Graph DB\n(Entity-Claim-Note-Episode)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 892.48,
+      "y0": 643.84,
+      "x1": 1107.52,
+      "y1": 756.16
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-18",
+    "kind": "rounded_rect",
+    "geometry": {
+      "bbox": {
+        "x0": 872,
+        "y0": 805,
+        "x1": 1128,
+        "y1": 854
+      },
+      "corner_radius": 8.82
+    },
+    "stroke": {
+      "color": [
+        219,
+        221,
+        218
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 872,
+      "y0": 805,
+      "x1": 1128,
+      "y1": 854
+    },
+    "inferred": true
+  },
+  {
+    "id": "node-text-18",
+    "kind": "text",
+    "geometry": {
+      "bbox": {
+        "x0": 892.48,
+        "y0": 811.86,
+        "x1": 1107.52,
+        "y1": 847.14
+      },
+      "corner_radius": 0.0
+    },
+    "stroke": {
+      "color": [
+        219,
+        221,
+        218
+      ],
+      "width": 0.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": {
+      "content": "Canonical State DB\n(SQLite)",
+      "alignment": "center",
+      "confidence": 0.97
+    },
+    "confidence": 0.97,
+    "source_region": {
+      "x0": 892.48,
+      "y0": 811.86,
+      "x1": 1107.52,
+      "y1": 847.14
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-1",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1022,
+          "y": 94.0
+        },
+        {
+          "x": 925.0,
+          "y": 94.0
+        },
+        {
+          "x": 925.0,
+          "y": 197.5
+        },
+        {
+          "x": 846.0,
+          "y": 197.5
+        },
+        {
+          "x": 828,
+          "y": 197.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        200,
+        200,
+        200
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 828,
+      "y0": 94.0,
+      "x1": 1022,
+      "y1": 197.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-2",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 707,
+          "y": 197.5
+        },
+        {
+          "x": 567.5,
+          "y": 197.5
+        },
+        {
+          "x": 567.5,
+          "y": 192.0
+        },
+        {
+          "x": 446.0,
+          "y": 192.0
+        },
+        {
+          "x": 428,
+          "y": 192.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        223,
+        224,
+        225
+      ],
+      "width": 2.16,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 428,
+      "y0": 192.0,
+      "x1": 707,
+      "y1": 197.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-3",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 237.0,
+          "y": 156
+        },
+        {
+          "x": 237.0,
+          "y": 161.0
+        },
+        {
+          "x": 275.0,
+          "y": 161.0
+        },
+        {
+          "x": 275.0,
+          "y": 184.0
+        },
+        {
+          "x": 275.0,
+          "y": 166
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        222,
+        222,
+        223
+      ],
+      "width": 2.16,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 237.0,
+      "y0": 156,
+      "x1": 275.0,
+      "y1": 184.0
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-4",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 172,
+          "y": 161.0
+        },
+        {
+          "x": 154.0,
+          "y": 161.0
+        },
+        {
+          "x": 154.0,
+          "y": 241.0
+        },
+        {
+          "x": 179.5,
+          "y": 241.0
+        },
+        {
+          "x": 179.5,
+          "y": 259
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        186,
+        207,
+        227
+      ],
+      "width": 3.57,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 154.0,
+      "y0": 161.0,
+      "x1": 179.5,
+      "y1": 259
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-5",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 378,
+          "y": 161.0
+        },
+        {
+          "x": 376.0,
+          "y": 161.0
+        },
+        {
+          "x": 376.0,
+          "y": 312.5
+        },
+        {
+          "x": 356.0,
+          "y": 312.5
+        },
+        {
+          "x": 374,
+          "y": 312.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        199,
+        212,
+        221
+      ],
+      "width": 2.0,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 356.0,
+      "y0": 161.0,
+      "x1": 378,
+      "y1": 312.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-6",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 828,
+          "y": 197.5
+        },
+        {
+          "x": 850.0,
+          "y": 197.5
+        },
+        {
+          "x": 850.0,
+          "y": 293.5
+        },
+        {
+          "x": 854.0,
+          "y": 293.5
+        },
+        {
+          "x": 872,
+          "y": 293.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        208,
+        224,
+        241
+      ],
+      "width": 2.07,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 828,
+      "y0": 197.5,
+      "x1": 872,
+      "y1": 293.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-7",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 950.0,
+          "y": 328
+        },
+        {
+          "x": 950.0,
+          "y": 325.0
+        },
+        {
+          "x": 1000.0,
+          "y": 325.0
+        },
+        {
+          "x": 1000.0,
+          "y": 304.0
+        },
+        {
+          "x": 1000.0,
+          "y": 322
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        208,
+        224,
+        241
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 950.0,
+      "y0": 304.0,
+      "x1": 1000.0,
+      "y1": 328
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-8",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1028,
+          "y": 293.5
+        },
+        {
+          "x": 1075.0,
+          "y": 293.5
+        },
+        {
+          "x": 1075.0,
+          "y": 422.0
+        },
+        {
+          "x": 1104.0,
+          "y": 422.0
+        },
+        {
+          "x": 1122,
+          "y": 422.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        208,
+        224,
+        241
+      ],
+      "width": 3.36,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1028,
+      "y0": 293.5,
+      "x1": 1122,
+      "y1": 422.0
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-9",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1214.0,
+          "y": 478
+        },
+        {
+          "x": 1214.0,
+          "y": 475.0
+        },
+        {
+          "x": 1260.5,
+          "y": 475.0
+        },
+        {
+          "x": 1260.5,
+          "y": 454.0
+        },
+        {
+          "x": 1260.5,
+          "y": 472
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1214.0,
+      "y0": 454.0,
+      "x1": 1260.5,
+      "y1": 478
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-10",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 707,
+          "y": 197.5
+        },
+        {
+          "x": 706.5,
+          "y": 197.5
+        },
+        {
+          "x": 706.5,
+          "y": 454.0
+        },
+        {
+          "x": 706.5,
+          "y": 472
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        156,
+        178,
+        204
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 706.5,
+      "y0": 197.5,
+      "x1": 707,
+      "y1": 472
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-11",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 706.5,
+          "y": 628
+        },
+        {
+          "x": 706.5,
+          "y": 663.5
+        },
+        {
+          "x": 700.0,
+          "y": 663.5
+        },
+        {
+          "x": 700.0,
+          "y": 677.16
+        },
+        {
+          "x": 700.0,
+          "y": 699
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        149,
+        178,
+        208
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 700.0,
+      "y0": 628,
+      "x1": 706.5,
+      "y1": 699
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-12",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 707,
+          "y": 197.5
+        },
+        {
+          "x": 492.5,
+          "y": 197.5
+        },
+        {
+          "x": 492.5,
+          "y": 575.0
+        },
+        {
+          "x": 296.0,
+          "y": 575.0
+        },
+        {
+          "x": 278,
+          "y": 575.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        122,
+        152,
+        186
+      ],
+      "width": 3.1799999999999997,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 278,
+      "y0": 197.5,
+      "x1": 707,
+      "y1": 575.0
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-13",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 197.0,
+          "y": 628
+        },
+        {
+          "x": 197.0,
+          "y": 625.0
+        },
+        {
+          "x": 179.5,
+          "y": 625.0
+        },
+        {
+          "x": 179.5,
+          "y": 604.0
+        },
+        {
+          "x": 179.5,
+          "y": 622
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        122,
+        152,
+        186
+      ],
+      "width": 3.1799999999999997,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 179.5,
+      "y0": 604.0,
+      "x1": 197.0,
+      "y1": 628
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-14",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 278,
+          "y": 575.0
+        },
+        {
+          "x": 275.0,
+          "y": 575.0
+        },
+        {
+          "x": 275.0,
+          "y": 706.5
+        },
+        {
+          "x": 254.0,
+          "y": 706.5
+        },
+        {
+          "x": 272,
+          "y": 706.5
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        122,
+        152,
+        186
+      ],
+      "width": 3.1799999999999997,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 254.0,
+      "y0": 575.0,
+      "x1": 278,
+      "y1": 706.5
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-15",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 278,
+          "y": 575.0
+        },
+        {
+          "x": 275.0,
+          "y": 575.0
+        },
+        {
+          "x": 275.0,
+          "y": 587.0
+        },
+        {
+          "x": 254.0,
+          "y": 587.0
+        },
+        {
+          "x": 272,
+          "y": 587.0
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        122,
+        152,
+        186
+      ],
+      "width": 3.1799999999999997,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 254.0,
+      "y0": 575.0,
+      "x1": 278,
+      "y1": 587.0
+    },
+    "inferred": true
+  },
+  {
+    "id": "edge-16",
+    "kind": "arrow",
+    "geometry": {
+      "points": [
+        {
+          "x": 1000.0,
+          "y": 778
+        },
+        {
+          "x": 1000.0,
+          "y": 783.16
+        },
+        {
+          "x": 1000.0,
+          "y": 805
+        }
+      ]
+    },
+    "stroke": {
+      "color": [
+        142,
+        150,
+        164
+      ],
+      "width": 4.68,
+      "dash_style": "solid"
+    },
+    "fill": {
+      "enabled": false,
+      "color": null
+    },
+    "text": null,
+    "confidence": 0.9,
+    "source_region": {
+      "x0": 1000.0,
+      "y0": 778,
+      "x1": 1000.0,
+      "y1": 805
+    },
+    "inferred": true
+  }
+]

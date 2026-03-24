@@ -7,3 +7,4 @@ workbench/**
 !workbench/**/
 !workbench/**/*.json
 
+.env
