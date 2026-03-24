@@ -16,7 +16,7 @@ from .preprocess import load_image, preprocess_image
 from .repair import repair_elements
 from .router import generate_connections
 from .text import OCRBackend, extract_text_elements, get_ocr_backend
-from .vlm_parser import DiagramStructure, StructureParser, VLMError, extract_structure
+from .vlm_parser import DiagramStructure, StructureParser, VLMError, denormalize_structure, extract_structure
 
 
 @dataclass(slots=True)
@@ -94,6 +94,7 @@ def try_build_semantic_elements(
         if config.semantic_fallback_to_legacy and structure_parser is None:
             return None
         raise
+    structure = denormalize_structure(structure, image_size=image.size)
     return build_elements_from_structure(
         image,
         structure=structure,

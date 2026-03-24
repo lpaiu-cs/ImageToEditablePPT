@@ -796,10 +796,11 @@ def test_semantic_pipeline_uses_vlm_structure_and_local_snapping() -> None:
     parser = FakeStructureParser(
         DiagramStructure(
             nodes=[
-                VLMNode("n1", "box", "Vector Store", BBox(28.0, 40.0, 142.0, 122.0)),
-                VLMNode("n2", "box", "Planner", BBox(194.0, 72.0, 304.0, 154.0)),
+                VLMNode("n1", "box", "Vector Store", BBox(88.0, 200.0, 444.0, 610.0)),
+                VLMNode("n2", "box", "Planner", BBox(606.0, 360.0, 950.0, 770.0)),
             ],
             edges=[VLMEdge("n1", "n2", "solid_arrow", "retrieves")],
+            coordinate_space="normalized_1000",
         )
     )
 
@@ -833,10 +834,11 @@ def test_semantic_routed_arrow_exports_single_tail_marker(tmp_path: Path) -> Non
     parser = FakeStructureParser(
         DiagramStructure(
             nodes=[
-                VLMNode("n1", "box", "Memory", BBox(24.0, 36.0, 138.0, 120.0)),
-                VLMNode("n2", "box", "Planner", BBox(194.0, 116.0, 306.0, 194.0)),
+                VLMNode("n1", "box", "Memory", BBox(75.0, 164.0, 431.0, 545.0)),
+                VLMNode("n2", "box", "Planner", BBox(606.0, 527.0, 956.0, 882.0)),
             ],
             edges=[VLMEdge("n1", "n2", "dashed_arrow")],
+            coordinate_space="normalized_1000",
         )
     )
 

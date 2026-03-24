@@ -16,9 +16,11 @@ from .ir import BBox
 
 NodeType = Literal["box", "cylinder", "document", "text_only"]
 EdgeType = Literal["solid_arrow", "dashed_arrow", "line"]
+CoordinateSpace = Literal["pixel", "normalized_1000"]
 
 DEFAULT_VLM_URL = "https://api.openai.com/v1/chat/completions"
 DEFAULT_VLM_MODEL = "gpt-4o"
+NORMALIZED_COORDINATE_MAX = 1000.0
 
 SYSTEM_PROMPT = """
 You extract only structural diagram information from a paper figure.
@@ -30,7 +32,9 @@ Rules:
 - Ignore icons, logos, photos, textures, gradients, glow, shadows, and decorative graphics.
 - Boxes may be partially occluded by text or icons; still output a coarse bounding box when geometry is clear.
 - Do not invent hidden nodes or connections without strong visual evidence.
-- Bounding boxes use image pixel coordinates: [x_min, y_min, x_max, y_max].
+- Bounding boxes must be normalized between 0 and 1000 relative to the full image:
+  x uses image width, y uses image height.
+- Return bounding boxes as [x_min, y_min, x_max, y_max] using that 0..1000 coordinate space only.
 - Edge labels are optional and should be omitted when uncertain.
 """.strip()
 
@@ -44,6 +48,10 @@ Analyze this diagram and return a JSON object with this exact schema:
     {"source": "n1", "target": "n2", "type": "solid_arrow|dashed_arrow|line", "label": "optional"}
   ]
 }
+
+Important:
+- Bounding box coordinates are not pixels.
+- Every bbox coordinate must be normalized to the 0..1000 range for the full image.
 """.strip()
 
 
@@ -71,6 +79,7 @@ class VLMEdge:
 class DiagramStructure:
     nodes: list[VLMNode]
     edges: list[VLMEdge]
+    coordinate_space: CoordinateSpace = "pixel"
 
 
 class StructureParser(Protocol):
@@ -183,14 +192,14 @@ def parse_chat_completion_payload(payload: str) -> DiagramStructure:
     except json.JSONDecodeError as exc:
         raise VLMError("VLM response is not valid JSON") from exc
     if "choices" not in parsed:
-        return parse_structure_object(parsed)
+        return parse_structure_object(parsed, coordinate_space="normalized_1000")
     choices = parsed.get("choices") or []
     if not choices:
         raise VLMError("VLM response does not contain choices")
     message = choices[0].get("message", {})
     content = message.get("content", "")
     content_text = flatten_message_content(content)
-    return parse_structure_object(json.loads(content_text))
+    return parse_structure_object(json.loads(content_text), coordinate_space="normalized_1000")
 
 
 def flatten_message_content(content: object) -> str:
@@ -207,7 +216,11 @@ def flatten_message_content(content: object) -> str:
     raise VLMError("VLM response content is not a JSON string")
 
 
-def parse_structure_object(payload: dict[str, object]) -> DiagramStructure:
+def parse_structure_object(
+    payload: dict[str, object],
+    *,
+    coordinate_space: CoordinateSpace = "pixel",
+) -> DiagramStructure:
     nodes_payload = payload.get("nodes")
     edges_payload = payload.get("edges")
     if not isinstance(nodes_payload, list) or not isinstance(edges_payload, list):
@@ -230,7 +243,7 @@ def parse_structure_object(payload: dict[str, object]) -> DiagramStructure:
         if edge.source not in node_ids or edge.target not in node_ids:
             continue
         edges.append(edge)
-    return DiagramStructure(nodes=nodes, edges=edges)
+    return DiagramStructure(nodes=nodes, edges=edges, coordinate_space=coordinate_space)
 
 
 def parse_node(payload: dict[str, object]) -> VLMNode:
@@ -289,3 +302,36 @@ def safe_float(raw: str | None, *, default: float) -> float:
         return float(raw)
     except ValueError:
         return default
+
+
+def denormalize_structure(
+    structure: DiagramStructure,
+    *,
+    image_size: tuple[int, int],
+) -> DiagramStructure:
+    if structure.coordinate_space == "pixel":
+        return structure
+    width, height = image_size
+    if width <= 0 or height <= 0:
+        raise VLMError("Image size must be positive to denormalize coordinates")
+    nodes = [
+        VLMNode(
+            id=node.id,
+            type=node.type,
+            text=node.text,
+            approx_bbox=denormalize_bbox(node.approx_bbox, width=width, height=height),
+        )
+        for node in structure.nodes
+    ]
+    return DiagramStructure(nodes=nodes, edges=structure.edges, coordinate_space="pixel")
+
+
+def denormalize_bbox(bbox: BBox, *, width: int, height: int) -> BBox:
+    scale_x = width / NORMALIZED_COORDINATE_MAX
+    scale_y = height / NORMALIZED_COORDINATE_MAX
+    return BBox(
+        bbox.x0 * scale_x,
+        bbox.y0 * scale_y,
+        bbox.x1 * scale_x,
+        bbox.y1 * scale_y,
+    )
