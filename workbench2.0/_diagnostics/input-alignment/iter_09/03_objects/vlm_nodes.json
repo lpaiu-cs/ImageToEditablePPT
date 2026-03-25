@@ -1,0 +1,416 @@
+[
+  {
+    "id": "n1",
+    "kind": "box",
+    "bbox": {
+      "x0": 2346.0,
+      "y0": 75.2,
+      "x1": 2622.0,
+      "y1": 225.6
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n1"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n1"
+    ],
+    "text": "User Input",
+    "object_type": "container"
+  },
+  {
+    "id": "n2",
+    "kind": "box",
+    "bbox": {
+      "x0": 1104.0,
+      "y0": 300.8,
+      "x1": 1655.9999999999998,
+      "y1": 451.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n2"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n2"
+    ],
+    "text": "Bot Orchestrator\n(Main Loop Controller)",
+    "object_type": "container"
+  },
+  {
+    "id": "n3",
+    "kind": "box",
+    "bbox": {
+      "x0": 138.0,
+      "y0": 75.2,
+      "x1": 965.9999999999999,
+      "y1": 300.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n3"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n3"
+    ],
+    "text": "1. PERCEIVE (\uc778\uc9c0 \ub2e8\uacc4)",
+    "object_type": "container"
+  },
+  {
+    "id": "n4",
+    "kind": "box",
+    "bbox": {
+      "x0": 413.99999999999994,
+      "y0": 150.4,
+      "x1": 827.9999999999999,
+      "y1": 225.6
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n4"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n4"
+    ],
+    "text": "Boundary Redaction\n(Clause-level, target-aware)",
+    "object_type": "container"
+  },
+  {
+    "id": "n5",
+    "kind": "box",
+    "bbox": {
+      "x0": 138.0,
+      "y0": 225.6,
+      "x1": 552.0,
+      "y1": 376.0
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n5"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n5"
+    ],
+    "text": "Sensory System\n(Delta ingest, durable cursor,\nchunking & embedding)",
+    "object_type": "container"
+  },
+  {
+    "id": "n6",
+    "kind": "box",
+    "bbox": {
+      "x0": 552.0,
+      "y0": 225.6,
+      "x1": 965.9999999999999,
+      "y1": 376.0
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n6"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n6"
+    ],
+    "text": "Identity & Fast Path\n(nickname mapping,\nFastPathMemoryWriter)",
+    "object_type": "container"
+  },
+  {
+    "id": "n7",
+    "kind": "box",
+    "bbox": {
+      "x0": 1793.9999999999998,
+      "y0": 75.2,
+      "x1": 2622.0,
+      "y1": 300.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n7"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n7"
+    ],
+    "text": "2. RETRIEVE (\uae30\uc5b5 \uc778\ucd9c \ub2e8\uacc4)",
+    "object_type": "container"
+  },
+  {
+    "id": "n8",
+    "kind": "box",
+    "bbox": {
+      "x0": 1793.9999999999998,
+      "y0": 225.6,
+      "x1": 2208.0,
+      "y1": 376.0
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n8"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n8"
+    ],
+    "text": "Working Memory (STM)\n(priority queue & semantic boost)",
+    "object_type": "container"
+  },
+  {
+    "id": "n9",
+    "kind": "box",
+    "bbox": {
+      "x0": 2208.0,
+      "y0": 225.6,
+      "x1": 2622.0,
+      "y1": 376.0
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n9"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n9"
+    ],
+    "text": "QueryPlanner\n(referent cache & role alias)",
+    "object_type": "container"
+  },
+  {
+    "id": "n10",
+    "kind": "box",
+    "bbox": {
+      "x0": 2208.0,
+      "y0": 376.0,
+      "x1": 2622.0,
+      "y1": 526.4
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n10"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n10"
+    ],
+    "text": "LTM Handler\n(claim-aware search,\nACL, context bundle)",
+    "object_type": "container"
+  },
+  {
+    "id": "n11",
+    "kind": "box",
+    "bbox": {
+      "x0": 1793.9999999999998,
+      "y0": 451.2,
+      "x1": 2622.0,
+      "y1": 676.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n11"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n11"
+    ],
+    "text": "3. THINK (\uc0ac\uace0 \ubc0f \uc0dd\uc131 \ub2e8\uacc4)",
+    "object_type": "container"
+  },
+  {
+    "id": "n12",
+    "kind": "box",
+    "bbox": {
+      "x0": 1793.9999999999998,
+      "y0": 526.4,
+      "x1": 2622.0,
+      "y1": 676.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n12"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n12"
+    ],
+    "text": "Generation Stack\n(prompt reconstruction,\nmodel eval gate, fast/slow\nrouting, structured output)",
+    "object_type": "container"
+  },
+  {
+    "id": "n13",
+    "kind": "box",
+    "bbox": {
+      "x0": 138.0,
+      "y0": 451.2,
+      "x1": 965.9999999999999,
+      "y1": 676.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n13"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n13"
+    ],
+    "text": "4. ACT (\ud589\ub3d9 \ubc0f \ubc18\uc601 \ub2e8\uacc4)",
+    "object_type": "container"
+  },
+  {
+    "id": "n14",
+    "kind": "box",
+    "bbox": {
+      "x0": 138.0,
+      "y0": 526.4,
+      "x1": 552.0,
+      "y1": 676.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n14"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n14"
+    ],
+    "text": "Boundary Enforcement\n(memory-safe text,\nuser-visible repair)",
+    "object_type": "container"
+  },
+  {
+    "id": "n15",
+    "kind": "box",
+    "bbox": {
+      "x0": 552.0,
+      "y0": 526.4,
+      "x1": 965.9999999999999,
+      "y1": 676.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n15"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n15"
+    ],
+    "text": "SocialManager\n(event-based relation\nupdate, fulfillment-aware\nreliability)",
+    "object_type": "container"
+  },
+  {
+    "id": "n16",
+    "kind": "box",
+    "bbox": {
+      "x0": 138.0,
+      "y0": 676.8,
+      "x1": 965.9999999999999,
+      "y1": 827.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n16"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n16"
+    ],
+    "text": "Reflection Handler\n(claims/notes extraction,\nbackground consolidation)",
+    "object_type": "container"
+  },
+  {
+    "id": "n17",
+    "kind": "cylinder",
+    "bbox": {
+      "x0": 1793.9999999999998,
+      "y0": 752.0,
+      "x1": 2208.0,
+      "y1": 977.6
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n17"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n17"
+    ],
+    "text": "Memory Graph DB\n(Entity-Claim-Note-Episode\nsnapshot + delta, public\nboundary projection)",
+    "object_type": "container"
+  },
+  {
+    "id": "n18",
+    "kind": "cylinder",
+    "bbox": {
+      "x0": 2208.0,
+      "y0": 752.0,
+      "x1": 2622.0,
+      "y1": 977.6
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n18"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n18"
+    ],
+    "text": "Canonical State DB (SQLite)\n(active claims, open loops,\ninteraction policy, relation state,\nencrypted boundary payload)",
+    "object_type": "container"
+  }
+]

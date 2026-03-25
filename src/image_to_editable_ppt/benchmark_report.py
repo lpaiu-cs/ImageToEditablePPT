@@ -25,19 +25,84 @@ def resolve_diagnostics_dir(benchmark_root: Path, slide_id: str, iteration_name:
     return None
 
 
+def accumulate_stage_kind_totals(
+    target: dict[str, dict[str, dict[str, float]]],
+    stage: str,
+    payload: dict[str, object],
+) -> None:
+    ground_truth_by_kind = payload.get("ground_truth_count_by_kind", {}) if isinstance(payload, dict) else {}
+    recoverable_by_kind = payload.get("recoverable_by_kind", {}) if isinstance(payload, dict) else {}
+    if not isinstance(ground_truth_by_kind, dict) or not isinstance(recoverable_by_kind, dict):
+        return
+    for kind in set(ground_truth_by_kind) | set(recoverable_by_kind):
+        target[stage][str(kind)]["ground_truth_count"] += float(ground_truth_by_kind.get(kind, 0.0))
+        target[stage][str(kind)]["recoverable_count"] += float(recoverable_by_kind.get(kind, 0.0))
+
+
+def stage_kind_summary(totals: dict[str, dict[str, dict[str, float]]]) -> dict[str, dict[str, dict[str, float]]]:
+    return {
+        stage: {
+            kind: {
+                "recoverable_count": values["recoverable_count"],
+                "ground_truth_count": values["ground_truth_count"],
+                "recoverable_ratio": 0.0 if values["ground_truth_count"] == 0 else values["recoverable_count"] / values["ground_truth_count"],
+            }
+            for kind, values in sorted(kinds.items())
+        }
+        for stage, kinds in sorted(totals.items())
+    }
+
+
+def accumulate_kind_counter(target: dict[str, Counter[str]], rows: list[dict[str, object]], *, tag_key: str) -> None:
+    for row in rows:
+        kind = str(row.get("kind", "unknown"))
+        tag = str(row.get(tag_key, "unknown"))
+        target[kind][tag] += 1
+
+
+def dictify_nested_counters(target: dict[str, Counter[str]]) -> dict[str, dict[str, int]]:
+    return {kind: dict(counter) for kind, counter in sorted(target.items())}
+
+
+def accumulate_bucket_counts_by_kind(target: dict[str, dict[str, Counter[str]]], payload: dict[str, object]) -> None:
+    if not isinstance(payload, dict):
+        return
+    for kind, bucket_counts in payload.items():
+        if not isinstance(bucket_counts, dict):
+            continue
+        for bucket, count in bucket_counts.items():
+            target[str(kind)][str(bucket)] += int(count)
+
+
+def dictify_bucket_counts_by_kind(target: dict[str, dict[str, Counter[str]]]) -> dict[str, dict[str, dict[str, int]]]:
+    return {
+        stage: {
+            field: dictify_nested_counters(counter_by_kind)
+            for field, counter_by_kind in sorted(fields.items())
+        }
+        for stage, fields in sorted(target.items())
+    }
+
+
 def summarize_benchmark(benchmark_root: str | Path) -> tuple[dict[str, object], list[dict[str, object]]]:
     root = Path(benchmark_root)
     slide_rows: list[dict[str, object]] = []
     oracle_totals: dict[str, dict[str, float]] = defaultdict(lambda: {"recoverable_count": 0.0, "ground_truth_count": 0.0})
+    oracle_kind_totals: dict[str, dict[str, dict[str, float]]] = defaultdict(lambda: defaultdict(lambda: {"recoverable_count": 0.0, "ground_truth_count": 0.0}))
     oracle_source_totals: dict[str, Counter[str]] = defaultdict(Counter)
     attrition_totals: Counter[str] = Counter()
     gt_failure_counts: Counter[str] = Counter()
     pred_failure_counts: Counter[str] = Counter()
+    gt_failure_by_kind: dict[str, Counter[str]] = defaultdict(Counter)
+    pred_failure_by_kind: dict[str, Counter[str]] = defaultdict(Counter)
     geometry_audit_status_totals: Counter[str] = Counter()
+    geometry_audit_status_by_kind: dict[str, Counter[str]] = defaultdict(Counter)
+    container_snap_effect_totals: Counter[str] = Counter()
     motif_family_totals: dict[str, Counter[str]] = defaultdict(Counter)
     selection_source_totals: Counter[str] = Counter()
     emit_source_totals: Counter[str] = Counter()
     final_match_source_totals: Counter[str] = Counter()
+    source_bucket_by_kind_totals: dict[str, dict[str, dict[str, Counter[str]]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(Counter)))
     ablation_totals: Counter[str] = Counter()
     native_object_count = 0
     raster_region_count = 0
@@ -59,12 +124,15 @@ def summarize_benchmark(benchmark_root: str | Path) -> tuple[dict[str, object], 
         attrition_payload = {}
         failure_payload = {}
         geometry_audit_payload = {}
+        container_geometry_audit_payload = {}
         if diagnostics_dir is not None and (diagnostics_dir / "08_eval" / "oracle_by_stage.json").exists():
             oracle_payload = load_json(diagnostics_dir / "08_eval" / "oracle_by_stage.json")
             attrition_payload = load_json(diagnostics_dir / "08_eval" / "attrition_by_stage.json")
             failure_payload = load_json(diagnostics_dir / "08_eval" / "failure_taxonomy.json")
             if (diagnostics_dir / "08_eval" / "geometry_audit.json").exists():
                 geometry_audit_payload = load_json(diagnostics_dir / "08_eval" / "geometry_audit.json")
+            if (diagnostics_dir / "08_eval" / "container_geometry_audit.json").exists():
+                container_geometry_audit_payload = load_json(diagnostics_dir / "08_eval" / "container_geometry_audit.json")
         gt_available = bool(oracle_payload.get("gt_available", manifest.get("gt_available", False)))
         if gt_available:
             gt_backed_slide_count += 1
@@ -78,6 +146,7 @@ def summarize_benchmark(benchmark_root: str | Path) -> tuple[dict[str, object], 
         for stage, payload in (oracle_payload.get("stages", {}) if isinstance(oracle_payload, dict) else {}).items():
             oracle_totals[stage]["recoverable_count"] += float(payload.get("recoverable_count", 0.0))
             oracle_totals[stage]["ground_truth_count"] += float(payload.get("ground_truth_count", 0.0))
+            accumulate_stage_kind_totals(oracle_kind_totals, stage, payload)
             for bucket, count in (payload.get("recoverable_by_source_bucket", {}) if isinstance(payload, dict) else {}).items():
                 oracle_source_totals[stage][str(bucket)] += int(count)
         for row in attrition_payload.get("ground_truth", []) if isinstance(attrition_payload, dict) else []:
@@ -86,10 +155,15 @@ def summarize_benchmark(benchmark_root: str | Path) -> tuple[dict[str, object], 
                 attrition_totals[str(lost_at)] += 1
         for row in failure_payload.get("ground_truth", []) if isinstance(failure_payload, dict) else []:
             gt_failure_counts[str(row.get("tag", "unknown"))] += 1
+        accumulate_kind_counter(gt_failure_by_kind, failure_payload.get("ground_truth", []) if isinstance(failure_payload, dict) else [], tag_key="tag")
         for row in failure_payload.get("predictions", []) if isinstance(failure_payload, dict) else []:
             pred_failure_counts[str(row.get("tag", "unknown"))] += 1
+        accumulate_kind_counter(pred_failure_by_kind, failure_payload.get("predictions", []) if isinstance(failure_payload, dict) else [], tag_key="tag")
         for row in geometry_audit_payload.get("ground_truth", []) if isinstance(geometry_audit_payload, dict) else []:
             geometry_audit_status_totals[str(row.get("status", "unknown"))] += 1
+            geometry_audit_status_by_kind[str(row.get("kind", "unknown"))][str(row.get("status", "unknown"))] += 1
+        for effect, count in (container_geometry_audit_payload.get("snap_effect_counts", {}) if isinstance(container_geometry_audit_payload, dict) else {}).items():
+            container_snap_effect_totals[str(effect)] += int(count)
         for family, payload in motif_accounting.items() if isinstance(motif_accounting, dict) else []:
             if not isinstance(payload, dict):
                 continue
@@ -111,10 +185,37 @@ def summarize_benchmark(benchmark_root: str | Path) -> tuple[dict[str, object], 
             emit_source_totals[str(bucket)] += int(count)
         for bucket, count in (source_attribution.get("07_emit", {}).get("matched_gt_by_source_bucket", {}) if isinstance(source_attribution.get("07_emit", {}), dict) else {}).items():
             final_match_source_totals[str(bucket)] += int(count)
+        accumulate_bucket_counts_by_kind(
+            source_bucket_by_kind_totals["03_objects"]["count_by_source_bucket_by_kind"],
+            source_attribution.get("03_objects", {}).get("count_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("03_objects", {}), dict) else {},
+        )
+        accumulate_bucket_counts_by_kind(
+            source_bucket_by_kind_totals["03_objects"]["recoverable_gt_by_source_bucket_by_kind"],
+            source_attribution.get("03_objects", {}).get("recoverable_gt_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("03_objects", {}), dict) else {},
+        )
+        accumulate_bucket_counts_by_kind(
+            source_bucket_by_kind_totals["05_selection"]["selected_count_by_source_bucket_by_kind"],
+            source_attribution.get("05_selection", {}).get("selected_count_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("05_selection", {}), dict) else {},
+        )
+        accumulate_bucket_counts_by_kind(
+            source_bucket_by_kind_totals["07_emit"]["native_count_by_source_bucket_by_kind"],
+            source_attribution.get("07_emit", {}).get("native_count_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("07_emit", {}), dict) else {},
+        )
+        accumulate_bucket_counts_by_kind(
+            source_bucket_by_kind_totals["07_emit"]["matched_gt_by_source_bucket_by_kind"],
+            source_attribution.get("07_emit", {}).get("matched_gt_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("07_emit", {}), dict) else {},
+        )
         ablation_totals[ablation_key(ablation_flags)] += 1
         stage_oracle = oracle_payload.get("stages", {}) if isinstance(oracle_payload, dict) else {}
         slide_attrition_counts = dict(Counter(row["lost_at"] for row in attrition_payload.get("ground_truth", []) if row.get("lost_at"))) if isinstance(attrition_payload, dict) else {}
         slide_geometry_status_counts = dict(Counter(row["status"] for row in geometry_audit_payload.get("ground_truth", []) if row.get("status"))) if isinstance(geometry_audit_payload, dict) else {}
+        slide_geometry_status_counts_by_kind = dictify_nested_counters(
+            {
+                str(kind): Counter(str(row.get("status", "unknown")) for row in geometry_audit_payload.get("ground_truth", []) if row.get("status") and row.get("kind") == kind)
+                for kind in {str(row.get("kind", "unknown")) for row in geometry_audit_payload.get("ground_truth", []) if isinstance(row, dict)}
+            }
+        ) if isinstance(geometry_audit_payload, dict) else {}
+        slide_container_snap_effect_counts = dict(container_geometry_audit_payload.get("snap_effect_counts", {})) if isinstance(container_geometry_audit_payload, dict) else {}
         dominant_loss_stage = dominant_stage_from_aggregate(stage_oracle, slide_attrition_counts)
         slide_rows.append(
             {
@@ -133,8 +234,51 @@ def summarize_benchmark(benchmark_root: str | Path) -> tuple[dict[str, object], 
                 "ablation_flags": ablation_flags,
                 "motif_accounting": motif_accounting,
                 "oracle_stages": stage_oracle,
+                "stage_oracle_by_kind": {
+                    stage: {
+                        kind: {
+                            "recoverable_count": float((payload.get("recoverable_by_kind", {}) if isinstance(payload, dict) else {}).get(kind, 0.0)),
+                            "ground_truth_count": float((payload.get("ground_truth_count_by_kind", {}) if isinstance(payload, dict) else {}).get(kind, 0.0)),
+                            "recoverable_ratio": 0.0
+                            if float((payload.get("ground_truth_count_by_kind", {}) if isinstance(payload, dict) else {}).get(kind, 0.0)) == 0
+                            else float((payload.get("recoverable_by_kind", {}) if isinstance(payload, dict) else {}).get(kind, 0.0))
+                            / float((payload.get("ground_truth_count_by_kind", {}) if isinstance(payload, dict) else {}).get(kind, 0.0)),
+                        }
+                        for kind in sorted(set((payload.get("ground_truth_count_by_kind", {}) if isinstance(payload, dict) else {}).keys()) | set((payload.get("recoverable_by_kind", {}) if isinstance(payload, dict) else {}).keys()))
+                    }
+                    for stage, payload in sorted(stage_oracle.items())
+                },
                 "attrition_counts": slide_attrition_counts,
                 "geometry_audit_status_counts": slide_geometry_status_counts,
+                "geometry_audit_status_counts_by_kind": slide_geometry_status_counts_by_kind,
+                "container_snap_effect_counts": slide_container_snap_effect_counts,
+                "failure_taxonomy_by_kind": {
+                    "ground_truth": dictify_nested_counters(
+                        {
+                            str(kind): Counter(str(row.get("tag", "unknown")) for row in failure_payload.get("ground_truth", []) if row.get("kind") == kind)
+                            for kind in {str(row.get("kind", "unknown")) for row in failure_payload.get("ground_truth", []) if isinstance(row, dict)}
+                        }
+                    ) if isinstance(failure_payload, dict) else {},
+                    "predictions": dictify_nested_counters(
+                        {
+                            str(kind): Counter(str(row.get("tag", "unknown")) for row in failure_payload.get("predictions", []) if row.get("kind") == kind)
+                            for kind in {str(row.get("kind", "unknown")) for row in failure_payload.get("predictions", []) if isinstance(row, dict)}
+                        }
+                    ) if isinstance(failure_payload, dict) else {},
+                },
+                "source_bucket_counts_by_kind": {
+                    "03_objects": {
+                        "count_by_source_bucket_by_kind": source_attribution.get("03_objects", {}).get("count_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("03_objects", {}), dict) else {},
+                        "recoverable_gt_by_source_bucket_by_kind": source_attribution.get("03_objects", {}).get("recoverable_gt_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("03_objects", {}), dict) else {},
+                    },
+                    "05_selection": {
+                        "selected_count_by_source_bucket_by_kind": source_attribution.get("05_selection", {}).get("selected_count_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("05_selection", {}), dict) else {},
+                    },
+                    "07_emit": {
+                        "native_count_by_source_bucket_by_kind": source_attribution.get("07_emit", {}).get("native_count_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("07_emit", {}), dict) else {},
+                        "matched_gt_by_source_bucket_by_kind": source_attribution.get("07_emit", {}).get("matched_gt_by_source_bucket_by_kind", {}) if isinstance(source_attribution.get("07_emit", {}), dict) else {},
+                    },
+                },
             }
         )
 
@@ -155,13 +299,20 @@ def summarize_benchmark(benchmark_root: str | Path) -> tuple[dict[str, object], 
         "gt_unavailable_slide_count": gt_unavailable_slide_count,
         "gt_coverage_notice": gt_coverage_notice(gt_backed_slide_count),
         "stage_oracle": stage_oracle_summary,
+        "stage_oracle_by_kind": stage_kind_summary(oracle_kind_totals),
         "stage_oracle_by_source_bucket": {stage: dict(counter) for stage, counter in sorted(oracle_source_totals.items())},
         "stage_attrition": dict(attrition_totals),
         "failure_taxonomy": {
             "ground_truth": dict(gt_failure_counts),
             "predictions": dict(pred_failure_counts),
         },
+        "failure_taxonomy_by_kind": {
+            "ground_truth": dictify_nested_counters(gt_failure_by_kind),
+            "predictions": dictify_nested_counters(pred_failure_by_kind),
+        },
         "geometry_audit_status_counts": dict(geometry_audit_status_totals),
+        "geometry_audit_status_counts_by_kind": dictify_nested_counters(geometry_audit_status_by_kind),
+        "container_snap_effect_counts": dict(container_snap_effect_totals),
         "native_object_count": native_object_count,
         "raster_region_count": raster_region_count,
         "dropped_hypothesis_count": dropped_hypothesis_count,
@@ -172,6 +323,8 @@ def summarize_benchmark(benchmark_root: str | Path) -> tuple[dict[str, object], 
         "selection_count_by_source_bucket": dict(selection_source_totals),
         "native_emit_count_by_source_bucket": dict(emit_source_totals),
         "final_matched_gt_by_source_bucket": dict(final_match_source_totals),
+        "source_bucket_counts_by_kind": dictify_bucket_counts_by_kind(source_bucket_by_kind_totals),
+        "final_matched_gt_by_kind": stage_kind_summary(oracle_kind_totals).get("07_emit", {}),
         "ablation_counts": dict(ablation_totals),
         "motif_accounting": {family: dict(counter) for family, counter in sorted(motif_family_totals.items())},
         "dominant_loss_stage": dominant_stage_from_aggregate(stage_oracle_summary, dict(attrition_totals)),
@@ -230,12 +383,20 @@ def write_benchmark_summary(benchmark_root: str | Path) -> tuple[Path, Path, dic
 
 
 def format_benchmark_summary(summary: dict[str, object]) -> str:
+    final_by_kind = summary.get("final_matched_gt_by_kind", {}) if isinstance(summary, dict) else {}
+    container_emit = 0.0
+    connector_emit = 0.0
+    if isinstance(final_by_kind, dict):
+        container_emit = float((final_by_kind.get("container", {}) if isinstance(final_by_kind.get("container"), dict) else {}).get("recoverable_count", 0.0))
+        connector_emit = float((final_by_kind.get("connector", {}) if isinstance(final_by_kind.get("connector"), dict) else {}).get("recoverable_count", 0.0))
     return (
         f"slides={summary.get('slide_count', 0)} "
         f"gt_backed={summary.get('gt_backed_slide_count', 0)} "
         f"gt_unavailable={summary.get('gt_unavailable_slide_count', 0)} "
         f"gt_notice={summary.get('gt_coverage_notice')} "
         f"dominant_loss_stage={summary.get('dominant_loss_stage')} "
+        f"matched_container={container_emit:.0f} "
+        f"matched_connector={connector_emit:.0f} "
         f"native={summary.get('native_object_count', 0)} "
         f"raster={summary.get('raster_region_count', 0)} "
         f"raster_area_mean={summary.get('raster_area_ratio_mean', 0.0):.3f}"

@@ -18,7 +18,7 @@ from .ir import BBox, Point
 from .pipeline import ConversionResult, convert_image
 from .preprocess import load_image, preprocess_image
 from .schema import StageEntity
-from .source_attribution import count_source_buckets
+from .source_attribution import count_source_buckets, count_source_buckets_by_kind
 from .style import dilate_mask
 from .text import OCRBackend
 from .svg_exporter import SVG_NS, format_number, to_svg_color
@@ -74,6 +74,7 @@ class ValidationArtifacts:
     failure_taxonomy_json: Path | None = None
     attrition_json: Path | None = None
     geometry_audit_json: Path | None = None
+    container_geometry_audit_json: Path | None = None
 
 
 @dataclass(slots=True, frozen=True)
@@ -137,6 +138,7 @@ def run_validation_iteration(
     failure_taxonomy_json = None
     attrition_json = None
     geometry_audit_json = None
+    container_geometry_audit_json = None
     gt_annotation = discover_ground_truth(input_path)
     if conversion.diagnostics_dir is not None:
         eval_dir = conversion.diagnostics_dir / "08_eval"
@@ -146,6 +148,7 @@ def run_validation_iteration(
         failure_taxonomy_json = eval_dir / "failure_taxonomy.json"
         attrition_json = eval_dir / "attrition_by_stage.json"
         geometry_audit_json = eval_dir / "geometry_audit.json"
+        container_geometry_audit_json = eval_dir / "container_geometry_audit.json"
         write_manifest(
             conversion.diagnostics_dir,
             build_manifest_payload(
@@ -175,6 +178,7 @@ def run_validation_iteration(
             failure_taxonomy_json=failure_taxonomy_json,
             attrition_json=attrition_json,
             geometry_audit_json=geometry_audit_json,
+            container_geometry_audit_json=container_geometry_audit_json,
         ),
     )
 
@@ -338,17 +342,26 @@ def build_source_attribution(
     return {
         "03_objects": {
             "count_by_source_bucket": count_source_buckets(object_hypotheses),
+            "count_by_source_bucket_by_kind": count_source_buckets_by_kind(object_hypotheses),
             "recoverable_gt_by_source_bucket": (
                 oracle_stages.get("03_objects", {}).get("recoverable_by_source_bucket", {}) if isinstance(oracle_stages.get("03_objects"), dict) else {}
+            ),
+            "recoverable_gt_by_source_bucket_by_kind": (
+                oracle_stages.get("03_objects", {}).get("recoverable_by_source_bucket_by_kind", {}) if isinstance(oracle_stages.get("03_objects"), dict) else {}
             ),
         },
         "05_selection": {
             "selected_count_by_source_bucket": count_source_buckets(selected_hypotheses),
+            "selected_count_by_source_bucket_by_kind": count_source_buckets_by_kind(selected_hypotheses),
         },
         "07_emit": {
             "native_count_by_source_bucket": count_source_buckets(native_records),
+            "native_count_by_source_bucket_by_kind": count_source_buckets_by_kind(native_records),
             "matched_gt_by_source_bucket": (
                 oracle_stages.get("07_emit", {}).get("recoverable_by_source_bucket", {}) if isinstance(oracle_stages.get("07_emit"), dict) else {}
+            ),
+            "matched_gt_by_source_bucket_by_kind": (
+                oracle_stages.get("07_emit", {}).get("recoverable_by_source_bucket_by_kind", {}) if isinstance(oracle_stages.get("07_emit"), dict) else {}
             ),
         },
     }

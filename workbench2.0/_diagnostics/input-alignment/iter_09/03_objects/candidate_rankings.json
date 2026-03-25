@@ -1,0 +1,110 @@
+{
+  "n4": [
+    {
+      "candidate_id": "rect-candidate:decompose-01-06:snapped",
+      "score": 0.5639784422008807
+    }
+  ],
+  "n1": [],
+  "n15": [
+    {
+      "candidate_id": "rect-candidate:box-12:snapped",
+      "score": 2.0416905255016373
+    },
+    {
+      "candidate_id": "rect-candidate:box-3:snapped",
+      "score": 0.7866321472579441
+    },
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": -1.9645967500191874
+    }
+  ],
+  "n6": [
+    {
+      "candidate_id": "rect-candidate:box-3:snapped",
+      "score": 0.6983617627655061
+    },
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": -1.964596750019187
+    }
+  ],
+  "n10": [
+    {
+      "candidate_id": "rect-candidate:box-10:snapped",
+      "score": 0.7858496116513275
+    }
+  ],
+  "n14": [
+    {
+      "candidate_id": "rect-candidate:box-6:snapped",
+      "score": 1.989884863240884
+    },
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": -1.9645967500191865
+    }
+  ],
+  "n9": [],
+  "n5": [
+    {
+      "candidate_id": "rect-candidate:text-seed-001:snapped",
+      "score": 1.1273069586817204
+    },
+    {
+      "candidate_id": "rect-candidate:decompose-01-06:snapped",
+      "score": 0.7359803923290231
+    },
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": -1.9645967500191857
+    }
+  ],
+  "n8": [],
+  "n2": [],
+  "n18": [],
+  "n17": [],
+  "n12": [
+    {
+      "candidate_id": "rect-candidate:box-14:snapped",
+      "score": 1.2985306988011536
+    },
+    {
+      "candidate_id": "rect-candidate:box-10:snapped",
+      "score": 0.7707346393378677
+    }
+  ],
+  "n16": [],
+  "n13": [
+    {
+      "candidate_id": "rect-candidate:box-3:snapped",
+      "score": 0.8704342687803477
+    },
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": 0.40981931759456136
+    }
+  ],
+  "n3": [
+    {
+      "candidate_id": "rect-candidate:decompose-01-06:snapped",
+      "score": 1.133398282127472
+    },
+    {
+      "candidate_id": "rect-candidate:box-1:snapped",
+      "score": 0.13437817275936415
+    }
+  ],
+  "n11": [
+    {
+      "candidate_id": "rect-candidate:box-14:snapped",
+      "score": 1.1367012978156976
+    },
+    {
+      "candidate_id": "rect-candidate:box-10:snapped",
+      "score": 0.873184270300112
+    }
+  ],
+  "n7": []
+}

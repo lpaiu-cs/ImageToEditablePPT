@@ -15,6 +15,7 @@ except ImportError:  # pragma: no cover - guarded by dependency/tests
 from .config import PipelineConfig
 from .detector import DetectionResult, detect_elements_with_metadata
 from .diagnostics import DiagnosticsRecorder
+from .filtering import RejectedRegion
 from .ir import BBox, Element, Point
 from .preprocess import ProcessedImage, preprocess_image
 from .schema import ConnectorCandidate, CornerPrimitive, LinePrimitive, RectCandidate, RegionPrimitive, validate_stage_entities
@@ -35,6 +36,13 @@ class GeometryStageResult:
     line_primitives: list[LinePrimitive]
     corner_primitives: list[CornerPrimitive]
     region_primitives: list[RegionPrimitive]
+
+
+@dataclass(slots=True, frozen=True)
+class DecompositionSeed:
+    id: str
+    bbox: BBox
+    kind: str
 
 
 def collect_observations(
@@ -86,6 +94,15 @@ def build_geometry_candidates(
             config,
         )
     )
+    decomposed_candidates = build_parent_decomposition_rect_candidates(
+            image,
+            boundary_mask=observations.processed.boundary_mask_raw,
+            text_regions=observations.detection.text_regions,
+            rejected_regions=observations.detection.rejected_regions,
+            existing_candidates=rect_candidates,
+            config=config,
+        )
+    rect_candidates.extend(decomposed_candidates)
     connector_candidates = [
         connector_candidate_from_element(element)
         for element in observations.detection.elements
@@ -118,6 +135,7 @@ def build_geometry_candidates(
             stage,
             {
                 "rect_candidate_count": len(rect_candidates),
+                "decomposed_rect_candidate_count": len(decomposed_candidates),
                 "connector_candidate_count": len(connector_candidates),
                 "line_primitive_count": len(line_primitives),
                 "rejected_region_count": len(observations.detection.rejected_regions),
@@ -177,6 +195,336 @@ def build_text_seed_rect_candidates(
             )
         )
     return candidates
+
+
+def build_parent_decomposition_rect_candidates(
+    image: Image.Image,
+    *,
+    boundary_mask: np.ndarray | None,
+    text_regions: list[BBox],
+    rejected_regions: list[RejectedRegion],
+    existing_candidates: list[RectCandidate],
+    config: PipelineConfig,
+) -> list[RectCandidate]:
+    if not existing_candidates:
+        return []
+
+    image_area = float(max(1, image.size[0] * image.size[1]))
+    if boundary_mask is None:
+        processed = preprocess_image(
+            image,
+            foreground_threshold=config.foreground_threshold,
+            min_component_area=config.min_component_area,
+            min_stroke_length=config.min_stroke_length,
+            min_box_size=config.min_box_size,
+            min_relative_line_length=config.min_relative_line_length,
+            min_relative_box_size=config.min_relative_box_size,
+            adaptive_background=config.adaptive_background,
+            background_blur_divisor=config.background_blur_divisor,
+            fill_region_background_ratio=config.fill_region_background_ratio,
+            fill_region_uniformity_ratio=config.fill_region_uniformity_ratio,
+            fill_region_edge_ratio=config.fill_region_edge_ratio,
+            non_diagram_edge_density=config.non_diagram_edge_density,
+            non_diagram_color_variance=config.non_diagram_color_variance,
+            non_diagram_side_support=config.non_diagram_side_support,
+        )
+        active_boundary_mask = processed.boundary_mask_raw
+    else:
+        active_boundary_mask = boundary_mask
+    clustered_text_seeds = [
+        *[DecompositionSeed(id=f"text-region:{index:03d}", bbox=region, kind="text_region") for index, region in enumerate(text_regions, start=1)],
+        *cluster_text_like_seeds(rejected_regions),
+    ]
+    candidates: list[RectCandidate] = []
+    parents = sorted(
+        [
+            candidate
+            for candidate in existing_candidates
+            if candidate.bbox is not None
+            and candidate.bbox.area >= max(image_area * 0.035, float(config.min_box_size * config.min_box_size * 18))
+        ],
+        key=lambda candidate: candidate.bbox.area if candidate.bbox is not None else 0.0,
+        reverse=True,
+    )[:6]
+    for parent_index, parent in enumerate(parents, start=1):
+        if parent.bbox is None:
+            continue
+        seed_pool = collect_parent_decomposition_seeds(parent, existing_candidates, clustered_text_seeds)
+        if len(seed_pool) < 2 or not has_aligned_seed_pair(seed_pool, parent.bbox):
+            continue
+        for seed_index, seed in enumerate(seed_pool, start=1):
+            candidate_bbox = decompose_candidate_from_seed(active_boundary_mask, parent.bbox, seed.bbox, config)
+            if candidate_bbox is None:
+                continue
+            seed_count_inside = sum(1 for other in seed_pool if candidate_bbox.contains_point(other.bbox.center))
+            if not decomposition_candidate_is_useful(
+                candidate_bbox,
+                seed=seed,
+                parent=parent,
+                existing_candidates=[*existing_candidates, *candidates],
+                seed_count_inside=seed_count_inside,
+                config=config,
+            ):
+                continue
+            candidates.append(
+                RectCandidate(
+                    id=f"rect-candidate:decompose-{parent_index:02d}-{seed_index:02d}",
+                    kind="rounded_rect" if parent.kind == "rounded_rect" else "rect",
+                    bbox=candidate_bbox,
+                    score_total=min(0.81, parent.score_total * 0.82 + 0.06),
+                    score_terms={
+                        "decomposed_parent": 1.0,
+                        "parent_confidence": round(parent.score_total, 4),
+                        "seed_count_inside": float(seed_count_inside),
+                    },
+                    source_ids=[parent.id, seed.id],
+                    provenance={"parent_candidate_ids": [parent.id], "seed_ids": [seed.id]},
+                    object_type="container",
+                    corner_radius=parent.corner_radius if parent.kind == "rounded_rect" else 0.0,
+                )
+            )
+    return candidates
+
+
+def cluster_text_like_seeds(rejected_regions: list[RejectedRegion]) -> list[DecompositionSeed]:
+    regions = [
+        region.bbox
+        for region in rejected_regions
+        if region.label == "text_like" and region.area >= 10
+    ]
+    if not regions:
+        return []
+    ordered = sorted(regions, key=lambda bbox: (bbox.center.y, bbox.x0))
+    groups: list[list[BBox]] = []
+    for bbox in ordered:
+        if not groups:
+            groups.append([bbox])
+            continue
+        last_group = groups[-1]
+        reference = last_group[-1]
+        same_row = abs(reference.center.y - bbox.center.y) <= max(18.0, min(reference.height, bbox.height) * 2.5)
+        near_x = bbox.x0 - reference.x1 <= max(42.0, max(reference.width, bbox.width) * 3.5)
+        if same_row and near_x:
+            last_group.append(bbox)
+        else:
+            groups.append([bbox])
+    seeds: list[DecompositionSeed] = []
+    for index, group in enumerate(groups, start=1):
+        merged = group[0]
+        for bbox in group[1:]:
+            merged = merge_bboxes(merged, bbox)
+        if merged.width < 6.0 or merged.height < 3.0:
+            continue
+        seeds.append(DecompositionSeed(id=f"text-cluster:{index:03d}", bbox=merged.expand(4.0), kind="text_cluster"))
+    return seeds
+
+
+def collect_parent_decomposition_seeds(
+    parent: RectCandidate,
+    existing_candidates: list[RectCandidate],
+    text_seeds: list[DecompositionSeed],
+) -> list[DecompositionSeed]:
+    if parent.bbox is None:
+        return []
+    parent_bbox = parent.bbox.inset(4.0)
+    seeds: list[DecompositionSeed] = []
+    for candidate in existing_candidates:
+        if candidate.id == parent.id or candidate.bbox is None:
+            continue
+        if not bbox_contains(parent_bbox, candidate.bbox):
+            continue
+        if candidate.bbox.area >= parent_bbox.area * 0.72:
+            continue
+        if candidate.bbox.area <= parent_bbox.area * 0.015:
+            continue
+        seeds.append(DecompositionSeed(id=candidate.id, bbox=candidate.bbox, kind="candidate"))
+    for seed in text_seeds:
+        if bbox_contains(parent_bbox, seed.bbox):
+            seeds.append(seed)
+    deduped: list[DecompositionSeed] = []
+    for seed in seeds:
+        if any(seed.bbox.iou(existing.bbox) >= 0.88 for existing in deduped):
+            continue
+        deduped.append(seed)
+    deduped.sort(key=lambda seed: (0 if seed.kind != "candidate" else 1, seed.bbox.area, seed.id))
+    return deduped[:8]
+
+
+def has_aligned_seed_pair(seeds: list[DecompositionSeed], parent_bbox: BBox) -> bool:
+    row_tolerance = max(26.0, parent_bbox.height * 0.12)
+    column_tolerance = max(26.0, parent_bbox.width * 0.12)
+    for index, seed in enumerate(seeds):
+        for other in seeds[index + 1 :]:
+            if abs(seed.bbox.center.y - other.bbox.center.y) <= row_tolerance:
+                return True
+            if abs(seed.bbox.center.x - other.bbox.center.x) <= column_tolerance:
+                return True
+    return False
+
+
+def decomposition_hint_bbox(
+    seed_bbox: BBox,
+    parent_bbox: BBox,
+    *,
+    width: int,
+    height: int,
+    config: PipelineConfig,
+) -> BBox:
+    padding = max(config.text_margin * 2.0, seed_bbox.height * 2.2, seed_bbox.width * 0.6)
+    return clamp_bbox(
+        intersect_bboxes(clamp_bbox(seed_bbox.expand(padding), width=width, height=height), parent_bbox.inset(1.0)) or parent_bbox,
+        width=width,
+        height=height,
+    )
+
+
+def decompose_candidate_from_seed(
+    boundary_mask: np.ndarray,
+    parent_bbox: BBox,
+    seed_bbox: BBox,
+    config: PipelineConfig,
+) -> BBox | None:
+    search_y0 = max(int(parent_bbox.y0) + 1, int(math.floor(seed_bbox.y0 - max(26.0, seed_bbox.height * 2.8))))
+    search_y1 = min(int(parent_bbox.y1) - 1, int(math.ceil(seed_bbox.y1 + max(26.0, seed_bbox.height * 2.8))))
+    search_x0 = max(int(parent_bbox.x0) + 1, int(math.floor(seed_bbox.x0 - max(26.0, seed_bbox.width * 0.9))))
+    search_x1 = min(int(parent_bbox.x1) - 1, int(math.ceil(seed_bbox.x1 + max(26.0, seed_bbox.width * 0.9))))
+    left = find_supported_boundary_x(
+        boundary_mask,
+        start=int(math.floor(seed_bbox.x0 - max(6.0, seed_bbox.width * 0.18))),
+        stop=int(parent_bbox.x0),
+        step=-1,
+        y0=search_y0,
+        y1=search_y1,
+    )
+    right = find_supported_boundary_x(
+        boundary_mask,
+        start=int(math.ceil(seed_bbox.x1 + max(6.0, seed_bbox.width * 0.18))),
+        stop=int(parent_bbox.x1),
+        step=1,
+        y0=search_y0,
+        y1=search_y1,
+    )
+    top = find_supported_boundary_y(
+        boundary_mask,
+        start=int(math.floor(seed_bbox.y0 - max(5.0, seed_bbox.height * 0.3))),
+        stop=int(parent_bbox.y0),
+        step=-1,
+        x0=search_x0,
+        x1=search_x1,
+    )
+    bottom = find_supported_boundary_y(
+        boundary_mask,
+        start=int(math.ceil(seed_bbox.y1 + max(5.0, seed_bbox.height * 0.3))),
+        stop=int(parent_bbox.y1),
+        step=1,
+        x0=search_x0,
+        x1=search_x1,
+    )
+    if left is None or right is None or top is None or bottom is None:
+        return None
+    candidate = BBox(left, top, right, bottom)
+    if candidate.width <= seed_bbox.width * 1.1 or candidate.height <= seed_bbox.height * 1.35:
+        return None
+    if not bbox_contains(parent_bbox.expand(1.0), candidate):
+        return None
+    if not candidate.contains_point(seed_bbox.center):
+        return None
+    return candidate
+
+
+def find_supported_boundary_x(
+    boundary_mask: np.ndarray,
+    *,
+    start: int,
+    stop: int,
+    step: int,
+    y0: int,
+    y1: int,
+    threshold: float = 0.18,
+) -> float | None:
+    hits: list[int] = []
+    for x in range(start, stop, step):
+        if support_ratio_x(boundary_mask, x, y0, y1) >= threshold:
+            hits.append(x)
+            if len(hits) >= 2:
+                return sum(hits) / len(hits)
+        elif hits:
+            return sum(hits) / len(hits)
+    if not hits:
+        return None
+    return sum(hits) / len(hits)
+
+
+def find_supported_boundary_y(
+    boundary_mask: np.ndarray,
+    *,
+    start: int,
+    stop: int,
+    step: int,
+    x0: int,
+    x1: int,
+    threshold: float = 0.18,
+) -> float | None:
+    hits: list[int] = []
+    for y in range(start, stop, step):
+        if support_ratio_y(boundary_mask, y, x0, x1) >= threshold:
+            hits.append(y)
+            if len(hits) >= 2:
+                return sum(hits) / len(hits)
+        elif hits:
+            return sum(hits) / len(hits)
+    if not hits:
+        return None
+    return sum(hits) / len(hits)
+
+
+def support_ratio_x(boundary_mask: np.ndarray, x: int, y0: int, y1: int) -> float:
+    x0 = max(0, x - 1)
+    x1 = min(boundary_mask.shape[1], x + 2)
+    return float(boundary_mask[y0:y1, x0:x1].mean())
+
+
+def support_ratio_y(boundary_mask: np.ndarray, y: int, x0: int, x1: int) -> float:
+    y0 = max(0, y - 1)
+    y1 = min(boundary_mask.shape[0], y + 2)
+    return float(boundary_mask[y0:y1, x0:x1].mean())
+
+
+def decomposition_candidate_is_useful(
+    bbox: BBox,
+    *,
+    seed: DecompositionSeed,
+    parent: RectCandidate,
+    existing_candidates: list[RectCandidate],
+    seed_count_inside: int,
+    config: PipelineConfig,
+) -> bool:
+    if parent.bbox is None:
+        return False
+    if bbox.area >= parent.bbox.area * 0.84:
+        return False
+    if bbox.area <= seed.bbox.area * 1.12:
+        return False
+    if bbox.width < max(26.0, config.min_box_size) or bbox.height < max(20.0, config.min_box_size * 0.75):
+        return False
+    if seed_count_inside > 1 and bbox.area >= parent.bbox.area * 0.42:
+        return False
+    for candidate in existing_candidates:
+        if candidate.bbox is None:
+            continue
+        if bbox.iou(candidate.bbox) >= 0.82:
+            return False
+    return True
+
+
+def intersect_bboxes(first: BBox, second: BBox) -> BBox | None:
+    x0 = max(first.x0, second.x0)
+    y0 = max(first.y0, second.y0)
+    x1 = min(first.x1, second.x1)
+    y1 = min(first.y1, second.y1)
+    if x1 <= x0 or y1 <= y0:
+        return None
+    return BBox(x0, y0, x1, y1)
 
 
 def rect_candidate_from_element(element: Element) -> RectCandidate:

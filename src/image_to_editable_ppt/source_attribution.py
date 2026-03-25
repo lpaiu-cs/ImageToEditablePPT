@@ -54,3 +54,30 @@ def count_source_buckets(rows: Iterable[object]) -> dict[str, int]:
         source_ids = getattr(row, "source_ids", [])
         counts[classify_source_bucket(source_ids).value] += 1
     return {bucket.value: int(counts.get(bucket.value, 0)) for bucket in SourceBucket}
+
+
+def normalize_kind(kind: str) -> str:
+    normalized = str(kind).strip().lower()
+    if normalized in {"rect", "rounded_rect", "box", "container", "panel"}:
+        return "container"
+    if normalized in {"line", "orthogonal_connector", "arrow", "connector", "solid_arrow"}:
+        return "connector"
+    if normalized in {"text", "textbox", "text_only"}:
+        return "textbox"
+    return normalized or "unknown"
+
+
+def row_kind(row: object) -> str:
+    return normalize_kind(getattr(row, "object_type", "") or getattr(row, "kind", ""))
+
+
+def count_source_buckets_by_kind(rows: Iterable[object]) -> dict[str, dict[str, int]]:
+    counts: dict[str, Counter[str]] = {}
+    for row in rows:
+        kind = row_kind(row)
+        source_ids = getattr(row, "source_ids", [])
+        counts.setdefault(kind, Counter())[classify_source_bucket(source_ids).value] += 1
+    return {
+        kind: {bucket.value: int(counter.get(bucket.value, 0)) for bucket in SourceBucket}
+        for kind, counter in sorted(counts.items())
+    }

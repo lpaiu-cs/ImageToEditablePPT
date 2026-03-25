@@ -1,6 +1,6 @@
 {
   "status": "ok",
-  "benchmark_root": "workbench2.0",
+  "benchmark_root": "/Users/lpaiu/vs/ImageToEditablePPT/workbench2.0",
   "slide_count": 1,
   "gt_backed_slide_count": 1,
   "gt_unavailable_slide_count": 0,
@@ -17,24 +17,93 @@
       "recoverable_ratio": 0.0
     },
     "03_objects": {
-      "recoverable_count": 6.0,
+      "recoverable_count": 21.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.2
+      "recoverable_ratio": 0.7
     },
     "05_selection": {
-      "recoverable_count": 6.0,
+      "recoverable_count": 21.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.2
+      "recoverable_ratio": 0.7
     },
     "06_graph": {
-      "recoverable_count": 6.0,
+      "recoverable_count": 21.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.2
+      "recoverable_ratio": 0.7
     },
     "07_emit": {
-      "recoverable_count": 7.0,
+      "recoverable_count": 21.0,
       "ground_truth_count": 30.0,
-      "recoverable_ratio": 0.23333333333333334
+      "recoverable_ratio": 0.7
+    }
+  },
+  "stage_oracle_by_kind": {
+    "01_geometry_raw": {
+      "connector": {
+        "recoverable_count": 3.0,
+        "ground_truth_count": 12.0,
+        "recoverable_ratio": 0.25
+      },
+      "container": {
+        "recoverable_count": 0.0,
+        "ground_truth_count": 18.0,
+        "recoverable_ratio": 0.0
+      }
+    },
+    "02_guides": {
+      "container": {
+        "recoverable_count": 0.0,
+        "ground_truth_count": 18.0,
+        "recoverable_ratio": 0.0
+      }
+    },
+    "03_objects": {
+      "connector": {
+        "recoverable_count": 3.0,
+        "ground_truth_count": 12.0,
+        "recoverable_ratio": 0.25
+      },
+      "container": {
+        "recoverable_count": 18.0,
+        "ground_truth_count": 18.0,
+        "recoverable_ratio": 1.0
+      }
+    },
+    "05_selection": {
+      "connector": {
+        "recoverable_count": 3.0,
+        "ground_truth_count": 12.0,
+        "recoverable_ratio": 0.25
+      },
+      "container": {
+        "recoverable_count": 18.0,
+        "ground_truth_count": 18.0,
+        "recoverable_ratio": 1.0
+      }
+    },
+    "06_graph": {
+      "connector": {
+        "recoverable_count": 3.0,
+        "ground_truth_count": 12.0,
+        "recoverable_ratio": 0.25
+      },
+      "container": {
+        "recoverable_count": 18.0,
+        "ground_truth_count": 18.0,
+        "recoverable_ratio": 1.0
+      }
+    },
+    "07_emit": {
+      "connector": {
+        "recoverable_count": 3.0,
+        "ground_truth_count": 12.0,
+        "recoverable_ratio": 0.25
+      },
+      "container": {
+        "recoverable_count": 18.0,
+        "ground_truth_count": 18.0,
+        "recoverable_ratio": 1.0
+      }
     }
   },
   "stage_oracle_by_source_bucket": {
@@ -52,25 +121,25 @@
     },
     "03_objects": {
       "geometry_only": 3,
-      "fallback_only": 3,
+      "fallback_only": 18,
       "mixed_geometry_fallback": 0,
       "other": 0
     },
     "05_selection": {
       "geometry_only": 3,
-      "fallback_only": 3,
+      "fallback_only": 18,
       "mixed_geometry_fallback": 0,
       "other": 0
     },
     "06_graph": {
       "geometry_only": 3,
-      "fallback_only": 3,
+      "fallback_only": 18,
       "mixed_geometry_fallback": 0,
       "other": 0
     },
     "07_emit": {
       "geometry_only": 2,
-      "fallback_only": 5,
+      "fallback_only": 19,
       "mixed_geometry_fallback": 0,
       "other": 0
     }
@@ -78,64 +147,188 @@
   "stage_attrition": {},
   "failure_taxonomy": {
     "ground_truth": {
-      "wrong_type": 15,
-      "near_miss_geometry": 4,
-      "missing": 1,
-      "split_fragments": 3
+      "split_fragments": 5,
+      "near_miss_geometry": 3,
+      "merged_into_parent": 1
     },
     "predictions": {
-      "wrong_attachment": 9,
-      "hallucinated_prediction": 14,
-      "split_fragments": 8,
-      "wrong_type": 20,
-      "near_miss_geometry": 4
+      "wrong_attachment": 22,
+      "wrong_type": 12,
+      "hallucinated_prediction": 5,
+      "near_miss_geometry": 3,
+      "split_fragments": 3
+    }
+  },
+  "failure_taxonomy_by_kind": {
+    "ground_truth": {
+      "connector": {
+        "split_fragments": 5,
+        "near_miss_geometry": 3,
+        "merged_into_parent": 1
+      }
+    },
+    "predictions": {
+      "connector": {
+        "wrong_type": 12,
+        "hallucinated_prediction": 5,
+        "near_miss_geometry": 3,
+        "wrong_attachment": 4,
+        "split_fragments": 3
+      },
+      "container": {
+        "wrong_attachment": 18
+      }
     }
   },
   "geometry_audit_status_counts": {
-    "raw_candidate_below_threshold": 27,
-    "fallback_rescued": 1,
-    "recovered": 2
+    "fallback_rescued": 19,
+    "recovered": 2,
+    "raw_candidate_below_threshold": 9
   },
-  "native_object_count": 75,
+  "geometry_audit_status_counts_by_kind": {
+    "connector": {
+      "recovered": 2,
+      "fallback_rescued": 1,
+      "raw_candidate_below_threshold": 9
+    },
+    "container": {
+      "fallback_rescued": 18
+    }
+  },
+  "container_snap_effect_counts": {
+    "unchanged_by_snap": 17,
+    "worsened_by_snap": 1
+  },
+  "native_object_count": 78,
   "raster_region_count": 0,
-  "dropped_hypothesis_count": 1,
-  "grow_fallback_hypothesis_count": 16,
-  "native_area_ratio_mean": 0.43710665577782915,
+  "dropped_hypothesis_count": 4,
+  "grow_fallback_hypothesis_count": 18,
+  "native_area_ratio_mean": 0.5468543664238363,
   "raster_area_ratio_mean": 0.0,
   "raster_native_overlap_area_ratio_mean": 0.0,
   "selection_count_by_source_bucket": {
     "geometry_only": 29,
-    "fallback_only": 16,
+    "fallback_only": 18,
     "mixed_geometry_fallback": 0,
     "other": 0
   },
   "native_emit_count_by_source_bucket": {
     "geometry_only": 29,
-    "fallback_only": 46,
+    "fallback_only": 49,
     "mixed_geometry_fallback": 0,
     "other": 0
   },
   "final_matched_gt_by_source_bucket": {
     "geometry_only": 2,
-    "fallback_only": 5,
+    "fallback_only": 19,
     "mixed_geometry_fallback": 0,
     "other": 0
+  },
+  "source_bucket_counts_by_kind": {
+    "03_objects": {
+      "count_by_source_bucket_by_kind": {
+        "connector": {
+          "geometry_only": 29,
+          "fallback_only": 0,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        },
+        "container": {
+          "geometry_only": 0,
+          "fallback_only": 18,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        }
+      },
+      "recoverable_gt_by_source_bucket_by_kind": {
+        "connector": {
+          "geometry_only": 3,
+          "fallback_only": 0,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        },
+        "container": {
+          "geometry_only": 0,
+          "fallback_only": 18,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        }
+      }
+    },
+    "05_selection": {
+      "selected_count_by_source_bucket_by_kind": {
+        "connector": {
+          "geometry_only": 29,
+          "fallback_only": 0,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        },
+        "container": {
+          "geometry_only": 0,
+          "fallback_only": 18,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        }
+      }
+    },
+    "07_emit": {
+      "matched_gt_by_source_bucket_by_kind": {
+        "connector": {
+          "geometry_only": 2,
+          "fallback_only": 1,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        },
+        "container": {
+          "geometry_only": 0,
+          "fallback_only": 18,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        }
+      },
+      "native_count_by_source_bucket_by_kind": {
+        "connector": {
+          "geometry_only": 29,
+          "fallback_only": 13,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        },
+        "container": {
+          "geometry_only": 0,
+          "fallback_only": 36,
+          "mixed_geometry_fallback": 0,
+          "other": 0
+        }
+      }
+    }
+  },
+  "final_matched_gt_by_kind": {
+    "connector": {
+      "recoverable_count": 3.0,
+      "ground_truth_count": 12.0,
+      "recoverable_ratio": 0.25
+    },
+    "container": {
+      "recoverable_count": 18.0,
+      "ground_truth_count": 18.0,
+      "recoverable_ratio": 1.0
+    }
   },
   "ablation_counts": {
     "grow+motifs": 1
   },
   "motif_accounting": {
     "repeated_cards": {
-      "proposed": 15,
+      "proposed": 17,
       "accepted": 0,
-      "rejected": 15,
+      "rejected": 17,
       "absorbed_members": 0,
       "suppressed_members": 0
     },
     "titled_panel": {
-      "proposed": 16,
+      "proposed": 18,
       "accepted": 0,
-      "rejected": 16,
+      "rejected": 18,
       "absorbed_members": 0,
       "suppressed_members": 0
     }

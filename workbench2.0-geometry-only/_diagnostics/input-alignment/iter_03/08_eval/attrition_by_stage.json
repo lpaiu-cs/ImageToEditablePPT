@@ -1,0 +1,685 @@
+{
+  "status": "ok",
+  "gt_available": true,
+  "ground_truth_count": 30,
+  "ground_truth": [
+    {
+      "gt_id": "node-1",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-2",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-3",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-4",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-5",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-6",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-7",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-8",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-9",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-10",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-11",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-12",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-13",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-14",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-15",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-16",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-17",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "node-18",
+      "kind": "container",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": false,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": true,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-1",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": true,
+        "02_guides": null,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "01_geometry_raw": "connector-candidate:linear-17",
+        "03_objects": "object-hypothesis:connector-candidate:linear-17",
+        "05_selection": "object-hypothesis:connector-candidate:linear-17",
+        "06_graph": "object-hypothesis:connector-candidate:linear-17",
+        "07_emit": "emit:direct-connector-11"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-2",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": true,
+        "02_guides": null,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "01_geometry_raw": "connector-candidate:linear-27",
+        "03_objects": "object-hypothesis:connector-candidate:linear-27",
+        "05_selection": "object-hypothesis:connector-candidate:linear-27",
+        "06_graph": "object-hypothesis:connector-candidate:linear-27",
+        "07_emit": "emit:direct-connector-18"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-3",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-4",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-5",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-6",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-7",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-8",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": true,
+        "02_guides": null,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {
+        "01_geometry_raw": "connector-candidate:linear-62-3",
+        "03_objects": "object-hypothesis:connector-candidate:linear-62-3",
+        "05_selection": "object-hypothesis:connector-candidate:linear-62-3",
+        "06_graph": "object-hypothesis:connector-candidate:linear-62-3",
+        "07_emit": "emit:direct-connector-6"
+      },
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-9",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-10",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-11",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    },
+    {
+      "gt_id": "edge-12",
+      "kind": "connector",
+      "presence": {
+        "01_geometry_raw": false,
+        "02_guides": null,
+        "03_objects": false,
+        "05_selection": false,
+        "06_graph": false,
+        "07_emit": false
+      },
+      "applicable": {
+        "01_geometry_raw": true,
+        "02_guides": false,
+        "03_objects": true,
+        "05_selection": true,
+        "06_graph": true,
+        "07_emit": true
+      },
+      "matched_artifact_ids": {},
+      "lost_at": null
+    }
+  ]
+}

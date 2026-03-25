@@ -50,6 +50,7 @@ class MatchResult:
     artifact_id: str
     similarity: float
     source_bucket: str
+    kind: str
 
 
 @dataclass(slots=True, frozen=True)
@@ -108,6 +109,29 @@ def parse_eval_item(payload: dict[str, object]) -> EvalItem:
     )
 
 
+def count_items_by_kind(items: Iterable[EvalItem]) -> dict[str, int]:
+    counts: Counter[str] = Counter(normalize_eval_kind(item.kind) for item in items)
+    return {kind: int(count) for kind, count in sorted(counts.items())}
+
+
+def count_matches_by_kind(matches: Iterable[MatchResult]) -> dict[str, int]:
+    counts: Counter[str] = Counter(match.kind for match in matches)
+    return {kind: int(count) for kind, count in sorted(counts.items())}
+
+
+def count_matches_by_source_bucket_by_kind(matches: Iterable[MatchResult]) -> dict[str, dict[str, int]]:
+    counts: dict[str, Counter[str]] = {}
+    for match in matches:
+        counts.setdefault(match.kind, Counter())[match.source_bucket] += 1
+    return {
+        kind: {
+            bucket.value: int(counter.get(bucket.value, 0))
+            for bucket in SourceBucket
+        }
+        for kind, counter in sorted(counts.items())
+    }
+
+
 def oracle_upper_bound_by_stage(
     ground_truth: Iterable[EvalItem],
     stage_artifacts: dict[str, Iterable[EvalItem]],
@@ -126,13 +150,17 @@ def oracle_upper_bound_by_stage(
             "artifact_count": len(rows),
             "recoverable_count": len(matches),
             "recoverable_ratio": len(matches) / max(1, len(applicable_gt)),
+            "ground_truth_count_by_kind": count_items_by_kind(applicable_gt),
+            "recoverable_by_kind": count_matches_by_kind(matches),
             "recoverable_by_source_bucket": {
                 bucket.value: int(recoverable_by_source_bucket.get(bucket.value, 0))
                 for bucket in SourceBucket
             },
+            "recoverable_by_source_bucket_by_kind": count_matches_by_source_bucket_by_kind(matches),
             "matches": [
                 {
                     "gt_id": gt.id,
+                    "kind": normalize_eval_kind(gt.kind),
                     "artifact_id": None if gt.id not in by_gt else by_gt[gt.id].artifact_id,
                     "similarity": 0.0 if gt.id not in by_gt else by_gt[gt.id].similarity,
                     "source_bucket": None if gt.id not in by_gt else by_gt[gt.id].source_bucket,
@@ -160,6 +188,7 @@ def failure_taxonomy(
         gt_rows.append(
             {
                 "gt_id": gt.id,
+                "kind": normalize_eval_kind(gt.kind),
                 "tag": classify_gt_failure(gt, gt_items, pred_items, best).value,
                 "best_prediction_id": None if best.item is None else best.item.id,
                 "best_similarity": best.similarity,
@@ -173,6 +202,7 @@ def failure_taxonomy(
         pred_rows.append(
             {
                 "prediction_id": prediction.id,
+                "kind": normalize_eval_kind(prediction.kind),
                 "tag": classify_prediction_failure(prediction, gt_items, pred_items, best).value,
                 "best_gt_id": None if best.item is None else best.item.id,
                 "best_similarity": best.similarity,
@@ -224,6 +254,7 @@ def attrition_by_stage(
         output["ground_truth"].append(
             {
                 "gt_id": gt.id,
+                "kind": normalize_eval_kind(gt.kind),
                 "presence": presence,
                 "applicable": applicable,
                 "matched_artifact_ids": matched_artifact_ids,
@@ -248,6 +279,7 @@ def geometry_audit(
     emit_matches = {match.gt_id: match for match in unique_stage_matches("07_emit", gt_items, emit_items, require_attachment=True)}
 
     rows = []
+    container_snap_effect_counts: Counter[str] = Counter()
     for gt in gt_items:
         raw_best = best_stage_candidate("01_geometry_raw", gt, raw_items)
         snapped_best = best_stage_candidate("02_guides", gt, snapped_items)
@@ -259,29 +291,61 @@ def geometry_audit(
             (object_best.item is not None and object_best.passes and object_best.item.source_bucket in {SourceBucket.FALLBACK_ONLY.value, SourceBucket.MIXED_GEOMETRY_FALLBACK.value} and not raw_best.passes)
             or (gt.id in emit_matches and emit_matches[gt.id].source_bucket in {SourceBucket.FALLBACK_ONLY.value, SourceBucket.MIXED_GEOMETRY_FALLBACK.value})
         )
-        status = audit_status(
-            raw_best=raw_best,
-            snapped_best=snapped_best,
-            object_best=object_best,
-            gt_id=gt.id,
-            selected_matches=selected_matches,
-            emit_matches=emit_matches,
-            fallback_rescued=fallback_rescued,
-        )
-        rows.append(
-            {
-                "gt_id": gt.id,
-                "kind": normalize_eval_kind(gt.kind),
-                "raw_geometry": audit_row_for_candidate(raw_best),
-                "guide_snapped": audit_row_for_candidate(snapped_best),
-                "object_hypothesis": audit_row_for_candidate(object_best),
-                "selected_hypothesis": audit_row_for_candidate(selected_best, matched=gt.id in selected_matches),
-                "emit_record": audit_row_for_candidate(emit_best, matched=gt.id in emit_matches),
-                "fallback_rescued": fallback_rescued,
-                "status": status,
-            }
-        )
-    return {"status": "ok", "ground_truth": rows}
+        row = {
+            "gt_id": gt.id,
+            "kind": normalize_eval_kind(gt.kind),
+            "raw_geometry": audit_row_for_candidate(raw_best),
+            "guide_snapped": audit_row_for_candidate(snapped_best),
+            "object_hypothesis": audit_row_for_candidate(object_best),
+            "selected_hypothesis": audit_row_for_candidate(selected_best, matched=gt.id in selected_matches),
+            "emit_record": audit_row_for_candidate(emit_best, matched=gt.id in emit_matches),
+            "fallback_rescued": fallback_rescued,
+        }
+        if normalize_eval_kind(gt.kind) == "container":
+            container_row = container_audit_row(
+                gt=gt,
+                ground_truth=gt_items,
+                raw_best=raw_best,
+                snapped_best=snapped_best,
+                object_best=object_best,
+                gt_id=gt.id,
+                selected_matches=selected_matches,
+                emit_matches=emit_matches,
+                fallback_rescued=fallback_rescued,
+                snapped_items=snapped_items,
+            )
+            row.update(container_row)
+            container_snap_effect_counts[container_row["snap_effect"]] += 1
+        else:
+            row["status"] = audit_status(
+                raw_best=raw_best,
+                snapped_best=snapped_best,
+                object_best=object_best,
+                gt_id=gt.id,
+                selected_matches=selected_matches,
+                emit_matches=emit_matches,
+                fallback_rescued=fallback_rescued,
+            )
+        rows.append(row)
+    return {
+        "status": "ok",
+        "ground_truth": rows,
+        "container_snap_effect_counts": dict(container_snap_effect_counts),
+    }
+
+
+def container_geometry_audit(
+    ground_truth: Iterable[EvalItem],
+    stage_artifacts: dict[str, Iterable[EvalItem]],
+) -> dict[str, object]:
+    audit = geometry_audit(ground_truth, stage_artifacts)
+    rows = [row for row in audit.get("ground_truth", []) if row.get("kind") == "container"]
+    return {
+        "status": "ok",
+        "ground_truth": rows,
+        "status_counts": dict(Counter(str(row.get("status", "unknown")) for row in rows)),
+        "snap_effect_counts": dict(Counter(str(row.get("snap_effect", "unknown")) for row in rows)),
+    }
 
 
 def unavailable_eval_payload(reason: str) -> dict[str, object]:
@@ -301,7 +365,7 @@ def write_eval_debug_artifacts(
     target.mkdir(parents=True, exist_ok=True)
     if ground_truth is None:
         unavailable = unavailable_eval_payload("ground_truth_annotations_missing")
-        for name in ("oracle_by_stage.json", "failure_taxonomy.json", "attrition_by_stage.json", "geometry_audit.json"):
+        for name in ("oracle_by_stage.json", "failure_taxonomy.json", "attrition_by_stage.json", "geometry_audit.json", "container_geometry_audit.json"):
             (target / name).write_text(json.dumps(unavailable, indent=2), encoding="utf-8")
         return unavailable
     gt_items = list(ground_truth.objects if isinstance(ground_truth, GroundTruthAnnotation) else ground_truth)
@@ -329,11 +393,24 @@ def write_eval_debug_artifacts(
         "ground_truth_count": len(gt_items),
         **geometry_audit(gt_items, stage_artifacts),
     }
+    container_audit = {
+        "status": "ok",
+        "gt_available": True,
+        "ground_truth_count": sum(1 for item in gt_items if normalize_eval_kind(item.kind) == "container"),
+        **container_geometry_audit(gt_items, stage_artifacts),
+    }
     (target / "oracle_by_stage.json").write_text(json.dumps(as_serializable(oracle), indent=2), encoding="utf-8")
     (target / "failure_taxonomy.json").write_text(json.dumps(as_serializable(failure), indent=2), encoding="utf-8")
     (target / "attrition_by_stage.json").write_text(json.dumps(as_serializable(attrition), indent=2), encoding="utf-8")
     (target / "geometry_audit.json").write_text(json.dumps(as_serializable(audit), indent=2), encoding="utf-8")
-    return {"oracle": oracle, "failure": failure, "attrition": attrition, "geometry_audit": audit}
+    (target / "container_geometry_audit.json").write_text(json.dumps(as_serializable(container_audit), indent=2), encoding="utf-8")
+    return {
+        "oracle": oracle,
+        "failure": failure,
+        "attrition": attrition,
+        "geometry_audit": audit,
+        "container_geometry_audit": container_audit,
+    }
 
 
 def stage_items_from_entities(items: Iterable[StageEntity]) -> list[EvalItem]:
@@ -379,7 +456,9 @@ def unique_stage_matches(
     *,
     require_attachment: bool = False,
 ) -> list[MatchResult]:
-    candidates: list[tuple[float, str, str, str, str, EvalItem, EvalItem]] = []
+    candidates: list[tuple[float, str, str, str, str]] = []
+    gt_lookup = {item.id: item for item in ground_truth}
+    artifact_lookup = {item.id: item for item in artifacts}
     for gt in ground_truth:
         for artifact in artifacts:
             similarity = stage_similarity(stage, gt, artifact)
@@ -394,17 +473,17 @@ def unique_stage_matches(
                     artifact.id,
                     normalize_eval_kind(gt.kind),
                     artifact.source_bucket,
-                    gt,
-                    artifact,
                 )
             )
     candidates.sort()
     matched_gt_ids: set[str] = set()
     matched_artifact_ids: set[str] = set()
     matches: list[MatchResult] = []
-    for negative_similarity, gt_id, artifact_id, _, source_bucket, gt, artifact in candidates:
+    for negative_similarity, gt_id, artifact_id, _, source_bucket in candidates:
         if gt_id in matched_gt_ids or artifact_id in matched_artifact_ids:
             continue
+        gt = gt_lookup[gt_id]
+        artifact = artifact_lookup[artifact_id]
         matched_gt_ids.add(gt_id)
         matched_artifact_ids.add(artifact_id)
         matches.append(
@@ -413,6 +492,7 @@ def unique_stage_matches(
                 artifact_id=artifact.id,
                 similarity=-negative_similarity,
                 source_bucket=source_bucket,
+                kind=normalize_eval_kind(gt.kind),
             )
         )
     return matches
@@ -632,6 +712,175 @@ def audit_status(
     if fallback_rescued:
         return "fallback_rescued"
     return "recovered"
+
+
+def container_audit_row(
+    *,
+    gt: EvalItem,
+    ground_truth: list[EvalItem],
+    raw_best: BestCandidate,
+    snapped_best: BestCandidate,
+    object_best: BestCandidate,
+    gt_id: str,
+    selected_matches: dict[str, MatchResult],
+    emit_matches: dict[str, MatchResult],
+    fallback_rescued: bool,
+    snapped_items: list[EvalItem],
+) -> dict[str, object]:
+    raw_item = raw_best.item
+    snapped_item = snapped_best.item
+    raw_bbox = None if raw_item is None else raw_item.bbox
+    snapped_bbox = None if snapped_item is None else snapped_item.bbox
+    gt_bbox = gt.bbox
+    raw_area_ratio = area_ratio(raw_bbox, gt_bbox)
+    snapped_area_ratio = area_ratio(snapped_bbox, gt_bbox)
+    raw_relation = containment_relation(raw_bbox, gt_bbox)
+    snapped_relation = containment_relation(snapped_bbox, gt_bbox)
+    raw_enclosed_gt_ids = enclosed_container_gt_ids(raw_bbox, gt.id, ground_truth)
+    snapped_enclosed_gt_ids = enclosed_container_gt_ids(snapped_bbox, gt.id, ground_truth)
+    snap_effect = classify_container_snap_effect(
+        raw_best=raw_best,
+        snapped_best=snapped_best,
+        snapped_items=snapped_items,
+    )
+    return {
+        "best_raw_candidate_id": None if raw_item is None else raw_item.id,
+        "best_raw_similarity": round(raw_best.similarity, 4),
+        "best_raw_area_ratio": round(raw_area_ratio, 4),
+        "best_raw_containment": raw_relation,
+        "best_raw_enclosed_gt_ids": raw_enclosed_gt_ids,
+        "best_snapped_candidate_id": None if snapped_item is None else snapped_item.id,
+        "best_snapped_similarity": round(snapped_best.similarity, 4),
+        "best_snapped_area_ratio": round(snapped_area_ratio, 4),
+        "best_snapped_containment": snapped_relation,
+        "best_snapped_enclosed_gt_ids": snapped_enclosed_gt_ids,
+        "snap_effect": snap_effect,
+        "snap_delta_similarity": round(snapped_best.similarity - raw_best.similarity, 4),
+        "best_object_hypothesis_id": None if object_best.item is None else object_best.item.id,
+        "best_object_source_bucket": None if object_best.item is None else object_best.item.source_bucket,
+        "fallback_rescued": fallback_rescued,
+        "status": classify_container_status(
+            gt=gt,
+            ground_truth=ground_truth,
+            raw_best=raw_best,
+            snapped_best=snapped_best,
+            object_best=object_best,
+            gt_id=gt_id,
+            selected_matches=selected_matches,
+            emit_matches=emit_matches,
+            fallback_rescued=fallback_rescued,
+            snap_effect=snap_effect,
+            raw_area_ratio=raw_area_ratio,
+            raw_relation=raw_relation,
+            raw_enclosed_gt_ids=raw_enclosed_gt_ids,
+        ),
+    }
+
+
+def classify_container_status(
+    *,
+    gt: EvalItem,
+    ground_truth: list[EvalItem],
+    raw_best: BestCandidate,
+    snapped_best: BestCandidate,
+    object_best: BestCandidate,
+    gt_id: str,
+    selected_matches: dict[str, MatchResult],
+    emit_matches: dict[str, MatchResult],
+    fallback_rescued: bool,
+    snap_effect: str,
+    raw_area_ratio: float,
+    raw_relation: str,
+    raw_enclosed_gt_ids: list[str],
+) -> str:
+    if not raw_best.item:
+        return "no_raw_candidate"
+    if fallback_rescued:
+        return "fallback_rescued"
+    if gt_id in emit_matches:
+        return "recovered"
+    if gt_id not in emit_matches and gt_id in selected_matches and object_best.passes:
+        return "selection_suppressed"
+    if snap_effect in {"snap_moved_below_threshold", "snap_collapsed_distinct_boxes"}:
+        return "snap_hurt"
+    if (raw_best.passes or snapped_best.passes) and object_best.item is None:
+        return "object_conversion_absent"
+    if raw_best.item.kind == "rounded_rect" and 0.08 <= raw_best.similarity < stage_threshold("01_geometry_raw", gt, raw_best.item):
+        return "rounded_panel_missed"
+    if raw_relation == "contains_gt" and (raw_area_ratio >= 1.55 or raw_enclosed_gt_ids):
+        return "oversized_or_merged_candidate"
+    if raw_relation == "inside_gt" and raw_area_ratio <= 0.65:
+        return "undersized_fragment_candidate"
+    if raw_relation == "overlap_only" and raw_best.similarity >= 0.08:
+        return "weak_or_missing_side"
+    if raw_best.passes and object_best.item is None:
+        return "object_conversion_absent"
+    if raw_best.passes and not object_best.passes:
+        return "object_conversion_absent"
+    return "raw_candidate_below_threshold"
+
+
+def classify_container_snap_effect(
+    *,
+    raw_best: BestCandidate,
+    snapped_best: BestCandidate,
+    snapped_items: list[EvalItem],
+) -> str:
+    if raw_best.item is None or snapped_best.item is None:
+        return "unchanged_by_snap"
+    if raw_best.passes and not snapped_best.passes:
+        return "snap_moved_below_threshold"
+    snapped_signature = bbox_signature(snapped_best.item.bbox)
+    duplicate_signature_count = sum(1 for item in snapped_items if bbox_signature(item.bbox) == snapped_signature)
+    if duplicate_signature_count > 1 and snapped_best.similarity + 0.01 < raw_best.similarity:
+        return "snap_collapsed_distinct_boxes"
+    if snapped_best.similarity > raw_best.similarity + 0.01:
+        return "improved_by_snap"
+    if snapped_best.similarity + 0.01 < raw_best.similarity:
+        return "worsened_by_snap"
+    return "unchanged_by_snap"
+
+
+def bbox_signature(bbox: BBox | None) -> tuple[int, int, int, int] | None:
+    if bbox is None:
+        return None
+    return (
+        int(round(bbox.x0)),
+        int(round(bbox.y0)),
+        int(round(bbox.x1)),
+        int(round(bbox.y1)),
+    )
+
+
+def containment_relation(candidate: BBox | None, gt: BBox | None) -> str:
+    if candidate is None or gt is None:
+        return "none"
+    if contains(candidate, gt):
+        return "contains_gt"
+    if contains(gt, candidate):
+        return "inside_gt"
+    if candidate.overlaps(gt):
+        return "overlap_only"
+    return "disjoint"
+
+
+def area_ratio(candidate: BBox | None, gt: BBox | None) -> float:
+    if candidate is None or gt is None or gt.area <= 0:
+        return 0.0
+    return candidate.area / gt.area
+
+
+def enclosed_container_gt_ids(candidate: BBox | None, gt_id: str, ground_truth: list[EvalItem]) -> list[str]:
+    if candidate is None:
+        return []
+    return [
+        other.id
+        for other in ground_truth
+        if other.id != gt_id
+        and normalize_eval_kind(other.kind) == "container"
+        and other.bbox is not None
+        and contains(candidate, other.bbox)
+    ]
 
 
 def covered_area_ratio(target: EvalItem, predictions: list[EvalItem]) -> float:

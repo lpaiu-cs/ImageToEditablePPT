@@ -252,6 +252,8 @@ def candidate_score(
     area_ratio = candidate.bbox.area / max(1.0, anchor_area)
     score -= min(3.2, max(0.0, area_ratio - 1.0) * 0.06)
     score -= composite_box_penalty(candidate.bbox, anchor, phrases)
+    if candidate.score_terms.get("decomposed_parent", 0.0) > 0.0:
+        score += 0.55
     return score
 
 
@@ -307,6 +309,7 @@ def hypothesis_score_terms(
         "anchor_iou": anchor_iou,
         "padding_margin": padding_margin,
         "node_overlap": node_overlap,
+        "decomposition_bonus": 0.55 if candidate.score_terms.get("decomposed_parent", 0.0) > 0.0 else 0.0,
         "composite_penalty": -composite_penalty,
     }
 

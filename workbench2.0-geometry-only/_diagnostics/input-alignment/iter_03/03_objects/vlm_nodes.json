@@ -1,0 +1,370 @@
+[
+  {
+    "id": "n1",
+    "kind": "box",
+    "bbox": {
+      "x0": 2346.0,
+      "y0": 75.2,
+      "x1": 2622.0,
+      "y1": 225.6
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n1"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n1"
+    ],
+    "text": "User Input",
+    "object_type": "container"
+  },
+  {
+    "id": "n2",
+    "kind": "box",
+    "bbox": {
+      "x0": 1104.0,
+      "y0": 300.8,
+      "x1": 1655.9999999999998,
+      "y1": 451.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n2"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n2"
+    ],
+    "text": "Bot Orchestrator\n(Main Loop Controller)",
+    "object_type": "container"
+  },
+  {
+    "id": "n3",
+    "kind": "box",
+    "bbox": {
+      "x0": 413.99999999999994,
+      "y0": 150.4,
+      "x1": 965.9999999999999,
+      "y1": 300.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n3"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n3"
+    ],
+    "text": "Boundary Redaction",
+    "object_type": "container"
+  },
+  {
+    "id": "n4",
+    "kind": "box",
+    "bbox": {
+      "x0": 138.0,
+      "y0": 376.0,
+      "x1": 690.0,
+      "y1": 526.4
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n4"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n4"
+    ],
+    "text": "Sensory System",
+    "object_type": "container"
+  },
+  {
+    "id": "n5",
+    "kind": "box",
+    "bbox": {
+      "x0": 827.9999999999999,
+      "y0": 376.0,
+      "x1": 1380.0,
+      "y1": 526.4
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n5"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n5"
+    ],
+    "text": "Identity & Fast Path",
+    "object_type": "container"
+  },
+  {
+    "id": "n6",
+    "kind": "box",
+    "bbox": {
+      "x0": 2622.0,
+      "y0": 75.2,
+      "x1": 3173.9999999999995,
+      "y1": 225.6
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n6"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n6"
+    ],
+    "text": "Fast Model API",
+    "object_type": "container"
+  },
+  {
+    "id": "n7",
+    "kind": "box",
+    "bbox": {
+      "x0": 3173.9999999999995,
+      "y0": 75.2,
+      "x1": 3725.9999999999995,
+      "y1": 225.6
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n7"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n7"
+    ],
+    "text": "Slow Model API",
+    "object_type": "container"
+  },
+  {
+    "id": "n8",
+    "kind": "box",
+    "bbox": {
+      "x0": 2622.0,
+      "y0": 300.8,
+      "x1": 3173.9999999999995,
+      "y1": 451.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n8"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n8"
+    ],
+    "text": "Working Memory",
+    "object_type": "container"
+  },
+  {
+    "id": "n9",
+    "kind": "box",
+    "bbox": {
+      "x0": 3173.9999999999995,
+      "y0": 300.8,
+      "x1": 3725.9999999999995,
+      "y1": 451.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n9"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n9"
+    ],
+    "text": "QueryPlanner",
+    "object_type": "container"
+  },
+  {
+    "id": "n10",
+    "kind": "box",
+    "bbox": {
+      "x0": 3173.9999999999995,
+      "y0": 526.4,
+      "x1": 3725.9999999999995,
+      "y1": 676.8
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n10"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n10"
+    ],
+    "text": "LTM Handler",
+    "object_type": "container"
+  },
+  {
+    "id": "n11",
+    "kind": "box",
+    "bbox": {
+      "x0": 1931.9999999999998,
+      "y0": 676.8,
+      "x1": 2484.0,
+      "y1": 827.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n11"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n11"
+    ],
+    "text": "Generation Stack",
+    "object_type": "container"
+  },
+  {
+    "id": "n12",
+    "kind": "box",
+    "bbox": {
+      "x0": 138.0,
+      "y0": 676.8,
+      "x1": 690.0,
+      "y1": 827.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n12"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n12"
+    ],
+    "text": "Boundary Enforcement",
+    "object_type": "container"
+  },
+  {
+    "id": "n13",
+    "kind": "box",
+    "bbox": {
+      "x0": 827.9999999999999,
+      "y0": 676.8,
+      "x1": 1380.0,
+      "y1": 827.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n13"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n13"
+    ],
+    "text": "SocialManager",
+    "object_type": "container"
+  },
+  {
+    "id": "n14",
+    "kind": "box",
+    "bbox": {
+      "x0": 1517.9999999999998,
+      "y0": 676.8,
+      "x1": 2070.0,
+      "y1": 827.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n14"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n14"
+    ],
+    "text": "Reflection Handler",
+    "object_type": "container"
+  },
+  {
+    "id": "n15",
+    "kind": "cylinder",
+    "bbox": {
+      "x0": 2622.0,
+      "y0": 827.2,
+      "x1": 3173.9999999999995,
+      "y1": 977.6
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n15"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n15"
+    ],
+    "text": "Memory Graph DB",
+    "object_type": "container"
+  },
+  {
+    "id": "n16",
+    "kind": "cylinder",
+    "bbox": {
+      "x0": 2622.0,
+      "y0": 1052.8,
+      "x1": 3173.9999999999995,
+      "y1": 1203.2
+    },
+    "score_total": 1.0,
+    "score_terms": {
+      "anchored": 0.0
+    },
+    "source_ids": [
+      "n16"
+    ],
+    "assigned_text_ids": [],
+    "assigned_vlm_ids": [
+      "n16"
+    ],
+    "text": "Canonical State DB",
+    "object_type": "container"
+  }
+]

@@ -1,0 +1,1052 @@
+{
+  "status": "ok",
+  "gt_available": true,
+  "ground_truth_count": 18,
+  "ground_truth": [
+    {
+      "gt_id": "node-1",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 1.04,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 1.065,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-2",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-1",
+        "score_total": 0.9367,
+        "similarity": 0.0062,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-1:snapped",
+        "score_total": 0.9367,
+        "similarity": 0.0062,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-1",
+      "best_raw_similarity": 0.0062,
+      "best_raw_area_ratio": 15.1586,
+      "best_raw_containment": "overlap_only",
+      "best_raw_enclosed_gt_ids": [
+        "node-5",
+        "node-6"
+      ],
+      "best_snapped_candidate_id": "rect-candidate:box-1:snapped",
+      "best_snapped_similarity": 0.0062,
+      "best_snapped_area_ratio": 15.0247,
+      "best_snapped_containment": "overlap_only",
+      "best_snapped_enclosed_gt_ids": [
+        "node-5",
+        "node-6"
+      ],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0001,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-3",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 2.7259,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 2.7913,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-4",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:decompose-01-02",
+        "score_total": 0.81,
+        "similarity": 0.2562,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:decompose-01-02:snapped",
+        "score_total": 0.81,
+        "similarity": 0.2521,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.2521,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.2521,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-1",
+        "score_total": 0.9,
+        "similarity": 0.3453,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:decompose-01-02",
+      "best_raw_similarity": 0.2562,
+      "best_raw_area_ratio": 0.9063,
+      "best_raw_containment": "overlap_only",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:decompose-01-02:snapped",
+      "best_snapped_similarity": 0.2521,
+      "best_snapped_area_ratio": 0.8957,
+      "best_snapped_containment": "overlap_only",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": -0.0041,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "weak_or_missing_side"
+    },
+    {
+      "gt_id": "node-5",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-1",
+        "score_total": 0.9367,
+        "similarity": 0.0543,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-1:snapped",
+        "score_total": 0.9367,
+        "similarity": 0.0548,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-1",
+      "best_raw_similarity": 0.0543,
+      "best_raw_area_ratio": 18.4154,
+      "best_raw_containment": "contains_gt",
+      "best_raw_enclosed_gt_ids": [
+        "node-6"
+      ],
+      "best_snapped_candidate_id": "rect-candidate:box-1:snapped",
+      "best_snapped_similarity": 0.0548,
+      "best_snapped_area_ratio": 18.2528,
+      "best_snapped_containment": "contains_gt",
+      "best_snapped_enclosed_gt_ids": [
+        "node-6"
+      ],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0005,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "oversized_or_merged_candidate"
+    },
+    {
+      "gt_id": "node-6",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-3",
+        "score_total": 0.9364,
+        "similarity": 0.1834,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-3:snapped",
+        "score_total": 0.9364,
+        "similarity": 0.1812,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-1",
+        "score_total": 0.9,
+        "similarity": 0.0101,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-3",
+      "best_raw_similarity": 0.1834,
+      "best_raw_area_ratio": 0.4341,
+      "best_raw_containment": "overlap_only",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-3:snapped",
+      "best_snapped_similarity": 0.1812,
+      "best_snapped_area_ratio": 0.4335,
+      "best_snapped_containment": "overlap_only",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": -0.0021,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "weak_or_missing_side"
+    },
+    {
+      "gt_id": "node-7",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 0.2199,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 0.2251,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-8",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-10",
+        "score_total": 0.7529,
+        "similarity": 0.0836,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-10:snapped",
+        "score_total": 0.7529,
+        "similarity": 0.0836,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-10",
+      "best_raw_similarity": 0.0836,
+      "best_raw_area_ratio": 0.2591,
+      "best_raw_containment": "overlap_only",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-10:snapped",
+      "best_snapped_similarity": 0.0836,
+      "best_snapped_area_ratio": 0.2591,
+      "best_snapped_containment": "overlap_only",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "weak_or_missing_side"
+    },
+    {
+      "gt_id": "node-9",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-10",
+        "score_total": 0.7529,
+        "similarity": 0.0249,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-10:snapped",
+        "score_total": 0.7529,
+        "similarity": 0.0249,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-10",
+      "best_raw_similarity": 0.0249,
+      "best_raw_area_ratio": 0.3331,
+      "best_raw_containment": "overlap_only",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-10:snapped",
+      "best_snapped_similarity": 0.0249,
+      "best_snapped_area_ratio": 0.3331,
+      "best_snapped_containment": "overlap_only",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-10",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-10",
+        "score_total": 0.7529,
+        "similarity": 0.0206,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-10:snapped",
+        "score_total": 0.7529,
+        "similarity": 0.0206,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-10",
+      "best_raw_similarity": 0.0206,
+      "best_raw_area_ratio": 0.3075,
+      "best_raw_containment": "overlap_only",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-10:snapped",
+      "best_snapped_similarity": 0.0206,
+      "best_snapped_area_ratio": 0.3075,
+      "best_snapped_containment": "overlap_only",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-11",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-14",
+        "score_total": 0.9481,
+        "similarity": 0.1035,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-14:snapped",
+        "score_total": 0.9481,
+        "similarity": 0.0903,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-14",
+      "best_raw_similarity": 0.1035,
+      "best_raw_area_ratio": 0.1981,
+      "best_raw_containment": "overlap_only",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-14:snapped",
+      "best_snapped_similarity": 0.0903,
+      "best_snapped_area_ratio": 0.1837,
+      "best_snapped_containment": "overlap_only",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "worsened_by_snap",
+      "snap_delta_similarity": -0.0132,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "weak_or_missing_side"
+    },
+    {
+      "gt_id": "node-12",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 0.5552,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 0.5685,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-13",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-6",
+        "score_total": 0.9222,
+        "similarity": 0.1465,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-6:snapped",
+        "score_total": 0.9222,
+        "similarity": 0.1545,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-6",
+      "best_raw_similarity": 0.1465,
+      "best_raw_area_ratio": 0.4344,
+      "best_raw_containment": "overlap_only",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-6:snapped",
+      "best_snapped_similarity": 0.1545,
+      "best_snapped_area_ratio": 0.4466,
+      "best_snapped_containment": "overlap_only",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.008,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "weak_or_missing_side"
+    },
+    {
+      "gt_id": "node-14",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 1.6117,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 1.6504,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-15",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 0.6049,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 0.6195,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-16",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 0.5743,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 0.5881,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-17",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 0.7549,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 0.773,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    },
+    {
+      "gt_id": "node-18",
+      "kind": "container",
+      "raw_geometry": {
+        "artifact_id": "rect-candidate:box-12",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "guide_snapped": {
+        "artifact_id": "rect-candidate:box-12:snapped",
+        "score_total": 0.9595,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "object_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only"
+      },
+      "selected_hypothesis": {
+        "artifact_id": "object-hypothesis:n3",
+        "score_total": 1.4912,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "emit_record": {
+        "artifact_id": "emit:node-text-1",
+        "score_total": 0.97,
+        "similarity": 0.0,
+        "passes": false,
+        "source_bucket": "geometry_only",
+        "matched": false
+      },
+      "fallback_rescued": false,
+      "best_raw_candidate_id": "rect-candidate:box-12",
+      "best_raw_similarity": 0.0,
+      "best_raw_area_ratio": 0.7828,
+      "best_raw_containment": "disjoint",
+      "best_raw_enclosed_gt_ids": [],
+      "best_snapped_candidate_id": "rect-candidate:box-12:snapped",
+      "best_snapped_similarity": 0.0,
+      "best_snapped_area_ratio": 0.8015,
+      "best_snapped_containment": "disjoint",
+      "best_snapped_enclosed_gt_ids": [],
+      "snap_effect": "unchanged_by_snap",
+      "snap_delta_similarity": 0.0,
+      "best_object_hypothesis_id": "object-hypothesis:n3",
+      "best_object_source_bucket": "geometry_only",
+      "status": "raw_candidate_below_threshold"
+    }
+  ],
+  "status_counts": {
+    "raw_candidate_below_threshold": 12,
+    "weak_or_missing_side": 5,
+    "oversized_or_merged_candidate": 1
+  },
+  "snap_effect_counts": {
+    "unchanged_by_snap": 17,
+    "worsened_by_snap": 1
+  }
+}

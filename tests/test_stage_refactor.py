@@ -11,14 +11,15 @@ from image_to_editable_ppt.config import PipelineConfig
 from image_to_editable_ppt.diagnostics import build_recorder
 from image_to_editable_ppt.detector import clamp_bbox as detector_clamp_bbox, grow_container_from_text_anchor as detector_grow_container_from_text_anchor
 from image_to_editable_ppt.eval_debug import EvalItem, attrition_by_stage, failure_taxonomy, oracle_upper_bound_by_stage, write_eval_debug_artifacts
-from image_to_editable_ppt.geometry import build_text_seed_rect_candidates
+from image_to_editable_ppt.geometry import build_parent_decomposition_rect_candidates, build_text_seed_rect_candidates
 from image_to_editable_ppt.graph import build_authoring_graph
 from image_to_editable_ppt.guides import GuideField
 from image_to_editable_ppt.ir import BBox
+from image_to_editable_ppt.objects import candidate_score
 from image_to_editable_ppt.pipeline import ConversionResult, build_elements
 from image_to_editable_ppt.reconstructors import build_motif_hypotheses
 from image_to_editable_ppt.reconstructors.raster_regions import build_raster_fallback_regions
-from image_to_editable_ppt.schema import AuthoringGraph, ConnectorCandidate, EmissionRecord, LinePrimitive, ObjectHypothesis, RectCandidate, StageContractError, validate_emission_trace
+from image_to_editable_ppt.schema import AuthoringGraph, ConnectorCandidate, EmissionRecord, LinePrimitive, OCRPhrase, ObjectHypothesis, RectCandidate, StageContractError, validate_emission_trace
 from image_to_editable_ppt.selection import select_authoring_objects
 from image_to_editable_ppt.text import OCRBackend, OCRTextRegion
 from image_to_editable_ppt.validation import run_validation_iteration, stage_eval_items
@@ -422,6 +423,37 @@ def test_geometry_audit_distinguishes_missing_raw_candidate_and_fallback_rescue(
     assert row["fallback_rescued"] is True
 
 
+def test_container_geometry_audit_reports_specific_statuses_and_snap_effects(tmp_path: Path) -> None:
+    ground_truth = [
+        EvalItem("gt-a", "container", BBox(10.0, 10.0, 50.0, 50.0)),
+        EvalItem("gt-b", "container", BBox(60.0, 10.0, 100.0, 50.0)),
+        EvalItem("gt-c", "container", BBox(140.0, 0.0, 180.0, 40.0)),
+    ]
+    stage_artifacts = {
+        "01_geometry_raw": [
+            EvalItem("raw-merged", "container", BBox(0.0, 0.0, 120.0, 60.0), source_ids=("rect-candidate:raw-merged",)),
+            EvalItem("raw-snap", "container", BBox(140.0, 0.0, 180.0, 40.0), source_ids=("rect-candidate:raw-snap",)),
+        ],
+        "02_guides": [
+            EvalItem("raw-merged:snapped", "container", BBox(0.0, 0.0, 120.0, 60.0), source_ids=("rect-candidate:raw-merged:snapped",)),
+            EvalItem("raw-snap:snapped", "container", BBox(205.0, 0.0, 245.0, 40.0), source_ids=("rect-candidate:raw-snap:snapped",)),
+        ],
+        "03_objects": [],
+        "05_selection": [],
+        "07_emit": [],
+    }
+
+    write_eval_debug_artifacts(tmp_path, ground_truth, stage_artifacts)
+
+    container_audit = json.loads((tmp_path / "container_geometry_audit.json").read_text(encoding="utf-8"))
+    rows = {row["gt_id"]: row for row in container_audit["ground_truth"]}
+    assert rows["gt-a"]["status"] == "oversized_or_merged_candidate"
+    assert rows["gt-b"]["status"] == "oversized_or_merged_candidate"
+    assert rows["gt-c"]["status"] == "snap_hurt"
+    assert rows["gt-c"]["snap_effect"] == "snap_moved_below_threshold"
+    assert container_audit["snap_effect_counts"]["snap_moved_below_threshold"] == 1
+
+
 def test_text_seed_geometry_candidates_expand_from_text_region() -> None:
     image = Image.new("RGB", (180, 140), "white")
     draw = ImageDraw.Draw(image)
@@ -438,6 +470,125 @@ def test_text_seed_geometry_candidates_expand_from_text_region() -> None:
     assert candidates
     assert candidates[0].bbox is not None
     assert candidates[0].bbox.area > BBox(66.0, 56.0, 112.0, 74.0).area
+
+
+def test_parent_decomposition_generates_child_candidates_from_merged_parent() -> None:
+    image = Image.new("RGB", (240, 140), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((10, 10, 230, 130), radius=18, outline=(0, 0, 0), width=3)
+    draw.rounded_rectangle((24, 34, 104, 106), radius=12, outline=(0, 0, 0), width=3)
+    draw.rounded_rectangle((132, 34, 212, 106), radius=12, outline=(0, 0, 0), width=3)
+    draw.rectangle((42, 58, 86, 70), fill=(0, 0, 0))
+    draw.rectangle((150, 58, 194, 70), fill=(0, 0, 0))
+    parent = RectCandidate(
+        id="rect-candidate:parent",
+        kind="rounded_rect",
+        bbox=BBox(10.0, 10.0, 230.0, 130.0),
+        score_total=0.95,
+        score_terms={"confidence": 0.95},
+        source_ids=["rect-candidate:parent"],
+        provenance={"source_ids": ["rect-candidate:parent"]},
+        object_type="container",
+        corner_radius=18.0,
+    )
+
+    candidates = build_parent_decomposition_rect_candidates(
+        image,
+        boundary_mask=None,
+        text_regions=[BBox(42.0, 58.0, 86.0, 70.0), BBox(150.0, 58.0, 194.0, 70.0)],
+        rejected_regions=[],
+        existing_candidates=[parent],
+        config=PipelineConfig(),
+    )
+
+    assert len(candidates) >= 2
+    assert any(candidate.bbox is not None and candidate.bbox.iou(BBox(24.0, 34.0, 104.0, 106.0)) >= 0.55 for candidate in candidates)
+    assert any(candidate.bbox is not None and candidate.bbox.iou(BBox(132.0, 34.0, 212.0, 106.0)) >= 0.55 for candidate in candidates)
+
+
+def test_parent_decomposition_keeps_precision_guardrail_with_single_seed() -> None:
+    image = Image.new("RGB", (180, 120), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((16, 16, 164, 104), radius=14, outline=(0, 0, 0), width=3)
+    draw.rectangle((62, 52, 110, 68), fill=(0, 0, 0))
+    parent = RectCandidate(
+        id="rect-candidate:parent",
+        kind="rounded_rect",
+        bbox=BBox(16.0, 16.0, 164.0, 104.0),
+        score_total=0.95,
+        score_terms={"confidence": 0.95},
+        source_ids=["rect-candidate:parent"],
+        provenance={"source_ids": ["rect-candidate:parent"]},
+        object_type="container",
+        corner_radius=14.0,
+    )
+
+    candidates = build_parent_decomposition_rect_candidates(
+        image,
+        boundary_mask=None,
+        text_regions=[BBox(62.0, 52.0, 110.0, 68.0)],
+        rejected_regions=[],
+        existing_candidates=[parent],
+        config=PipelineConfig(),
+    )
+
+    assert candidates == []
+
+
+def test_decomposed_parent_candidate_receives_targeted_assignment_bonus() -> None:
+    node = VLMNode("n1", "box", "Panel", BBox(0.0, 0.0, 120.0, 60.0))
+    anchor = OCRPhrase(
+        id="ocr-1",
+        kind="ocr_phrase",
+        bbox=BBox(30.0, 18.0, 78.0, 32.0),
+        score_total=1.0,
+        score_terms={"confidence": 1.0},
+        source_ids=["ocr-1"],
+        provenance={"source_ids": ["ocr-1"]},
+        text="Panel",
+        normalized_text="panel",
+    )
+    extra_phrases = [
+        OCRPhrase(
+            id=f"ocr-extra-{index}",
+            kind="ocr_phrase",
+            bbox=BBox(12.0 + index * 18.0, 34.0, 24.0 + index * 18.0, 42.0),
+            score_total=1.0,
+            score_terms={"confidence": 1.0},
+            source_ids=[f"ocr-extra-{index}"],
+            provenance={"source_ids": [f"ocr-extra-{index}"]},
+            text=f"extra-{index}",
+            normalized_text=f"extra-{index}",
+        )
+        for index in range(3)
+    ]
+    plain_candidate = RectCandidate(
+        id="rect-candidate:plain",
+        kind="rect",
+        bbox=BBox(8.0, 8.0, 96.0, 44.0),
+        score_total=0.81,
+        score_terms={"candidate_confidence": 0.81},
+        source_ids=["rect-candidate:plain"],
+        provenance={"source_ids": ["rect-candidate:plain"]},
+        object_type="container",
+    )
+    decomposed_candidate = RectCandidate(
+        id="rect-candidate:decompose",
+        kind="rect",
+        bbox=BBox(8.0, 8.0, 96.0, 44.0),
+        score_total=0.81,
+        score_terms={"candidate_confidence": 0.81, "decomposed_parent": 1.0},
+        source_ids=["rect-candidate:decompose"],
+        provenance={"source_ids": ["rect-candidate:decompose"]},
+        object_type="container",
+    )
+
+    phrases = [anchor, *extra_phrases]
+    plain_score = candidate_score(node, anchor, plain_candidate, phrases, PipelineConfig())
+    decomposed_score = candidate_score(node, anchor, decomposed_candidate, phrases, PipelineConfig())
+
+    assert plain_score is not None and plain_score < 1.35
+    assert decomposed_score is not None and decomposed_score >= 1.35
 
 
 def test_geometry_connector_candidates_reach_emit_without_fallback() -> None:
