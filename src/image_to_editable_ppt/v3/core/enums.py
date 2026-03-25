@@ -34,6 +34,19 @@ class ConnectorKind(StrEnum):
     ARROW = "arrow"
 
 
+class TextRegionRole(StrEnum):
+    UNKNOWN = "unknown"
+    LABEL = "label"
+    TITLE = "title"
+    BODY = "body"
+
+
+class RasterRegionKind(StrEnum):
+    COMPLEX_REGION = "complex_region"
+    PHOTO_LIKE = "photo_like"
+    NON_DIAGRAM = "non_diagram"
+
+
 class StyleTokenKind(StrEnum):
     FILL_COLOR = "fill_color"
     STROKE_COLOR = "stroke_color"
@@ -51,6 +64,7 @@ class StageName(StrEnum):
     MULTIVIEW = "multiview"
     TEXT_SPLIT = "text_split"
     RASTER_SPLIT = "raster_split"
+    RESIDUAL_CANVAS = "residual_canvas"
     FAMILY_DETECT = "family_detect"
     FAMILY_PARSE = "family_parse"
     CONNECTOR_RESOLVE = "connector_resolve"

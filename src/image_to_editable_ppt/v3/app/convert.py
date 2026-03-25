@@ -8,20 +8,28 @@ from PIL import Image
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.core.contracts import StageRecord
 from image_to_editable_ppt.v3.core.enums import ResidualKind, StageName
-from image_to_editable_ppt.v3.core.types import BBox
 from image_to_editable_ppt.v3.ir.models import (
     ConnectorSpec,
     DiagramInstance,
     FamilyProposal,
     MultiViewBundle,
-    RasterRegion,
+    RasterLayerResult,
     ResidualRegion,
+    ResidualCanvasResult,
     SlideIR,
     StyleToken,
-    TextRegion,
+    TextLayerResult,
 )
-from image_to_editable_ppt.v3.ir.validate import validate_multiview_bundle, validate_slide_ir
-from image_to_editable_ppt.v3.preprocessing.multiview import build_multiview_bundle
+from image_to_editable_ppt.v3.ir.validate import (
+    validate_multiview_bundle,
+    validate_raster_layer_result,
+    validate_residual_canvas_result,
+    validate_slide_ir,
+    validate_text_layer_result,
+)
+from image_to_editable_ppt.v3.preprocessing import build_multiview_bundle, build_residual_canvas
+from image_to_editable_ppt.v3.raster import extract_raster_layer
+from image_to_editable_ppt.v3.text import extract_text_layer
 
 
 @dataclass(slots=True)
@@ -38,21 +46,28 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
     multiview = build_multiview_bundle(image, config=active_config)
     validate_multiview_bundle(multiview)
 
-    text_regions = _extract_text_regions(multiview, active_config)
-    raster_regions = _extract_raster_regions(multiview, text_regions, active_config)
-    family_proposals = _detect_families(multiview, text_regions, raster_regions, active_config)
-    instances = _parse_families(multiview, family_proposals, text_regions, raster_regions, active_config)
-    connectors = _resolve_connectors(multiview, instances, active_config)
-    style_tokens = _resolve_style_tokens(multiview, instances, active_config)
-    residual_regions = _build_residuals(multiview, instances, text_regions, raster_regions, active_config)
+    text_layer = _extract_text_layer(multiview, active_config)
+    validate_text_layer_result(text_layer)
+    raster_layer = _extract_raster_layer(multiview, text_layer, active_config)
+    validate_raster_layer_result(raster_layer)
+    residual_canvas = _build_residual_canvas(multiview, text_layer, raster_layer)
+    validate_residual_canvas_result(residual_canvas)
+    family_proposals = _detect_families(residual_canvas, text_layer, raster_layer, active_config)
+    instances = _parse_families(residual_canvas, family_proposals, text_layer, raster_layer, active_config)
+    connectors = _resolve_connectors(residual_canvas, instances, active_config)
+    style_tokens = _resolve_style_tokens(residual_canvas, instances, active_config)
+    residual_regions = _build_residual_regions(residual_canvas, instances, active_config)
 
     slide_ir = SlideIR(
         image_size=multiview.image_size,
+        text_layer=text_layer,
+        raster_layer=raster_layer,
+        residual_canvas=residual_canvas,
         family_proposals=family_proposals,
         diagram_instances=instances,
         connectors=connectors,
-        text_regions=text_regions,
-        raster_regions=raster_regions,
+        text_regions=text_layer.regions,
+        raster_regions=raster_layer.regions,
         style_tokens=style_tokens,
         residual_regions=residual_regions,
     )
@@ -66,8 +81,27 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
                 "image_size": multiview.image_size.as_tuple(),
             },
         ),
-        StageRecord(stage=StageName.TEXT_SPLIT, summary={"text_region_count": len(text_regions)}),
-        StageRecord(stage=StageName.RASTER_SPLIT, summary={"raster_region_count": len(raster_regions)}),
+        StageRecord(
+            stage=StageName.TEXT_SPLIT,
+            summary={
+                "text_region_count": len(text_layer.regions),
+                "soft_mask_pixels": int((text_layer.soft_mask > 0.0).sum()),
+            },
+        ),
+        StageRecord(
+            stage=StageName.RASTER_SPLIT,
+            summary={
+                "raster_region_count": len(raster_layer.regions),
+                "subtraction_mask_pixels": int((raster_layer.subtraction_mask > 0.0).sum()),
+            },
+        ),
+        StageRecord(
+            stage=StageName.RESIDUAL_CANVAS,
+            summary={
+                "canvas_ready": residual_canvas.canvas is not None,
+                "combined_mask_pixels": int((residual_canvas.combined_mask > 0.0).sum()),
+            },
+        ),
         StageRecord(
             stage=StageName.FAMILY_DETECT,
             summary={
@@ -94,74 +128,77 @@ def _load_image(input_image: str | Path | Image.Image) -> Image.Image:
     return Image.open(input_image).convert("RGB")
 
 
-def _extract_text_regions(multiview: MultiViewBundle, config: V3Config) -> tuple[TextRegion, ...]:
-    del multiview, config
-    return ()
+def _extract_text_layer(multiview: MultiViewBundle, config: V3Config) -> TextLayerResult:
+    return extract_text_layer(multiview, config=config)
 
 
-def _extract_raster_regions(
+def _extract_raster_layer(
     multiview: MultiViewBundle,
-    text_regions: tuple[TextRegion, ...],
+    text_layer: TextLayerResult,
     config: V3Config,
-) -> tuple[RasterRegion, ...]:
-    del multiview, text_regions, config
-    return ()
+) -> RasterLayerResult:
+    return extract_raster_layer(multiview, text_layer=text_layer, config=config)
 
 
 def _detect_families(
-    multiview: MultiViewBundle,
-    text_regions: tuple[TextRegion, ...],
-    raster_regions: tuple[RasterRegion, ...],
+    residual_canvas: ResidualCanvasResult,
+    text_layer: TextLayerResult,
+    raster_layer: RasterLayerResult,
     config: V3Config,
 ) -> tuple[FamilyProposal, ...]:
-    del multiview, text_regions, raster_regions, config
+    del residual_canvas, text_layer, raster_layer, config
     return ()
 
 
 def _parse_families(
-    multiview: MultiViewBundle,
+    residual_canvas: ResidualCanvasResult,
     family_proposals: tuple[FamilyProposal, ...],
-    text_regions: tuple[TextRegion, ...],
-    raster_regions: tuple[RasterRegion, ...],
+    text_layer: TextLayerResult,
+    raster_layer: RasterLayerResult,
     config: V3Config,
 ) -> tuple[DiagramInstance, ...]:
-    del multiview, family_proposals, text_regions, raster_regions, config
+    del residual_canvas, family_proposals, text_layer, raster_layer, config
     return ()
 
 
 def _resolve_connectors(
-    multiview: MultiViewBundle,
+    residual_canvas: ResidualCanvasResult,
     instances: tuple[DiagramInstance, ...],
     config: V3Config,
 ) -> tuple[ConnectorSpec, ...]:
-    del multiview, instances, config
+    del residual_canvas, instances, config
     return ()
 
 
 def _resolve_style_tokens(
-    multiview: MultiViewBundle,
+    residual_canvas: ResidualCanvasResult,
     instances: tuple[DiagramInstance, ...],
     config: V3Config,
 ) -> tuple[StyleToken, ...]:
-    del multiview, instances, config
+    del residual_canvas, instances, config
     return ()
 
 
-def _build_residuals(
+def _build_residual_canvas(
     multiview: MultiViewBundle,
+    text_layer: TextLayerResult,
+    raster_layer: RasterLayerResult,
+) -> ResidualCanvasResult:
+    return build_residual_canvas(multiview, text_layer=text_layer, raster_layer=raster_layer)
+
+
+def _build_residual_regions(
+    residual_canvas: ResidualCanvasResult,
     instances: tuple[DiagramInstance, ...],
-    text_regions: tuple[TextRegion, ...],
-    raster_regions: tuple[RasterRegion, ...],
     config: V3Config,
 ) -> tuple[ResidualRegion, ...]:
-    del text_regions, raster_regions
-    if instances or not config.preserve_unresolved_residuals:
+    if instances or not config.preserve_unresolved_residuals or residual_canvas.canvas is None:
         return ()
     return (
         ResidualRegion(
             id="residual:structural_canvas",
             kind=ResidualKind.UNRESOLVED,
-            bbox=BBox.from_image_size(multiview.image_size),
+            bbox=residual_canvas.canvas.bbox,
             confidence=1.0,
             reason="family_parser_not_implemented",
         ),

@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-03-25  
-상태: `Legacy cleanup / isolation phase 완료`
+상태: `Phase 2: text/raster separation 완료`
 
 ---
 
@@ -421,6 +421,7 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 - 초기에는 v3 전용 contract test를 먼저 만든다.
 - 필요할 때만 adapter를 추가해 기존 benchmark 툴이 v3 출력을 읽을 수 있게 한다.
 - `Phase 0~1`에서 benchmark methodology 자체를 뜯어고치지 않는다.
+- `Phase 2`에서는 adapter를 구현하지 않고, adapter가 읽어야 할 v3 출력 계약만 고정한다.
 
 ### 9.2 현재 평가 한계
 
@@ -466,14 +467,75 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 ---
 
 ### Phase 2. text / raster 분리 시작
-- [ ] text region proposal 실제화
-- [ ] OCR 및 text role 최소 구현
-- [ ] text soft-mask contract 확정
-- [ ] raster/non-diagram proposal 최소 구현
-- [ ] residual structural canvas contract 확정
+
+이번 단계 이름:
+
+- `Phase 2: text/raster separation`
+
+이번 단계 목표:
+
+- text branch가 최소 실제 region 결과를 생성한다.
+- raster/non-diagram branch가 최소 실제 region 결과를 생성한다.
+- text soft-mask와 raster subtraction 이후의 residual structural canvas contract를 고정한다.
+- 이후 family detector/parser가 받을 입력 형식을 typed IR로 못박는다.
+- preserve-eval 자산은 손대지 않고 adapter 요구사항만 기록한다.
+
+이번 단계 비목표:
+
+- legacy 물리 이동
+- root import path shim 추가
+- v2 heuristic 성능 개선
+- family parser 본격 구현
+- connector solving 확대
+- detector 모델 성능 최적화
+- shared로의 무리한 코드 추출
+
+이번 단계에서 text branch가 출력해야 하는 것:
+
+- `TextRegion` 목록
+- `TextLayerResult`
+- text-soft-masked structure view 또는 동등한 payload
+- region role, provenance, diagnostics-friendly metadata
+
+이번 단계에서 raster branch가 출력해야 하는 것:
+
+- `RasterRegion` 목록
+- `RasterLayerResult`
+- subtraction에 사용할 raster mask 또는 동등한 payload
+- provenance, diagnostics-friendly metadata
+
+residual structural canvas contract:
+
+- text soft-mask가 반영된 구조 view
+- raster subtraction이 반영된 구조 view
+- 최종 `ResidualStructuralCanvas`
+- image size / coordinate contract
+- 반영된 text/raster region id provenance
+
+shim phase를 아직 열지 않는 이유:
+
+- 지금 필요한 것은 import 경로 재배선이 아니라 detector/parser 입력 contract 고정이다.
+- legacy 이동과 shim 작업을 지금 섞으면 branch contract보다 호환성 작업이 앞서게 된다.
+- 따라서 이번 단계는 v3 내부 입력 분리 구조를 먼저 안정화하는 데 집중한다.
+
+Phase 3로 넘어가기 위한 조건:
+
+- text/raster/residual typed contract가 코드로 정의됨
+- text branch가 최소 실제 결과를 생성함
+- raster branch가 최소 실제 결과를 생성함
+- residual structural canvas가 orchestration에 연결됨
+- structure/contract 중심 테스트가 통과함
+
+- [x] text region proposal 실제화
+- [x] OCR 없이도 text role field를 유지하는 최소 contract 구현
+- [x] text soft-mask contract 확정
+- [x] raster/non-diagram proposal 최소 구현
+- [x] residual structural canvas contract 확정
 
 **완료 조건**
 - empty tuple placeholder가 아니라 최소한의 실제 branch 결과가 생성되어야 한다.
+- `convert.py`가 `multiview -> text -> raster -> residual` 흐름을 실제로 연결해야 한다.
+- architecture boundary test와 legacy regression이 유지되어야 한다.
 
 ---
 
@@ -585,6 +647,7 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 ## 13. 현재 상태
 
 - `plan.md`가 v3 migration의 source of truth로 설정되었다.
+- 현재 활성 단계는 `Phase 2: text/raster separation`까지 완료된 상태다.
 - `legacy cleanup / isolation phase` 기준이 문서화되었다.
   - legacy 후보
   - preserve_eval 대상
@@ -597,6 +660,24 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
   - IR dataclass
   - IR validator
   - unresolved residual을 명시하는 placeholder orchestration
+- `Phase 2` branch contract가 구현되었다.
+  - `TextLayerResult`
+  - `RasterLayerResult`
+  - `ResidualStructuralCanvas`
+  - `ResidualCanvasResult`
+- text branch가 최소 실제 결과를 생성한다.
+  - text region proposal
+  - role field
+  - soft-masked structure view
+- raster branch가 최소 실제 결과를 생성한다.
+  - raster/non-diagram region proposal
+  - subtraction mask
+  - subtracted structure view
+- residual structural canvas가 고정되었다.
+  - text-suppressed view
+  - raster-suppressed view
+  - final residual canvas
+  - text/raster provenance ids
 - 보존 namespace가 준비되었다.
   - `src/image_to_editable_ppt/legacy_v2/`
   - `src/image_to_editable_ppt/shared/`
@@ -617,6 +698,10 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 - shared 후보는 아직 symbol-level 검토만 존재하며, 실제 이동된 코드는 없다.
   - 현재 후보: `BBox`, `Point`
 - focused v3 architecture test가 추가되었고, legacy regression test도 유지되고 있다.
+- shim phase는 아직 열지 않았다.
+  - 이유: branch contract와 residual canvas 정의가 shim 작업보다 우선이기 때문이다.
+- adapter 구현은 아직 하지 않았다.
+  - 다만 future `eval_runtime/` adapter는 `SlideIR.text_layer`, `SlideIR.raster_layer`, `SlideIR.residual_canvas`를 읽을 수 있어야 한다.
 
 ---
 
@@ -626,11 +711,11 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 
 ### 14.1 v3 구현 축
 
-`Phase 2`를 작은 단위로 진행한다.
+다음 구현 단계는 `Phase 3: family detector / parser 골격`이다.
 
-1. text-region / raster-region 분리를 실제 placeholder 수준에서라도 동작하게 만든다.
-2. text soft-mask + raster subtraction 이후 residual structural canvas contract를 고정한다.
-3. 첫 family detector/parser skeleton을 config gate 뒤에 도입한다.
+1. `ResidualStructuralCanvas`를 첫 family detector 입력 계약으로 사용한다.
+2. 첫 family detector skeleton과 첫 family parser skeleton을 broad emit 없이 IR 수준까지 연결한다.
+3. text/raster provenance가 family parsing과 충돌하지 않도록 instance/source contract를 정리한다.
 4. 아직 broad emit는 붙이지 않는다.
 
 ### 14.2 legacy shim 축

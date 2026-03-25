@@ -14,10 +14,12 @@ if TYPE_CHECKING:
         DiagramInstance,
         FamilyProposal,
         MultiViewBundle,
-        RasterRegion,
+        RasterLayerResult,
+        ResidualCanvasResult,
+        ResidualStructuralCanvas,
         ResidualRegion,
         StyleToken,
-        TextRegion,
+        TextLayerResult,
     )
 
 
@@ -37,7 +39,7 @@ class MultiViewBuilder(Protocol):
 
 
 class TextExtractor(Protocol):
-    def extract(self, bundle: "MultiViewBundle", *, config: "V3Config") -> Sequence["TextRegion"]: ...
+    def extract(self, bundle: "MultiViewBundle", *, config: "V3Config") -> "TextLayerResult": ...
 
 
 class RasterExtractor(Protocol):
@@ -45,18 +47,18 @@ class RasterExtractor(Protocol):
         self,
         bundle: "MultiViewBundle",
         *,
-        text_regions: Sequence["TextRegion"],
+        text_layer: "TextLayerResult",
         config: "V3Config",
-    ) -> Sequence["RasterRegion"]: ...
+    ) -> "RasterLayerResult": ...
 
 
 class FamilyDetector(Protocol):
     def detect(
         self,
-        bundle: "MultiViewBundle",
+        canvas: "ResidualStructuralCanvas",
         *,
-        text_regions: Sequence["TextRegion"],
-        raster_regions: Sequence["RasterRegion"],
+        text_layer: "TextLayerResult",
+        raster_layer: "RasterLayerResult",
         config: "V3Config",
     ) -> Sequence["FamilyProposal"]: ...
 
@@ -64,11 +66,11 @@ class FamilyDetector(Protocol):
 class FamilyParser(Protocol):
     def parse(
         self,
-        bundle: "MultiViewBundle",
+        canvas: "ResidualStructuralCanvas",
         *,
         proposals: Sequence["FamilyProposal"],
-        text_regions: Sequence["TextRegion"],
-        raster_regions: Sequence["RasterRegion"],
+        text_layer: "TextLayerResult",
+        raster_layer: "RasterLayerResult",
         config: "V3Config",
     ) -> Sequence["DiagramInstance"]: ...
 
@@ -98,8 +100,7 @@ class ResidualComposer(Protocol):
         self,
         bundle: "MultiViewBundle",
         *,
-        instances: Sequence["DiagramInstance"],
-        text_regions: Sequence["TextRegion"],
-        raster_regions: Sequence["RasterRegion"],
+        text_layer: "TextLayerResult",
+        raster_layer: "RasterLayerResult",
         config: "V3Config",
-    ) -> Sequence["ResidualRegion"]: ...
+    ) -> "ResidualCanvasResult": ...

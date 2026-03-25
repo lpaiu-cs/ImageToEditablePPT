@@ -81,6 +81,9 @@ def test_placeholder_pipeline_returns_explicit_residual() -> None:
 
     assert result.slide_ir.diagram_instances == ()
     assert result.slide_ir.family_proposals == ()
+    assert result.slide_ir.text_layer is not None
+    assert result.slide_ir.raster_layer is not None
+    assert result.slide_ir.residual_canvas is not None
     assert len(result.slide_ir.residual_regions) == 1
     residual = result.slide_ir.residual_regions[0]
     assert residual.kind is ResidualKind.UNRESOLVED
@@ -89,6 +92,7 @@ def test_placeholder_pipeline_returns_explicit_residual() -> None:
         StageName.MULTIVIEW,
         StageName.TEXT_SPLIT,
         StageName.RASTER_SPLIT,
+        StageName.RESIDUAL_CANVAS,
         StageName.FAMILY_DETECT,
         StageName.FAMILY_PARSE,
         StageName.CONNECTOR_RESOLVE,
