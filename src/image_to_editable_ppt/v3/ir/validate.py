@@ -120,8 +120,11 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
 
     for proposal in slide_ir.family_proposals:
         _validate_confidence(proposal.confidence, label=proposal.id)
-        if proposal.focus_bbox is not None:
-            _validate_bbox(proposal.focus_bbox, label=proposal.id)
+        if proposal.focus_bbox is None:
+            raise ContractViolationError(f"family proposal {proposal.id} must include a focus_bbox")
+        _validate_bbox(proposal.focus_bbox, label=proposal.id)
+        if not proposal.provenance:
+            raise ContractViolationError(f"family proposal {proposal.id} must declare provenance")
 
     for instance in slide_ir.diagram_instances:
         _validate_confidence(instance.confidence, label=instance.id)

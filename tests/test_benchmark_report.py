@@ -3,14 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from PIL import Image
-
 from image_to_editable_ppt.benchmark_report import summarize_benchmark, write_benchmark_summary
-from image_to_editable_ppt.config import PipelineConfig
-from image_to_editable_ppt.ir import BBox, BoxGeometry, Element, FillStyle, StrokeStyle
-from image_to_editable_ppt.reconstructors import build_motif_hypotheses
-from image_to_editable_ppt.reconstructors.raster_regions import build_raster_fallback_regions, prune_raster_fallback_against_native
-from image_to_editable_ppt.schema import GuideField, ObjectHypothesis
 
 
 def write_slide(root: Path, slide_id: str, *, gt_available: bool) -> None:
@@ -186,44 +179,6 @@ def write_slide(root: Path, slide_id: str, *, gt_available: bool) -> None:
         for name in ("oracle_by_stage.json", "attrition_by_stage.json", "failure_taxonomy.json", "geometry_audit.json", "container_geometry_audit.json"):
             (eval_dir / name).write_text(json.dumps(unavailable), encoding="utf-8")
 
-
-def make_hypothesis(
-    object_id: str,
-    bbox: BBox,
-    *,
-    score_total: float = 0.7,
-    fallback: bool = True,
-    object_type: str = "container",
-    guide_ids: list[str] | None = None,
-) -> ObjectHypothesis:
-    return ObjectHypothesis(
-        id=object_id,
-        kind=object_type,
-        bbox=bbox,
-        score_total=score_total,
-        score_terms={"score": score_total},
-        source_ids=["grow_fallback", f"rect:{object_id}"] if fallback else [f"rect:{object_id}"],
-        provenance={"source_ids": ["grow_fallback", f"rect:{object_id}"] if fallback else [f"rect:{object_id}"]},
-        assigned_vlm_ids=[object_id],
-        object_type=object_type,
-        candidate_id=f"rect:{object_id}",
-        fallback=fallback,
-        guide_ids=guide_ids or [],
-    )
-
-
-def guide_field() -> GuideField:
-    return GuideField(
-        id="guide-field",
-        kind="guide_field",
-        bbox=None,
-        score_total=0.0,
-        score_terms={"guides": 0.0},
-        source_ids=["guide-field"],
-        provenance={"source_ids": ["guide-field"]},
-    )
-
-
 def test_benchmark_aggregation_distinguishes_gt_backed_and_unavailable_slides(tmp_path: Path) -> None:
     write_slide(tmp_path, "slide-a", gt_available=True)
     write_slide(tmp_path, "slide-b", gt_available=False)
@@ -276,56 +231,3 @@ def test_benchmark_aggregation_contains_stage_native_raster_and_motif_fields(tmp
     assert summary["source_bucket_counts_by_kind"]["07_emit"]["matched_gt_by_source_bucket_by_kind"]["container"]["fallback_only"] == 1
     assert row["container_snap_effect_counts"]["worsened_by_snap"] == 1
     assert row["ablation_flags"]["grow_fallback_enabled"] is True
-
-
-def test_raster_fallback_tiles_are_merged_and_pruned_by_native_overlap() -> None:
-    image = Image.new("RGB", (160, 120), "white")
-    hypotheses = [
-        make_hypothesis("a", BBox(10.0, 10.0, 70.0, 60.0)),
-        make_hypothesis("b", BBox(50.0, 18.0, 110.0, 68.0)),
-    ]
-    config = PipelineConfig()
-    raster = build_raster_fallback_regions(image, hypotheses, config)
-    assert len(raster.regions) == 1
-
-    native = [
-        Element(
-            id="native-1",
-            kind="rect",
-            geometry=BoxGeometry(BBox(8.0, 8.0, 112.0, 70.0)),
-            stroke=StrokeStyle(color=(0, 0, 0), width=1.0),
-            fill=FillStyle(enabled=False, color=None),
-            text=None,
-            confidence=0.95,
-            source_region=BBox(8.0, 8.0, 112.0, 70.0),
-            inferred=True,
-        )
-    ]
-    pruned = prune_raster_fallback_against_native(raster, native, config)
-    assert not pruned.regions
-    assert pruned.dropped_regions[0]["reason"] == "covered_by_native"
-
-
-def test_motif_ablation_and_guardrails_are_machine_readable() -> None:
-    image = Image.new("RGB", (240, 160), "white")
-    hypotheses = [
-        make_hypothesis("panel", BBox(10.0, 10.0, 190.0, 120.0), fallback=False, score_total=2.0, guide_ids=["gx"]),
-        make_hypothesis("title", BBox(18.0, 16.0, 80.0, 32.0), fallback=False, score_total=1.0, object_type="textbox", guide_ids=["gx"]),
-        make_hypothesis("child-a", BBox(20.0, 50.0, 60.0, 90.0), fallback=False, score_total=1.0, guide_ids=["row"]),
-        make_hypothesis("child-b", BBox(120.0, 50.0, 190.0, 100.0), fallback=False, score_total=1.0, guide_ids=[]),
-    ]
-
-    disabled = build_motif_hypotheses(image, hypotheses, guide_field(), PipelineConfig(enable_motifs=False))
-    assert disabled.motifs == []
-
-    family_disabled = build_motif_hypotheses(image, hypotheses, guide_field(), PipelineConfig(enable_titled_panel_motif=False))
-    assert any(row["reason"] == "family_disabled" and row["motif_kind"] == "titled_panel" for row in family_disabled.rejected)
-
-    guardrailed = build_motif_hypotheses(
-        image,
-        hypotheses,
-        guide_field(),
-        PipelineConfig(enable_repeated_cards_motif=True, motif_repeated_cards_min_members=3),
-    )
-    reasons = {row["reason"] for row in guardrailed.rejected}
-    assert "insufficient_members" in reasons or "insufficient_shared_guides" in reasons

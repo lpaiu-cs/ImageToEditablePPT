@@ -7,7 +7,7 @@ import math
 from pathlib import Path
 from typing import Iterable
 
-from .ir import BBox
+from .shared.geometry import BBox
 from .schema import (
     ConnectorCandidate,
     EmissionRecord,

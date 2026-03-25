@@ -1,6 +1,12 @@
 # shared Namespace Rules
 
-`shared/`는 비어 있어도 정상이다.
+`shared/`는 여전히 최소한만 유지한다.
+
+현재 실제 추출물:
+
+- `BBox`
+- `Point`
+- `ImageSize`
 
 허용 기준:
 
@@ -17,4 +23,7 @@
 - detector/parser decision code
 - legacy stage semantics에 묶인 schema
 
-현재 phase에서는 실제 이동을 하지 않고, 후보만 문서화한다.
+원칙:
+
+- 애매하면 shared로 올리지 않는다.
+- 재사용 가치보다 설계 오염 위험이 더 크면 v3 내부에 남긴다.

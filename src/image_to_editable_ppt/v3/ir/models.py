@@ -92,6 +92,7 @@ class FamilyProposal:
     family: DiagramFamily
     confidence: float
     evidence: tuple[str, ...] = ()
+    provenance: tuple[str, ...] = ()
     focus_bbox: BBox | None = None
 
 

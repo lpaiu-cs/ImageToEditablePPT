@@ -8,6 +8,7 @@ from PIL import Image
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.core.contracts import StageRecord
 from image_to_editable_ppt.v3.core.enums import ResidualKind, StageName
+from image_to_editable_ppt.v3.families import detect_family_proposals, parse_family_proposals
 from image_to_editable_ppt.v3.ir.models import (
     ConnectorSpec,
     DiagramInstance,
@@ -146,8 +147,14 @@ def _detect_families(
     raster_layer: RasterLayerResult,
     config: V3Config,
 ) -> tuple[FamilyProposal, ...]:
-    del residual_canvas, text_layer, raster_layer, config
-    return ()
+    if residual_canvas.canvas is None:
+        return ()
+    return detect_family_proposals(
+        residual_canvas.canvas,
+        text_layer=text_layer,
+        raster_layer=raster_layer,
+        config=config,
+    )
 
 
 def _parse_families(
@@ -157,8 +164,15 @@ def _parse_families(
     raster_layer: RasterLayerResult,
     config: V3Config,
 ) -> tuple[DiagramInstance, ...]:
-    del residual_canvas, family_proposals, text_layer, raster_layer, config
-    return ()
+    if residual_canvas.canvas is None or not family_proposals:
+        return ()
+    return parse_family_proposals(
+        residual_canvas.canvas,
+        proposals=family_proposals,
+        text_layer=text_layer,
+        raster_layer=raster_layer,
+        config=config,
+    )
 
 
 def _resolve_connectors(

@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import StrEnum
 from typing import Any
 
-from .ir import BBox, Point
+from .shared.geometry import BBox, Point
 
 
 class SuppressionReason(StrEnum):

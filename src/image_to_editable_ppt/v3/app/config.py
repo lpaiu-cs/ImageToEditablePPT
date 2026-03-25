@@ -7,13 +7,7 @@ from image_to_editable_ppt.v3.core.enums import DiagramFamily
 
 DEFAULT_ENABLED_FAMILIES = frozenset(
     {
-        DiagramFamily.BLOCK_FLOW,
         DiagramFamily.ORTHOGONAL_FLOW,
-        DiagramFamily.CYCLE,
-        DiagramFamily.SWIMLANE,
-        DiagramFamily.TABLE_MATRIX,
-        DiagramFamily.TIMELINE,
-        DiagramFamily.LAYERED_STACK,
     }
 )
 

@@ -43,6 +43,13 @@ def extract_raster_layer(
             continue
         label_roi = labels[y : y + h, x : x + w] == component_index
         mean_std = float(local_std[y : y + h, x : x + w][label_roi].mean())
+        roi = style_view[y : y + h, x : x + w]
+        palette_size = int(np.unique(roi.reshape(-1, roi.shape[-1]), axis=0).shape[0])
+        mean_saturation = float(cv2.cvtColor(roi, cv2.COLOR_RGB2HSV)[..., 1].mean())
+        if mean_saturation < 18.0 and palette_size < 128:
+            continue
+        if palette_size < 12 and mean_std < 26.0:
+            continue
         bbox = _expand_bbox(x, y, w, h, width=width, height=height, padding=padding)
         subtraction_mask[int(bbox.y0) : int(bbox.y1), int(bbox.x0) : int(bbox.x1)] = 1.0
         regions.append(

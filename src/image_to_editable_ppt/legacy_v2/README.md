@@ -1,55 +1,20 @@
 # legacy_v2 Namespace
 
-`legacy_v2/`는 현재 root 아래 흩어져 있는 v2 변환 코어의 장기적 수용 위치다.
+`legacy_v2/`는 purge 이후에도 이름만 남겨 둔 역사적 namespace다.
 
-이번 phase의 원칙:
+현재 상태:
 
-- 이 namespace는 **경계 확정**이 목적이다.
-- 이번 phase에서 모든 legacy 모듈을 즉시 물리 이동하지 않는다.
-- 기존 public import path와 테스트를 깨지 않는 것이 우선이다.
+- v2 변환 구현은 workspace에서 제거되었다.
+- 이 namespace 아래로 legacy 코드를 다시 옮겨 보관하지 않는다.
+- 삭제된 구현은 git history에만 남는다.
+
+남겨 두는 이유:
+
+- 문서상으로 v2와 v3의 경계를 명확히 하기 위해서
+- 이후 context compact 상황에서도 "legacy runtime은 더 이상 workspace에 없다"는 사실을 분명히 하기 위해서
+
+원칙:
+
 - 새 기능은 여기에 추가하지 않는다.
-
-## Responsibility
-
-- legacy CV / heuristic conversion core의 장기 보관 위치
-- compatibility shim의 종착점
-- preserve_eval과 분리된 legacy runtime 구현 위치
-
-## Planned Long-Term Residents
-
-- `pipeline.py`
-- `config.py`
-- `preprocess.py`
-- `components.py`
-- `detector.py`
-- `fitter.py`
-- `geometry.py`
-- `guides.py`
-- `objects.py`
-- `selection.py`
-- `graph.py`
-- `emit.py`
-- `exporter.py`
-- `fallback.py`
-- `filtering.py`
-- `gating.py`
-- `repair.py`
-- `router.py`
-- `style.py`
-- `text.py`
-- `vlm_parser.py`
-- `reconstructors/*`
-- legacy `ir.py`의 v2-specific payload
-
-## Compatibility Shim Strategy
-
-- 기존 import path는 당분간 유지한다.
-- 이동 시 root 경로에는 얇은 wrapper 또는 re-export shim만 남긴다.
-- shim에는 새 로직을 추가하지 않는다.
-- 새 기능은 `src/image_to_editable_ppt/v3/` 아래에만 추가한다.
-
-## Explicit Non-Goals
-
-- v3가 이 namespace를 직접 import하게 만들지 않는다.
-- "쓸 만해 보이는" legacy heuristic을 shared로 복사하지 않는다.
-- preserve_eval tooling을 legacy runtime과 섞어 놓지 않는다.
+- v3가 이 namespace를 import하게 만들지 않는다.
+- tombstone stub가 필요하더라도 root public surface에만 제한하고, 여기에 구현을 숨기지 않는다.

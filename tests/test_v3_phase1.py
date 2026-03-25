@@ -57,6 +57,7 @@ def test_slide_ir_validation_rejects_unknown_connector_endpoint() -> None:
                         bbox=BBox(10.0, 10.0, 60.0, 40.0),
                     ),
                 ),
+                source_proposal_ids=(),
             ),
         ),
         connectors=(
