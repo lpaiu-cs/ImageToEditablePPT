@@ -47,6 +47,18 @@ class ConnectorOrientation(StrEnum):
     UNKNOWN = "unknown"
 
 
+class PortSide(StrEnum):
+    TOP = "top"
+    RIGHT = "right"
+    BOTTOM = "bottom"
+    LEFT = "left"
+
+
+class PortOwnerKind(StrEnum):
+    NODE = "node"
+    CONTAINER = "container"
+
+
 class TextRegionRole(StrEnum):
     UNKNOWN = "unknown"
     LABEL = "label"
@@ -81,6 +93,8 @@ class StageName(StrEnum):
     FAMILY_DETECT = "family_detect"
     FAMILY_PARSE = "family_parse"
     CONNECTOR_EVIDENCE = "connector_evidence"
+    PORT_GENERATE = "port_generate"
+    CONNECTOR_ATTACH = "connector_attach"
     CONNECTOR_RESOLVE = "connector_resolve"
     STYLE_RESOLVE = "style_resolve"
     COMPOSE = "compose"

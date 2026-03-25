@@ -1,6 +1,8 @@
 # conversion-spec.md
 
-> Status: Draft v0.1
+> Status: Historical / archived draft during v3 rebuild
+>
+> Current source of truth: `plan.md`
 > 
 > 이 문서는 **ImageToEditablePPT**의 변환 규격을 정의한다. 상위 규범은 `principle.md`이며, 에이전트 행동 규칙은 `AGENTS.md`를 따른다. 충돌 시 우선순위는 다음과 같다.
 >

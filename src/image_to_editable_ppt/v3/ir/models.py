@@ -11,6 +11,8 @@ from image_to_editable_ppt.v3.core.enums import (
     ContainerKind,
     DiagramFamily,
     NodeKind,
+    PortOwnerKind,
+    PortSide,
     RasterRegionKind,
     ResidualKind,
     StyleTokenKind,
@@ -165,6 +167,120 @@ class ConnectorEvidence:
 
 
 @dataclass(slots=True, frozen=True)
+class PortSpec:
+    id: str
+    owner_id: str
+    owner_kind: PortOwnerKind
+    side: PortSide
+    point: Point
+    confidence: float
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class ConnectorAttachment:
+    port_id: str
+    owner_id: str
+    owner_kind: PortOwnerKind
+    side: PortSide
+    point: Point
+    distance: float
+    confidence: float
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class PrimitiveNode:
+    id: str
+    kind: NodeKind
+    bbox: BBox
+    confidence: float
+    label: str | None = None
+    text_region_ids: tuple[str, ...] = ()
+    port_ids: tuple[str, ...] = ()
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class PrimitiveContainer:
+    id: str
+    kind: ContainerKind
+    bbox: BBox
+    confidence: float
+    member_node_ids: tuple[str, ...] = ()
+    label: str | None = None
+    port_ids: tuple[str, ...] = ()
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class PrimitiveText:
+    id: str
+    role: TextRegionRole
+    bbox: BBox
+    confidence: float
+    text: str | None = None
+    owner_ids: tuple[str, ...] = ()
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class PrimitiveConnectorCandidate:
+    id: str
+    kind: ConnectorKind
+    bbox: BBox
+    confidence: float
+    source_evidence_id: str
+    path_points: tuple[Point, ...] = ()
+    start_attachment: ConnectorAttachment | None = None
+    end_attachment: ConnectorAttachment | None = None
+    arrowhead_start: bool = False
+    arrowhead_end: bool = False
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class UnattachedConnectorEvidence:
+    id: str
+    evidence_id: str
+    reason: str
+    confidence: float
+    candidate_port_ids: tuple[str, ...] = ()
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class PrimitiveResidual:
+    id: str
+    kind: ResidualKind
+    bbox: BBox
+    confidence: float
+    reason: str
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class PrimitiveScene:
+    image_size: ImageSize
+    nodes: tuple[PrimitiveNode, ...] = ()
+    containers: tuple[PrimitiveContainer, ...] = ()
+    texts: tuple[PrimitiveText, ...] = ()
+    ports: tuple[PortSpec, ...] = ()
+    connector_candidates: tuple[PrimitiveConnectorCandidate, ...] = ()
+    unattached_connector_evidence: tuple[UnattachedConnectorEvidence, ...] = ()
+    residuals: tuple[PrimitiveResidual, ...] = ()
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
 class StyleToken:
     id: str
     kind: StyleTokenKind
@@ -214,7 +330,10 @@ class SlideIR:
     family_proposals: tuple[FamilyProposal, ...] = ()
     diagram_instances: tuple[DiagramInstance, ...] = ()
     connector_evidence: tuple[ConnectorEvidence, ...] = ()
+    connector_candidates: tuple[PrimitiveConnectorCandidate, ...] = ()
+    unattached_connector_evidence: tuple[UnattachedConnectorEvidence, ...] = ()
     connectors: tuple[ConnectorSpec, ...] = ()
+    primitive_scene: PrimitiveScene | None = None
     text_regions: tuple[TextRegion, ...] = ()
     raster_regions: tuple[RasterRegion, ...] = ()
     style_tokens: tuple[StyleToken, ...] = ()

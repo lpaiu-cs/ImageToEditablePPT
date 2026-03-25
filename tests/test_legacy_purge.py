@@ -90,6 +90,7 @@ def test_preserve_eval_modules_do_not_import_purged_runtime_modules() -> None:
 def test_validation_module_is_explicit_tombstone() -> None:
     validation = import_module("image_to_editable_ppt.validation")
     assert "v2 core removed, use v3 path / see plan.md" in validation.REMOVED_MESSAGE
+    assert "tools/run_v3_debug.py" in validation.REMOVED_MESSAGE
     with pytest.raises(validation.ValidationAdapterUnavailableError):
         validation.run_validation_iteration()
 
@@ -97,6 +98,7 @@ def test_validation_module_is_explicit_tombstone() -> None:
 def test_cli_module_is_explicit_tombstone() -> None:
     cli = import_module("image_to_editable_ppt.cli")
     assert "v2 core removed, use v3 path / see plan.md" in cli.REMOVED_MESSAGE
+    assert "tools/run_v3_debug.py" in cli.REMOVED_MESSAGE
     with pytest.raises(RuntimeError):
         cli.main()
 

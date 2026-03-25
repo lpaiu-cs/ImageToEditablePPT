@@ -5,7 +5,19 @@ import numpy as np
 from image_to_editable_ppt.v3.core.contracts import ContractViolationError
 from image_to_editable_ppt.v3.core.enums import BranchKind
 from image_to_editable_ppt.v3.core.types import BBox
-from image_to_editable_ppt.v3.ir.models import ConnectorEvidence, MultiViewBundle, RasterLayerResult, ResidualCanvasResult, SlideIR, TextLayerResult
+from image_to_editable_ppt.v3.ir.models import (
+    ConnectorAttachment,
+    ConnectorEvidence,
+    MultiViewBundle,
+    PortSpec,
+    PrimitiveConnectorCandidate,
+    PrimitiveScene,
+    RasterLayerResult,
+    ResidualCanvasResult,
+    SlideIR,
+    TextLayerResult,
+    UnattachedConnectorEvidence,
+)
 
 
 REQUIRED_BRANCHES = {
@@ -101,6 +113,7 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
     node_ids = {node.id for instance in slide_ir.diagram_instances for node in instance.nodes}
     container_ids = {container.id for instance in slide_ir.diagram_instances for container in instance.containers}
     proposal_ids = {proposal.id for proposal in slide_ir.family_proposals}
+    evidence_ids = {evidence.id for evidence in slide_ir.connector_evidence}
 
     if slide_ir.text_layer is not None:
         validate_text_layer_result(slide_ir.text_layer)
@@ -160,6 +173,10 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
     for evidence in slide_ir.connector_evidence:
         _validate_connector_evidence(evidence, node_ids=node_ids, container_ids=container_ids)
 
+    if slide_ir.connector_candidates or slide_ir.unattached_connector_evidence:
+        if slide_ir.primitive_scene is None:
+            raise ContractViolationError("connector attachment outputs require a primitive_scene payload")
+
     for connector in slide_ir.connectors:
         _validate_confidence(connector.confidence, label=connector.id)
         if connector.source_instance_id is not None and connector.source_instance_id not in instance_ids:
@@ -194,6 +211,107 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
         if unknown_raster_ids:
             raise ContractViolationError(f"residual canvas references unknown raster regions {unknown_raster_ids}")
 
+    if slide_ir.primitive_scene is not None:
+        validate_primitive_scene(slide_ir.primitive_scene)
+        if slide_ir.primitive_scene.image_size != slide_ir.image_size:
+            raise ContractViolationError("primitive scene image size must match slide_ir.image_size")
+        if slide_ir.connector_candidates != slide_ir.primitive_scene.connector_candidates:
+            raise ContractViolationError("slide_ir.connector_candidates must mirror primitive_scene.connector_candidates")
+        if slide_ir.unattached_connector_evidence != slide_ir.primitive_scene.unattached_connector_evidence:
+            raise ContractViolationError(
+                "slide_ir.unattached_connector_evidence must mirror primitive_scene.unattached_connector_evidence"
+            )
+        primitive_node_ids = {item.id for item in slide_ir.primitive_scene.nodes}
+        primitive_container_ids = {item.id for item in slide_ir.primitive_scene.containers}
+        port_ids = {item.id for item in slide_ir.primitive_scene.ports}
+        for candidate in slide_ir.connector_candidates:
+            _validate_connector_candidate(
+                candidate,
+                evidence_ids=evidence_ids,
+                port_ids=port_ids,
+                node_ids=primitive_node_ids,
+                container_ids=primitive_container_ids,
+            )
+        for item in slide_ir.unattached_connector_evidence:
+            _validate_unattached_connector_evidence(item, evidence_ids=evidence_ids, port_ids=port_ids)
+
+
+def validate_primitive_scene(scene: PrimitiveScene) -> None:
+    if not scene.provenance:
+        raise ContractViolationError("primitive scene provenance must not be empty")
+
+    node_ids = {item.id for item in scene.nodes}
+    container_ids = {item.id for item in scene.containers}
+    port_ids = {item.id for item in scene.ports}
+    text_ids = {item.id for item in scene.texts}
+
+    for node in scene.nodes:
+        _validate_confidence(node.confidence, label=node.id)
+        _validate_bbox(node.bbox, label=node.id)
+        if not node.source:
+            raise ContractViolationError(f"primitive node {node.id} must declare a source")
+        if not node.provenance:
+            raise ContractViolationError(f"primitive node {node.id} must declare provenance")
+        unknown_port_ids = [port_id for port_id in node.port_ids if port_id not in port_ids]
+        if unknown_port_ids:
+            raise ContractViolationError(f"primitive node {node.id} references unknown ports {unknown_port_ids}")
+
+    for container in scene.containers:
+        _validate_confidence(container.confidence, label=container.id)
+        _validate_bbox(container.bbox, label=container.id)
+        if not container.source:
+            raise ContractViolationError(f"primitive container {container.id} must declare a source")
+        if not container.provenance:
+            raise ContractViolationError(f"primitive container {container.id} must declare provenance")
+        unknown_member_ids = [node_id for node_id in container.member_node_ids if node_id not in node_ids]
+        if unknown_member_ids:
+            raise ContractViolationError(
+                f"primitive container {container.id} references unknown member nodes {unknown_member_ids}"
+            )
+        unknown_port_ids = [port_id for port_id in container.port_ids if port_id not in port_ids]
+        if unknown_port_ids:
+            raise ContractViolationError(f"primitive container {container.id} references unknown ports {unknown_port_ids}")
+
+    for text in scene.texts:
+        _validate_confidence(text.confidence, label=text.id)
+        _validate_bbox(text.bbox, label=text.id)
+        if not text.source:
+            raise ContractViolationError(f"primitive text {text.id} must declare a source")
+        if not text.provenance:
+            raise ContractViolationError(f"primitive text {text.id} must declare provenance")
+        unknown_owner_ids = [
+            owner_id for owner_id in text.owner_ids if owner_id not in node_ids and owner_id not in container_ids
+        ]
+        if unknown_owner_ids:
+            raise ContractViolationError(f"primitive text {text.id} references unknown owners {unknown_owner_ids}")
+
+    for port in scene.ports:
+        _validate_port(port, node_ids=node_ids, container_ids=container_ids)
+
+    for item in scene.connector_candidates:
+        _validate_connector_candidate(
+            item,
+            evidence_ids=set(),
+            port_ids=port_ids,
+            node_ids=node_ids,
+            container_ids=container_ids,
+            allow_unknown_evidence=True,
+        )
+
+    for item in scene.unattached_connector_evidence:
+        _validate_unattached_connector_evidence(item, evidence_ids=set(), port_ids=port_ids, allow_unknown_evidence=True)
+
+    for residual in scene.residuals:
+        _validate_confidence(residual.confidence, label=residual.id)
+        _validate_bbox(residual.bbox, label=residual.id)
+        if not residual.source:
+            raise ContractViolationError(f"primitive residual {residual.id} must declare a source")
+        if not residual.provenance:
+            raise ContractViolationError(f"primitive residual {residual.id} must declare provenance")
+
+    if len(text_ids) != len(scene.texts):
+        raise ContractViolationError("primitive text ids must be unique")
+
 
 def _validate_confidence(confidence: float, *, label: str) -> None:
     if not 0.0 <= confidence <= 1.0:
@@ -220,6 +338,94 @@ def _validate_connector_evidence(
     for container_id in evidence.nearby_container_ids:
         if container_id not in container_ids:
             raise ContractViolationError(f"connector evidence {evidence.id} references unknown container id {container_id}")
+
+
+def _validate_port(port: PortSpec, *, node_ids: set[str], container_ids: set[str]) -> None:
+    _validate_confidence(port.confidence, label=port.id)
+    if not port.source:
+        raise ContractViolationError(f"port {port.id} must declare a source")
+    if not port.provenance:
+        raise ContractViolationError(f"port {port.id} must declare provenance")
+    if port.owner_kind.value == "node" and port.owner_id not in node_ids:
+        raise ContractViolationError(f"port {port.id} references unknown node owner {port.owner_id}")
+    if port.owner_kind.value == "container" and port.owner_id not in container_ids:
+        raise ContractViolationError(f"port {port.id} references unknown container owner {port.owner_id}")
+
+
+def _validate_attachment(
+    attachment: ConnectorAttachment,
+    *,
+    port_ids: set[str],
+    node_ids: set[str],
+    container_ids: set[str],
+) -> None:
+    _validate_confidence(attachment.confidence, label=attachment.port_id)
+    if attachment.port_id not in port_ids:
+        raise ContractViolationError(f"attachment references unknown port id {attachment.port_id}")
+    if attachment.owner_kind.value == "node" and attachment.owner_id not in node_ids:
+        raise ContractViolationError(f"attachment references unknown node owner {attachment.owner_id}")
+    if attachment.owner_kind.value == "container" and attachment.owner_id not in container_ids:
+        raise ContractViolationError(f"attachment references unknown container owner {attachment.owner_id}")
+    if attachment.distance < 0.0:
+        raise ContractViolationError(f"attachment distance must be non-negative for {attachment.port_id}")
+    if not attachment.source:
+        raise ContractViolationError(f"attachment {attachment.port_id} must declare a source")
+    if not attachment.provenance:
+        raise ContractViolationError(f"attachment {attachment.port_id} must declare provenance")
+
+
+def _validate_connector_candidate(
+    candidate: PrimitiveConnectorCandidate,
+    *,
+    evidence_ids: set[str],
+    port_ids: set[str],
+    node_ids: set[str],
+    container_ids: set[str],
+    allow_unknown_evidence: bool = False,
+) -> None:
+    _validate_confidence(candidate.confidence, label=candidate.id)
+    _validate_bbox(candidate.bbox, label=candidate.id)
+    if len(candidate.path_points) < 2:
+        raise ContractViolationError(f"connector candidate {candidate.id} must have at least two path points")
+    if not candidate.source:
+        raise ContractViolationError(f"connector candidate {candidate.id} must declare a source")
+    if not candidate.provenance:
+        raise ContractViolationError(f"connector candidate {candidate.id} must declare provenance")
+    if not allow_unknown_evidence and candidate.source_evidence_id not in evidence_ids:
+        raise ContractViolationError(
+            f"connector candidate {candidate.id} references unknown evidence {candidate.source_evidence_id}"
+        )
+    if candidate.start_attachment is None or candidate.end_attachment is None:
+        raise ContractViolationError(f"connector candidate {candidate.id} must include both endpoint attachments")
+    _validate_attachment(candidate.start_attachment, port_ids=port_ids, node_ids=node_ids, container_ids=container_ids)
+    _validate_attachment(candidate.end_attachment, port_ids=port_ids, node_ids=node_ids, container_ids=container_ids)
+    if candidate.start_attachment.owner_id == candidate.end_attachment.owner_id:
+        raise ContractViolationError(f"connector candidate {candidate.id} cannot attach both ends to the same owner")
+
+
+def _validate_unattached_connector_evidence(
+    item: UnattachedConnectorEvidence,
+    *,
+    evidence_ids: set[str],
+    port_ids: set[str],
+    allow_unknown_evidence: bool = False,
+) -> None:
+    _validate_confidence(item.confidence, label=item.id)
+    if not item.reason:
+        raise ContractViolationError(f"unattached connector evidence {item.id} must include a reason")
+    if not item.source:
+        raise ContractViolationError(f"unattached connector evidence {item.id} must declare a source")
+    if not item.provenance:
+        raise ContractViolationError(f"unattached connector evidence {item.id} must declare provenance")
+    if not allow_unknown_evidence and item.evidence_id not in evidence_ids:
+        raise ContractViolationError(
+            f"unattached connector evidence {item.id} references unknown evidence {item.evidence_id}"
+        )
+    unknown_port_ids = [port_id for port_id in item.candidate_port_ids if port_id not in port_ids]
+    if unknown_port_ids:
+        raise ContractViolationError(
+            f"unattached connector evidence {item.id} references unknown candidate ports {unknown_port_ids}"
+        )
 
 
 def _validate_bbox(bbox, *, label: str) -> None:

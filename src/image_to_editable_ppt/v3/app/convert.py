@@ -6,7 +6,8 @@ from pathlib import Path
 from PIL import Image
 
 from image_to_editable_ppt.v3.app.config import V3Config
-from image_to_editable_ppt.v3.connectors import extract_connector_evidence
+from image_to_editable_ppt.v3.compose import build_primitive_scene
+from image_to_editable_ppt.v3.connectors import attach_connector_evidence, extract_connector_evidence, generate_ports
 from image_to_editable_ppt.v3.core.contracts import StageRecord
 from image_to_editable_ppt.v3.core.enums import ResidualKind, StageName
 from image_to_editable_ppt.v3.families import detect_family_proposals, parse_family_proposals
@@ -15,15 +16,20 @@ from image_to_editable_ppt.v3.ir.models import (
     DiagramInstance,
     FamilyProposal,
     MultiViewBundle,
+    PortSpec,
+    PrimitiveConnectorCandidate,
+    PrimitiveScene,
     RasterLayerResult,
     ResidualRegion,
     ResidualCanvasResult,
     SlideIR,
     StyleToken,
     TextLayerResult,
+    UnattachedConnectorEvidence,
 )
 from image_to_editable_ppt.v3.ir.validate import (
     validate_multiview_bundle,
+    validate_primitive_scene,
     validate_raster_layer_result,
     validate_residual_canvas_result,
     validate_slide_ir,
@@ -57,8 +63,26 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
     family_proposals = _detect_families(residual_canvas, text_layer, raster_layer, active_config)
     instances = _parse_families(residual_canvas, family_proposals, text_layer, raster_layer, active_config)
     connector_evidence = _extract_connector_evidence(residual_canvas, instances, active_config)
+    ports = _generate_ports(instances, active_config)
+    connector_candidates, unattached_connector_evidence = _attach_connector_evidence(
+        connector_evidence,
+        ports,
+        active_config,
+    )
     style_tokens = _resolve_style_tokens(residual_canvas, instances, active_config)
     residual_regions = _build_residual_regions(residual_canvas, instances, active_config)
+    primitive_scene = _build_primitive_scene(
+        text_layer=text_layer,
+        raster_layer=raster_layer,
+        residual_canvas=residual_canvas,
+        instances=instances,
+        ports=ports,
+        connector_candidates=connector_candidates,
+        unattached_connector_evidence=unattached_connector_evidence,
+        residual_regions=residual_regions,
+        config=active_config,
+    )
+    validate_primitive_scene(primitive_scene)
 
     slide_ir = SlideIR(
         image_size=multiview.image_size,
@@ -68,7 +92,10 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
         family_proposals=family_proposals,
         diagram_instances=instances,
         connector_evidence=connector_evidence,
+        connector_candidates=connector_candidates,
+        unattached_connector_evidence=unattached_connector_evidence,
         connectors=(),
+        primitive_scene=primitive_scene,
         text_regions=text_layer.regions,
         raster_regions=raster_layer.regions,
         style_tokens=style_tokens,
@@ -122,8 +149,30 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
                 ),
             },
         ),
+        StageRecord(
+            stage=StageName.PORT_GENERATE,
+            summary={
+                "port_count": len(ports),
+                "owner_count": len({port.owner_id for port in ports}),
+            },
+        ),
+        StageRecord(
+            stage=StageName.CONNECTOR_ATTACH,
+            summary={
+                "connector_candidate_count": len(connector_candidates),
+                "unattached_evidence_count": len(unattached_connector_evidence),
+            },
+        ),
         StageRecord(stage=StageName.STYLE_RESOLVE, summary={"style_token_count": len(style_tokens)}),
-        StageRecord(stage=StageName.COMPOSE, summary={"residual_region_count": len(residual_regions)}),
+        StageRecord(
+            stage=StageName.COMPOSE,
+            summary={
+                "primitive_node_count": len(primitive_scene.nodes),
+                "primitive_container_count": len(primitive_scene.containers),
+                "primitive_text_count": len(primitive_scene.texts),
+                "primitive_residual_count": len(primitive_scene.residuals),
+            },
+        ),
     )
     return V3ConversionResult(
         config=active_config,
@@ -199,6 +248,29 @@ def _extract_connector_evidence(
     )
 
 
+def _generate_ports(
+    instances: tuple[DiagramInstance, ...],
+    config: V3Config,
+) -> tuple[PortSpec, ...]:
+    if not instances:
+        return ()
+    return generate_ports(instances=instances, config=config)
+
+
+def _attach_connector_evidence(
+    connector_evidence: tuple[ConnectorEvidence, ...],
+    ports: tuple[PortSpec, ...],
+    config: V3Config,
+) -> tuple[tuple[PrimitiveConnectorCandidate, ...], tuple[UnattachedConnectorEvidence, ...]]:
+    if not connector_evidence or not ports:
+        return (), ()
+    return attach_connector_evidence(
+        connector_evidence=connector_evidence,
+        ports=ports,
+        config=config,
+    )
+
+
 def _resolve_style_tokens(
     residual_canvas: ResidualCanvasResult,
     instances: tuple[DiagramInstance, ...],
@@ -231,4 +303,29 @@ def _build_residual_regions(
             confidence=1.0,
             reason="family_parser_not_implemented",
         ),
+    )
+
+
+def _build_primitive_scene(
+    *,
+    text_layer: TextLayerResult,
+    raster_layer: RasterLayerResult,
+    residual_canvas: ResidualCanvasResult,
+    instances: tuple[DiagramInstance, ...],
+    ports: tuple[PortSpec, ...],
+    connector_candidates: tuple[PrimitiveConnectorCandidate, ...],
+    unattached_connector_evidence: tuple[UnattachedConnectorEvidence, ...],
+    residual_regions: tuple[ResidualRegion, ...],
+    config: V3Config,
+) -> PrimitiveScene:
+    return build_primitive_scene(
+        text_layer=text_layer,
+        raster_layer=raster_layer,
+        residual_canvas=residual_canvas,
+        instances=instances,
+        ports=ports,
+        connector_candidates=connector_candidates,
+        unattached_connector_evidence=unattached_connector_evidence,
+        residual_regions=residual_regions,
+        config=config,
     )

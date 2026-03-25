@@ -10,7 +10,20 @@ from PIL import Image, ImageDraw
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.app.convert import V3ConversionResult, convert_image
 from image_to_editable_ppt.v3.core.enums import BranchKind
-from image_to_editable_ppt.v3.ir.models import ConnectorEvidence, DiagramContainer, DiagramInstance, DiagramNode, FamilyProposal
+from image_to_editable_ppt.v3.ir.models import (
+    ConnectorAttachment,
+    ConnectorEvidence,
+    DiagramContainer,
+    DiagramInstance,
+    DiagramNode,
+    FamilyProposal,
+    PortSpec,
+    PrimitiveConnectorCandidate,
+    PrimitiveResidual,
+    PrimitiveScene,
+    PrimitiveText,
+    UnattachedConnectorEvidence,
+)
 
 
 @dataclass(slots=True, frozen=True)
@@ -19,9 +32,14 @@ class V3DebugArtifacts:
     family_proposals_json: Path
     diagram_instances_json: Path
     connector_evidence_json: Path
+    primitive_scene_json: Path
+    attached_connectors_json: Path
     overlay_proposals_png: Path
     overlay_instances_png: Path
     overlay_connector_evidence_png: Path
+    overlay_ports_png: Path
+    overlay_primitives_png: Path
+    overlay_attached_connectors_png: Path
     debug_summary_json: Path
 
 
@@ -49,6 +67,16 @@ def run_v3_debug(
     family_payload = {"family_proposals": [_proposal_to_json(item) for item in conversion.slide_ir.family_proposals]}
     instance_payload = {"diagram_instances": [_instance_to_json(item) for item in conversion.slide_ir.diagram_instances]}
     connector_payload = {"connector_evidence": [_connector_evidence_to_json(item) for item in conversion.slide_ir.connector_evidence]}
+    primitive_scene = conversion.slide_ir.primitive_scene
+    primitive_payload = {
+        "primitive_scene": None if primitive_scene is None else _primitive_scene_to_json(primitive_scene),
+    }
+    attached_connector_payload = {
+        "connector_candidates": [_connector_candidate_to_json(item) for item in conversion.slide_ir.connector_candidates],
+        "unattached_connector_evidence": [
+            _unattached_connector_to_json(item) for item in conversion.slide_ir.unattached_connector_evidence
+        ],
+    }
     summary_payload = {
         "image_size": conversion.slide_ir.image_size.as_tuple(),
         "stage_records": [
@@ -59,24 +87,41 @@ def run_v3_debug(
             "family_proposals": len(conversion.slide_ir.family_proposals),
             "diagram_instances": len(conversion.slide_ir.diagram_instances),
             "connector_evidence": len(conversion.slide_ir.connector_evidence),
+            "connector_candidates": len(conversion.slide_ir.connector_candidates),
+            "unattached_connector_evidence": len(conversion.slide_ir.unattached_connector_evidence),
+            "primitive_nodes": 0 if primitive_scene is None else len(primitive_scene.nodes),
+            "primitive_containers": 0 if primitive_scene is None else len(primitive_scene.containers),
+            "primitive_texts": 0 if primitive_scene is None else len(primitive_scene.texts),
+            "primitive_ports": 0 if primitive_scene is None else len(primitive_scene.ports),
+            "primitive_residuals": 0 if primitive_scene is None else len(primitive_scene.residuals),
         },
     }
 
     family_json = output_path / "family_proposals.json"
     instance_json = output_path / "diagram_instances.json"
     connector_json = output_path / "connector_evidence.json"
+    primitive_json = output_path / "primitive_scene.json"
+    attached_connector_json = output_path / "attached_connectors.json"
     summary_json = output_path / "debug_summary.json"
     _write_json(family_json, family_payload)
     _write_json(instance_json, instance_payload)
     _write_json(connector_json, connector_payload)
+    _write_json(primitive_json, primitive_payload)
+    _write_json(attached_connector_json, attached_connector_payload)
     _write_json(summary_json, summary_payload)
 
     overlay_proposals = output_path / "overlay_proposals.png"
     overlay_instances = output_path / "overlay_instances.png"
     overlay_connector = output_path / "overlay_connector_evidence.png"
+    overlay_ports = output_path / "overlay_ports.png"
+    overlay_primitives = output_path / "overlay_primitives.png"
+    overlay_attached_connectors = output_path / "overlay_attached_connectors.png"
     _render_proposal_overlay(base_image, conversion.slide_ir.family_proposals).save(overlay_proposals)
     _render_instance_overlay(base_image, conversion.slide_ir.diagram_instances).save(overlay_instances)
     _render_connector_overlay(base_image, conversion.slide_ir.diagram_instances, conversion.slide_ir.connector_evidence).save(overlay_connector)
+    _render_port_overlay(base_image, primitive_scene).save(overlay_ports)
+    _render_primitive_overlay(base_image, primitive_scene).save(overlay_primitives)
+    _render_attached_connector_overlay(base_image, primitive_scene).save(overlay_attached_connectors)
 
     return V3DebugRun(
         conversion=conversion,
@@ -85,9 +130,14 @@ def run_v3_debug(
             family_proposals_json=family_json,
             diagram_instances_json=instance_json,
             connector_evidence_json=connector_json,
+            primitive_scene_json=primitive_json,
+            attached_connectors_json=attached_connector_json,
             overlay_proposals_png=overlay_proposals,
             overlay_instances_png=overlay_instances,
             overlay_connector_evidence_png=overlay_connector,
+            overlay_ports_png=overlay_ports,
+            overlay_primitives_png=overlay_primitives,
+            overlay_attached_connectors_png=overlay_attached_connectors,
             debug_summary_json=summary_json,
         ),
     )
@@ -124,6 +174,7 @@ def _node_to_json(node: DiagramNode) -> dict[str, object]:
         "confidence": node.confidence,
         "label": node.label,
         "text_region_ids": list(node.text_region_ids),
+        "port_ids": list(getattr(node, "port_ids", ())),
         "source": node.source,
         "provenance": list(node.provenance),
     }
@@ -137,6 +188,7 @@ def _container_to_json(container: DiagramContainer) -> dict[str, object]:
         "confidence": container.confidence,
         "member_node_ids": list(container.member_node_ids),
         "label": container.label,
+        "port_ids": list(getattr(container, "port_ids", ())),
         "source": container.source,
         "provenance": list(container.provenance),
     }
@@ -171,6 +223,105 @@ def _connector_evidence_to_json(evidence: ConnectorEvidence) -> dict[str, object
         "nearby_container_ids": list(evidence.nearby_container_ids),
         "source": evidence.source,
         "provenance": list(evidence.provenance),
+    }
+
+
+def _port_to_json(port: PortSpec) -> dict[str, object]:
+    return {
+        "id": port.id,
+        "owner_id": port.owner_id,
+        "owner_kind": port.owner_kind.value,
+        "side": port.side.value,
+        "point": _point_to_json(port.point),
+        "confidence": port.confidence,
+        "source": port.source,
+        "provenance": list(port.provenance),
+    }
+
+
+def _attachment_to_json(attachment: ConnectorAttachment | None) -> dict[str, object] | None:
+    if attachment is None:
+        return None
+    return {
+        "port_id": attachment.port_id,
+        "owner_id": attachment.owner_id,
+        "owner_kind": attachment.owner_kind.value,
+        "side": attachment.side.value,
+        "point": _point_to_json(attachment.point),
+        "distance": attachment.distance,
+        "confidence": attachment.confidence,
+        "source": attachment.source,
+        "provenance": list(attachment.provenance),
+    }
+
+
+def _connector_candidate_to_json(candidate: PrimitiveConnectorCandidate) -> dict[str, object]:
+    return {
+        "id": candidate.id,
+        "kind": candidate.kind.value,
+        "bbox": _bbox_to_json(candidate.bbox),
+        "confidence": candidate.confidence,
+        "source_evidence_id": candidate.source_evidence_id,
+        "path_points": [_point_to_json(point) for point in candidate.path_points],
+        "start_attachment": _attachment_to_json(candidate.start_attachment),
+        "end_attachment": _attachment_to_json(candidate.end_attachment),
+        "arrowhead_start": candidate.arrowhead_start,
+        "arrowhead_end": candidate.arrowhead_end,
+        "source": candidate.source,
+        "provenance": list(candidate.provenance),
+    }
+
+
+def _unattached_connector_to_json(item: UnattachedConnectorEvidence) -> dict[str, object]:
+    return {
+        "id": item.id,
+        "evidence_id": item.evidence_id,
+        "reason": item.reason,
+        "confidence": item.confidence,
+        "candidate_port_ids": list(item.candidate_port_ids),
+        "source": item.source,
+        "provenance": list(item.provenance),
+    }
+
+
+def _primitive_text_to_json(item: PrimitiveText) -> dict[str, object]:
+    return {
+        "id": item.id,
+        "role": item.role.value,
+        "bbox": _bbox_to_json(item.bbox),
+        "confidence": item.confidence,
+        "text": item.text,
+        "owner_ids": list(item.owner_ids),
+        "source": item.source,
+        "provenance": list(item.provenance),
+    }
+
+
+def _primitive_residual_to_json(item: PrimitiveResidual) -> dict[str, object]:
+    return {
+        "id": item.id,
+        "kind": item.kind.value,
+        "bbox": _bbox_to_json(item.bbox),
+        "confidence": item.confidence,
+        "reason": item.reason,
+        "source": item.source,
+        "provenance": list(item.provenance),
+    }
+
+
+def _primitive_scene_to_json(scene: PrimitiveScene) -> dict[str, object]:
+    return {
+        "image_size": scene.image_size.as_tuple(),
+        "nodes": [_node_to_json(item) for item in scene.nodes],
+        "containers": [_container_to_json(item) for item in scene.containers],
+        "texts": [_primitive_text_to_json(item) for item in scene.texts],
+        "ports": [_port_to_json(item) for item in scene.ports],
+        "connector_candidates": [_connector_candidate_to_json(item) for item in scene.connector_candidates],
+        "unattached_connector_evidence": [
+            _unattached_connector_to_json(item) for item in scene.unattached_connector_evidence
+        ],
+        "residuals": [_primitive_residual_to_json(item) for item in scene.residuals],
+        "provenance": list(scene.provenance),
     }
 
 
@@ -212,11 +363,84 @@ def _render_connector_overlay(
         points = [(point.x, point.y) for point in evidence.path_points]
         draw.line(points, fill=(196, 38, 54), width=3)
         if evidence.arrowhead_start:
-            draw.ellipse((points[0][0] - 3, points[0][1] - 3, points[0][0] + 3, points[0][1] + 3), fill=(123, 45, 180))
+            _draw_point(draw, points[0], fill=(123, 45, 180), radius=4)
         if evidence.arrowhead_end:
-            draw.ellipse((points[-1][0] - 3, points[-1][1] - 3, points[-1][0] + 3, points[-1][1] + 3), fill=(123, 45, 180))
+            _draw_point(draw, points[-1], fill=(123, 45, 180), radius=4)
         draw.text((evidence.bbox.x0 + 2, evidence.bbox.y0 + 2), evidence.id, fill=(196, 38, 54))
     return overlay
+
+
+def _render_port_overlay(base_image: Image.Image, scene: PrimitiveScene | None) -> Image.Image:
+    overlay = base_image.copy()
+    draw = ImageDraw.Draw(overlay)
+    if scene is None:
+        return overlay
+    for node in scene.nodes:
+        _draw_bbox(draw, node.bbox, outline=(210, 210, 210), width=1)
+    for container in scene.containers:
+        _draw_bbox(draw, container.bbox, outline=(180, 220, 180), width=1)
+    for port in scene.ports:
+        color = (211, 117, 0) if port.owner_kind.value == "node" else (38, 120, 72)
+        _draw_point(draw, (port.point.x, port.point.y), fill=color, radius=4)
+        draw.text((port.point.x + 3, port.point.y + 3), port.side.value[0], fill=color)
+    return overlay
+
+
+def _render_primitive_overlay(base_image: Image.Image, scene: PrimitiveScene | None) -> Image.Image:
+    overlay = base_image.copy()
+    draw = ImageDraw.Draw(overlay)
+    if scene is None:
+        return overlay
+    for container in scene.containers:
+        _draw_bbox(draw, container.bbox, outline=(38, 120, 72), width=3)
+        draw.text((container.bbox.x0 + 4, container.bbox.y0 + 4), container.id, fill=(38, 120, 72))
+    for node in scene.nodes:
+        _draw_bbox(draw, node.bbox, outline=(211, 117, 0), width=2)
+        draw.text((node.bbox.x0 + 4, node.bbox.y0 + 4), node.id, fill=(211, 117, 0))
+    for text in scene.texts:
+        _draw_bbox(draw, text.bbox, outline=(50, 50, 200), width=1)
+    for residual in scene.residuals:
+        _draw_bbox(draw, residual.bbox, outline=(196, 38, 54), width=1)
+    return overlay
+
+
+def _render_attached_connector_overlay(base_image: Image.Image, scene: PrimitiveScene | None) -> Image.Image:
+    overlay = base_image.copy()
+    draw = ImageDraw.Draw(overlay)
+    if scene is None:
+        return overlay
+    for node in scene.nodes:
+        _draw_bbox(draw, node.bbox, outline=(200, 200, 200), width=1)
+    for container in scene.containers:
+        _draw_bbox(draw, container.bbox, outline=(210, 240, 210), width=1)
+    for candidate in scene.connector_candidates:
+        points = [(point.x, point.y) for point in candidate.path_points]
+        draw.line(points, fill=(31, 119, 180), width=3)
+        if candidate.start_attachment is not None:
+            _draw_point(
+                draw,
+                (candidate.start_attachment.point.x, candidate.start_attachment.point.y),
+                fill=(31, 119, 180),
+                radius=4,
+            )
+        if candidate.end_attachment is not None:
+            _draw_point(
+                draw,
+                (candidate.end_attachment.point.x, candidate.end_attachment.point.y),
+                fill=(31, 119, 180),
+                radius=4,
+            )
+        if candidate.arrowhead_start:
+            _draw_point(draw, points[0], fill=(123, 45, 180), radius=4)
+        if candidate.arrowhead_end:
+            _draw_point(draw, points[-1], fill=(123, 45, 180), radius=4)
+        draw.text((candidate.bbox.x0 + 2, candidate.bbox.y0 + 2), candidate.id, fill=(31, 119, 180))
+    return overlay
+
+
+def _draw_point(draw: ImageDraw.ImageDraw, point: tuple[float, float], *, fill: tuple[int, int, int], radius: int) -> None:
+    x, y = point
+    draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=fill)
 
 
 def _draw_bbox(draw: ImageDraw.ImageDraw, bbox, *, outline: tuple[int, int, int], width: int) -> None:

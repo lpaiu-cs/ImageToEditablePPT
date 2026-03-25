@@ -3,7 +3,10 @@ from __future__ import annotations
 from typing import Any
 
 
-REMOVED_MESSAGE = "v2 core removed, use v3 path / see plan.md. Validation adapter is not implemented yet."
+REMOVED_MESSAGE = (
+    "v2 core removed, use v3 path / see plan.md. "
+    "Validation adapter is not implemented; use tools/run_v3_debug.py for current inspection."
+)
 
 
 class ValidationAdapterUnavailableError(NotImplementedError):

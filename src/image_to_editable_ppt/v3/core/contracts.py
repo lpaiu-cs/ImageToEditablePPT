@@ -15,12 +15,16 @@ if TYPE_CHECKING:
         DiagramInstance,
         FamilyProposal,
         MultiViewBundle,
+        PortSpec,
+        PrimitiveConnectorCandidate,
+        PrimitiveScene,
         RasterLayerResult,
         ResidualCanvasResult,
         ResidualStructuralCanvas,
         ResidualRegion,
         StyleToken,
         TextLayerResult,
+        UnattachedConnectorEvidence,
     )
 
 
@@ -94,6 +98,42 @@ class ConnectorEvidenceExtractor(Protocol):
         instances: Sequence["DiagramInstance"],
         config: "V3Config",
     ) -> Sequence["ConnectorEvidence"]: ...
+
+
+class PortGenerator(Protocol):
+    def generate(
+        self,
+        *,
+        instances: Sequence["DiagramInstance"],
+        config: "V3Config",
+    ) -> Sequence["PortSpec"]: ...
+
+
+class ConnectorAttachmentBuilder(Protocol):
+    def attach(
+        self,
+        *,
+        connector_evidence: Sequence["ConnectorEvidence"],
+        ports: Sequence["PortSpec"],
+        config: "V3Config",
+    ) -> tuple[Sequence["PrimitiveConnectorCandidate"], Sequence["UnattachedConnectorEvidence"]]: ...
+
+
+class PrimitiveSceneMapper(Protocol):
+    def build(
+        self,
+        bundle: "MultiViewBundle",
+        *,
+        text_layer: "TextLayerResult",
+        raster_layer: "RasterLayerResult",
+        residual_canvas: "ResidualCanvasResult",
+        instances: Sequence["DiagramInstance"],
+        ports: Sequence["PortSpec"],
+        connector_candidates: Sequence["PrimitiveConnectorCandidate"],
+        unattached_connector_evidence: Sequence["UnattachedConnectorEvidence"],
+        residual_regions: Sequence["ResidualRegion"],
+        config: "V3Config",
+    ) -> "PrimitiveScene": ...
 
 
 class StyleResolver(Protocol):

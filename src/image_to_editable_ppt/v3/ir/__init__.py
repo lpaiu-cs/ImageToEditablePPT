@@ -1,6 +1,7 @@
 """IR models and validators for v3."""
 
 from .models import (
+    ConnectorAttachment,
     ConnectorEvidence,
     ConnectorSpec,
     DiagramContainer,
@@ -9,6 +10,13 @@ from .models import (
     FamilyProposal,
     MultiViewBranch,
     MultiViewBundle,
+    PortSpec,
+    PrimitiveConnectorCandidate,
+    PrimitiveContainer,
+    PrimitiveNode,
+    PrimitiveResidual,
+    PrimitiveScene,
+    PrimitiveText,
     RasterLayerResult,
     RasterRegion,
     ResidualCanvasResult,
@@ -18,9 +26,11 @@ from .models import (
     StyleToken,
     TextLayerResult,
     TextRegion,
+    UnattachedConnectorEvidence,
 )
 from .validate import (
     validate_multiview_bundle,
+    validate_primitive_scene,
     validate_raster_layer_result,
     validate_residual_canvas_result,
     validate_slide_ir,
@@ -28,6 +38,7 @@ from .validate import (
 )
 
 __all__ = [
+    "ConnectorAttachment",
     "ConnectorEvidence",
     "ConnectorSpec",
     "DiagramContainer",
@@ -36,6 +47,13 @@ __all__ = [
     "FamilyProposal",
     "MultiViewBranch",
     "MultiViewBundle",
+    "PortSpec",
+    "PrimitiveConnectorCandidate",
+    "PrimitiveContainer",
+    "PrimitiveNode",
+    "PrimitiveResidual",
+    "PrimitiveScene",
+    "PrimitiveText",
     "RasterLayerResult",
     "RasterRegion",
     "ResidualCanvasResult",
@@ -45,7 +63,9 @@ __all__ = [
     "StyleToken",
     "TextLayerResult",
     "TextRegion",
+    "UnattachedConnectorEvidence",
     "validate_multiview_bundle",
+    "validate_primitive_scene",
     "validate_raster_layer_result",
     "validate_residual_canvas_result",
     "validate_slide_ir",

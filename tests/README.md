@@ -5,12 +5,14 @@
 ## Purge / Boundary
 
 - `tests/test_legacy_purge.py`
+- `tests/test_public_surface.py`
 - `tests/test_v3_architecture.py`
 
 규칙:
 
 - 삭제된 legacy 구현이 workspace에 다시 들어오지 않게 막는다.
 - `v3/*`와 preserve-eval이 purge된 root runtime에 직접 기대지 않게 검증한다.
+- README / tombstone / historical 문서가 현재 v3 상태와 어긋나지 않게 검증한다.
 
 ## Preserve Eval / Benchmark
 
@@ -27,10 +29,11 @@
 - `tests/test_v3_phase2.py`
 - `tests/test_v3_phase3.py`
 - `tests/test_v3_phase4.py`
+- `tests/test_v3_phase5.py`
 - `tests/test_v3_architecture.py`
 
 규칙:
 
 - `test_v3_*.py`는 v3 전용 테스트에 사용한다.
-- 계약, 경계, branch orchestration, family skeleton, debug artifact visibility를 우선 검증한다.
+- 계약, 경계, branch orchestration, family skeleton, debug artifact visibility, primitive scene bridge를 우선 검증한다.
 - legacy heuristic 품질 검증은 여기로 가져오지 않는다.
