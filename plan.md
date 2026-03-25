@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-03-25  
-상태: `Phase 0~1 완료`
+상태: `Legacy cleanup / isolation phase 완료`
 
 ---
 
@@ -284,7 +284,122 @@ stage artifact 기록, overlay, report helper
 
 ---
 
-## 8. 평가 전략
+## 8. Legacy Cleanup / Isolation Phase
+
+이번 단계 이름:
+
+- `legacy cleanup / isolation phase`
+
+### 8.1 이번 단계 목표
+
+- legacy 범위를 명시적으로 정의한다.
+- v2 코어와 v3 코어 사이의 경계를 문서와 테스트로 고정한다.
+- v3가 legacy 내부 구현에 직접 의존하지 못하게 한다.
+- benchmark / validation / GT sidecar / workbench / diagnostics 자산을 유지한 채 migration 가능한 구조를 만든다.
+- 기존 public entrypoint를 즉시 깨지 않도록 compatibility shim 전략을 정의한다.
+
+### 8.2 이번 단계 비목표
+
+- v2 heuristic 품질 개선
+- v3 detector/parser 성능 구현 확대
+- benchmark methodology 재작성
+- legacy 코드 전체 즉시 삭제
+- "재사용 가능해 보인다"는 이유만으로 legacy 로직을 shared로 이동
+- v3가 legacy 구현을 import하도록 허용하는 일
+
+### 8.3 Legacy 후보 파일 목록
+
+아래는 현재 기준으로 `legacy_core` 후보다.
+
+- `src/image_to_editable_ppt/pipeline.py`
+- `src/image_to_editable_ppt/geometry.py`
+- `src/image_to_editable_ppt/objects.py`
+- `src/image_to_editable_ppt/selection.py`
+- `src/image_to_editable_ppt/graph.py`
+- `src/image_to_editable_ppt/emit.py`
+- `src/image_to_editable_ppt/fallback.py`
+- `src/image_to_editable_ppt/guides.py`
+- `src/image_to_editable_ppt/reconstructors/*`
+- `src/image_to_editable_ppt/detector.py`
+- `src/image_to_editable_ppt/repair.py`
+- `src/image_to_editable_ppt/router.py`
+- `src/image_to_editable_ppt/filtering.py`
+- `src/image_to_editable_ppt/fitter.py`
+- `src/image_to_editable_ppt/text.py`
+- `src/image_to_editable_ppt/preprocess.py`
+- `src/image_to_editable_ppt/style.py`
+- `src/image_to_editable_ppt/gating.py`
+
+설명:
+
+- 위 목록은 "장기적으로 `legacy_v2/` 아래로 이동할 대상"이지, 이번 단계에서 즉시 물리 이동한다는 뜻은 아니다.
+- 애매하면 legacy에 남긴다. shared로 올리지 않는다.
+
+### 8.4 Preserve Eval 대상
+
+아래는 `preserve_eval` 대상으로 유지한다.
+
+- `src/image_to_editable_ppt/validation.py`
+- `src/image_to_editable_ppt/eval_debug.py`
+- `src/image_to_editable_ppt/benchmark_report.py`
+- `src/image_to_editable_ppt/diagnostics.py`
+- `src/image_to_editable_ppt/source_attribution.py`
+- `tools/benchmark_report.py`
+- `tests/test_benchmark_report.py`
+- `tests/test_stage_refactor.py`
+- `workbench/`
+- `workbench2.0/`
+- `workbench2.0-geometry-only/`
+- `workbench2.0-no-motifs/`
+- 기존 GT sidecar, comparison, benchmark summary, diagnostics 산출물
+
+### 8.5 Shared Candidate 기준
+
+`shared_candidate`로 검토 가능한 것은 아래만 허용한다.
+
+- 순수 데이터 구조
+  - 예: `BBox`, `Point`, `ImageSize`
+- 저수준 JSON / path / file IO helper
+- v2 heuristic 가정이 전혀 없는 순수 helper
+
+`shared/`로 절대 옮기지 않을 것:
+
+- geometry scoring
+- fallback logic
+- selection heuristic
+- semantic/object reconstruction logic
+- detector/parser 의사결정 코드
+- legacy provenance나 stage semantics에 강하게 묶인 코드
+
+### 8.6 Compatibility Shim 원칙
+
+- 옛 import path는 당분간 유지 가능하다.
+- shim은 얇은 wrapper 또는 re-export만 허용한다.
+- shim은 임시 계층임을 문서에 명시한다.
+- 새 기능은 shim에 추가하지 않고 `v3/` 아래에만 구현한다.
+- benchmark/eval이 legacy와 v3를 함께 다뤄야 할 때는 `eval_runtime/` adapter를 사용한다.
+
+### 8.7 완료 조건
+
+- `plan.md`가 이번 단계 기준으로 갱신되어 있을 것
+- legacy / preserve_eval / shared_candidate / defer 분류가 존재할 것
+- `legacy_v2`의 역할과 향후 이동 대상이 명시되어 있을 것
+- v3가 legacy 구현에 직접 의존하지 않도록 문서/테스트/코드 중 최소 하나로 강제할 것
+- compatibility shim 전략이 정의되어 있을 것
+- 기존 테스트가 유지될 것
+- 새 구조/경계 테스트가 추가될 것
+
+### 8.8 이번 phase 산출물
+
+- `docs/legacy_inventory.md`
+- `src/image_to_editable_ppt/legacy_v2/README.md`
+- `src/image_to_editable_ppt/shared/README.md`
+- `tests/README.md`
+- `tests/test_v3_architecture.py`
+
+---
+
+## 9. 평가 전략
 
 v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능해야 한다.
 
@@ -300,20 +415,20 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 - `workbench2.0-no-motifs/`
 - 현재 validation flow가 사용하는 GT sidecar 및 comparison artifact
 
-### 8.1 migration 원칙
+### 9.1 migration 원칙
 
 - v2 평가 경로는 v3가 자라나는 동안 유지한다.
 - 초기에는 v3 전용 contract test를 먼저 만든다.
 - 필요할 때만 adapter를 추가해 기존 benchmark 툴이 v3 출력을 읽을 수 있게 한다.
 - `Phase 0~1`에서 benchmark methodology 자체를 뜯어고치지 않는다.
 
-### 8.2 현재 평가 한계
+### 9.2 현재 평가 한계
 
 - GT-backed benchmark coverage는 아직 넓지 않다.
 - 현재 결론은 일부 benchmark slide에 더 강하게 의존할 수 있다.
 - 따라서 summary에는 coverage limitation을 명시적으로 남겨야 한다.
 
-### 8.3 v3에서 유지할 평가 축
+### 9.3 v3에서 유지할 평가 축
 
 - image-level render comparison
 - GT-backed stage evaluation
@@ -323,7 +438,7 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 
 ---
 
-## 9. 마일스톤 체크리스트
+## 10. 마일스톤 체크리스트
 
 ### Phase 0. 재출발 준비
 - [x] root `plan.md` 생성
@@ -408,9 +523,9 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 
 ---
 
-## 10. legacy 보존 / 삭제 정책
+## 11. legacy 보존 / 삭제 정책
 
-### 10.1 즉시 정책
+### 11.1 즉시 정책
 
 - benchmark / validation / GT / workbench 자산은 유지한다.
 - `Phase 0~1`에서 legacy 모듈을 물리적으로 삭제하지 않는다.
@@ -429,7 +544,7 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 - `guides.py`
 - `reconstructors/*`
 
-### 10.2 격리 정책
+### 11.2 격리 정책
 
 - 장기적으로는 `src/image_to_editable_ppt/legacy_v2/`가 현재 v2 변환 코어의 집이 된다.
 - `Phase 0~1`에서는 namespace만 만들고, 물리 이동은 compatibility shim이 준비된 이후에 한다.
@@ -437,7 +552,7 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 - v2 동작을 v3 내부로 복사하지 않는다.
 - evaluation을 위해 필요한 경우에만 명시적 adapter를 둔다.
 
-### 10.3 삭제 정책
+### 11.3 삭제 정책
 
 다음 조건을 만족하기 전에는 legacy를 삭제하지 않는다.
 
@@ -448,7 +563,7 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 
 ---
 
-## 11. 열린 문제 / 리스크
+## 12. 열린 문제 / 리스크
 
 ### 열린 문제
 
@@ -467,9 +582,14 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
 
 ---
 
-## 12. 현재 상태
+## 13. 현재 상태
 
 - `plan.md`가 v3 migration의 source of truth로 설정되었다.
+- `legacy cleanup / isolation phase` 기준이 문서화되었다.
+  - legacy 후보
+  - preserve_eval 대상
+  - shared_candidate 기준
+  - compatibility shim 원칙
 - `src/image_to_editable_ppt/v3/` 스캐폴드가 생성되었다.
 - 최소 v3 contract가 구현되었다.
   - `V3Config`
@@ -481,29 +601,55 @@ v3 migration 동안 아래 자산은 반드시 보존하고 계속 사용 가능
   - `src/image_to_editable_ppt/legacy_v2/`
   - `src/image_to_editable_ppt/shared/`
   - `src/image_to_editable_ppt/eval_runtime/`
+- legacy inventory가 문서화되었다.
+  - `docs/legacy_inventory.md`
+- `legacy_v2` 책임과 장기 이동 대상이 문서화되었다.
+  - `src/image_to_editable_ppt/legacy_v2/README.md`
+- shared 수용 기준이 문서화되었다.
+  - `src/image_to_editable_ppt/shared/README.md`
+- 테스트 분류 규칙이 문서화되었다.
+  - `tests/README.md`
+- v3 import 경계가 테스트로 강제된다.
+  - `tests/test_v3_architecture.py`
+- 아직 물리 이동하지 않은 legacy는 root 경로에 남아 있다.
+  - 이유: 기존 public import path와 regression/eval 흐름을 깨지 않기 위해서
+- compatibility shim은 아직 "전략 정의" 상태이며, 실제 re-export wrapper 이동은 다음 shim phase에서 수행한다.
+- shared 후보는 아직 symbol-level 검토만 존재하며, 실제 이동된 코드는 없다.
+  - 현재 후보: `BBox`, `Point`
 - focused v3 architecture test가 추가되었고, legacy regression test도 유지되고 있다.
 
 ---
 
-## 13. 다음 단계
+## 14. 다음 단계
+
+다음 단계는 두 축으로 나뉜다.
+
+### 14.1 v3 구현 축
 
 `Phase 2`를 작은 단위로 진행한다.
-
-우선순위:
 
 1. text-region / raster-region 분리를 실제 placeholder 수준에서라도 동작하게 만든다.
 2. text soft-mask + raster subtraction 이후 residual structural canvas contract를 고정한다.
 3. 첫 family detector/parser skeleton을 config gate 뒤에 도입한다.
 4. 아직 broad emit는 붙이지 않는다.
-5. Phase 종료 후 반드시 이 문서를 갱신한다.
+
+### 14.2 legacy shim 축
+
+physical relocation이 필요해지는 시점에는 별도 shim phase로 진행한다.
+
+1. root import path를 유지하는 얇은 re-export/wrapper 설계를 먼저 만든다.
+2. `legacy_v2/`로의 실제 이동은 regression/eval이 안전하게 유지된다는 전제에서만 수행한다.
+3. shared 추출은 symbol-level 검토를 다시 통과한 것만 진행한다.
+4. Phase 종료 후 반드시 이 문서를 갱신한다.
 
 ---
 
-## 14. 검증 스냅샷
+## 15. 검증 스냅샷
 
 예시 검증 명령:
 
 - `pytest tests/test_v3_phase1.py`
+- `pytest tests/test_v3_architecture.py`
 - `pytest tests/test_benchmark_report.py`
 - `pytest tests/test_stage_refactor.py`
 - `pytest tests/test_pipeline.py`
