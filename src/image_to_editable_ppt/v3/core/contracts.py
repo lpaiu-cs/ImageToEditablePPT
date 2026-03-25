@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
     from image_to_editable_ppt.v3.app.config import V3Config
     from image_to_editable_ppt.v3.ir.models import (
+        ConnectorEvidence,
         ConnectorSpec,
         DiagramInstance,
         FamilyProposal,
@@ -83,6 +84,16 @@ class ConnectorResolver(Protocol):
         instances: Sequence["DiagramInstance"],
         config: "V3Config",
     ) -> Sequence["ConnectorSpec"]: ...
+
+
+class ConnectorEvidenceExtractor(Protocol):
+    def extract(
+        self,
+        canvas: "ResidualStructuralCanvas",
+        *,
+        instances: Sequence["DiagramInstance"],
+        config: "V3Config",
+    ) -> Sequence["ConnectorEvidence"]: ...
 
 
 class StyleResolver(Protocol):

@@ -7,6 +7,8 @@ import numpy as np
 from image_to_editable_ppt.v3.core.enums import (
     BranchKind,
     ConnectorKind,
+    ConnectorOrientation,
+    ContainerKind,
     DiagramFamily,
     NodeKind,
     RasterRegionKind,
@@ -101,8 +103,23 @@ class DiagramNode:
     id: str
     kind: NodeKind
     bbox: BBox
+    confidence: float = 1.0
     label: str | None = None
     text_region_ids: tuple[str, ...] = ()
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class DiagramContainer:
+    id: str
+    kind: ContainerKind
+    bbox: BBox
+    confidence: float
+    member_node_ids: tuple[str, ...] = ()
+    label: str | None = None
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
 
 
 @dataclass(slots=True, frozen=True)
@@ -111,9 +128,11 @@ class DiagramInstance:
     family: DiagramFamily
     confidence: float
     bbox: BBox
+    containers: tuple[DiagramContainer, ...] = ()
     nodes: tuple[DiagramNode, ...] = ()
     text_region_ids: tuple[str, ...] = ()
     source_proposal_ids: tuple[str, ...] = ()
+    provenance: tuple[str, ...] = ()
 
 
 @dataclass(slots=True, frozen=True)
@@ -126,6 +145,23 @@ class ConnectorSpec:
     target_instance_id: str | None = None
     target_node_id: str | None = None
     waypoints: tuple[Point, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class ConnectorEvidence:
+    id: str
+    kind: ConnectorKind
+    orientation: ConnectorOrientation
+    bbox: BBox
+    confidence: float
+    path_points: tuple[Point, ...] = ()
+    arrowhead_start: bool = False
+    arrowhead_end: bool = False
+    start_nearby_node_ids: tuple[str, ...] = ()
+    end_nearby_node_ids: tuple[str, ...] = ()
+    nearby_container_ids: tuple[str, ...] = ()
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
 
 
 @dataclass(slots=True, frozen=True)
@@ -177,6 +213,7 @@ class SlideIR:
     residual_canvas: ResidualCanvasResult | None = None
     family_proposals: tuple[FamilyProposal, ...] = ()
     diagram_instances: tuple[DiagramInstance, ...] = ()
+    connector_evidence: tuple[ConnectorEvidence, ...] = ()
     connectors: tuple[ConnectorSpec, ...] = ()
     text_regions: tuple[TextRegion, ...] = ()
     raster_regions: tuple[RasterRegion, ...] = ()

@@ -3,7 +3,9 @@
 from .contracts import ContractViolationError, StageRecord
 from .enums import (
     BranchKind,
+    ConnectorOrientation,
     ConnectorKind,
+    ContainerKind,
     DiagramFamily,
     NodeKind,
     RasterRegionKind,
@@ -17,7 +19,9 @@ from .types import BBox, ImageSize, Point, RGBColor
 __all__ = [
     "BBox",
     "BranchKind",
+    "ConnectorOrientation",
     "ConnectorKind",
+    "ContainerKind",
     "ContractViolationError",
     "DiagramFamily",
     "ImageSize",

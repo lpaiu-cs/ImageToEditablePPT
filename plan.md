@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-03-25  
-상태: `Legacy purge + Phase 3 bootstrap 완료`
+상태: `Phase 4: node/container + connector evidence 완료`
 
 ---
 
@@ -620,15 +620,77 @@ tombstone stub 허용 조건:
 
 ---
 
-### Phase 4. node/container + connector 기초
-- [ ] node/container stabilization
-- [ ] connector evidence 수집
-- [ ] connector solving skeleton
-- [ ] style token skeleton
-- [ ] compose 기초
+### Phase 4. node/container + connector evidence
+
+이번 단계 이름:
+
+- `Phase 4: node/container + connector evidence`
+
+이번 단계 목표:
+
+- `orthogonal_flow` 한 family에 대해 node와 container를 IR에서 명시적으로 분리한다.
+- detector가 slide 전체 giant proposal 하나에 머무르지 않도록 최소 multi-instance proposal 방향으로 개선한다.
+- connector solving이 아니라 connector evidence 수집 단계만 추가한다.
+- v3-native debug/inspection loop를 만들어 proposal / instance / connector evidence를 overlay와 JSON으로 직접 확인할 수 있게 한다.
+- broad emit 없이 residual canvas 기반 구조 해석을 계속 키운다.
+
+이번 단계 비목표:
+
+- v2 runtime 복원
+- broad emit
+- benchmark methodology 재작성
+- 여러 family 동시 구현
+- connector solving / route optimization
+- style token 본격 구현
+- tombstone stub에 old logic을 다시 넣는 일
+
+왜 debug/inspection loop가 우선인가:
+
+- 지금 단계의 병목은 emit이 아니라 해석 결과가 사람 눈에 보이지 않는다는 점이다.
+- detector / parser / evidence가 잘못되더라도 overlay와 JSON이 없으면 원인을 빠르게 좁힐 수 없다.
+- 따라서 `Phase 4`는 성능 향상보다 “보이게 만들기”를 먼저 수행한다.
+
+왜 `orthogonal_flow` 한 family만 대상으로 삼는가:
+
+- residual structural canvas와 가장 자연스럽게 연결된다.
+- node / container / connector evidence를 동시에 시험해 보기 좋다.
+- 여러 family를 동시에 열면 detector / parser / debug artifact contract가 다시 흐려진다.
+
+왜 broad emit를 계속 미루는가:
+
+- 지금은 instance 해석 결과의 신뢰성과 분해 구조가 먼저다.
+- emit를 붙이면 잘못된 IR이 외부 출력 형식으로 고정될 위험이 크다.
+- overlay/JSON inspection이 먼저 안정화되어야 emit 단계로 넘어갈 수 있다.
+
+왜 connector는 evidence까지만 하는가:
+
+- solver를 붙이기 전에 어떤 선분, 어떤 orthogonal hint, 어떤 attachment vicinity가 있는지 먼저 수집해야 한다.
+- 지금 필요한 것은 최종 route가 아니라 다음 단계 solver의 입력 계약이다.
+- evidence를 분리해 두면 잘못된 연결과 부족한 관측을 구분할 수 있다.
+
+- [x] tombstone 유지 여부 재검토 및 문서화
+- [x] v3-native debug/inspection runner 추가
+- [x] node/container IR 분리
+- [x] orthogonal_flow detector multi-instance 방향 개선
+- [x] orthogonal_flow parser node/container 분리
+- [x] connector evidence typed IR 추가
+- [x] convert orchestration에 connector evidence 연결
 
 **완료 조건**
-- node/container가 먼저 정해지고 connector가 나중에 붙는 구조가 코드상 드러나야 한다.
+- `plan.md`가 `Phase 4` 기준으로 갱신되어 있을 것
+- tombstone 유지 여부가 문서화될 것
+- v3 debug/inspection 경로가 JSON artifact와 overlay를 생성할 것
+- detector가 최소한의 multi-instance proposal을 만들 것
+- parser가 node/container를 IR에서 분리할 것
+- connector evidence가 `SlideIR`에 저장될 것
+- broad emit가 여전히 꺼져 있을 것
+
+Phase 5 진입 조건:
+
+- proposal / instance / connector evidence를 사람이 overlay와 JSON으로 점검할 수 있을 것
+- node/container 분리가 한 family에서 재현 가능할 것
+- connector evidence가 solver 입력으로 쓸 수 있는 최소 contract를 가질 것
+- old validation runtime 복구 없이도 v3-native inspection이 가능할 것
 
 ---
 
@@ -670,6 +732,12 @@ tombstone stub 허용 조건:
 - `src/image_to_editable_ppt/cli.py`
 - `src/image_to_editable_ppt/validation.py`
 
+Phase 4 재검토 결과:
+
+- `cli.py`는 `src/image_to_editable_ppt/__main__.py`와 기존 `python -m image_to_editable_ppt` 진입점을 깨지 않기 위해 유지한다.
+- `validation.py`는 preserve-eval import surface를 명시적 tombstone으로 고정하기 위해 유지한다.
+- 둘 다 old runtime을 복구하지 않고 짧은 예외 메시지만 유지한다.
+
 조건:
 
 - 내부에 old implementation을 포함하지 않는다.
@@ -706,7 +774,7 @@ tombstone stub 허용 조건:
 ## 13. 현재 상태
 
 - `plan.md`가 v3 migration의 source of truth로 설정되었다.
-- 현재 활성 단계는 `Phase 4: node/container + connector 기초` 준비 상태다.
+- 현재 활성 단계는 `Phase 4: node/container + connector evidence`다.
 - `legacy cleanup / isolation phase` 기준이 문서화되었다.
   - legacy 후보
   - preserve_eval 대상
@@ -776,6 +844,14 @@ tombstone stub 허용 조건:
   - `orthogonal_flow` detector skeleton
   - `orthogonal_flow` parser skeleton
   - detector -> parser -> `SlideIR` 연결
+- `Phase 4`가 완료되었다.
+  - tombstone 재검토 완료
+  - `cli.py`, `validation.py` 유지 이유 문서화
+  - proposal / instance / connector evidence JSON artifact 저장
+  - proposal / instance / connector evidence overlay 저장
+  - `orthogonal_flow` detector가 connected component 단위 multi-instance proposal 생성
+  - parser가 node/container를 명시적으로 분리
+  - connector evidence가 `SlideIR.connector_evidence`에 저장
 - adapter 구현은 아직 하지 않았다.
   - future `eval_runtime/` adapter는 `SlideIR.text_layer`, `SlideIR.raster_layer`, `SlideIR.residual_canvas`, `SlideIR.family_proposals`, `SlideIR.diagram_instances`를 읽을 수 있어야 한다.
 - shim phase는 아직 열지 않았다.
@@ -785,13 +861,12 @@ tombstone stub 허용 조건:
 
 ## 14. 다음 단계
 
-다음 단계는 `Phase 4: node/container + connector 기초`다.
+다음 단계는 `Phase 5: emit 및 evaluation adapter`다.
 
-1. `orthogonal_flow` parser가 단일 proposal bbox 수준을 넘어 node/container 후보를 더 명확히 분리하도록 만든다.
-2. connector evidence 수집을 residual structural canvas 기준으로 추가한다.
-3. connector solving은 placeholder contract까지만 연결하고 broad emit는 계속 보류한다.
-4. style token skeleton과 compose 정리를 시작한다.
-5. preserve-eval과 v3를 연결할 adapter 요구사항은 문서에만 유지하고, 구현은 `Phase 5`로 미룬다.
+1. broad emit를 바로 켜기보다 `orthogonal_flow` 한 family에서 emit-friendly IR 매핑을 먼저 정리한다.
+2. connector evidence를 solver/emit가 읽을 수 있는 connector contract로 잇는 최소 adapter를 설계한다.
+3. v3 debug artifact를 기반으로 emit 전/후 비교 루프를 만든다.
+4. preserve-eval과 v3를 연결할 adapter 범위를 최소한으로 정의한다.
 
 ---
 
@@ -812,3 +887,4 @@ tombstone stub 허용 조건:
 - v3 phase 1~3 contract test 통과
 - v3 architecture boundary test 통과
 - benchmark report regression test 통과
+- v3 phase 4 inspection / detector / parser / connector evidence test 통과

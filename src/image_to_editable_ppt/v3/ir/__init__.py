@@ -1,7 +1,9 @@
 """IR models and validators for v3."""
 
 from .models import (
+    ConnectorEvidence,
     ConnectorSpec,
+    DiagramContainer,
     DiagramInstance,
     DiagramNode,
     FamilyProposal,
@@ -26,7 +28,9 @@ from .validate import (
 )
 
 __all__ = [
+    "ConnectorEvidence",
     "ConnectorSpec",
+    "DiagramContainer",
     "DiagramInstance",
     "DiagramNode",
     "FamilyProposal",

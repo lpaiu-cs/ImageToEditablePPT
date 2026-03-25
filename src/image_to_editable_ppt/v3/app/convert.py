@@ -6,11 +6,12 @@ from pathlib import Path
 from PIL import Image
 
 from image_to_editable_ppt.v3.app.config import V3Config
+from image_to_editable_ppt.v3.connectors import extract_connector_evidence
 from image_to_editable_ppt.v3.core.contracts import StageRecord
 from image_to_editable_ppt.v3.core.enums import ResidualKind, StageName
 from image_to_editable_ppt.v3.families import detect_family_proposals, parse_family_proposals
 from image_to_editable_ppt.v3.ir.models import (
-    ConnectorSpec,
+    ConnectorEvidence,
     DiagramInstance,
     FamilyProposal,
     MultiViewBundle,
@@ -55,7 +56,7 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
     validate_residual_canvas_result(residual_canvas)
     family_proposals = _detect_families(residual_canvas, text_layer, raster_layer, active_config)
     instances = _parse_families(residual_canvas, family_proposals, text_layer, raster_layer, active_config)
-    connectors = _resolve_connectors(residual_canvas, instances, active_config)
+    connector_evidence = _extract_connector_evidence(residual_canvas, instances, active_config)
     style_tokens = _resolve_style_tokens(residual_canvas, instances, active_config)
     residual_regions = _build_residual_regions(residual_canvas, instances, active_config)
 
@@ -66,7 +67,8 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
         residual_canvas=residual_canvas,
         family_proposals=family_proposals,
         diagram_instances=instances,
-        connectors=connectors,
+        connector_evidence=connector_evidence,
+        connectors=(),
         text_regions=text_layer.regions,
         raster_regions=raster_layer.regions,
         style_tokens=style_tokens,
@@ -111,7 +113,15 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
             },
         ),
         StageRecord(stage=StageName.FAMILY_PARSE, summary={"instance_count": len(instances)}),
-        StageRecord(stage=StageName.CONNECTOR_RESOLVE, summary={"connector_count": len(connectors)}),
+        StageRecord(
+            stage=StageName.CONNECTOR_EVIDENCE,
+            summary={
+                "connector_evidence_count": len(connector_evidence),
+                "arrow_evidence_count": sum(
+                    1 for evidence in connector_evidence if evidence.arrowhead_start or evidence.arrowhead_end
+                ),
+            },
+        ),
         StageRecord(stage=StageName.STYLE_RESOLVE, summary={"style_token_count": len(style_tokens)}),
         StageRecord(stage=StageName.COMPOSE, summary={"residual_region_count": len(residual_regions)}),
     )
@@ -175,13 +185,18 @@ def _parse_families(
     )
 
 
-def _resolve_connectors(
+def _extract_connector_evidence(
     residual_canvas: ResidualCanvasResult,
     instances: tuple[DiagramInstance, ...],
     config: V3Config,
-) -> tuple[ConnectorSpec, ...]:
-    del residual_canvas, instances, config
-    return ()
+) -> tuple[ConnectorEvidence, ...]:
+    if residual_canvas.canvas is None or not instances:
+        return ()
+    return extract_connector_evidence(
+        residual_canvas.canvas,
+        instances=instances,
+        config=config,
+    )
 
 
 def _resolve_style_tokens(

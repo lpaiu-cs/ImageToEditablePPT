@@ -5,7 +5,7 @@ import numpy as np
 from image_to_editable_ppt.v3.core.contracts import ContractViolationError
 from image_to_editable_ppt.v3.core.enums import BranchKind
 from image_to_editable_ppt.v3.core.types import BBox
-from image_to_editable_ppt.v3.ir.models import MultiViewBundle, RasterLayerResult, ResidualCanvasResult, SlideIR, TextLayerResult
+from image_to_editable_ppt.v3.ir.models import ConnectorEvidence, MultiViewBundle, RasterLayerResult, ResidualCanvasResult, SlideIR, TextLayerResult
 
 
 REQUIRED_BRANCHES = {
@@ -99,6 +99,7 @@ def validate_residual_canvas_result(result: ResidualCanvasResult) -> None:
 def validate_slide_ir(slide_ir: SlideIR) -> None:
     instance_ids = {instance.id for instance in slide_ir.diagram_instances}
     node_ids = {node.id for instance in slide_ir.diagram_instances for node in instance.nodes}
+    container_ids = {container.id for instance in slide_ir.diagram_instances for container in instance.containers}
     proposal_ids = {proposal.id for proposal in slide_ir.family_proposals}
 
     if slide_ir.text_layer is not None:
@@ -129,13 +130,35 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
     for instance in slide_ir.diagram_instances:
         _validate_confidence(instance.confidence, label=instance.id)
         _validate_bbox(instance.bbox, label=instance.id)
+        for container in instance.containers:
+            _validate_confidence(container.confidence, label=container.id)
+            _validate_bbox(container.bbox, label=container.id)
+            if not container.source:
+                raise ContractViolationError(f"container {container.id} must declare a source")
+            if not container.provenance:
+                raise ContractViolationError(f"container {container.id} must declare provenance")
+            unknown_member_ids = [node_id for node_id in container.member_node_ids if node_id not in node_ids]
+            if unknown_member_ids:
+                raise ContractViolationError(f"container {container.id} references unknown node ids {unknown_member_ids}")
+            if container.id in proposal_ids or container.id in node_ids:
+                raise ContractViolationError(f"container id collides with proposal or node id: {container.id}")
         for node in instance.nodes:
+            _validate_confidence(node.confidence, label=node.id)
             _validate_bbox(node.bbox, label=node.id)
+            if not node.source:
+                raise ContractViolationError(f"node {node.id} must declare a source")
+            if not node.provenance:
+                raise ContractViolationError(f"node {node.id} must declare provenance")
             if node.id in proposal_ids:
                 raise ContractViolationError(f"node id collides with proposal id: {node.id}")
         for proposal_id in instance.source_proposal_ids:
             if proposal_id not in proposal_ids:
                 raise ContractViolationError(f"instance {instance.id} references unknown proposal {proposal_id}")
+        if not instance.provenance:
+            raise ContractViolationError(f"instance {instance.id} must declare provenance")
+
+    for evidence in slide_ir.connector_evidence:
+        _validate_connector_evidence(evidence, node_ids=node_ids, container_ids=container_ids)
 
     for connector in slide_ir.connectors:
         _validate_confidence(connector.confidence, label=connector.id)
@@ -153,7 +176,11 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
             raise ContractViolationError(f"connector {connector.id} references unknown target node {connector.target_node_id}")
 
     for token in slide_ir.style_tokens:
-        unknown_targets = [target_id for target_id in token.target_ids if target_id not in instance_ids and target_id not in node_ids]
+        unknown_targets = [
+            target_id
+            for target_id in token.target_ids
+            if target_id not in instance_ids and target_id not in node_ids and target_id not in container_ids
+        ]
         if unknown_targets:
             raise ContractViolationError(f"style token {token.id} targets unknown ids {unknown_targets}")
 
@@ -171,6 +198,28 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
 def _validate_confidence(confidence: float, *, label: str) -> None:
     if not 0.0 <= confidence <= 1.0:
         raise ContractViolationError(f"confidence out of range for {label}: {confidence}")
+
+
+def _validate_connector_evidence(
+    evidence: ConnectorEvidence,
+    *,
+    node_ids: set[str],
+    container_ids: set[str],
+) -> None:
+    _validate_confidence(evidence.confidence, label=evidence.id)
+    _validate_bbox(evidence.bbox, label=evidence.id)
+    if len(evidence.path_points) < 2:
+        raise ContractViolationError(f"connector evidence {evidence.id} must have at least two path points")
+    if not evidence.source:
+        raise ContractViolationError(f"connector evidence {evidence.id} must declare a source")
+    if not evidence.provenance:
+        raise ContractViolationError(f"connector evidence {evidence.id} must declare provenance")
+    for node_id in (*evidence.start_nearby_node_ids, *evidence.end_nearby_node_ids):
+        if node_id not in node_ids:
+            raise ContractViolationError(f"connector evidence {evidence.id} references unknown node id {node_id}")
+    for container_id in evidence.nearby_container_ids:
+        if container_id not in container_ids:
+            raise ContractViolationError(f"connector evidence {evidence.id} references unknown container id {container_id}")
 
 
 def _validate_bbox(bbox, *, label: str) -> None:

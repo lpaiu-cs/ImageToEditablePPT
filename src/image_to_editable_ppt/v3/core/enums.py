@@ -28,10 +28,23 @@ class NodeKind(StrEnum):
     LABEL_ANCHOR = "label_anchor"
 
 
+class ContainerKind(StrEnum):
+    FLOW_CLUSTER = "flow_cluster"
+    PANEL = "panel"
+
+
 class ConnectorKind(StrEnum):
     LINE = "line"
     ORTHOGONAL = "orthogonal"
     ARROW = "arrow"
+
+
+class ConnectorOrientation(StrEnum):
+    HORIZONTAL = "horizontal"
+    VERTICAL = "vertical"
+    DIAGONAL = "diagonal"
+    MIXED = "mixed"
+    UNKNOWN = "unknown"
 
 
 class TextRegionRole(StrEnum):
@@ -67,6 +80,7 @@ class StageName(StrEnum):
     RESIDUAL_CANVAS = "residual_canvas"
     FAMILY_DETECT = "family_detect"
     FAMILY_PARSE = "family_parse"
+    CONNECTOR_EVIDENCE = "connector_evidence"
     CONNECTOR_RESOLVE = "connector_resolve"
     STYLE_RESOLVE = "style_resolve"
     COMPOSE = "compose"

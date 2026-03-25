@@ -96,7 +96,7 @@ def test_placeholder_pipeline_returns_explicit_residual() -> None:
         StageName.RESIDUAL_CANVAS,
         StageName.FAMILY_DETECT,
         StageName.FAMILY_PARSE,
-        StageName.CONNECTOR_RESOLVE,
+        StageName.CONNECTOR_EVIDENCE,
         StageName.STYLE_RESOLVE,
         StageName.COMPOSE,
     ]

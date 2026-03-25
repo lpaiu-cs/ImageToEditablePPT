@@ -2,7 +2,7 @@
 
 최종 업데이트: 2026-03-25
 
-이 문서는 `plan.md`의 `Legacy purge + Phase 3 bootstrap` 결과를 반영한 inventory다.
+이 문서는 `plan.md`의 purge 결과와 `Phase 4` tombstone 재검토 상태를 반영한 inventory다.
 
 분류 태그:
 
@@ -17,8 +17,8 @@
 | --- | --- | --- |
 | `src/image_to_editable_ppt/__init__.py` | `defer` | root package는 v3-first surface로 유지 |
 | `src/image_to_editable_ppt/__main__.py` | `defer` | 기존 CLI 진입점 이름은 남기되 내부는 tombstone CLI로 연결 |
-| `src/image_to_editable_ppt/cli.py` | `defer` | tombstone stub. old CLI runtime은 제거됨 |
-| `src/image_to_editable_ppt/validation.py` | `preserve_eval`, `defer` | import 안정성을 위한 tombstone adapter stub. removed runtime을 다시 감싸지 않음 |
+| `src/image_to_editable_ppt/cli.py` | `defer` | Phase 4 재검토 후 유지. `__main__`/module entrypoint 안정성 때문에 tombstone으로 남김 |
+| `src/image_to_editable_ppt/validation.py` | `preserve_eval`, `defer` | Phase 4 재검토 후 유지. preserve-eval import surface를 tombstone으로 고정 |
 
 ## 2. Purged Legacy Core
 
@@ -109,6 +109,7 @@ shared로 올리지 않은 것:
 | `tests/test_v3_phase1.py` | `defer` | v3 base contract |
 | `tests/test_v3_phase2.py` | `defer` | text/raster/residual contract |
 | `tests/test_v3_phase3.py` | `defer` | family registry / detector / parser skeleton |
+| `tests/test_v3_phase4.py` | `defer` | node/container 분리, connector evidence, debug runner 검증 |
 | `tests/test_v3_architecture.py` | `defer` | v3 import boundary |
 
 퇴역된 테스트:

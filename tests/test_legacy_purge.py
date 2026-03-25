@@ -94,6 +94,13 @@ def test_validation_module_is_explicit_tombstone() -> None:
         validation.run_validation_iteration()
 
 
+def test_cli_module_is_explicit_tombstone() -> None:
+    cli = import_module("image_to_editable_ppt.cli")
+    assert "v2 core removed, use v3 path / see plan.md" in cli.REMOVED_MESSAGE
+    with pytest.raises(RuntimeError):
+        cli.main()
+
+
 def iter_internal_imports(tree: ast.AST, package_name: str) -> list[tuple[int, str]]:
     imports: list[tuple[int, str]] = []
     for node in ast.walk(tree):
