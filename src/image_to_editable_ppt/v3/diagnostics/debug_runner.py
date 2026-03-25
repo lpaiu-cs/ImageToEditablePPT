@@ -10,9 +10,12 @@ from PIL import Image, ImageDraw
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.app.convert import V3ConversionResult, convert_image
 from image_to_editable_ppt.v3.core.enums import BranchKind
+from image_to_editable_ppt.v3.emit import build_emit_scene
+from image_to_editable_ppt.v3.emit.models import EmitScene
 from image_to_editable_ppt.v3.ir.models import (
     ConnectorAttachment,
     ConnectorEvidence,
+    ConnectorSpec,
     DiagramContainer,
     DiagramInstance,
     DiagramNode,
@@ -34,12 +37,16 @@ class V3DebugArtifacts:
     connector_evidence_json: Path
     primitive_scene_json: Path
     attached_connectors_json: Path
+    solved_connectors_json: Path
+    emit_scene_json: Path
     overlay_proposals_png: Path
     overlay_instances_png: Path
     overlay_connector_evidence_png: Path
     overlay_ports_png: Path
     overlay_primitives_png: Path
     overlay_attached_connectors_png: Path
+    overlay_solved_connectors_png: Path
+    overlay_emit_scene_png: Path
     debug_summary_json: Path
 
 
@@ -68,6 +75,10 @@ def run_v3_debug(
     instance_payload = {"diagram_instances": [_instance_to_json(item) for item in conversion.slide_ir.diagram_instances]}
     connector_payload = {"connector_evidence": [_connector_evidence_to_json(item) for item in conversion.slide_ir.connector_evidence]}
     primitive_scene = conversion.slide_ir.primitive_scene
+    emit_scene = None if primitive_scene is None else build_emit_scene(
+        primitive_scene=primitive_scene,
+        connectors=conversion.slide_ir.connectors,
+    )
     primitive_payload = {
         "primitive_scene": None if primitive_scene is None else _primitive_scene_to_json(primitive_scene),
     }
@@ -76,6 +87,12 @@ def run_v3_debug(
         "unattached_connector_evidence": [
             _unattached_connector_to_json(item) for item in conversion.slide_ir.unattached_connector_evidence
         ],
+    }
+    solved_connector_payload = {
+        "connectors": [_connector_to_json(item) for item in conversion.slide_ir.connectors],
+    }
+    emit_scene_payload = {
+        "emit_scene": None if emit_scene is None else _emit_scene_to_json(emit_scene),
     }
     summary_payload = {
         "image_size": conversion.slide_ir.image_size.as_tuple(),
@@ -89,11 +106,26 @@ def run_v3_debug(
             "connector_evidence": len(conversion.slide_ir.connector_evidence),
             "connector_candidates": len(conversion.slide_ir.connector_candidates),
             "unattached_connector_evidence": len(conversion.slide_ir.unattached_connector_evidence),
+            "solved_connectors": len(conversion.slide_ir.connectors),
             "primitive_nodes": 0 if primitive_scene is None else len(primitive_scene.nodes),
             "primitive_containers": 0 if primitive_scene is None else len(primitive_scene.containers),
             "primitive_texts": 0 if primitive_scene is None else len(primitive_scene.texts),
             "primitive_ports": 0 if primitive_scene is None else len(primitive_scene.ports),
             "primitive_residuals": 0 if primitive_scene is None else len(primitive_scene.residuals),
+            "emit_shapes": 0 if emit_scene is None else len(emit_scene.shapes),
+            "emit_texts": 0 if emit_scene is None else len(emit_scene.texts),
+            "emit_connectors": 0 if emit_scene is None else len(emit_scene.connectors),
+            "emit_residuals": 0 if emit_scene is None else len(emit_scene.residuals),
+        },
+        "connector_resolve": {
+            "connector_candidates": len(conversion.slide_ir.connector_candidates),
+            "solved_connectors": len(conversion.slide_ir.connectors),
+        },
+        "emit_adapter": {
+            "shapes": 0 if emit_scene is None else len(emit_scene.shapes),
+            "texts": 0 if emit_scene is None else len(emit_scene.texts),
+            "connectors": 0 if emit_scene is None else len(emit_scene.connectors),
+            "residuals": 0 if emit_scene is None else len(emit_scene.residuals),
         },
     }
 
@@ -102,12 +134,16 @@ def run_v3_debug(
     connector_json = output_path / "connector_evidence.json"
     primitive_json = output_path / "primitive_scene.json"
     attached_connector_json = output_path / "attached_connectors.json"
+    solved_connector_json = output_path / "solved_connectors.json"
+    emit_scene_json = output_path / "emit_scene.json"
     summary_json = output_path / "debug_summary.json"
     _write_json(family_json, family_payload)
     _write_json(instance_json, instance_payload)
     _write_json(connector_json, connector_payload)
     _write_json(primitive_json, primitive_payload)
     _write_json(attached_connector_json, attached_connector_payload)
+    _write_json(solved_connector_json, solved_connector_payload)
+    _write_json(emit_scene_json, emit_scene_payload)
     _write_json(summary_json, summary_payload)
 
     overlay_proposals = output_path / "overlay_proposals.png"
@@ -116,12 +152,16 @@ def run_v3_debug(
     overlay_ports = output_path / "overlay_ports.png"
     overlay_primitives = output_path / "overlay_primitives.png"
     overlay_attached_connectors = output_path / "overlay_attached_connectors.png"
+    overlay_solved_connectors = output_path / "overlay_solved_connectors.png"
+    overlay_emit_scene = output_path / "overlay_emit_scene.png"
     _render_proposal_overlay(base_image, conversion.slide_ir.family_proposals).save(overlay_proposals)
     _render_instance_overlay(base_image, conversion.slide_ir.diagram_instances).save(overlay_instances)
     _render_connector_overlay(base_image, conversion.slide_ir.diagram_instances, conversion.slide_ir.connector_evidence).save(overlay_connector)
     _render_port_overlay(base_image, primitive_scene).save(overlay_ports)
     _render_primitive_overlay(base_image, primitive_scene).save(overlay_primitives)
     _render_attached_connector_overlay(base_image, primitive_scene).save(overlay_attached_connectors)
+    _render_solved_connector_overlay(base_image, conversion.slide_ir.connectors).save(overlay_solved_connectors)
+    _render_emit_scene_overlay(base_image, emit_scene).save(overlay_emit_scene)
 
     return V3DebugRun(
         conversion=conversion,
@@ -132,12 +172,16 @@ def run_v3_debug(
             connector_evidence_json=connector_json,
             primitive_scene_json=primitive_json,
             attached_connectors_json=attached_connector_json,
+            solved_connectors_json=solved_connector_json,
+            emit_scene_json=emit_scene_json,
             overlay_proposals_png=overlay_proposals,
             overlay_instances_png=overlay_instances,
             overlay_connector_evidence_png=overlay_connector,
             overlay_ports_png=overlay_ports,
             overlay_primitives_png=overlay_primitives,
             overlay_attached_connectors_png=overlay_attached_connectors,
+            overlay_solved_connectors_png=overlay_solved_connectors,
+            overlay_emit_scene_png=overlay_emit_scene,
             debug_summary_json=summary_json,
         ),
     )
@@ -272,6 +316,29 @@ def _connector_candidate_to_json(candidate: PrimitiveConnectorCandidate) -> dict
     }
 
 
+def _connector_to_json(connector: ConnectorSpec) -> dict[str, object]:
+    return {
+        "id": connector.id,
+        "kind": connector.kind.value,
+        "confidence": connector.confidence,
+        "source_owner_id": connector.source_owner_id,
+        "source_owner_kind": connector.source_owner_kind.value,
+        "target_owner_id": connector.target_owner_id,
+        "target_owner_kind": connector.target_owner_kind.value,
+        "source_port_id": connector.source_port_id,
+        "target_port_id": connector.target_port_id,
+        "path_points": [_point_to_json(point) for point in connector.path_points],
+        "source_instance_id": connector.source_instance_id,
+        "target_instance_id": connector.target_instance_id,
+        "arrowhead_start": connector.arrowhead_start,
+        "arrowhead_end": connector.arrowhead_end,
+        "source_candidate_id": connector.source_candidate_id,
+        "source_evidence_id": connector.source_evidence_id,
+        "source": connector.source,
+        "provenance": list(connector.provenance),
+    }
+
+
 def _unattached_connector_to_json(item: UnattachedConnectorEvidence) -> dict[str, object]:
     return {
         "id": item.id,
@@ -321,6 +388,80 @@ def _primitive_scene_to_json(scene: PrimitiveScene) -> dict[str, object]:
             _unattached_connector_to_json(item) for item in scene.unattached_connector_evidence
         ],
         "residuals": [_primitive_residual_to_json(item) for item in scene.residuals],
+        "provenance": list(scene.provenance),
+    }
+
+
+def _emit_shape_to_json(item) -> dict[str, object]:
+    return {
+        "id": item.id,
+        "owner_kind": item.owner_kind.value,
+        "shape_kind": item.shape_kind.value,
+        "bbox": _bbox_to_json(item.bbox),
+        "confidence": item.confidence,
+        "label": item.label,
+        "source": item.source,
+        "provenance": list(item.provenance),
+    }
+
+
+def _emit_text_to_json(item) -> dict[str, object]:
+    return {
+        "id": item.id,
+        "role": item.role.value,
+        "bbox": _bbox_to_json(item.bbox),
+        "confidence": item.confidence,
+        "text": item.text,
+        "owner_ids": list(item.owner_ids),
+        "source": item.source,
+        "provenance": list(item.provenance),
+    }
+
+
+def _emit_connector_to_json(item) -> dict[str, object]:
+    return {
+        "id": item.id,
+        "kind": item.kind.value,
+        "confidence": item.confidence,
+        "source_owner_id": item.source_owner_id,
+        "source_owner_kind": item.source_owner_kind.value,
+        "target_owner_id": item.target_owner_id,
+        "target_owner_kind": item.target_owner_kind.value,
+        "source_port_id": item.source_port_id,
+        "target_port_id": item.target_port_id,
+        "path_points": [_point_to_json(point) for point in item.path_points],
+        "source_instance_id": item.source_instance_id,
+        "target_instance_id": item.target_instance_id,
+        "arrowhead_start": item.arrowhead_start,
+        "arrowhead_end": item.arrowhead_end,
+        "source_candidate_id": item.source_candidate_id,
+        "source_evidence_id": item.source_evidence_id,
+        "source": item.source,
+        "provenance": list(item.provenance),
+    }
+
+
+def _emit_residual_to_json(item) -> dict[str, object]:
+    return {
+        "id": item.id,
+        "kind": item.kind.value,
+        "bbox": _bbox_to_json(item.bbox),
+        "confidence": item.confidence,
+        "reason": item.reason,
+        "source": item.source,
+        "provenance": list(item.provenance),
+    }
+
+
+def _emit_scene_to_json(scene: EmitScene) -> dict[str, object]:
+    return {
+        "image_size": scene.image_size.as_tuple(),
+        "coordinate_space": scene.coordinate_space,
+        "shapes": [_emit_shape_to_json(item) for item in scene.shapes],
+        "texts": [_emit_text_to_json(item) for item in scene.texts],
+        "connectors": [_emit_connector_to_json(item) for item in scene.connectors],
+        "residuals": [_emit_residual_to_json(item) for item in scene.residuals],
+        "source": scene.source,
         "provenance": list(scene.provenance),
     }
 
@@ -435,6 +576,48 @@ def _render_attached_connector_overlay(base_image: Image.Image, scene: Primitive
         if candidate.arrowhead_end:
             _draw_point(draw, points[-1], fill=(123, 45, 180), radius=4)
         draw.text((candidate.bbox.x0 + 2, candidate.bbox.y0 + 2), candidate.id, fill=(31, 119, 180))
+    return overlay
+
+
+def _render_solved_connector_overlay(base_image: Image.Image, connectors: tuple[ConnectorSpec, ...]) -> Image.Image:
+    overlay = base_image.copy()
+    draw = ImageDraw.Draw(overlay)
+    for connector in connectors:
+        points = [(point.x, point.y) for point in connector.path_points]
+        if len(points) < 2:
+            continue
+        draw.line(points, fill=(20, 92, 168), width=3)
+        _draw_point(draw, points[0], fill=(20, 92, 168), radius=4)
+        _draw_point(draw, points[-1], fill=(20, 92, 168), radius=4)
+        if connector.arrowhead_start:
+            _draw_point(draw, points[0], fill=(123, 45, 180), radius=5)
+        if connector.arrowhead_end:
+            _draw_point(draw, points[-1], fill=(123, 45, 180), radius=5)
+        draw.text((points[0][0] + 3, points[0][1] + 3), connector.id, fill=(20, 92, 168))
+    return overlay
+
+
+def _render_emit_scene_overlay(base_image: Image.Image, scene: EmitScene | None) -> Image.Image:
+    overlay = base_image.copy()
+    draw = ImageDraw.Draw(overlay)
+    if scene is None:
+        return overlay
+    for shape in scene.shapes:
+        color = (38, 120, 72) if shape.owner_kind.value == "container" else (211, 117, 0)
+        _draw_bbox(draw, shape.bbox, outline=color, width=2)
+    for text in scene.texts:
+        _draw_bbox(draw, text.bbox, outline=(50, 50, 200), width=1)
+    for residual in scene.residuals:
+        _draw_bbox(draw, residual.bbox, outline=(196, 38, 54), width=1)
+    for connector in scene.connectors:
+        points = [(point.x, point.y) for point in connector.path_points]
+        if len(points) < 2:
+            continue
+        draw.line(points, fill=(20, 92, 168), width=3)
+        if connector.arrowhead_start:
+            _draw_point(draw, points[0], fill=(123, 45, 180), radius=4)
+        if connector.arrowhead_end:
+            _draw_point(draw, points[-1], fill=(123, 45, 180), radius=4)
     return overlay
 
 

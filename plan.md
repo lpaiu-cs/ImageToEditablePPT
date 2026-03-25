@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-03-25  
-상태: `Phase 5A/5B: public surface cleanup + emit-friendly IR bridge 완료`
+상태: `Phase 6A: contract-first connector resolve + emit adapter bootstrap 완료`
 
 ---
 
@@ -793,13 +793,26 @@ connector evidence -> attachment-aware connector candidate의 목적:
 ---
 
 ### Phase 6. actual emit / eval adapter bootstrap
-- [ ] primitive scene -> emit primitive adapter 초안
-- [ ] connector candidate -> solved connector bridge 초안
+
+#### Phase 6A. contract-first connector resolve + emit adapter bootstrap
+- [x] hotfix: README 로컬 절대경로 링크를 repo-relative 링크로 정리
+- [x] hotfix: user-facing markdown 로컬 절대경로 regression test 추가
+- [x] solved connector contract가 owner/port/arrowhead/provenance를 보존하도록 확장
+- [x] `src/image_to_editable_ppt/v3/connectors/solve.py` 추가
+- [x] `convert.py`에 `CONNECTOR_RESOLVE` stage 연결
+- [x] `SlideIR.connectors`를 실제 solved connector 값으로 채움
+- [x] solved connector validation 확장
+- [x] `v3/emit/models.py`, `v3/emit/adapt.py` 추가
+- [x] diagnostics에 `solved_connectors.json`, `emit_scene.json`, `overlay_solved_connectors.png`, `overlay_emit_scene.png` 추가
+- [x] `tests/test_v3_phase6.py` 추가
+
+#### Phase 6B. remaining bootstrap
 - [ ] v3 primitive scene -> eval adapter 범위 정의
 - [ ] emit 전/후 diff inspection loop 최소 경로 확보
 
 **완료 조건**
 - primitive scene이 broad emit 바로 직전 단계로 안정화되고, emit/eval adapter가 읽을 수 있는 최소 bridge가 있어야 한다.
+- `Phase 6A`에서는 broad emit, old runtime 복구, generic route optimization을 선행하지 않는다.
 
 ---
 
@@ -872,8 +885,8 @@ Phase 4 재검토 결과:
 ## 13. 현재 상태
 
 - `plan.md`가 v3 migration의 source of truth로 설정되었다.
-- 방금 완료한 단계는 `Phase 5A/5B: public surface cleanup + emit-friendly IR bridge`다.
-- 다음 활성 단계는 `Phase 6: actual emit / eval adapter bootstrap`이다.
+- 방금 완료한 단계는 `Phase 6A: contract-first connector resolve + emit adapter bootstrap`다.
+- 다음 활성 단계는 `Phase 6B: remaining emit / eval adapter bootstrap`이다.
 - `legacy cleanup / isolation phase` 기준이 문서화되었다.
   - legacy 후보
   - preserve_eval 대상
@@ -960,9 +973,22 @@ Phase 4 재검토 결과:
     - `SlideIR.primitive_scene`이 추가되었다.
     - `SlideIR.connector_candidates`, `SlideIR.unattached_connector_evidence`가 추가되었다.
     - debug runner가 `primitive_scene.json`, `attached_connectors.json`, `overlay_ports.png`, `overlay_primitives.png`, `overlay_attached_connectors.png`를 저장한다.
-- adapter 구현은 아직 하지 않았다.
+- `Phase 6A`가 완료되었다.
+  - public surface hotfix가 추가되었다.
+    - README의 로컬 절대경로 링크를 repo-relative 링크로 정리했다.
+    - `tests/test_public_surface.py`가 markdown 문서의 로컬 절대경로 누수를 막는다.
+  - solved connector contract가 attachment-aware candidate 정보를 유지하도록 확장되었다.
+    - `ConnectorSpec`이 owner id/kind, port id, path, arrowhead, candidate/evidence provenance를 보존한다.
+    - `SlideIR.connectors`가 `CONNECTOR_RESOLVE` stage 이후 실제 값으로 채워진다.
+  - emit adapter bootstrap이 추가되었다.
+    - `v3/emit/models.py`와 `v3/emit/adapt.py`가 `EmitScene`과 typed primitive adapter를 제공한다.
+    - emit adapter 좌표는 현재 `image-space`를 유지한다.
+  - diagnostics가 확장되었다.
+    - debug runner가 `solved_connectors.json`, `emit_scene.json`, `overlay_solved_connectors.png`, `overlay_emit_scene.png`를 저장한다.
+    - `debug_summary.json`에 `connector_resolve`, `emit_adapter` 카운트가 추가되었다.
+- eval adapter 구현은 아직 하지 않았다.
   - future `eval_runtime/` adapter는 `SlideIR.text_layer`, `SlideIR.raster_layer`, `SlideIR.residual_canvas`, `SlideIR.family_proposals`, `SlideIR.diagram_instances`를 읽을 수 있어야 한다.
-  - next adapter는 `SlideIR.primitive_scene`, `SlideIR.connector_candidates`, `SlideIR.unattached_connector_evidence`도 읽을 수 있어야 한다.
+  - next adapter는 `SlideIR.primitive_scene`, `SlideIR.connector_candidates`, `SlideIR.connectors`, `SlideIR.unattached_connector_evidence`도 읽을 수 있어야 한다.
 - shim phase는 아직 열지 않았다.
   - 이유: 현재는 v3 IR과 family flow를 먼저 자라게 하는 편이 더 안전하기 때문이다.
 
@@ -970,12 +996,12 @@ Phase 4 재검토 결과:
 
 ## 14. 다음 단계
 
-다음 단계는 `Phase 6: actual emit / eval adapter bootstrap`이다.
+다음 단계는 `Phase 6B: remaining emit / eval adapter bootstrap`이다.
 
-1. primitive scene을 broad emit 직전의 adapter 입력으로 내리는 최소 bridge를 만든다.
-2. attachment-aware connector candidate를 solved connector contract로 잇는 최소 계층을 만든다.
-3. debug artifact를 emit 전/후 비교 루프와 연결한다.
-4. preserve-eval이 읽을 최소 adapter 범위를 정의하되 old runtime은 복구하지 않는다.
+1. current `EmitScene`을 broad emit writer handoff에 맞게 더 다듬는다.
+2. preserve-eval이 읽을 최소 eval adapter 범위를 정의하되 old runtime은 복구하지 않는다.
+3. debug artifact를 emit 전/후 diff inspection loop와 연결한다.
+4. generic route optimization은 broad emit 요구가 생기기 전까지 계속 미룬다.
 
 ---
 
@@ -998,3 +1024,4 @@ Phase 4 재검토 결과:
 - benchmark report regression test 통과
 - v3 phase 4 inspection / detector / parser / connector evidence test 통과
 - v3 phase 5 public surface / primitive scene / attachment bridge / debug artifact test 통과
+- v3 phase 6 solved connector / emit adapter / diagnostics test 통과

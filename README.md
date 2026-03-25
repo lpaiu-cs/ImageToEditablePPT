@@ -2,7 +2,7 @@
 
 이 저장소는 현재 **v3 아키텍처 재구성 중**이다. 목표는 논문용 구조적 다이어그램을 generic reconstruction이 아니라 **family-constrained parsing + editable primitive scene**으로 정규화하는 것이다.
 
-현재 기준 문서는 [plan.md](/Users/lpaiu/vs/ImageToEditablePPT/plan.md)다. 큰 구조 판단, 현재 단계, 다음 단계, legacy 보존 정책은 모두 이 문서를 source of truth로 본다.
+현재 기준 문서는 [plan.md](plan.md)다. 큰 구조 판단, 현재 단계, 다음 단계, legacy 보존 정책은 모두 이 문서를 source of truth로 본다.
 
 ## 현재 상태
 
@@ -30,7 +30,16 @@ python tools/run_v3_debug.py input.png --output-dir artifacts/v3_debug/sample
 - `connector_evidence.json`
 - `primitive_scene.json`
 - `attached_connectors.json`
-- overlay PNG들
+- `solved_connectors.json`
+- `emit_scene.json`
+- `overlay_proposals.png`
+- `overlay_instances.png`
+- `overlay_connector_evidence.png`
+- `overlay_ports.png`
+- `overlay_primitives.png`
+- `overlay_attached_connectors.png`
+- `overlay_solved_connectors.png`
+- `overlay_emit_scene.png`
 
 파이썬에서 직접 v3 convert를 호출할 수도 있다.
 
@@ -40,6 +49,7 @@ from image_to_editable_ppt.v3 import V3Config, convert_image
 result = convert_image("input.png", config=V3Config())
 print(result.slide_ir.family_proposals)
 print(result.slide_ir.diagram_instances)
+print(result.slide_ir.connectors)
 print(result.slide_ir.primitive_scene)
 ```
 
@@ -56,8 +66,10 @@ print(result.slide_ir.primitive_scene)
 7. connector evidence 수집
 8. port 생성
 9. evidence attachment
-10. primitive scene mapping
-11. debug/inspection artifact 저장
+10. solved connector resolve
+11. primitive scene mapping
+12. image-space emit adapter scene mapping
+13. debug/inspection artifact 저장
 
 아직 하지 않은 것:
 
@@ -72,9 +84,10 @@ print(result.slide_ir.primitive_scene)
 - 확실한 구조만 남기고, 애매한 것은 공백이나 residual로 둔다.
 - non-diagram raster는 초기에 분리한다.
 - connector는 evidence -> attachment-aware candidate -> solved connector 순서로 늦게 확정한다.
+- emit adapter 좌표는 현재 `image-space`를 그대로 유지한다.
 - detector 결과를 바로 emit하지 않고, typed IR과 primitive scene을 거친다.
 
-상위 원칙은 [principle.md](/Users/lpaiu/vs/ImageToEditablePPT/principle.md)에 있다.
+상위 원칙은 [principle.md](principle.md)에 있다.
 
 ## 보존 자산
 
@@ -88,7 +101,7 @@ print(result.slide_ir.primitive_scene)
 
 ## 역사 문서
 
-- [conversion-spec.md](/Users/lpaiu/vs/ImageToEditablePPT/conversion-spec.md): archived historical draft
-- [v2.0 instruction.md](/Users/lpaiu/vs/ImageToEditablePPT/v2.0%20instruction.md): obsolete historical instruction
+- [conversion-spec.md](conversion-spec.md): archived historical draft
+- [v2.0 instruction.md](v2.0%20instruction.md): obsolete historical instruction
 
-현재 구현 방향은 위 문서보다 [plan.md](/Users/lpaiu/vs/ImageToEditablePPT/plan.md)가 우선한다.
+현재 구현 방향은 위 문서보다 [plan.md](plan.md)가 우선한다.

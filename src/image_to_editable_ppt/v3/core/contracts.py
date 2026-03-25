@@ -83,9 +83,8 @@ class FamilyParser(Protocol):
 class ConnectorResolver(Protocol):
     def resolve(
         self,
-        bundle: "MultiViewBundle",
         *,
-        instances: Sequence["DiagramInstance"],
+        connector_candidates: Sequence["PrimitiveConnectorCandidate"],
         config: "V3Config",
     ) -> Sequence["ConnectorSpec"]: ...
 

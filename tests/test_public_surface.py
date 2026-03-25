@@ -32,3 +32,19 @@ def test_historical_docs_are_marked_as_non_current() -> None:
 
     assert any("historical" in line.lower() or "archived" in line.lower() for line in conversion_spec)
     assert any("obsolete" in line.lower() or "historical" in line.lower() for line in legacy_instruction)
+
+
+def test_user_facing_markdown_does_not_expose_local_absolute_paths() -> None:
+    markdown_paths = sorted(
+        path
+        for path in REPO_ROOT.rglob("*.md")
+        if ".git" not in path.parts
+    )
+
+    offenders = []
+    for path in markdown_paths:
+        text = path.read_text(encoding="utf-8")
+        if "/Users/lpaiu/vs/ImageToEditablePPT" in text:
+            offenders.append(path.relative_to(REPO_ROOT).as_posix())
+
+    assert offenders == []

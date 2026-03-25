@@ -142,11 +142,25 @@ class ConnectorSpec:
     id: str
     kind: ConnectorKind
     confidence: float
+    source_owner_id: str
+    source_owner_kind: PortOwnerKind
+    target_owner_id: str
+    target_owner_kind: PortOwnerKind
+    source_port_id: str
+    target_port_id: str
+    path_points: tuple[Point, ...] = ()
     source_instance_id: str | None = None
-    source_node_id: str | None = None
     target_instance_id: str | None = None
-    target_node_id: str | None = None
-    waypoints: tuple[Point, ...] = ()
+    arrowhead_start: bool = False
+    arrowhead_end: bool = False
+    source_candidate_id: str | None = None
+    source_evidence_id: str | None = None
+    source: str = "placeholder"
+    provenance: tuple[str, ...] = ()
+
+    @property
+    def waypoints(self) -> tuple[Point, ...]:
+        return self.path_points
 
 
 @dataclass(slots=True, frozen=True)

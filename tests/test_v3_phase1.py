@@ -6,9 +6,28 @@ import pytest
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.app.convert import convert_image
 from image_to_editable_ppt.v3.core.contracts import ContractViolationError
-from image_to_editable_ppt.v3.core.enums import BranchKind, ConnectorKind, DiagramFamily, NodeKind, ResidualKind, StageName
-from image_to_editable_ppt.v3.core.types import BBox, ImageSize
-from image_to_editable_ppt.v3.ir.models import ConnectorSpec, DiagramInstance, DiagramNode, SlideIR
+from image_to_editable_ppt.v3.core.enums import (
+    BranchKind,
+    ConnectorKind,
+    ConnectorOrientation,
+    DiagramFamily,
+    NodeKind,
+    PortOwnerKind,
+    PortSide,
+    ResidualKind,
+    StageName,
+)
+from image_to_editable_ppt.v3.core.types import BBox, ImageSize, Point
+from image_to_editable_ppt.v3.ir.models import (
+    ConnectorEvidence,
+    ConnectorSpec,
+    DiagramInstance,
+    DiagramNode,
+    PortSpec,
+    PrimitiveNode,
+    PrimitiveScene,
+    SlideIR,
+)
 from image_to_editable_ppt.v3.ir.validate import validate_multiview_bundle, validate_slide_ir
 from image_to_editable_ppt.v3.preprocessing.multiview import build_multiview_bundle
 
@@ -55,18 +74,96 @@ def test_slide_ir_validation_rejects_unknown_connector_endpoint() -> None:
                         id="node-1",
                         kind=NodeKind.BOX,
                         bbox=BBox(10.0, 10.0, 60.0, 40.0),
+                        confidence=0.9,
+                        source="test",
+                        provenance=("test:phase1",),
+                    ),
+                    DiagramNode(
+                        id="node-2",
+                        kind=NodeKind.BOX,
+                        bbox=BBox(70.0, 10.0, 110.0, 40.0),
+                        confidence=0.9,
+                        source="test",
+                        provenance=("test:phase1",),
                     ),
                 ),
                 source_proposal_ids=(),
+                provenance=("test:phase1",),
             ),
+        ),
+        connector_evidence=(
+            ConnectorEvidence(
+                id="connector_evidence:1",
+                kind=ConnectorKind.ARROW,
+                orientation=ConnectorOrientation.HORIZONTAL,
+                bbox=BBox(60.0, 24.0, 70.0, 26.0),
+                confidence=0.8,
+                path_points=(Point(60.0, 25.0), Point(70.0, 25.0)),
+                source="test",
+                provenance=("test:phase1",),
+            ),
+        ),
+        primitive_scene=PrimitiveScene(
+            image_size=ImageSize(width=120, height=80),
+            nodes=(
+                PrimitiveNode(
+                    id="node-1",
+                    kind=NodeKind.BOX,
+                    bbox=BBox(10.0, 10.0, 60.0, 40.0),
+                    confidence=0.9,
+                    port_ids=("node-1:port:right",),
+                    source="test",
+                    provenance=("test:phase1",),
+                ),
+                PrimitiveNode(
+                    id="node-2",
+                    kind=NodeKind.BOX,
+                    bbox=BBox(70.0, 10.0, 110.0, 40.0),
+                    confidence=0.9,
+                    port_ids=("node-2:port:left",),
+                    source="test",
+                    provenance=("test:phase1",),
+                ),
+            ),
+            ports=(
+                PortSpec(
+                    id="node-1:port:right",
+                    owner_id="node-1",
+                    owner_kind=PortOwnerKind.NODE,
+                    side=PortSide.RIGHT,
+                    point=Point(60.0, 25.0),
+                    confidence=0.9,
+                    source="test",
+                    provenance=("test:phase1",),
+                ),
+                PortSpec(
+                    id="node-2:port:left",
+                    owner_id="node-2",
+                    owner_kind=PortOwnerKind.NODE,
+                    side=PortSide.LEFT,
+                    point=Point(70.0, 25.0),
+                    confidence=0.9,
+                    source="test",
+                    provenance=("test:phase1",),
+                ),
+            ),
+            provenance=("test:phase1",),
         ),
         connectors=(
             ConnectorSpec(
                 id="connector-1",
                 kind=ConnectorKind.ARROW,
                 confidence=0.8,
-                source_instance_id="instance-1",
-                target_node_id="missing-node",
+                source_owner_id="node-1",
+                source_owner_kind=PortOwnerKind.NODE,
+                target_owner_id="missing-node",
+                target_owner_kind=PortOwnerKind.NODE,
+                source_port_id="node-1:port:right",
+                target_port_id="missing-node:port:left",
+                path_points=(Point(60.0, 25.0), Point(70.0, 25.0)),
+                source_evidence_id="connector_evidence:1",
+                source="test",
+                provenance=("test:phase1",),
             ),
         ),
     )
@@ -101,6 +198,7 @@ def test_placeholder_pipeline_returns_explicit_residual() -> None:
         StageName.CONNECTOR_EVIDENCE,
         StageName.PORT_GENERATE,
         StageName.CONNECTOR_ATTACH,
+        StageName.CONNECTOR_RESOLVE,
         StageName.STYLE_RESOLVE,
         StageName.COMPOSE,
     ]

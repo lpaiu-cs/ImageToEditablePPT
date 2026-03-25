@@ -7,11 +7,17 @@ from PIL import Image
 
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.compose import build_primitive_scene
-from image_to_editable_ppt.v3.connectors import attach_connector_evidence, extract_connector_evidence, generate_ports
+from image_to_editable_ppt.v3.connectors import (
+    attach_connector_evidence,
+    extract_connector_evidence,
+    generate_ports,
+    resolve_connector_candidates,
+)
 from image_to_editable_ppt.v3.core.contracts import StageRecord
 from image_to_editable_ppt.v3.core.enums import ResidualKind, StageName
 from image_to_editable_ppt.v3.families import detect_family_proposals, parse_family_proposals
 from image_to_editable_ppt.v3.ir.models import (
+    ConnectorSpec,
     ConnectorEvidence,
     DiagramInstance,
     FamilyProposal,
@@ -69,6 +75,7 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
         ports,
         active_config,
     )
+    connectors = _resolve_connector_candidates(connector_candidates, active_config)
     style_tokens = _resolve_style_tokens(residual_canvas, instances, active_config)
     residual_regions = _build_residual_regions(residual_canvas, instances, active_config)
     primitive_scene = _build_primitive_scene(
@@ -94,7 +101,7 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
         connector_evidence=connector_evidence,
         connector_candidates=connector_candidates,
         unattached_connector_evidence=unattached_connector_evidence,
-        connectors=(),
+        connectors=connectors,
         primitive_scene=primitive_scene,
         text_regions=text_layer.regions,
         raster_regions=raster_layer.regions,
@@ -161,6 +168,14 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
             summary={
                 "connector_candidate_count": len(connector_candidates),
                 "unattached_evidence_count": len(unattached_connector_evidence),
+            },
+        ),
+        StageRecord(
+            stage=StageName.CONNECTOR_RESOLVE,
+            summary={
+                "connector_candidate_count": len(connector_candidates),
+                "solved_connector_count": len(connectors),
+                "unsolved_candidate_count": len(connector_candidates) - len(connectors),
             },
         ),
         StageRecord(stage=StageName.STYLE_RESOLVE, summary={"style_token_count": len(style_tokens)}),
@@ -317,7 +332,7 @@ def _build_primitive_scene(
     unattached_connector_evidence: tuple[UnattachedConnectorEvidence, ...],
     residual_regions: tuple[ResidualRegion, ...],
     config: V3Config,
-) -> PrimitiveScene:
+    ) -> PrimitiveScene:
     return build_primitive_scene(
         text_layer=text_layer,
         raster_layer=raster_layer,
@@ -327,5 +342,17 @@ def _build_primitive_scene(
         connector_candidates=connector_candidates,
         unattached_connector_evidence=unattached_connector_evidence,
         residual_regions=residual_regions,
+        config=config,
+    )
+
+
+def _resolve_connector_candidates(
+    connector_candidates: tuple[PrimitiveConnectorCandidate, ...],
+    config: V3Config,
+) -> tuple[ConnectorSpec, ...]:
+    if not connector_candidates:
+        return ()
+    return resolve_connector_candidates(
+        connector_candidates=connector_candidates,
         config=config,
     )

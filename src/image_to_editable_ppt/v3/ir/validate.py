@@ -8,6 +8,7 @@ from image_to_editable_ppt.v3.core.types import BBox
 from image_to_editable_ppt.v3.ir.models import (
     ConnectorAttachment,
     ConnectorEvidence,
+    ConnectorSpec,
     MultiViewBundle,
     PortSpec,
     PrimitiveConnectorCandidate,
@@ -114,6 +115,11 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
     container_ids = {container.id for instance in slide_ir.diagram_instances for container in instance.containers}
     proposal_ids = {proposal.id for proposal in slide_ir.family_proposals}
     evidence_ids = {evidence.id for evidence in slide_ir.connector_evidence}
+    primitive_node_ids: set[str] = set()
+    primitive_container_ids: set[str] = set()
+    port_ids: set[str] = set()
+    port_lookup: dict[str, PortSpec] = {}
+    candidate_ids: set[str] = set()
 
     if slide_ir.text_layer is not None:
         validate_text_layer_result(slide_ir.text_layer)
@@ -177,21 +183,6 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
         if slide_ir.primitive_scene is None:
             raise ContractViolationError("connector attachment outputs require a primitive_scene payload")
 
-    for connector in slide_ir.connectors:
-        _validate_confidence(connector.confidence, label=connector.id)
-        if connector.source_instance_id is not None and connector.source_instance_id not in instance_ids:
-            raise ContractViolationError(
-                f"connector {connector.id} references unknown source instance {connector.source_instance_id}"
-            )
-        if connector.target_instance_id is not None and connector.target_instance_id not in instance_ids:
-            raise ContractViolationError(
-                f"connector {connector.id} references unknown target instance {connector.target_instance_id}"
-            )
-        if connector.source_node_id is not None and connector.source_node_id not in node_ids:
-            raise ContractViolationError(f"connector {connector.id} references unknown source node {connector.source_node_id}")
-        if connector.target_node_id is not None and connector.target_node_id not in node_ids:
-            raise ContractViolationError(f"connector {connector.id} references unknown target node {connector.target_node_id}")
-
     for token in slide_ir.style_tokens:
         unknown_targets = [
             target_id
@@ -224,6 +215,8 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
         primitive_node_ids = {item.id for item in slide_ir.primitive_scene.nodes}
         primitive_container_ids = {item.id for item in slide_ir.primitive_scene.containers}
         port_ids = {item.id for item in slide_ir.primitive_scene.ports}
+        port_lookup = {item.id: item for item in slide_ir.primitive_scene.ports}
+        candidate_ids = {item.id for item in slide_ir.connector_candidates}
         for candidate in slide_ir.connector_candidates:
             _validate_connector_candidate(
                 candidate,
@@ -234,6 +227,21 @@ def validate_slide_ir(slide_ir: SlideIR) -> None:
             )
         for item in slide_ir.unattached_connector_evidence:
             _validate_unattached_connector_evidence(item, evidence_ids=evidence_ids, port_ids=port_ids)
+
+    if slide_ir.connectors:
+        if slide_ir.primitive_scene is None:
+            raise ContractViolationError("solved connectors require a primitive_scene payload")
+        for connector in slide_ir.connectors:
+            _validate_connector_spec(
+                connector,
+                instance_ids=instance_ids,
+                node_ids=primitive_node_ids or node_ids,
+                container_ids=primitive_container_ids or container_ids,
+                port_ids=port_ids,
+                port_lookup=port_lookup,
+                candidate_ids=candidate_ids,
+                evidence_ids=evidence_ids,
+            )
 
 
 def validate_primitive_scene(scene: PrimitiveScene) -> None:
@@ -401,6 +409,116 @@ def _validate_connector_candidate(
     _validate_attachment(candidate.end_attachment, port_ids=port_ids, node_ids=node_ids, container_ids=container_ids)
     if candidate.start_attachment.owner_id == candidate.end_attachment.owner_id:
         raise ContractViolationError(f"connector candidate {candidate.id} cannot attach both ends to the same owner")
+
+
+def _validate_connector_spec(
+    connector: ConnectorSpec,
+    *,
+    instance_ids: set[str],
+    node_ids: set[str],
+    container_ids: set[str],
+    port_ids: set[str],
+    port_lookup: dict[str, PortSpec],
+    candidate_ids: set[str],
+    evidence_ids: set[str],
+) -> None:
+    _validate_confidence(connector.confidence, label=connector.id)
+    if len(connector.path_points) < 2:
+        raise ContractViolationError(f"connector {connector.id} must have at least two path points")
+    if not connector.source:
+        raise ContractViolationError(f"connector {connector.id} must declare a source")
+    if not connector.provenance:
+        raise ContractViolationError(f"connector {connector.id} must declare provenance")
+    if connector.source_candidate_id is None and connector.source_evidence_id is None:
+        raise ContractViolationError(
+            f"connector {connector.id} must retain a source_candidate_id or source_evidence_id reference"
+        )
+    if connector.source_candidate_id is not None and connector.source_candidate_id not in candidate_ids:
+        raise ContractViolationError(
+            f"connector {connector.id} references unknown source candidate {connector.source_candidate_id}"
+        )
+    if connector.source_evidence_id is not None and connector.source_evidence_id not in evidence_ids:
+        raise ContractViolationError(
+            f"connector {connector.id} references unknown source evidence {connector.source_evidence_id}"
+        )
+    if connector.source_instance_id is not None and connector.source_instance_id not in instance_ids:
+        raise ContractViolationError(
+            f"connector {connector.id} references unknown source instance {connector.source_instance_id}"
+        )
+    if connector.target_instance_id is not None and connector.target_instance_id not in instance_ids:
+        raise ContractViolationError(
+            f"connector {connector.id} references unknown target instance {connector.target_instance_id}"
+        )
+    _validate_connector_endpoint_owner(
+        connector.id,
+        label="source",
+        owner_id=connector.source_owner_id,
+        owner_kind=connector.source_owner_kind,
+        node_ids=node_ids,
+        container_ids=container_ids,
+    )
+    _validate_connector_endpoint_owner(
+        connector.id,
+        label="target",
+        owner_id=connector.target_owner_id,
+        owner_kind=connector.target_owner_kind,
+        node_ids=node_ids,
+        container_ids=container_ids,
+    )
+    _validate_connector_endpoint_port(
+        connector.id,
+        label="source",
+        port_id=connector.source_port_id,
+        owner_id=connector.source_owner_id,
+        owner_kind=connector.source_owner_kind,
+        port_ids=port_ids,
+        port_lookup=port_lookup,
+    )
+    _validate_connector_endpoint_port(
+        connector.id,
+        label="target",
+        port_id=connector.target_port_id,
+        owner_id=connector.target_owner_id,
+        owner_kind=connector.target_owner_kind,
+        port_ids=port_ids,
+        port_lookup=port_lookup,
+    )
+    if connector.source_owner_id == connector.target_owner_id:
+        raise ContractViolationError(f"connector {connector.id} cannot attach both ends to the same owner")
+
+
+def _validate_connector_endpoint_owner(
+    connector_id: str,
+    *,
+    label: str,
+    owner_id: str,
+    owner_kind,
+    node_ids: set[str],
+    container_ids: set[str],
+) -> None:
+    if owner_kind.value == "node" and owner_id not in node_ids:
+        raise ContractViolationError(f"connector {connector_id} references unknown {label} node owner {owner_id}")
+    if owner_kind.value == "container" and owner_id not in container_ids:
+        raise ContractViolationError(f"connector {connector_id} references unknown {label} container owner {owner_id}")
+
+
+def _validate_connector_endpoint_port(
+    connector_id: str,
+    *,
+    label: str,
+    port_id: str,
+    owner_id: str,
+    owner_kind,
+    port_ids: set[str],
+    port_lookup: dict[str, PortSpec],
+) -> None:
+    if port_id not in port_ids:
+        raise ContractViolationError(f"connector {connector_id} references unknown {label} port {port_id}")
+    port = port_lookup[port_id]
+    if port.owner_id != owner_id or port.owner_kind != owner_kind:
+        raise ContractViolationError(
+            f"connector {connector_id} {label} port {port_id} does not belong to {owner_kind.value} owner {owner_id}"
+        )
 
 
 def _validate_unattached_connector_evidence(
