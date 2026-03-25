@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-03-25  
-상태: `Phase 6A: contract-first connector resolve + emit adapter bootstrap 완료`
+상태: `Phase 6A/6B: actual emit / eval adapter bootstrap 완료`
 
 ---
 
@@ -806,13 +806,13 @@ connector evidence -> attachment-aware connector candidate의 목적:
 - [x] diagnostics에 `solved_connectors.json`, `emit_scene.json`, `overlay_solved_connectors.png`, `overlay_emit_scene.png` 추가
 - [x] `tests/test_v3_phase6.py` 추가
 
-#### Phase 6B. remaining bootstrap
-- [ ] v3 primitive scene -> eval adapter 범위 정의
-- [ ] emit 전/후 diff inspection loop 최소 경로 확보
+#### Phase 6B. eval adapter + emit diff loop
+- [x] v3 primitive scene -> eval adapter 범위 정의
+- [x] emit 전/후 diff inspection loop 최소 경로 확보
 
 **완료 조건**
 - primitive scene이 broad emit 바로 직전 단계로 안정화되고, emit/eval adapter가 읽을 수 있는 최소 bridge가 있어야 한다.
-- `Phase 6A`에서는 broad emit, old runtime 복구, generic route optimization을 선행하지 않는다.
+- `Phase 6`에서는 broad emit writer 복구, old runtime 복구, generic route optimization을 선행하지 않는다.
 
 ---
 
@@ -885,8 +885,8 @@ Phase 4 재검토 결과:
 ## 13. 현재 상태
 
 - `plan.md`가 v3 migration의 source of truth로 설정되었다.
-- 방금 완료한 단계는 `Phase 6A: contract-first connector resolve + emit adapter bootstrap`다.
-- 다음 활성 단계는 `Phase 6B: remaining emit / eval adapter bootstrap`이다.
+- 방금 완료한 단계는 `Phase 6A/6B: actual emit / eval adapter bootstrap`다.
+- 다음 활성 단계는 `Phase 7: family expansion and benchmarking`이다.
 - `legacy cleanup / isolation phase` 기준이 문서화되었다.
   - legacy 후보
   - preserve_eval 대상
@@ -986,22 +986,30 @@ Phase 4 재검토 결과:
   - diagnostics가 확장되었다.
     - debug runner가 `solved_connectors.json`, `emit_scene.json`, `overlay_solved_connectors.png`, `overlay_emit_scene.png`를 저장한다.
     - `debug_summary.json`에 `connector_resolve`, `emit_adapter` 카운트가 추가되었다.
-- eval adapter 구현은 아직 하지 않았다.
-  - future `eval_runtime/` adapter는 `SlideIR.text_layer`, `SlideIR.raster_layer`, `SlideIR.residual_canvas`, `SlideIR.family_proposals`, `SlideIR.diagram_instances`를 읽을 수 있어야 한다.
-  - next adapter는 `SlideIR.primitive_scene`, `SlideIR.connector_candidates`, `SlideIR.connectors`, `SlideIR.unattached_connector_evidence`도 읽을 수 있어야 한다.
-- shim phase는 아직 열지 않았다.
-  - 이유: 현재는 v3 IR과 family flow를 먼저 자라게 하는 편이 더 안전하기 때문이다.
+- `Phase 6B`가 완료되었다.
+  - preserve-eval bridge용 `eval_runtime` adapter가 추가되었다.
+    - `manifest.json`과 `eval_stage_artifacts.json`이 `SlideIR`/`EmitScene` 기준으로 생성된다.
+    - stage artifact 범위는 현재 `03_objects`, `05_selection`, `07_emit`로 고정된다.
+    - input 이미지 옆에 `*.gt.json` sidecar가 있으면 debug runner가 `08_eval/*` GT-backed artifact까지 생성한다.
+  - emit pre/post diff inspection loop가 추가되었다.
+    - `EmitSceneDiff`가 primitive scene + solved connector와 emit scene의 손실 여부를 비교한다.
+    - debug runner가 `emit_diff.json`과 `overlay_emit_diff.png`를 저장한다.
+    - `debug_summary.json`에 `eval_adapter`, `emit_diff` 요약이 추가되었다.
+- broad emit writer와 old validation runtime은 여전히 복구하지 않았다.
+  - 현재 adapter는 emit/eval bootstrap 경계 정의용이며, writer 자체를 다시 열지는 않는다.
+  - shim phase는 아직 열지 않았다.
+    - 이유: 현재는 v3 IR과 family flow를 먼저 자라게 하는 편이 더 안전하기 때문이다.
 
 ---
 
 ## 14. 다음 단계
 
-다음 단계는 `Phase 6B: remaining emit / eval adapter bootstrap`이다.
+다음 단계는 `Phase 7: family expansion and benchmarking`이다.
 
-1. current `EmitScene`을 broad emit writer handoff에 맞게 더 다듬는다.
-2. preserve-eval이 읽을 최소 eval adapter 범위를 정의하되 old runtime은 복구하지 않는다.
-3. debug artifact를 emit 전/후 diff inspection loop와 연결한다.
-4. generic route optimization은 broad emit 요구가 생기기 전까지 계속 미룬다.
+1. 현재 `orthogonal_flow` 바깥의 MVP family를 순차적으로 추가한다.
+2. 새 family도 `PrimitiveScene -> EmitScene -> eval adapter` 경계를 그대로 따르도록 유지한다.
+3. GT-backed coverage와 benchmark 비교 범위를 넓힌다.
+4. generic route optimization은 실제 family 확장 압력이 생길 때까지 계속 미룬다.
 
 ---
 
@@ -1025,3 +1033,4 @@ Phase 4 재검토 결과:
 - v3 phase 4 inspection / detector / parser / connector evidence test 통과
 - v3 phase 5 public surface / primitive scene / attachment bridge / debug artifact test 통과
 - v3 phase 6 solved connector / emit adapter / diagnostics test 통과
+- v3 phase 6B eval adapter / emit diff / GT-backed debug artifact test 통과

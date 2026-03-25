@@ -31,10 +31,11 @@
 - `tests/test_v3_phase4.py`
 - `tests/test_v3_phase5.py`
 - `tests/test_v3_phase6.py`
+- `tests/test_v3_phase6b.py`
 - `tests/test_v3_architecture.py`
 
 규칙:
 
 - `test_v3_*.py`는 v3 전용 테스트에 사용한다.
-- 계약, 경계, branch orchestration, family skeleton, debug artifact visibility, primitive scene bridge, solved connector contract, emit adapter bootstrap을 우선 검증한다.
+- 계약, 경계, branch orchestration, family skeleton, debug artifact visibility, primitive scene bridge, solved connector contract, emit/eval adapter bootstrap, emit diff inspection loop를 우선 검증한다.
 - legacy heuristic 품질 검증은 여기로 가져오지 않는다.

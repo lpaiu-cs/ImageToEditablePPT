@@ -12,7 +12,8 @@
 - 지원 family는 아직 좁다.
   - 현재 활성 family: `orthogonal_flow`
 - benchmark / eval / GT sidecar / workbench 자산은 보존되어 있다.
-- 다만 old validation runtime은 복구하지 않았고, eval adapter도 아직 구현하지 않았다.
+- 다만 old validation runtime은 복구하지 않았다.
+- 대신 debug path에서 읽는 최소 `eval_runtime` adapter와 emit diff inspection bootstrap은 추가되었다.
 
 ## 현재 진입점
 
@@ -32,6 +33,9 @@ python tools/run_v3_debug.py input.png --output-dir artifacts/v3_debug/sample
 - `attached_connectors.json`
 - `solved_connectors.json`
 - `emit_scene.json`
+- `manifest.json`
+- `eval_stage_artifacts.json`
+- `emit_diff.json`
 - `overlay_proposals.png`
 - `overlay_instances.png`
 - `overlay_connector_evidence.png`
@@ -40,6 +44,10 @@ python tools/run_v3_debug.py input.png --output-dir artifacts/v3_debug/sample
 - `overlay_attached_connectors.png`
 - `overlay_solved_connectors.png`
 - `overlay_emit_scene.png`
+- `overlay_emit_diff.png`
+- `08_eval/*`
+  - input 이미지 옆에 `*.gt.json` sidecar가 있으면 GT-backed eval artifact
+  - 없으면 unavailable payload
 
 파이썬에서 직접 v3 convert를 호출할 수도 있다.
 
@@ -69,12 +77,13 @@ print(result.slide_ir.primitive_scene)
 10. solved connector resolve
 11. primitive scene mapping
 12. image-space emit adapter scene mapping
-13. debug/inspection artifact 저장
+13. eval adapter manifest/stage artifact 조립
+14. emit pre/post diff inspection artifact 저장
+15. debug/inspection artifact 저장
 
 아직 하지 않은 것:
 
 - broad PPT emit
-- eval adapter
 - old validation runtime 복구
 - 여러 family 동시 확장
 - full connector routing/optimization
@@ -85,6 +94,7 @@ print(result.slide_ir.primitive_scene)
 - non-diagram raster는 초기에 분리한다.
 - connector는 evidence -> attachment-aware candidate -> solved connector 순서로 늦게 확정한다.
 - emit adapter 좌표는 현재 `image-space`를 그대로 유지한다.
+- preserve-eval bridge는 `manifest.json` + `08_eval/*` artifact를 읽는 최소 adapter로만 연결한다.
 - detector 결과를 바로 emit하지 않고, typed IR과 primitive scene을 거친다.
 
 상위 원칙은 [principle.md](principle.md)에 있다.

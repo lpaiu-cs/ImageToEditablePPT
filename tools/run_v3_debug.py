@@ -8,7 +8,7 @@ from image_to_editable_ppt.v3.diagnostics import run_v3_debug
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Run the v3 debug/inspection pipeline and dump proposal/instance/evidence/primitive-scene artifacts."
+        description="Run the v3 debug/inspection pipeline and dump IR, emit-adapter, eval-adapter, and diff artifacts."
     )
     parser.add_argument("input_image", type=Path, help="Path to the input image")
     parser.add_argument(

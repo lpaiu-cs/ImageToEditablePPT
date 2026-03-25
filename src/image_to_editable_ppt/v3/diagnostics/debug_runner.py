@@ -7,10 +7,16 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 
+from image_to_editable_ppt.eval_runtime import (
+    build_v3_eval_adapter_result,
+    stage_artifacts_to_json,
+    write_v3_eval_debug_artifacts,
+)
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.app.convert import V3ConversionResult, convert_image
 from image_to_editable_ppt.v3.core.enums import BranchKind
-from image_to_editable_ppt.v3.emit import build_emit_scene
+from image_to_editable_ppt.v3.emit import build_emit_scene, diff_emit_scene
+from image_to_editable_ppt.v3.emit.diff import EmitSceneDiff
 from image_to_editable_ppt.v3.emit.models import EmitScene
 from image_to_editable_ppt.v3.ir.models import (
     ConnectorAttachment,
@@ -32,6 +38,8 @@ from image_to_editable_ppt.v3.ir.models import (
 @dataclass(slots=True, frozen=True)
 class V3DebugArtifacts:
     output_dir: Path
+    manifest_json: Path
+    eval_stage_artifacts_json: Path
     family_proposals_json: Path
     diagram_instances_json: Path
     connector_evidence_json: Path
@@ -39,6 +47,7 @@ class V3DebugArtifacts:
     attached_connectors_json: Path
     solved_connectors_json: Path
     emit_scene_json: Path
+    emit_diff_json: Path
     overlay_proposals_png: Path
     overlay_instances_png: Path
     overlay_connector_evidence_png: Path
@@ -47,7 +56,9 @@ class V3DebugArtifacts:
     overlay_attached_connectors_png: Path
     overlay_solved_connectors_png: Path
     overlay_emit_scene_png: Path
+    overlay_emit_diff_png: Path
     debug_summary_json: Path
+    eval_dir: Path
 
 
 @dataclass(slots=True)
@@ -66,9 +77,9 @@ def run_v3_debug(
     output_path.mkdir(parents=True, exist_ok=True)
 
     conversion = convert_image(input_image, config=config)
+    input_path = _coerce_input_path(input_image)
     base_image = Image.fromarray(
         np.asarray(conversion.multiview.branch(BranchKind.RGB).image, dtype=np.uint8),
-        mode="RGB",
     )
 
     family_payload = {"family_proposals": [_proposal_to_json(item) for item in conversion.slide_ir.family_proposals]}
@@ -78,6 +89,22 @@ def run_v3_debug(
     emit_scene = None if primitive_scene is None else build_emit_scene(
         primitive_scene=primitive_scene,
         connectors=conversion.slide_ir.connectors,
+    )
+    emit_diff = None if primitive_scene is None or emit_scene is None else diff_emit_scene(
+        primitive_scene=primitive_scene,
+        connectors=conversion.slide_ir.connectors,
+        emit_scene=emit_scene,
+    )
+    eval_adapter = build_v3_eval_adapter_result(
+        slide_ir=conversion.slide_ir,
+        stage_records=conversion.stage_records,
+        emit_scene=emit_scene,
+    )
+    eval_dir = output_path / "08_eval"
+    eval_adapter, eval_payload = write_v3_eval_debug_artifacts(
+        output_dir=eval_dir,
+        input_path=input_path,
+        adapter_result=eval_adapter,
     )
     primitive_payload = {
         "primitive_scene": None if primitive_scene is None else _primitive_scene_to_json(primitive_scene),
@@ -93,6 +120,9 @@ def run_v3_debug(
     }
     emit_scene_payload = {
         "emit_scene": None if emit_scene is None else _emit_scene_to_json(emit_scene),
+    }
+    emit_diff_payload = {
+        "emit_diff": None if emit_diff is None else _emit_diff_to_json(emit_diff),
     }
     summary_payload = {
         "image_size": conversion.slide_ir.image_size.as_tuple(),
@@ -127,8 +157,24 @@ def run_v3_debug(
             "connectors": 0 if emit_scene is None else len(emit_scene.connectors),
             "residuals": 0 if emit_scene is None else len(emit_scene.residuals),
         },
+        "eval_adapter": {
+            "gt_available": bool(eval_adapter.manifest.get("gt_available", False)),
+            "supported_stages": list(eval_adapter.stage_artifacts),
+            "stage_entity_counts": {
+                stage: len(items)
+                for stage, items in eval_adapter.stage_artifacts.items()
+            },
+        },
+        "emit_diff": {
+            "lossless": True if emit_diff is None else emit_diff.lossless,
+            "missing_total": 0 if emit_diff is None else _emit_diff_missing_total(emit_diff),
+            "extra_total": 0 if emit_diff is None else _emit_diff_extra_total(emit_diff),
+            "mismatch_total": 0 if emit_diff is None else _emit_diff_mismatch_total(emit_diff),
+        },
     }
 
+    manifest_json = output_path / "manifest.json"
+    eval_stage_artifacts_json = output_path / "eval_stage_artifacts.json"
     family_json = output_path / "family_proposals.json"
     instance_json = output_path / "diagram_instances.json"
     connector_json = output_path / "connector_evidence.json"
@@ -136,7 +182,10 @@ def run_v3_debug(
     attached_connector_json = output_path / "attached_connectors.json"
     solved_connector_json = output_path / "solved_connectors.json"
     emit_scene_json = output_path / "emit_scene.json"
+    emit_diff_json = output_path / "emit_diff.json"
     summary_json = output_path / "debug_summary.json"
+    _write_json(manifest_json, eval_adapter.manifest)
+    _write_json(eval_stage_artifacts_json, stage_artifacts_to_json(eval_adapter.stage_artifacts))
     _write_json(family_json, family_payload)
     _write_json(instance_json, instance_payload)
     _write_json(connector_json, connector_payload)
@@ -144,6 +193,7 @@ def run_v3_debug(
     _write_json(attached_connector_json, attached_connector_payload)
     _write_json(solved_connector_json, solved_connector_payload)
     _write_json(emit_scene_json, emit_scene_payload)
+    _write_json(emit_diff_json, emit_diff_payload)
     _write_json(summary_json, summary_payload)
 
     overlay_proposals = output_path / "overlay_proposals.png"
@@ -154,6 +204,7 @@ def run_v3_debug(
     overlay_attached_connectors = output_path / "overlay_attached_connectors.png"
     overlay_solved_connectors = output_path / "overlay_solved_connectors.png"
     overlay_emit_scene = output_path / "overlay_emit_scene.png"
+    overlay_emit_diff = output_path / "overlay_emit_diff.png"
     _render_proposal_overlay(base_image, conversion.slide_ir.family_proposals).save(overlay_proposals)
     _render_instance_overlay(base_image, conversion.slide_ir.diagram_instances).save(overlay_instances)
     _render_connector_overlay(base_image, conversion.slide_ir.diagram_instances, conversion.slide_ir.connector_evidence).save(overlay_connector)
@@ -162,11 +213,20 @@ def run_v3_debug(
     _render_attached_connector_overlay(base_image, primitive_scene).save(overlay_attached_connectors)
     _render_solved_connector_overlay(base_image, conversion.slide_ir.connectors).save(overlay_solved_connectors)
     _render_emit_scene_overlay(base_image, emit_scene).save(overlay_emit_scene)
+    _render_emit_diff_overlay(
+        base_image,
+        primitive_scene=primitive_scene,
+        emit_scene=emit_scene,
+        connectors=conversion.slide_ir.connectors,
+        emit_diff=emit_diff,
+    ).save(overlay_emit_diff)
 
     return V3DebugRun(
         conversion=conversion,
         artifacts=V3DebugArtifacts(
             output_dir=output_path,
+            manifest_json=manifest_json,
+            eval_stage_artifacts_json=eval_stage_artifacts_json,
             family_proposals_json=family_json,
             diagram_instances_json=instance_json,
             connector_evidence_json=connector_json,
@@ -174,6 +234,7 @@ def run_v3_debug(
             attached_connectors_json=attached_connector_json,
             solved_connectors_json=solved_connector_json,
             emit_scene_json=emit_scene_json,
+            emit_diff_json=emit_diff_json,
             overlay_proposals_png=overlay_proposals,
             overlay_instances_png=overlay_instances,
             overlay_connector_evidence_png=overlay_connector,
@@ -182,13 +243,23 @@ def run_v3_debug(
             overlay_attached_connectors_png=overlay_attached_connectors,
             overlay_solved_connectors_png=overlay_solved_connectors,
             overlay_emit_scene_png=overlay_emit_scene,
+            overlay_emit_diff_png=overlay_emit_diff,
             debug_summary_json=summary_json,
+            eval_dir=eval_dir,
         ),
     )
 
 
 def _write_json(path: Path, payload: dict[str, object]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=True), encoding="utf-8")
+
+
+def _coerce_input_path(input_image) -> Path | None:
+    if isinstance(input_image, Path):
+        return input_image
+    if isinstance(input_image, str):
+        return Path(input_image)
+    return None
 
 
 def _bbox_to_json(bbox) -> dict[str, float]:
@@ -466,6 +537,69 @@ def _emit_scene_to_json(scene: EmitScene) -> dict[str, object]:
     }
 
 
+def _emit_diff_to_json(diff: EmitSceneDiff) -> dict[str, object]:
+    return {
+        "coordinate_space": diff.coordinate_space,
+        "lossless": diff.lossless,
+        "primitive_shape_count": diff.primitive_shape_count,
+        "emit_shape_count": diff.emit_shape_count,
+        "primitive_text_count": diff.primitive_text_count,
+        "emit_text_count": diff.emit_text_count,
+        "primitive_connector_count": diff.primitive_connector_count,
+        "emit_connector_count": diff.emit_connector_count,
+        "primitive_residual_count": diff.primitive_residual_count,
+        "emit_residual_count": diff.emit_residual_count,
+        "missing_shape_ids": list(diff.missing_shape_ids),
+        "extra_shape_ids": list(diff.extra_shape_ids),
+        "missing_text_ids": list(diff.missing_text_ids),
+        "extra_text_ids": list(diff.extra_text_ids),
+        "missing_connector_ids": list(diff.missing_connector_ids),
+        "extra_connector_ids": list(diff.extra_connector_ids),
+        "missing_residual_ids": list(diff.missing_residual_ids),
+        "extra_residual_ids": list(diff.extra_residual_ids),
+        "shape_bbox_mismatch_ids": list(diff.shape_bbox_mismatch_ids),
+        "text_bbox_mismatch_ids": list(diff.text_bbox_mismatch_ids),
+        "connector_path_mismatch_ids": list(diff.connector_path_mismatch_ids),
+        "residual_bbox_mismatch_ids": list(diff.residual_bbox_mismatch_ids),
+    }
+
+
+def _emit_diff_missing_total(diff: EmitSceneDiff) -> int:
+    return sum(
+        len(items)
+        for items in (
+            diff.missing_shape_ids,
+            diff.missing_text_ids,
+            diff.missing_connector_ids,
+            diff.missing_residual_ids,
+        )
+    )
+
+
+def _emit_diff_extra_total(diff: EmitSceneDiff) -> int:
+    return sum(
+        len(items)
+        for items in (
+            diff.extra_shape_ids,
+            diff.extra_text_ids,
+            diff.extra_connector_ids,
+            diff.extra_residual_ids,
+        )
+    )
+
+
+def _emit_diff_mismatch_total(diff: EmitSceneDiff) -> int:
+    return sum(
+        len(items)
+        for items in (
+            diff.shape_bbox_mismatch_ids,
+            diff.text_bbox_mismatch_ids,
+            diff.connector_path_mismatch_ids,
+            diff.residual_bbox_mismatch_ids,
+        )
+    )
+
+
 def _render_proposal_overlay(base_image: Image.Image, proposals: tuple[FamilyProposal, ...]) -> Image.Image:
     overlay = base_image.copy()
     draw = ImageDraw.Draw(overlay)
@@ -621,6 +755,66 @@ def _render_emit_scene_overlay(base_image: Image.Image, scene: EmitScene | None)
     return overlay
 
 
+def _render_emit_diff_overlay(
+    base_image: Image.Image,
+    *,
+    primitive_scene: PrimitiveScene | None,
+    emit_scene: EmitScene | None,
+    connectors: tuple[ConnectorSpec, ...],
+    emit_diff: EmitSceneDiff | None,
+) -> Image.Image:
+    overlay = base_image.copy()
+    draw = ImageDraw.Draw(overlay)
+    if primitive_scene is None or emit_scene is None or emit_diff is None:
+        return overlay
+
+    primitive_shape_lookup = {
+        item.id: item.bbox
+        for item in (*primitive_scene.containers, *primitive_scene.nodes)
+    }
+    emit_shape_lookup = {item.id: item.bbox for item in emit_scene.shapes}
+    primitive_text_lookup = {item.id: item.bbox for item in primitive_scene.texts}
+    emit_text_lookup = {item.id: item.bbox for item in emit_scene.texts}
+    primitive_residual_lookup = {item.id: item.bbox for item in primitive_scene.residuals}
+    emit_residual_lookup = {item.id: item.bbox for item in emit_scene.residuals}
+    primitive_connector_lookup = {item.id: item.path_points for item in connectors}
+    emit_connector_lookup = {item.id: item.path_points for item in emit_scene.connectors}
+
+    for item_id in emit_diff.missing_shape_ids:
+        _draw_bbox(draw, primitive_shape_lookup[item_id], outline=(196, 38, 54), width=3)
+    for item_id in emit_diff.extra_shape_ids:
+        _draw_bbox(draw, emit_shape_lookup[item_id], outline=(20, 92, 168), width=3)
+    for item_id in emit_diff.shape_bbox_mismatch_ids:
+        _draw_bbox(draw, primitive_shape_lookup[item_id], outline=(230, 159, 0), width=2)
+        _draw_bbox(draw, emit_shape_lookup[item_id], outline=(20, 92, 168), width=1)
+
+    for item_id in emit_diff.missing_text_ids:
+        _draw_bbox(draw, primitive_text_lookup[item_id], outline=(196, 38, 54), width=2)
+    for item_id in emit_diff.extra_text_ids:
+        _draw_bbox(draw, emit_text_lookup[item_id], outline=(20, 92, 168), width=2)
+    for item_id in emit_diff.text_bbox_mismatch_ids:
+        _draw_bbox(draw, primitive_text_lookup[item_id], outline=(230, 159, 0), width=2)
+        _draw_bbox(draw, emit_text_lookup[item_id], outline=(20, 92, 168), width=1)
+
+    for item_id in emit_diff.missing_residual_ids:
+        _draw_bbox(draw, primitive_residual_lookup[item_id], outline=(196, 38, 54), width=2)
+    for item_id in emit_diff.extra_residual_ids:
+        _draw_bbox(draw, emit_residual_lookup[item_id], outline=(20, 92, 168), width=2)
+    for item_id in emit_diff.residual_bbox_mismatch_ids:
+        _draw_bbox(draw, primitive_residual_lookup[item_id], outline=(230, 159, 0), width=2)
+        _draw_bbox(draw, emit_residual_lookup[item_id], outline=(20, 92, 168), width=1)
+
+    for item_id in emit_diff.missing_connector_ids:
+        _draw_path(draw, primitive_connector_lookup[item_id], fill=(196, 38, 54), width=3)
+    for item_id in emit_diff.extra_connector_ids:
+        _draw_path(draw, emit_connector_lookup[item_id], fill=(20, 92, 168), width=3)
+    for item_id in emit_diff.connector_path_mismatch_ids:
+        _draw_path(draw, primitive_connector_lookup[item_id], fill=(230, 159, 0), width=3)
+        _draw_path(draw, emit_connector_lookup[item_id], fill=(20, 92, 168), width=1)
+
+    return overlay
+
+
 def _draw_point(draw: ImageDraw.ImageDraw, point: tuple[float, float], *, fill: tuple[int, int, int], radius: int) -> None:
     x, y = point
     draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=fill)
@@ -628,3 +822,9 @@ def _draw_point(draw: ImageDraw.ImageDraw, point: tuple[float, float], *, fill: 
 
 def _draw_bbox(draw: ImageDraw.ImageDraw, bbox, *, outline: tuple[int, int, int], width: int) -> None:
     draw.rectangle((bbox.x0, bbox.y0, bbox.x1, bbox.y1), outline=outline, width=width)
+
+
+def _draw_path(draw: ImageDraw.ImageDraw, points, *, fill: tuple[int, int, int], width: int) -> None:
+    xy = [(point.x, point.y) for point in points]
+    if len(xy) >= 2:
+        draw.line(xy, fill=fill, width=width)
