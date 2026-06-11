@@ -288,6 +288,50 @@ def test_metrics_report_perfect_scores_for_identical_documents() -> None:
     assert report.nodes.f1 == 1.0
     assert report.nodes.true_positive == 2
     assert report.containers.f1 == 1.0
+    assert report.connectors.endpoint_accuracy == 1.0
+    assert report.connectors.correct_endpoints == 2
+    assert report.structural.exact is True
+
+
+def test_metrics_penalize_wrong_endpoint_attachment() -> None:
+    adapter = AnnotationMLAdapter()
+    reference = adapter.from_model_output(make_synthetic_model_output())
+
+    swapped = make_synthetic_model_output()
+    connector = swapped.connector_predictions[0]
+    wrong_end = dataclasses.replace(
+        connector,
+        end_endpoint=dataclasses.replace(connector.end_endpoint, owner_id="node:a", side=PortSide.RIGHT),
+    )
+    prediction_output = dataclasses.replace(swapped, connector_predictions=(wrong_end,))
+    prediction = adapter.from_model_output(prediction_output)
+
+    report = evaluate_detector_predictions(prediction, reference)
+
+    assert report.connectors.matched == 1
+    assert report.connectors.correct_endpoints == 1
+    assert report.connectors.endpoint_accuracy == 0.5
+    assert report.structural.connectors_exact is False
+    assert report.structural.exact is False
+    assert report.structural.nodes_exact is True
+
+
+def test_metrics_count_unmatched_reference_connectors_as_misses() -> None:
+    adapter = AnnotationMLAdapter()
+    reference = adapter.from_model_output(make_synthetic_model_output())
+    without_connectors = dataclasses.replace(
+        make_synthetic_model_output(),
+        connector_predictions=(),
+        port_predictions=(),
+    )
+    prediction = adapter.from_model_output(without_connectors)
+
+    report = evaluate_detector_predictions(prediction, reference)
+
+    assert report.connectors.matched == 0
+    assert report.connectors.endpoint_accuracy == 0.0
+    assert report.connectors.endpoint_reference_count == 2
+    assert report.structural.exact is False
 
 
 def test_metrics_penalize_shifted_boxes_and_kind_mismatch() -> None:

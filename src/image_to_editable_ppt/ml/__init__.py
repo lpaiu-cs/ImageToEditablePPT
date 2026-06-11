@@ -25,10 +25,12 @@ from image_to_editable_ppt.ml.generate_dataset import (
     build_dataset,
 )
 from image_to_editable_ppt.ml.metrics import (
+    ConnectorAttachmentMetrics,
     DetectorEvaluationReport,
     DetectorMetrics,
     DetectionMetrics,
     FamilyProposalMetrics,
+    StructuralExactness,
     evaluate_detector_predictions,
 )
 from image_to_editable_ppt.ml.synthesize import (
@@ -58,6 +60,7 @@ __all__ = [
     "AnnotationResidual",
     "AnnotationSchemaError",
     "AnnotationTextRegion",
+    "ConnectorAttachmentMetrics",
     "DetectorAnnotationDocument",
     "DetectorEvaluationReport",
     "DetectorMetrics",
@@ -69,6 +72,7 @@ __all__ = [
     "MLAdapter",
     "RENDERER_NAME",
     "SUPPORTED_FAMILIES",
+    "StructuralExactness",
     "SyntheticSlideSpec",
     "annotation_to_json",
     "assign_splits",

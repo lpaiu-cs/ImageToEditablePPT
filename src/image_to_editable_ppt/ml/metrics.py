@@ -4,6 +4,8 @@ from dataclasses import dataclass
 
 from image_to_editable_ppt.ml.annotation_schema import (
     AnnotationBBox,
+    AnnotationConnectorCandidate,
+    AnnotationConnectorEndpoint,
     AnnotationPrimitiveScene,
     DetectorAnnotationDocument,
     annotation_to_json,
@@ -40,6 +42,37 @@ class DetectionMetrics:
 
 
 @dataclass(slots=True, frozen=True)
+class ConnectorAttachmentMetrics:
+    """Endpoint-level attachment accuracy for matched connector candidates.
+
+    A reference endpoint counts as correct only when its connector was
+    matched, the predicted endpoint attaches to the prediction-side owner
+    that corresponds to the reference owner (via the node/container match),
+    and the attachment side agrees. Endpoints of unmatched reference
+    connectors stay in the denominator as misses.
+    """
+
+    endpoint_accuracy: float
+    correct_endpoints: int
+    endpoint_reference_count: int
+    matched: int
+    prediction_count: int
+    reference_count: int
+    matches: tuple[MatchRecord, ...] = ()
+
+
+@dataclass(slots=True, frozen=True)
+class StructuralExactness:
+    """Slide-level all-or-nothing structural agreement."""
+
+    exact: bool
+    family_exact: bool
+    nodes_exact: bool
+    containers_exact: bool
+    connectors_exact: bool
+
+
+@dataclass(slots=True, frozen=True)
 class DetectorEvaluationReport:
     image_id: str
     reference_image_id: str
@@ -47,6 +80,8 @@ class DetectorEvaluationReport:
     family_proposals: FamilyProposalMetrics
     nodes: DetectionMetrics
     containers: DetectionMetrics
+    connectors: ConnectorAttachmentMetrics
+    structural: StructuralExactness
 
     def to_dict(self) -> dict[str, object]:
         payload = annotation_to_json(self)
@@ -98,30 +133,47 @@ class DetectorMetrics:
             ],
             iou_threshold=self.iou_threshold,
         )
+        owner_map = {match.prediction_id: match.reference_id for match in (*node_matches, *container_matches)}
+        connector_metrics = _connector_attachment_metrics(
+            predictions=prediction_scene.connector_candidates,
+            references=reference_scene.connector_candidates,
+            owner_map=owner_map,
+            iou_threshold=self.iou_threshold,
+        )
+        family_metrics = FamilyProposalMetrics(
+            accuracy=_accuracy_from_matches(
+                matched=len(family_matches),
+                prediction_count=len(prediction.family_proposals),
+                reference_count=len(reference.family_proposals),
+            ),
+            matched=len(family_matches),
+            prediction_count=len(prediction.family_proposals),
+            reference_count=len(reference.family_proposals),
+            matches=family_matches,
+        )
+        node_metrics = _detection_metrics(
+            matches=node_matches,
+            prediction_count=len(prediction_scene.nodes),
+            reference_count=len(reference_scene.nodes),
+        )
+        container_metrics = _detection_metrics(
+            matches=container_matches,
+            prediction_count=len(prediction_scene.containers),
+            reference_count=len(reference_scene.containers),
+        )
         return DetectorEvaluationReport(
             image_id=prediction.image_id,
             reference_image_id=reference.image_id,
             iou_threshold=self.iou_threshold,
-            family_proposals=FamilyProposalMetrics(
-                accuracy=_accuracy_from_matches(
-                    matched=len(family_matches),
-                    prediction_count=len(prediction.family_proposals),
-                    reference_count=len(reference.family_proposals),
-                ),
-                matched=len(family_matches),
-                prediction_count=len(prediction.family_proposals),
-                reference_count=len(reference.family_proposals),
-                matches=family_matches,
-            ),
-            nodes=_detection_metrics(
-                matches=node_matches,
-                prediction_count=len(prediction_scene.nodes),
-                reference_count=len(reference_scene.nodes),
-            ),
-            containers=_detection_metrics(
-                matches=container_matches,
-                prediction_count=len(prediction_scene.containers),
-                reference_count=len(reference_scene.containers),
+            family_proposals=family_metrics,
+            nodes=node_metrics,
+            containers=container_metrics,
+            connectors=connector_metrics,
+            structural=_structural_exactness(
+                family=family_metrics,
+                nodes=node_metrics,
+                containers=container_metrics,
+                connectors=connector_metrics,
             ),
         )
 
@@ -201,6 +253,95 @@ def _detection_metrics(
         prediction_count=prediction_count,
         reference_count=reference_count,
         matches=matches,
+    )
+
+
+def _connector_attachment_metrics(
+    *,
+    predictions: tuple[AnnotationConnectorCandidate, ...],
+    references: tuple[AnnotationConnectorCandidate, ...],
+    owner_map: dict[str, str],
+    iou_threshold: float,
+) -> ConnectorAttachmentMetrics:
+    matches = _match_entities(
+        predictions=[_ComparableBBox(id=item.id, label=item.kind.value, bbox=item.bbox) for item in predictions],
+        references=[_ComparableBBox(id=item.id, label=item.kind.value, bbox=item.bbox) for item in references],
+        iou_threshold=iou_threshold,
+    )
+    prediction_lookup = {item.id: item for item in predictions}
+    reference_lookup = {item.id: item for item in references}
+
+    endpoint_reference_count = sum(
+        sum(1 for endpoint in (item.start_endpoint, item.end_endpoint) if endpoint is not None)
+        for item in references
+    )
+    correct_endpoints = 0
+    for match in matches:
+        predicted = prediction_lookup[match.prediction_id]
+        referenced = reference_lookup[match.reference_id]
+        endpoint_pairs = (
+            (predicted.start_endpoint, referenced.start_endpoint),
+            (predicted.end_endpoint, referenced.end_endpoint),
+        )
+        for predicted_endpoint, reference_endpoint in endpoint_pairs:
+            if reference_endpoint is None:
+                continue
+            if _endpoint_attachment_correct(predicted_endpoint, reference_endpoint, owner_map=owner_map):
+                correct_endpoints += 1
+
+    if endpoint_reference_count == 0:
+        endpoint_accuracy = 1.0 if not predictions or len(matches) == len(references) else 0.0
+    else:
+        endpoint_accuracy = correct_endpoints / float(endpoint_reference_count)
+    return ConnectorAttachmentMetrics(
+        endpoint_accuracy=endpoint_accuracy,
+        correct_endpoints=correct_endpoints,
+        endpoint_reference_count=endpoint_reference_count,
+        matched=len(matches),
+        prediction_count=len(predictions),
+        reference_count=len(references),
+        matches=matches,
+    )
+
+
+def _endpoint_attachment_correct(
+    predicted: AnnotationConnectorEndpoint | None,
+    reference: AnnotationConnectorEndpoint,
+    *,
+    owner_map: dict[str, str],
+) -> bool:
+    if reference.owner_id is None:
+        return predicted is not None and predicted.owner_id is None
+    if predicted is None or predicted.owner_id is None:
+        return False
+    return (
+        owner_map.get(predicted.owner_id) == reference.owner_id
+        and predicted.owner_kind == reference.owner_kind
+        and predicted.side == reference.side
+    )
+
+
+def _structural_exactness(
+    *,
+    family: FamilyProposalMetrics,
+    nodes: DetectionMetrics,
+    containers: DetectionMetrics,
+    connectors: ConnectorAttachmentMetrics,
+) -> StructuralExactness:
+    family_exact = family.accuracy == 1.0
+    nodes_exact = nodes.f1 == 1.0
+    containers_exact = containers.f1 == 1.0
+    connectors_exact = (
+        connectors.matched == connectors.reference_count
+        and connectors.prediction_count == connectors.reference_count
+        and connectors.correct_endpoints == connectors.endpoint_reference_count
+    )
+    return StructuralExactness(
+        exact=family_exact and nodes_exact and containers_exact and connectors_exact,
+        family_exact=family_exact,
+        nodes_exact=nodes_exact,
+        containers_exact=containers_exact,
+        connectors_exact=connectors_exact,
     )
 
 

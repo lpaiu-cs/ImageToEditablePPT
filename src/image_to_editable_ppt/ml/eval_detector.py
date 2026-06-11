@@ -62,6 +62,8 @@ def main(argv: list[str] | None = None) -> int:
         "family_proposal_accuracy": report.family_proposals.accuracy,
         "node_f1": report.nodes.f1,
         "container_f1": report.containers.f1,
+        "connector_endpoint_accuracy": report.connectors.endpoint_accuracy,
+        "structural_exact": report.structural.exact,
     }
     print(json.dumps(summary, indent=2))
     return 0
