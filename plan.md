@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-06-11  
-상태: `Phase 7: ML experiment bootstrap 진행 중 (schema/adapter/metrics/entrypoint 골격 + contract test 완료)`
+상태: `Phase 7: ML experiment bootstrap 진행 중 (synthetic dataset generator까지 완료, 남은 것: metrics 잔여 + tracking + 학습 로직)`
 
 ---
 
@@ -842,10 +842,17 @@ connector evidence -> attachment-aware connector candidate의 목적:
 - [x] Task 6. adapter 인터페이스 정의 (`src/image_to_editable_ppt/ml/adapter.py`, `DetectorModelOutput -> DetectorAnnotationDocument -> v3 IR`)
 - [x] Task 3. 실험 진입점 골격 (`train_detector.py` / `infer_detector.py` / `eval_detector.py`, 현재 bootstrap 수준)
 - [ ] Task 4. domain-specific metrics — family proposal accuracy, node/container F1까지 구현됨. connector endpoint attachment accuracy, slide-level structural exactness 미구현.
-- [ ] Task 2. dataset manifest & split 관리
+- [x] Task 2. dataset manifest & split 관리 — synthetic dataset generator로 구현됨 (아래 참조). 현재 family coverage는 `orthogonal_flow` 하나.
 - [ ] Task 5. experiment tracking 연동 (pyproject optional extras만 선언됨)
 - [x] ML 레이어 contract test 추가 (`tests/test_v3_phase7.py`)
   - annotation JSON roundtrip, schema 검증 거부, adapter 산출 `SlideIR`의 `validate_slide_ir` 통과, annotation ↔ v3 IR 필드 drift guard, metrics 동작, 세 CLI smoke를 고정한다.
+- [x] synthetic dataset generator 구현 (`src/image_to_editable_ppt/ml/synthesize.py`, `generate_dataset.py`)
+  - `SyntheticSlideSpec` 하나가 png 렌더(PIL), 편집 가능한 pptx(python-pptx), GT annotation을 모두 생성한다 — 세 산출물의 기하가 단일 spec에서 나오므로 항상 일치한다.
+  - 좌표 계약: 1 px = 9525 EMU (96 dpi), pptx slide 크기는 이미지 크기에서 유도된다.
+  - 모든 생성 spec은 저장 전에 `adapter -> validate_slide_ir`를 통과해야 한다 (`validate_spec_contract`).
+  - `dataset_manifest.json`이 seed / split 배정 / family coverage / schema version / pptx 동봉 여부를 고정한다 — 동일 seed는 byte-identical dataset을 재생성한다.
+  - CLI: `image-to-editable-ppt-generate-dataset --output-dir <dir> --count N --seed S` (`--no-pptx`, `--family`, ratio 옵션 지원).
+  - 테스트: `tests/test_v3_phase7_dataset.py` (contract, 결정성, 렌더-annotation 위치 일치, pptx shape 매핑, split 분할, CLI 산출물).
 
 **Dataset 확보 전략 (Task 2 방향 확정):**
 
@@ -1047,10 +1054,9 @@ Phase 4 재검토 결과:
 
 현재 활성 단계는 `Phase 7: ML experiment bootstrap`이며, 남은 작업 순서는 다음과 같다.
 
-1. 합성 dataset generator를 구현한다 — PPT를 프로그래밍 방식으로 생성/조작하고 이미지로 렌더링해 `img - annotation` 쌍을 만든다 (Task 2의 선행 작업).
-2. dataset manifest와 train/val/test split 관리 체계를 고정한다 (Task 2).
-3. metrics에 connector endpoint attachment accuracy와 slide-level structural exactness를 추가한다 (Task 4 잔여).
-4. experiment tracking(tensorboard/mlflow)을 연동하고 실제 학습 로직(Lightning module, dataset loader)을 채운다 (Task 5).
+1. metrics에 connector endpoint attachment accuracy와 slide-level structural exactness를 추가한다 (Task 4 잔여).
+2. experiment tracking(tensorboard/mlflow)을 연동하고 실제 학습 로직(Lightning module, dataset loader)을 채운다 (Task 5).
+3. 학습이 돌기 시작하면 synthetic generator의 family coverage를 넓힌다 — 새 family generator는 Phase 8 family parser 구현과 같은 boundary를 따른다.
 
 Phase 7 이후에는 `Phase 8: family expansion and benchmarking`으로 진행한다.
 
@@ -1083,3 +1089,4 @@ Phase 7 이후에는 `Phase 8: family expansion and benchmarking`으로 진행�
 - v3 phase 6 solved connector / emit adapter / diagnostics test 통과
 - v3 phase 6B eval adapter / emit diff / GT-backed debug artifact test 통과
 - v3 phase 7 ML annotation schema / adapter / metrics / CLI contract test 통과 (`pytest tests/test_v3_phase7.py`)
+- v3 phase 7 synthetic dataset generator test 통과 (`pytest tests/test_v3_phase7_dataset.py`)

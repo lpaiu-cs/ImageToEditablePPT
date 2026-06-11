@@ -19,12 +19,27 @@ from image_to_editable_ppt.ml.annotation_schema import (
     DetectorAnnotationDocument,
     annotation_to_json,
 )
+from image_to_editable_ppt.ml.generate_dataset import (
+    GenerateDatasetConfig,
+    assign_splits,
+    build_dataset,
+)
 from image_to_editable_ppt.ml.metrics import (
     DetectorEvaluationReport,
     DetectorMetrics,
     DetectionMetrics,
     FamilyProposalMetrics,
     evaluate_detector_predictions,
+)
+from image_to_editable_ppt.ml.synthesize import (
+    GENERATOR_NAME,
+    RENDERER_NAME,
+    SUPPORTED_FAMILIES,
+    SyntheticSlideSpec,
+    generate_slide_spec,
+    render_spec_image,
+    validate_spec_contract,
+    write_spec_pptx,
 )
 
 __all__ = [
@@ -49,7 +64,18 @@ __all__ = [
     "DetectorModelOutput",
     "DetectionMetrics",
     "FamilyProposalMetrics",
+    "GENERATOR_NAME",
+    "GenerateDatasetConfig",
     "MLAdapter",
+    "RENDERER_NAME",
+    "SUPPORTED_FAMILIES",
+    "SyntheticSlideSpec",
     "annotation_to_json",
+    "assign_splits",
     "evaluate_detector_predictions",
+    "build_dataset",
+    "generate_slide_spec",
+    "render_spec_image",
+    "validate_spec_contract",
+    "write_spec_pptx",
 ]

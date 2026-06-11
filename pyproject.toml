@@ -33,6 +33,7 @@ image-to-editable-ppt = "image_to_editable_ppt.cli:main"
 image-to-editable-ppt-train-detector = "image_to_editable_ppt.ml.train_detector:main"
 image-to-editable-ppt-infer-detector = "image_to_editable_ppt.ml.infer_detector:main"
 image-to-editable-ppt-eval-detector = "image_to_editable_ppt.ml.eval_detector:main"
+image-to-editable-ppt-generate-dataset = "image_to_editable_ppt.ml.generate_dataset:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
