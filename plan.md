@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
-최종 업데이트: 2026-03-25  
-상태: `Phase 6A/6B: actual emit / eval adapter bootstrap 완료`
+최종 업데이트: 2026-06-11  
+상태: `Phase 7: ML experiment bootstrap 진행 중 (schema/adapter/metrics/entrypoint 골격 + contract test 완료)`
 
 ---
 
@@ -816,7 +816,45 @@ connector evidence -> attachment-aware connector candidate의 목적:
 
 ---
 
-### Phase 7. family 확장 및 benchmarking
+### Phase 7: ML Experiment Bootstrap (Parallel Track)
+**Goal:** 구축된 v3 IR 및 아키텍처 계약과 맞물려 동작할 수 있는 딥러닝 실험 파이프라인의 기반을 마련한다. End-to-end 모델 대신 "Learned detector + Typed parser + Deterministic emit" 하이브리드 구조를 전제로 한다.
+
+**Key Tasks:**
+1. **Annotation Schema Definition:**
+   - v3 IR과 1:1로 대응하는 라벨링 스키마를 정의한다.
+   - Family label, family region, node/container bbox, connector endpoint/port, text role, raster/non-diagram, residual 등의 요소를 포함한다.
+2. **Dataset Manifest & Split Management:**
+   - Train/Val/Test split 기준을 확립한다.
+   - Family별 coverage, slide source, annotation version을 고정하고 관리할 수 있는 체계를 구축한다.
+3. **Experiment Entrypoints Creation:**
+   - 재현 가능한 실험 실행 진입점을 구축한다: `train_detector.py`, `infer_detector.py`, `eval_detector.py`
+4. **Domain-Specific Metrics Implementation:**
+   - 단순 Accuracy를 넘어 프로젝트 목표에 부합하는 평가 지표를 도입한다.
+   - Target metrics: Family proposal accuracy, Node/Container detection F1, Connector endpoint attachment accuracy, Slide-level structural exactness.
+5. **Experiment Tracking Setup:**
+   - 하이퍼파라미터 설정값, 모델 버전, 데이터 버전, 평가 결과 요약이 기록되고 추적될 수 있는 시스템(로깅 및 실험 관리 도구)을 연동한다.
+6. **Adapter Alignment Definition:**
+   - 학습된 모델의 raw 추론 결과가 최종적으로 기존의 `FamilyProposal`, `DiagramInstance`, `PrimitiveScene` 계약으로 변환 및 주입되는 어댑터(Adapter) 인터페이스를 정의한다.
+
+**진행 상태:**
+
+- [x] Task 1. annotation schema 정의 (`src/image_to_editable_ppt/ml/annotation_schema.py`)
+- [x] Task 6. adapter 인터페이스 정의 (`src/image_to_editable_ppt/ml/adapter.py`, `DetectorModelOutput -> DetectorAnnotationDocument -> v3 IR`)
+- [x] Task 3. 실험 진입점 골격 (`train_detector.py` / `infer_detector.py` / `eval_detector.py`, 현재 bootstrap 수준)
+- [ ] Task 4. domain-specific metrics — family proposal accuracy, node/container F1까지 구현됨. connector endpoint attachment accuracy, slide-level structural exactness 미구현.
+- [ ] Task 2. dataset manifest & split 관리
+- [ ] Task 5. experiment tracking 연동 (pyproject optional extras만 선언됨)
+- [x] ML 레이어 contract test 추가 (`tests/test_v3_phase7.py`)
+  - annotation JSON roundtrip, schema 검증 거부, adapter 산출 `SlideIR`의 `validate_slide_ir` 통과, annotation ↔ v3 IR 필드 drift guard, metrics 동작, 세 CLI smoke를 고정한다.
+
+**Dataset 확보 전략 (Task 2 방향 확정):**
+
+- 실측 라벨링 대신 **합성 데이터 생성**을 1차 경로로 삼는다.
+- PPT를 프로그래밍 방식으로 조작해(family별 임의 구조 생성) 슬라이드를 만들고, 이를 이미지로 렌더링해 `img - ppt` 매핑 쌍을 확보한다.
+- 생성 시점에 구조를 이미 알고 있으므로 annotation(`DetectorAnnotationDocument`)을 라벨링 없이 함께 출력할 수 있다 — generator가 GT를 공짜로 제공한다.
+- split/버전 관리는 generator seed와 family coverage 기준으로 manifest에 고정한다.
+
+### Phase 8. family 확장 및 benchmarking
 - [ ] MVP family 순차 구현
 - [ ] per-family benchmark 비교
 - [ ] GT-backed coverage 확장 검토
@@ -885,8 +923,11 @@ Phase 4 재검토 결과:
 ## 13. 현재 상태
 
 - `plan.md`가 v3 migration의 source of truth로 설정되었다.
-- 방금 완료한 단계는 `Phase 6A/6B: actual emit / eval adapter bootstrap`다.
-- 다음 활성 단계는 `Phase 7: family expansion and benchmarking`이다.
+- 현재 활성 단계는 `Phase 7: ML experiment bootstrap (parallel track)`이다.
+  - annotation schema / adapter / metrics / 실험 진입점 골격이 `src/image_to_editable_ppt/ml/`에 추가되었다.
+  - `tests/test_v3_phase7.py`가 schema roundtrip, adapter -> `validate_slide_ir`, annotation ↔ v3 IR 필드 drift, metrics, CLI smoke를 고정한다.
+  - dataset 확보 전략은 합성 PPT 생성 + 이미지 렌더링으로 확정되었다 (Phase 7 섹션 참조).
+- family 확장 및 benchmarking은 `Phase 8`로 재번호되었다.
 - `legacy cleanup / isolation phase` 기준이 문서화되었다.
   - legacy 후보
   - preserve_eval 대상
@@ -1004,7 +1045,14 @@ Phase 4 재검토 결과:
 
 ## 14. 다음 단계
 
-다음 단계는 `Phase 7: family expansion and benchmarking`이다.
+현재 활성 단계는 `Phase 7: ML experiment bootstrap`이며, 남은 작업 순서는 다음과 같다.
+
+1. 합성 dataset generator를 구현한다 — PPT를 프로그래밍 방식으로 생성/조작하고 이미지로 렌더링해 `img - annotation` 쌍을 만든다 (Task 2의 선행 작업).
+2. dataset manifest와 train/val/test split 관리 체계를 고정한다 (Task 2).
+3. metrics에 connector endpoint attachment accuracy와 slide-level structural exactness를 추가한다 (Task 4 잔여).
+4. experiment tracking(tensorboard/mlflow)을 연동하고 실제 학습 로직(Lightning module, dataset loader)을 채운다 (Task 5).
+
+Phase 7 이후에는 `Phase 8: family expansion and benchmarking`으로 진행한다.
 
 1. 현재 `orthogonal_flow` 바깥의 MVP family를 순차적으로 추가한다.
 2. 새 family도 `PrimitiveScene -> EmitScene -> eval adapter` 경계를 그대로 따르도록 유지한다.
@@ -1034,3 +1082,4 @@ Phase 4 재검토 결과:
 - v3 phase 5 public surface / primitive scene / attachment bridge / debug artifact test 통과
 - v3 phase 6 solved connector / emit adapter / diagnostics test 통과
 - v3 phase 6B eval adapter / emit diff / GT-backed debug artifact test 통과
+- v3 phase 7 ML annotation schema / adapter / metrics / CLI contract test 통과 (`pytest tests/test_v3_phase7.py`)

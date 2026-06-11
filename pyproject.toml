@@ -16,11 +16,23 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+ml = [
+  "torch",
+  "torchvision",
+  "lightning",
+  "torchmetrics",
+  "omegaconf",
+  "tensorboard",
+  "mlflow",
+]
 ocr = ["pytesseract>=0.3.10"]
 test = ["pytest>=8"]
 
 [project.scripts]
 image-to-editable-ppt = "image_to_editable_ppt.cli:main"
+image-to-editable-ppt-train-detector = "image_to_editable_ppt.ml.train_detector:main"
+image-to-editable-ppt-infer-detector = "image_to_editable_ppt.ml.infer_detector:main"
+image-to-editable-ppt-eval-detector = "image_to_editable_ppt.ml.eval_detector:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
