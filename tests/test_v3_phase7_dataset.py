@@ -16,6 +16,7 @@ from image_to_editable_ppt.ml.annotation_schema import (
 )
 from image_to_editable_ppt.ml.generate_dataset import assign_splits
 from image_to_editable_ppt.ml.synthesize import (
+    find_soffice,
     generate_slide_spec,
     render_spec_image,
     validate_spec_contract,
@@ -138,6 +139,22 @@ def test_generate_dataset_cli_writes_triplets_and_manifest(tmp_path: Path) -> No
         assert document.split == sample["split"]
         assert document.image_size == AnnotationImageSize(width=640, height=360)
         validate_slide_ir(adapter.to_slide_ir(document))
+
+
+@pytest.mark.skipif(find_soffice() is None, reason="LibreOffice (soffice) not installed")
+def test_generate_dataset_cli_supports_soffice_renderer(tmp_path: Path) -> None:
+    output_dir = tmp_path / "dataset"
+    exit_code = generate_dataset_cli.main(
+        ["--output-dir", str(output_dir), "--count", "1", "--seed", "2", "--renderer", "soffice"]
+    )
+    assert exit_code == 0
+
+    manifest = json.loads((output_dir / "dataset_manifest.json").read_text(encoding="utf-8"))
+    assert manifest["generator"]["renderer"] == "soffice_png_v1"
+    sample = manifest["samples"][0]
+    with Image.open(output_dir / sample["image"]) as image:
+        assert image.size == (1280, 720)
+    assert (output_dir / sample["pptx"]).exists()
 
 
 def test_generate_dataset_cli_can_skip_pptx(tmp_path: Path) -> None:

@@ -443,6 +443,7 @@ def write_spec_pptx(spec: SyntheticSlideSpec, path: Path) -> None:
     from pptx import Presentation
     from pptx.dml.color import RGBColor
     from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
+    from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
     from pptx.oxml.ns import qn
     from pptx.util import Emu, Pt
 
@@ -462,6 +463,7 @@ def write_spec_pptx(spec: SyntheticSlideSpec, path: Path) -> None:
     if spec.container is not None:
         shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, *emu_box(spec.container.bbox))
         shape.name = spec.container.id
+        shape.shadow.inherit = False
         shape.fill.solid()
         shape.fill.fore_color.rgb = RGBColor(248, 250, 252)
         shape.line.color.rgb = RGBColor(148, 163, 184)
@@ -472,14 +474,21 @@ def write_spec_pptx(spec: SyntheticSlideSpec, path: Path) -> None:
         mso_shape = MSO_SHAPE.ROUNDED_RECTANGLE if node.kind is NodeKind.ROUNDED_BOX else MSO_SHAPE.RECTANGLE
         shape = slide.shapes.add_shape(mso_shape, *emu_box(node.bbox))
         shape.name = node.id
+        shape.shadow.inherit = False
         shape.fill.solid()
         shape.fill.fore_color.rgb = RGBColor(*style.fill)
         shape.line.color.rgb = RGBColor(*style.stroke)
         shape.line.width = Pt(1.5)
         if node.label:
-            shape.text_frame.text = node.label
-            run = shape.text_frame.paragraphs[0].runs[0]
-            run.font.size = Pt(14)
+            text_frame = shape.text_frame
+            text_frame.text = node.label
+            text_frame.vertical_anchor = MSO_ANCHOR.MIDDLE
+            paragraph = text_frame.paragraphs[0]
+            paragraph.alignment = PP_ALIGN.CENTER
+            run = paragraph.runs[0]
+            # 1 pt = 4/3 px at 96 dpi; keep the pptx text height aligned
+            # with the rendered label so GT bboxes stay meaningful.
+            run.font.size = Pt(max(8, round(spec.label_font_size * 0.75)))
             run.font.color.rgb = RGBColor(15, 23, 42)
 
     for connector in spec.connectors:
@@ -502,6 +511,56 @@ def write_spec_pptx(spec: SyntheticSlideSpec, path: Path) -> None:
 
     path.parent.mkdir(parents=True, exist_ok=True)
     presentation.save(path)
+
+
+def find_soffice() -> str | None:
+    """Locate a LibreOffice binary for pptx -> png rendering, if installed."""
+    import shutil
+
+    binary = shutil.which("soffice")
+    if binary:
+        return binary
+    mac_path = Path("/Applications/LibreOffice.app/Contents/MacOS/soffice")
+    if mac_path.exists():
+        return str(mac_path)
+    return None
+
+
+def render_pptx_batch_via_soffice(
+    pptx_paths: list[Path],
+    *,
+    output_dir: Path,
+    image_size: AnnotationImageSize,
+    soffice_binary: str | None = None,
+) -> None:
+    """Convert pptx files to png in one soffice invocation (per-call startup is slow).
+
+    LibreOffice exports at 96 dpi, which matches the 1 px = 9525 EMU slide
+    contract, so output size normally equals ``image_size`` already; resize
+    only as a safety net.
+    """
+    import subprocess
+
+    binary = soffice_binary or find_soffice()
+    if binary is None:
+        raise RuntimeError("LibreOffice (soffice) not found; install it or use the pil renderer")
+    if not pptx_paths:
+        return
+    output_dir.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        [binary, "--headless", "--convert-to", "png", "--outdir", str(output_dir), *map(str, pptx_paths)],
+        check=True,
+        capture_output=True,
+        timeout=120 + 10 * len(pptx_paths),
+    )
+    expected = (image_size.width, image_size.height)
+    for pptx_path in pptx_paths:
+        png_path = output_dir / f"{pptx_path.stem}.png"
+        if not png_path.exists():
+            raise RuntimeError(f"soffice did not produce {png_path}")
+        with Image.open(png_path) as image:
+            if image.size != expected:
+                image.convert("RGB").resize(expected, Image.LANCZOS).save(png_path)
 
 
 def validate_spec_contract(spec: SyntheticSlideSpec) -> None:

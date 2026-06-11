@@ -427,23 +427,14 @@ def test_eval_cli_scores_prediction_against_reference(tmp_path: Path) -> None:
     assert report["containers"]["f1"] == 1.0
 
 
-def test_train_cli_writes_bootstrap_manifest(tmp_path: Path) -> None:
-    adapter = AnnotationMLAdapter()
-    document = adapter.from_model_output(make_synthetic_model_output())
-    annotations_json = tmp_path / "train_annotations.json"
-    annotations_json.write_text(json.dumps(document.to_dict()), encoding="utf-8")
-    output_dir = tmp_path / "run"
-
-    exit_code = train_detector.main(
-        [
-            "--train-annotations",
-            str(annotations_json),
-            "--output-dir",
-            str(output_dir),
-        ]
-    )
-
-    assert exit_code == 0
-    manifest = json.loads((output_dir / "train_detector_run.json").read_text(encoding="utf-8"))
-    assert manifest["status"] == "bootstrap_ready"
-    assert manifest["config"]["train_annotations"] == str(annotations_json)
+def test_train_cli_rejects_missing_dataset_manifest(tmp_path: Path) -> None:
+    with pytest.raises(SystemExit) as exc_info:
+        train_detector.main(
+            [
+                "--dataset-dir",
+                str(tmp_path / "missing"),
+                "--output-dir",
+                str(tmp_path / "run"),
+            ]
+        )
+    assert exc_info.value.code == 2

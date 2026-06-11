@@ -19,7 +19,9 @@ from image_to_editable_ppt.ml.synthesize import (
     GENERATOR_NAME,
     RENDERER_NAME,
     SUPPORTED_FAMILIES,
+    find_soffice,
     generate_slide_spec,
+    render_pptx_batch_via_soffice,
     render_spec_image,
     validate_spec_contract,
     write_spec_pptx,
@@ -41,6 +43,7 @@ class GenerateDatasetConfig:
     train_ratio: float
     val_ratio: float
     write_pptx: bool
+    renderer: str = "pil"
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -60,6 +63,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--train-ratio", type=float, default=0.8)
     parser.add_argument("--val-ratio", type=float, default=0.1, help="Test split takes the remainder.")
     parser.add_argument("--no-pptx", action="store_true", help="Skip writing .pptx sidecar files.")
+    parser.add_argument(
+        "--renderer",
+        choices=("pil", "soffice"),
+        default="pil",
+        help="png renderer: deterministic PIL rasterizer, or LibreOffice rendering of the generated pptx.",
+    )
     return parser
 
 
@@ -76,6 +85,7 @@ def main(argv: list[str] | None = None) -> int:
         train_ratio=float(args.train_ratio),
         val_ratio=float(args.val_ratio),
         write_pptx=not args.no_pptx,
+        renderer=args.renderer,
     )
 
     if config.count <= 0:
@@ -84,6 +94,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("image dimensions must be positive")
     if not 0.0 < config.train_ratio < 1.0 or config.val_ratio < 0.0 or config.train_ratio + config.val_ratio > 1.0:
         parser.error("ratios must satisfy 0 < train < 1, val >= 0, train + val <= 1")
+    if config.renderer == "soffice":
+        if not config.write_pptx:
+            parser.error("--renderer soffice renders the generated pptx and cannot be combined with --no-pptx")
+        if find_soffice() is None:
+            parser.error("--renderer soffice requires LibreOffice (soffice binary) to be installed")
 
     manifest = build_dataset(config)
     manifest_path = config.output_dir / MANIFEST_FILENAME
@@ -99,6 +114,7 @@ def build_dataset(config: GenerateDatasetConfig) -> dict[str, object]:
 
     samples: list[dict[str, object]] = []
     family_counts: dict[str, int] = {}
+    soffice_batches: dict[Path, list[Path]] = {}
     for index in range(config.count):
         family = config.families[rng.randrange(len(config.families))]
         sample_id = f"{family.value}_{config.seed:04d}_{index:05d}"
@@ -112,7 +128,10 @@ def build_dataset(config: GenerateDatasetConfig) -> dict[str, object]:
         annotation_path = sample_dir / f"{sample_id}.json"
         pptx_path = sample_dir / f"{sample_id}.pptx"
 
-        render_spec_image(spec).save(image_path)
+        if config.renderer == "pil":
+            render_spec_image(spec).save(image_path)
+        else:
+            soffice_batches.setdefault(sample_dir, []).append(pptx_path)
         document = spec.to_annotation_document(
             split=split,
             metadata={"seed": config.seed, "sample_index": index},
@@ -133,11 +152,14 @@ def build_dataset(config: GenerateDatasetConfig) -> dict[str, object]:
             }
         )
 
+    for sample_dir, pptx_paths in soffice_batches.items():
+        render_pptx_batch_via_soffice(pptx_paths, output_dir=sample_dir, image_size=image_size)
+
     manifest: dict[str, object] = {
         "schema_version": SCHEMA_VERSION,
         "generator": {
             "name": GENERATOR_NAME,
-            "renderer": RENDERER_NAME,
+            "renderer": RENDERER_NAME if config.renderer == "pil" else "soffice_png_v1",
             "seed": config.seed,
             "count": config.count,
             "image_size": {"width": config.image_width, "height": config.image_height},

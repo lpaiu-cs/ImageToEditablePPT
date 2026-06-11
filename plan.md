@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-06-11  
-상태: `Phase 7: ML experiment bootstrap 진행 중 (synthetic dataset generator까지 완료, 남은 것: metrics 잔여 + tracking + 학습 로직)`
+상태: `Phase 7: ML experiment bootstrap 완료 (generate -> train -> infer -> eval 루프 동작). 다음: 본 학습 수렴 확인 또는 Phase 8 family 확장`
 
 ---
 
@@ -841,9 +841,16 @@ connector evidence -> attachment-aware connector candidate의 목적:
 - [x] Task 1. annotation schema 정의 (`src/image_to_editable_ppt/ml/annotation_schema.py`)
 - [x] Task 6. adapter 인터페이스 정의 (`src/image_to_editable_ppt/ml/adapter.py`, `DetectorModelOutput -> DetectorAnnotationDocument -> v3 IR`)
 - [x] Task 3. 실험 진입점 골격 (`train_detector.py` / `infer_detector.py` / `eval_detector.py`, 현재 bootstrap 수준)
-- [ ] Task 4. domain-specific metrics — family proposal accuracy, node/container F1까지 구현됨. connector endpoint attachment accuracy, slide-level structural exactness 미구현.
+- [x] Task 4. domain-specific metrics — family proposal accuracy, node/container F1, connector endpoint attachment accuracy, slide-level structural exactness 모두 구현됨.
+  - attachment accuracy는 node/container greedy match를 통해 owner를 대응시킨 뒤 owner kind/side 일치를 본다. 매칭되지 않은 reference connector의 endpoint는 분모에 남는다.
+  - structural exactness는 family/nodes/containers/connectors 각 축의 all-or-nothing 일치와 전체 exact 플래그를 보고한다.
 - [x] Task 2. dataset manifest & split 관리 — synthetic dataset generator로 구현됨 (아래 참조). 현재 family coverage는 `orthogonal_flow` 하나.
-- [ ] Task 5. experiment tracking 연동 (pyproject optional extras만 선언됨)
+- [x] Task 5. experiment tracking + 실제 학습 로직
+  - `ml/dataset.py`: manifest 기반 `DetectorTorchDataset`. node/container kind가 하나의 detection label space를 공유한다 (0 = background).
+  - `ml/lightning_module.py`: torchvision Faster R-CNN (MobileNetV3 FPN, pretrained weights 없음 — 완전 오프라인 학습). validation은 같은 multi-task loss를 no-grad로 재사용한다 (COCO 도구 의존성 없음).
+  - `ml/train_detector.py`: 실제 Lightning 학습 루프. `train_detector_run.json`에 config / dataset manifest 정체성 / 최종 metrics / checkpoint 경로를 기록한다. tracking backend는 `none|csv|tensorboard` (mlflow는 보류).
+  - `ml/infer_detector.py`: `--checkpoint --image-path`로 실제 추론 → annotation document → v3 IR 검증까지 연결. checkpoint 없으면 기존 placeholder 모드.
+  - `generate -> train -> infer -> eval` 루프가 CLI만으로 닫힌다.
 - [x] ML 레이어 contract test 추가 (`tests/test_v3_phase7.py`)
   - annotation JSON roundtrip, schema 검증 거부, adapter 산출 `SlideIR`의 `validate_slide_ir` 통과, annotation ↔ v3 IR 필드 drift guard, metrics 동작, 세 CLI smoke를 고정한다.
 - [x] synthetic dataset generator 구현 (`src/image_to_editable_ppt/ml/synthesize.py`, `generate_dataset.py`)
@@ -852,7 +859,8 @@ connector evidence -> attachment-aware connector candidate의 목적:
   - 모든 생성 spec은 저장 전에 `adapter -> validate_slide_ir`를 통과해야 한다 (`validate_spec_contract`).
   - `dataset_manifest.json`이 seed / split 배정 / family coverage / schema version / pptx 동봉 여부를 고정한다 — 동일 seed는 byte-identical dataset을 재생성한다.
   - CLI: `image-to-editable-ppt-generate-dataset --output-dir <dir> --count N --seed S` (`--no-pptx`, `--family`, ratio 옵션 지원).
-  - 테스트: `tests/test_v3_phase7_dataset.py` (contract, 결정성, 렌더-annotation 위치 일치, pptx shape 매핑, split 분할, CLI 산출물).
+  - `--renderer soffice`: LibreOffice가 설치된 경우 생성된 pptx를 실제 렌더링해 png를 만든다 (`soffice_png_v1`). 96dpi에서 1px=9525EMU 계약 덕분에 출력 크기가 요청 크기와 일치한다. 기본값은 결정적 PIL 렌더러.
+  - 테스트: `tests/test_v3_phase7_dataset.py` (contract, 결정성, 렌더-annotation 위치 일치, pptx shape 매핑, split 분할, CLI 산출물, soffice 렌더러는 skip-if-missing).
 
 **Dataset 확보 전략 (Task 2 방향 확정):**
 
@@ -1052,11 +1060,11 @@ Phase 4 재검토 결과:
 
 ## 14. 다음 단계
 
-현재 활성 단계는 `Phase 7: ML experiment bootstrap`이며, 남은 작업 순서는 다음과 같다.
+`Phase 7: ML experiment bootstrap`의 6개 task가 모두 완료되었다. 다음 작업 후보는 다음과 같다.
 
-1. metrics에 connector endpoint attachment accuracy와 slide-level structural exactness를 추가한다 (Task 4 잔여).
-2. experiment tracking(tensorboard/mlflow)을 연동하고 실제 학습 로직(Lightning module, dataset loader)을 채운다 (Task 5).
-3. 학습이 돌기 시작하면 synthetic generator의 family coverage를 넓힌다 — 새 family generator는 Phase 8 family parser 구현과 같은 boundary를 따른다.
+1. 본 학습 run — 수백~수천 샘플 dataset으로 detector가 실제로 수렴하는지 확인하고, eval CLI의 structural metrics로 학습 곡선을 추적한다.
+2. detector 추론 결과를 v3 `FAMILY_DETECT` stage에 주입하는 경로를 설계한다 (현재 adapter는 IR 변환까지만 한다).
+3. synthetic generator의 family coverage 확장 — 새 family generator는 Phase 8 family parser 구현과 같은 boundary를 따른다.
 
 Phase 7 이후에는 `Phase 8: family expansion and benchmarking`으로 진행한다.
 
@@ -1090,3 +1098,4 @@ Phase 7 이후에는 `Phase 8: family expansion and benchmarking`으로 진행�
 - v3 phase 6B eval adapter / emit diff / GT-backed debug artifact test 통과
 - v3 phase 7 ML annotation schema / adapter / metrics / CLI contract test 통과 (`pytest tests/test_v3_phase7.py`)
 - v3 phase 7 synthetic dataset generator test 통과 (`pytest tests/test_v3_phase7_dataset.py`)
+- v3 phase 7 dataset loader / 학습 / checkpoint 추론 / eval 루프 test 통과 (`pytest tests/test_v3_phase7_training.py`)
