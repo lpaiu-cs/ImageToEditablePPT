@@ -11,6 +11,8 @@ class DiagramFamily(StrEnum):
     TABLE_MATRIX = "table_matrix"
     TIMELINE = "timeline"
     LAYERED_STACK = "layered_stack"
+    GRAPH = "graph"
+    TREE = "tree"
 
 
 class BranchKind(StrEnum):
