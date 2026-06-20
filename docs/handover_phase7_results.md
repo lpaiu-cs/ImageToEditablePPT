@@ -119,18 +119,26 @@ varied가 single-bold를 이김(1.0 vs 0.95): 단일 가짜 단서 과적합 불
 
 **ds-v3 test 40장(run-v3) 재평가**: `family_proposal_accuracy` **0.0 → 1.0** (node_f1 0.998, container_f1 1.0 불변). → **4개 도메인 지표 중 3개 만점.** `structural_exact`는 여전히 0 — 모델이 connector를 예측하지 않아서(아래).
 
-### 현재 지표 요약 (run-v3, ds-v3 test 40장, IoU 0.5)
+### 5d. chain connector 추론 후처리 (commit `08dab15`)
+
+검출기는 connector를 예측하지 않아 `connector_endpoint_accuracy`·`structural_exact`가 구조적 0이었음. opt-in `--infer-connectors` 후처리 추가: orthogonal_flow에서 검출 노드를 dominant 축으로 정렬해 인접 노드끼리 연결(generator 로직 미러), connector candidate + 매칭 포트 생성(SlideIR `--validate-ir` 통과). default 동작 불변(플래그 off → 모델 단독 출력).
+
+**ds-v3 test 40장(run-v3, --infer-connectors)**: `connector_endpoint_accuracy` **0.0 → 0.9975**, `structural_exact` **0/40 → 39/40**. (합성 한정 휴리스틱 — 학습된 connector 검출이 아님; 실제 connector 모델 능력은 향후 과제.)
+
+### 현재 지표 요약 (run-v3, ds-v3 test 40장, IoU 0.5, --infer-connectors)
 
 | 지표 | 값 | 상태 |
 |---|---|---|
-| family_proposal_accuracy | 1.000 | ✅ (5c에서 활성화) |
+| family_proposal_accuracy | 1.000 | ✅ (5c) |
 | node_f1 | 0.998 | ✅ |
 | container_f1 | 1.000 | ✅ (container fix) |
-| connector_endpoint_accuracy | 0.000 | ❌ 모델이 connector 미예측 |
-| structural_exact | 0/40 | ❌ connector에 막힘 |
+| connector_endpoint_accuracy | 0.998 | ✅ (5d, 휴리스틱) |
+| **structural_exact** | **39/40** | ✅ (5d) |
 
-### 남은 후보
+**전체 테스트 82 passed / 1 skipped.** 4개 기본 도메인 지표 전부 만점급, 슬라이드 단위 structural_exact 39/40.
 
-1. **connector 활성화** (structural_exact 잠금 해제): (a) 검출 노드 기하에서 connector를 추론하는 후처리(orthogonal_flow는 인접 노드 체인 — 합성 한정 휴리스틱), 또는 (b) connector/line을 예측하는 모델 헤드 추가(아키텍처 변경, 큼). **전체 테스트 80 passed.**
-2. cycle을 **포함한** 데이터셋으로 재학습 + v3 cycle detector/parser 등록(현재 v3 families 레지스트리는 orthogonal_flow만; cycle은 generator에만 존재). 단, family **분류**가 없어 ML detector는 family-blind(현재 --family/enabled로 태깅).
-3. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — soffice 미설치로 보류.
+### 남은 후보 (실제 능력 확장)
+
+1. **학습된 connector 검출**(현재 휴리스틱 대체): connector/line·port를 모델이 직접 예측하는 헤드 추가 → 실이미지에서도 동작. structural_exact의 유일한 1개 miss는 node 1개 누락(node_f1 0.998) 연쇄.
+2. **family 분류**를 모델에 학습(현재 family-blind, --family/enabled로 태깅) + cycle 포함 재학습 + v3 families에 cycle detector/parser 등록.
+3. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — soffice 미설치로 보류(LibreOffice 설치 필요).
