@@ -49,7 +49,31 @@ def test_generation_is_deterministic_for_equal_seeds() -> None:
 
 def test_generator_rejects_unsupported_family() -> None:
     with pytest.raises(ValueError, match="unsupported synthetic family"):
-        generate_slide_spec(random.Random(1), sample_id="bad", family=DiagramFamily.CYCLE)
+        generate_slide_spec(random.Random(1), sample_id="bad", family=DiagramFamily.SWIMLANE)
+
+
+def test_generated_cycle_specs_satisfy_slide_ir_contract() -> None:
+    rng = random.Random(42)
+    for index in range(25):
+        spec = generate_slide_spec(rng, sample_id=f"cycle_{index:03d}", family=DiagramFamily.CYCLE)
+        validate_spec_contract(spec)
+        assert spec.family is DiagramFamily.CYCLE
+        assert 3 <= len(spec.nodes) <= 6
+        # a cycle is a closed loop: one connector per node, forming a ring
+        assert len(spec.connectors) == len(spec.nodes)
+        assert len(spec.text_regions) == len(spec.nodes)
+        assert spec.family_proposal.family is DiagramFamily.CYCLE
+
+
+def test_cycle_connectors_form_a_closed_ring() -> None:
+    spec = generate_slide_spec(random.Random(7), sample_id="ring", family=DiagramFamily.CYCLE)
+    node_ids = [node.id for node in spec.nodes]
+    edges = {
+        (connector.candidate.start_endpoint.owner_id, connector.candidate.end_endpoint.owner_id)
+        for connector in spec.connectors
+    }
+    expected = {(node_ids[i], node_ids[(i + 1) % len(node_ids)]) for i in range(len(node_ids))}
+    assert edges == expected
 
 
 def test_render_draws_structures_at_annotated_positions() -> None:

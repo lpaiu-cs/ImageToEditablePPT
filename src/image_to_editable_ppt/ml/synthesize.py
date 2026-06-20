@@ -13,6 +13,7 @@ installed; the .pptx sidecar preserves the img - ppt mapping pair.
 
 from __future__ import annotations
 
+import math
 import random
 import zlib
 from dataclasses import dataclass
@@ -80,7 +81,7 @@ _CONTAINER_FILL_PALETTE = (
 )
 _CONTAINER_OUTLINE_WIDTHS = (2, 3, 4)
 
-SUPPORTED_FAMILIES = (DiagramFamily.ORTHOGONAL_FLOW,)
+SUPPORTED_FAMILIES = (DiagramFamily.ORTHOGONAL_FLOW, DiagramFamily.CYCLE)
 
 _LABEL_VOCAB = (
     "Plan",
@@ -216,6 +217,8 @@ def generate_slide_spec(
     if family not in SUPPORTED_FAMILIES:
         raise ValueError(f"unsupported synthetic family: {family.value} (supported: {[f.value for f in SUPPORTED_FAMILIES]})")
     size = image_size or AnnotationImageSize(width=1280, height=720)
+    if family is DiagramFamily.CYCLE:
+        return _generate_cycle_spec(rng, sample_id=sample_id, image_size=size)
     return _generate_orthogonal_flow_spec(rng, sample_id=sample_id, image_size=size)
 
 
@@ -382,6 +385,179 @@ def _generate_orthogonal_flow_spec(
         label_font_size=label_font_size,
         container_style=container_style,
     )
+
+
+def _generate_cycle_spec(
+    rng: random.Random,
+    *,
+    sample_id: str,
+    image_size: AnnotationImageSize,
+) -> SyntheticSlideSpec:
+    """Nodes evenly placed on a ring, linked into a closed directed loop."""
+    node_count = rng.randint(3, 6)
+    node_kind = NodeKind.ROUNDED_BOX if rng.random() < 0.5 else NodeKind.BOX
+    palette_index = rng.randrange(len(_FILL_PALETTE))
+    style = SyntheticNodeStyle(fill=_FILL_PALETTE[palette_index], stroke=_STROKE_PALETTE[palette_index])
+
+    width, height = float(image_size.width), float(image_size.height)
+    center_x, center_y = width / 2.0, height / 2.0
+    radius_x = width * rng.uniform(0.27, 0.33)
+    radius_y = height * rng.uniform(0.27, 0.33)
+    node_half_w = width * rng.uniform(0.07, 0.09)
+    node_half_h = height * rng.uniform(0.06, 0.08)
+    start_angle = -math.pi / 2.0 + rng.uniform(-0.15, 0.15)
+
+    label_font_size = max(14, int(node_half_h * 2.0 * 0.3))
+    font = ImageFont.load_default(size=label_font_size)
+    labels = rng.sample(_LABEL_VOCAB, node_count)
+
+    nodes: list[AnnotationNode] = []
+    text_regions: list[AnnotationTextRegion] = []
+    node_styles: dict[str, SyntheticNodeStyle] = {}
+    centers: list[AnnotationPoint] = []
+    for index in range(node_count):
+        angle = start_angle + 2.0 * math.pi * index / node_count
+        cx = center_x + radius_x * math.cos(angle)
+        cy = center_y + radius_y * math.sin(angle)
+        centers.append(AnnotationPoint(cx, cy))
+        bbox = AnnotationBBox(
+            x0=cx - node_half_w,
+            y0=cy - node_half_h,
+            x1=cx + node_half_w,
+            y1=cy + node_half_h,
+        )
+        node_id = f"node:{sample_id}:{index}"
+        label = labels[index]
+        text_id = f"text:{sample_id}:{index}"
+        nodes.append(
+            AnnotationNode(
+                id=node_id,
+                kind=node_kind,
+                bbox=bbox,
+                confidence=1.0,
+                label=label,
+                text_region_ids=(text_id,),
+                source="synthetic_gt",
+                provenance=(f"{GENERATOR_NAME}:node",),
+            )
+        )
+        node_styles[node_id] = style
+        text_regions.append(
+            AnnotationTextRegion(
+                id=text_id,
+                bbox=_label_bbox(label, font=font, node_bbox=bbox),
+                confidence=1.0,
+                role=TextRegionRole.LABEL,
+                text=label,
+                source="synthetic_gt",
+                provenance=(f"{GENERATOR_NAME}:text",),
+            )
+        )
+
+    connectors: list[SyntheticConnector] = []
+    for index in range(node_count):
+        start_node = nodes[index]
+        end_node = nodes[(index + 1) % node_count]
+        start_point, start_side = _edge_point_toward(start_node.bbox, centers[(index + 1) % node_count])
+        end_point, end_side = _edge_point_toward(end_node.bbox, centers[index])
+        connector_id = f"connector:{sample_id}:{index}"
+        path = (start_point, end_point)
+        connectors.append(
+            SyntheticConnector(
+                candidate=AnnotationConnectorCandidate(
+                    id=connector_id,
+                    kind=ConnectorKind.ARROW,
+                    bbox=_path_bbox(path),
+                    confidence=1.0,
+                    source_evidence_id=f"evidence:{connector_id}",
+                    path_points=path,
+                    start_endpoint=AnnotationConnectorEndpoint(
+                        point=start_point,
+                        owner_id=start_node.id,
+                        owner_kind=PortOwnerKind.NODE,
+                        side=start_side,
+                    ),
+                    end_endpoint=AnnotationConnectorEndpoint(
+                        point=end_point,
+                        owner_id=end_node.id,
+                        owner_kind=PortOwnerKind.NODE,
+                        side=end_side,
+                    ),
+                    arrowhead_end=True,
+                    source="synthetic_gt",
+                    provenance=(f"{GENERATOR_NAME}:connector",),
+                ),
+                start_port=_port_for(start_node.id, sample_id, index, "start", side=start_side, point=start_point),
+                end_port=_port_for(end_node.id, sample_id, index, "end", side=end_side, point=end_point),
+                stroke=style.stroke,
+            )
+        )
+
+    container: AnnotationContainer | None = None
+    container_style: SyntheticContainerStyle | None = None
+    if rng.random() < 0.5:
+        container_style = _pick_container_style(sample_id)
+        pad = min(width, height) * 0.04
+        union = _union_bbox([node.bbox for node in nodes])
+        container = AnnotationContainer(
+            id=f"container:{sample_id}:0",
+            kind=ContainerKind.FLOW_CLUSTER,
+            bbox=AnnotationBBox(
+                x0=max(2.0, union.x0 - pad),
+                y0=max(2.0, union.y0 - pad),
+                x1=min(width - 2.0, union.x1 + pad),
+                y1=min(height - 2.0, union.y1 + pad),
+            ),
+            confidence=1.0,
+            member_node_ids=tuple(node.id for node in nodes),
+            source="synthetic_gt",
+            provenance=(f"{GENERATOR_NAME}:container",),
+        )
+
+    focus = container.bbox if container is not None else _union_bbox(
+        [node.bbox for node in nodes] + [connector.candidate.bbox for connector in connectors]
+    )
+    proposal = AnnotationFamilyProposal(
+        id=f"family:{sample_id}:0",
+        family=DiagramFamily.CYCLE,
+        confidence=1.0,
+        focus_bbox=focus,
+        evidence=(f"{GENERATOR_NAME}:layout",),
+        provenance=(f"{GENERATOR_NAME}:family_proposal",),
+    )
+
+    return SyntheticSlideSpec(
+        sample_id=sample_id,
+        family=DiagramFamily.CYCLE,
+        image_size=image_size,
+        nodes=tuple(nodes),
+        node_styles=node_styles,
+        text_regions=tuple(text_regions),
+        container=container,
+        connectors=tuple(connectors),
+        family_proposal=proposal,
+        label_font_size=label_font_size,
+        container_style=container_style,
+    )
+
+
+def _edge_point_toward(bbox: AnnotationBBox, target: AnnotationPoint) -> tuple[AnnotationPoint, PortSide]:
+    """Point on ``bbox``'s edge along the ray toward ``target``, and that edge's side."""
+    center_x = (bbox.x0 + bbox.x1) / 2.0
+    center_y = (bbox.y0 + bbox.y1) / 2.0
+    half_w = (bbox.x1 - bbox.x0) / 2.0
+    half_h = (bbox.y1 - bbox.y0) / 2.0
+    dx = target.x - center_x
+    dy = target.y - center_y
+    scale_x = half_w / abs(dx) if abs(dx) > 1e-9 else math.inf
+    scale_y = half_h / abs(dy) if abs(dy) > 1e-9 else math.inf
+    scale = min(scale_x, scale_y)
+    point = AnnotationPoint(center_x + dx * scale, center_y + dy * scale)
+    if scale_x <= scale_y:
+        side = PortSide.RIGHT if dx >= 0 else PortSide.LEFT
+    else:
+        side = PortSide.BOTTOM if dy >= 0 else PortSide.TOP
+    return point, side
 
 
 def _port_for(owner_id: str, sample_id: str, index: int, role: str, *, side: PortSide, point: AnnotationPoint) -> AnnotationPort:
