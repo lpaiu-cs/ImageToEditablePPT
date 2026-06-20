@@ -147,8 +147,27 @@ varied가 single-bold를 이김(1.0 vs 0.95): 단일 가짜 단서 과적합 불
 
 **held-out test 정확도 57/60 = 0.950** (단독 및 run-v3 검출기+분류기 v3 seam 통과 end-to-end 동일). 혼동: orth→cycle 2, cycle→orth 1. 산출물: `workbench-ml/{ds-v4,run-fc}`. 주의: ModelCheckpoint는 같은 output-dir 재사용 시 `last.ckpt`를 덮지 않고 `last-v1/v2`로 버전팅 → 학습은 깨끗한 dir에.
 
+### 6b. 학습된 connector segmentation (U-Net) (commit `3a8c68a`)
+
+thin-box(anchor) 검출 대신 **픽셀 semantic segmentation**으로 connector를 검출(사용자 제안). 소형 from-scratch U-Net(depth-3, **GroupNorm**)이 connector 획을 칠하고, GT 마스크는 annotation의 connector `path_points`를 즉석 래스터화(별도 파일 없음). 마스크 → 연결성분으로 인스턴스 추출, 읽기순서로 방향 결정(마스크에 화살촉 없음), GT thin-box IoU에 맞춰 pad, 가장 가까운 노드에 부착, **노드쌍별 dedup**(파편 1개로 병합).
+
+`infer_detector --connector-checkpoint` 사용 시 학습 마스크에서 connector 추출(`--infer-connectors` 휴리스틱보다 우선). **검출 라벨 공간을 안 바꿔 기존 검출기 체크포인트 유효**(thin-box 회피의 핵심 이점).
+
+**segmentation val_dice 0.983.** ds-v3 test(run-v3 노드 + 학습 connector): **connector_endpoint_accuracy 1.0, structural_exact 39/40** — 휴리스틱과 동급이나 학습된·토폴로지 일반 모델. 남은 1 miss는 노드 과검출(connector 무관). 산출물 `workbench-ml/run-seg`. **전체 테스트 90 passed.**
+
+### 현재 모델 구성 (Phase 8 종합)
+
+| 능력 | 방식 | 지표 |
+|---|---|---|
+| node/container 검출 | Faster R-CNN (run-v3) | node 0.998 / container 1.0 |
+| family 분류 | 학습 CNN 분류기 (run-fc) | test 0.95 |
+| family focus | 검출 union | family_proposal_accuracy 1.0 |
+| connector 검출 | 학습 U-Net segmentation (run-seg) | endpoint 1.0 / structural 39/40 |
+
+휴리스틱(`--infer-connectors`)·CLI family 시드는 이제 **모두 학습 모델로 대체 가능**.
+
 ### 남은 후보
 
-1. **학습된 connector 검출**(현재 `--infer-connectors` 휴리스틱 대체): connector/line·port를 모델이 직접 예측 → 실이미지에서도 동작. 위험: Faster R-CNN의 thin-box 검출 난점. structural_exact의 1개 miss는 node 1개 누락 연쇄.
-2. **cycle을 v3에서 end-to-end로**: v3 families 레지스트리에 cycle detector/parser 등록(현재 orthogonal_flow만). 분류기가 cycle을 맞혀도 v3 parser가 없어 DiagramInstance 생성 안 됨.
-3. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — soffice 미설치로 보류(LibreOffice 설치 필요).
+1. **cycle을 v3에서 end-to-end로**: v3 families 레지스트리에 cycle detector/parser 등록(현재 orthogonal_flow만). 분류기가 cycle을 맞혀도 v3 parser가 없어 DiagramInstance 생성 안 됨. connector 방향도 cycle은 읽기순서 휴리스틱이 안 맞음(화살촉 마스크 학습 필요).
+2. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — soffice 미설치로 보류(LibreOffice 설치 필요).
+3. 통합 단일 추론 CLI(검출기+분류기+segmenter 한 번에) 정리.
