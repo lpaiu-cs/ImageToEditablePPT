@@ -95,9 +95,26 @@ varied가 single-bold를 이김(1.0 vs 0.95): 단일 가짜 단서 과적합 불
 
 실험 산출물(로컬): `workbench-ml/{ds-v2,run-v2,ds-v3,run-v3}/`, `workbench-ml/{container_threshold_sweep,gen_ds_v2_boldcontainer,eval_v2}.py`, `workbench-ml/run-v1/container_sweep.json`. **canonical 검출기 = run-v3.**
 
-## 5. 다음 단계 후보 (문서 §2 기준)
+## 5. Phase 8 착수: FAMILY_DETECT 주입 + family 확장 (2026-06-20)
 
-1. detector 추론을 v3 `FAMILY_DETECT` stage에 주입하는 경로 설계 (Phase 8 연동).
-2. generator family coverage 확장 (현재 orthogonal_flow 단일).
-3. (선택) container 오탐 개선 — score-threshold 스윕 / GT-빈 분포 보강.
-4. (범위 확장) family focus_bbox 회귀 + connector/port 추출을 모델 또는 후처리에 추가해야 해당 지표가 의미를 가짐.
+§2의 다음 단계 후보 1·2를 동시에 진행. 두 개의 독립 커밋으로 랜딩.
+
+### 5a. CYCLE family 추가 (commit `7215c4d`)
+
+`DiagramFamily.CYCLE`를 두 번째 합성 family로 추가. 노드를 링 위에 균등 배치하고 인접 노드를 **닫힌 방향 루프**(노드당 connector 1개)로 연결. 기존 인프라(node/container kind, 스타일 팔레트, 포트, 컨테이너, family proposal, PIL/pptx 렌더) 전부 재사용 → **새 kind 없음 → 검출 라벨 공간 7클래스 불변 → 기존 체크포인트 유효**. 작은 헬퍼 `_edge_point_toward`만 추가(노드 경계 위 연결점+PortSide 계산). `generate_slide_spec`이 family로 분기, CLI `--family`는 `SUPPORTED_FAMILIES`로 cycle 자동 인식. 테스트: contract·닫힌 루프·결정성, unsupported 예시는 SWIMLANE로 교체.
+
+### 5b. ML 검출기를 v3 FAMILY_DETECT에 주입 (commit `f595386`)
+
+`MLFamilyDetector`가 학습된 체크포인트를 구조 캔버스에 돌려 node/container 검출의 union을 focus_bbox로 하는 `FamilyProposal`을 생성.
+
+- **아키텍처 경계 준수**: `test_v3_architecture`가 v3→ml import를 금지하므로 **의존성 역전**. `MLFamilyDetector`는 ml 패키지( v3 의존 허용)에 두고 v3 `FamilyDetector` protocol을 구현. `V3Config.family_detector_override`(protocol 타입)로 주입 → v3는 ml을 import하지 않음.
+- **실경로 전이 검증**(run-v3 체크포인트, 40장 합성 test를 그레이스케일 구조 캔버스로 v3 경로 통과): **40/40 proposal, focus_bbox IoU vs GT 평균 0.966(min 0.914), 전부 ≥0.5.** 기존 whole-image CLI 시드(IoU≈0) 대비 비약.
+- 단위 테스트: thresholding/union/clipping/registry 라우팅(스텁 모델).
+
+**전체 테스트 77 passed / 1 skipped.** canonical 검출기 = run-v3.
+
+### 남은 후보
+
+1. family focus_bbox **회귀**를 모델 자체에 학습(현재는 검출 union으로 근사). connector/port 추출 추가 → connector_endpoint·structural_exact 지표 활성화.
+2. cycle을 **포함한** 데이터셋으로 재학습 + v3 cycle detector/parser 등록(현재 v3 families 레지스트리는 orthogonal_flow만; cycle은 generator에만 존재).
+3. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — 진짜 도메인 검증.
