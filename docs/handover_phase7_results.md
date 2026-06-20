@@ -199,10 +199,27 @@ LibreOffice 설치 후(`winget TheDocumentFoundation.LibreOffice`), `generate_da
 
 † cycle은 읽기순서 방향 휴리스틱이 링에 부적합한 설계 한계(전이 무관). cycle node/container/family는 전부 1.0.
 
-**방향성 확정: 맞다.** 합성→학습 파이프라인이 다른 래스터라이저에서도 렌더링 다양성을 학습에 넣으면 거의 in-domain 수준으로 전이. PIL 과적합 갭이 node/container/family 완전, orthogonal connector 대부분 해소. **canonical(전이-강건) 모델 = run-v5/run-fc2/run-seg2.**
+**방향성 확정: 맞다.** 합성→학습 파이프라인이 다른 래스터라이저에서도 렌더링 다양성을 학습에 넣으면 거의 in-domain 수준으로 전이. PIL 과적합 갭이 node/container/family 완전, orthogonal connector 대부분 해소.
+
+### 7c. cycle connector 방향 해결: 화살촉 채널 + edge-aware side (commit `12e7af6`)
+
+cycle(링)은 읽기순서 방향이 부적합 → connector segmenter를 **2채널**(선 + 화살촉 disc)로 확장. GT 마스크에 각 connector의 directed end에 화살촉 disc를 칠하고, 추출 시 **화살촉에 가까운 끝을 end로 방향 결정**(읽기순서는 fallback). 추가로 connector port side를 generator와 동일한 **박스 종횡비 인식 edge-crossing**(폭이 넓고 낮은 노드는 거의 수평 방향도 top edge로 나갈 수 있음)으로 수정 — 대각선 cycle connector side 오류의 잔여 원인. segmenter 재학습 run-seg3(2채널, val_dice 0.971).
+
+**held-out soffice 재측정(혼합 모델 run-v5/fc2/seg3):**
+
+| | family | node | container | connector_endpoint | structural_exact |
+|---|---|---|---|---|---|
+| orthogonal(31) | 1.0 | 1.0 | 1.0 | **1.000** | **31/31** |
+| cycle(33) | 1.0 | 1.0 | 1.0 | **0.977** | **31/33** |
+
+cycle connector_endpoint 0.27→0.977, structural 0/33→31/33. **cycle 방향 한계 해소.** canonical 모델 = run-v5/run-fc2/**run-seg3**.
+
+### 최종 상태 (Phase 8 종합, 실제 LibreOffice 렌더 전이)
+
+전 능력이 **학습 모델**이고, PIL과 다른 래스터라이저에서도 두 family 모두 **structural_exact 94~100%**. 합성→학습→실전이 루프가 닫힘.
 
 ### 남은 후보
 
-1. **cycle connector 방향**: 화살촉 인식(arrowhead-aware) 마스크/추출 → cycle structural 활성화. cycle의 유일한 실한계.
-2. **cycle을 v3에서 end-to-end로**: v3 families에 cycle detector/parser 등록(현재 orthogonal_flow만).
-3. 통합 단일 추론 CLI(검출기+분류기+segmenter) + 혼합 렌더를 generator `--renderer mixed`로 1급 지원.
+1. **cycle을 v3에서 end-to-end로**: v3 families에 cycle detector/parser 등록(현재 orthogonal_flow만).
+2. 통합 단일 추론 CLI(검출기+분류기+segmenter) + 혼합 렌더를 generator `--renderer mixed`로 1급 지원.
+3. 더 다양한 family/렌더러(PowerPoint COM 등)로 일반화 확장.
