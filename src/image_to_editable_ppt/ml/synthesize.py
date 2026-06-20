@@ -14,6 +14,7 @@ installed; the .pptx sidecar preserves the img - ppt mapping pair.
 from __future__ import annotations
 
 import random
+import zlib
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -47,6 +48,37 @@ from image_to_editable_ppt.v3.ir.validate import validate_slide_ir
 GENERATOR_NAME = "synthetic_ppt_render_v1"
 RENDERER_NAME = "pil_raster_v1"
 EMU_PER_PIXEL = 9525  # 1 px at 96 dpi
+
+# Container visual style for the PIL rasterizer. Containers are drawn with a
+# visible, *varied* style picked per-sample (see _pick_container_style) so the
+# detector learns container presence from a realistic range of boundaries rather
+# than one fixed look. These module constants are the fallback used when a spec
+# carries no explicit style; they are deliberately visible (a saturated outline),
+# unlike the original near-invisible faint-gray rendering which made the
+# container signal unlearnable.
+CONTAINER_FILL = (248, 250, 252)
+CONTAINER_OUTLINE = (71, 85, 105)
+CONTAINER_OUTLINE_WIDTH = 3
+
+# Palettes for per-sample container styling. Every outline is saturated/dark
+# enough to be clearly visible against the white background and the light fills.
+_CONTAINER_OUTLINE_PALETTE = (
+    (71, 85, 105),    # slate
+    (37, 99, 235),    # blue
+    (190, 18, 60),    # rose
+    (15, 118, 110),   # teal
+    (180, 83, 9),     # amber
+    (109, 40, 217),   # violet
+)
+_CONTAINER_FILL_PALETTE = (
+    (255, 255, 255),  # white (border-only container)
+    (248, 250, 252),  # slate-50
+    (241, 245, 249),  # slate-100
+    (239, 246, 255),  # blue-50
+    (240, 253, 244),  # green-50
+    (254, 249, 235),  # amber-50
+)
+_CONTAINER_OUTLINE_WIDTHS = (2, 3, 4)
 
 SUPPORTED_FAMILIES = (DiagramFamily.ORTHOGONAL_FLOW,)
 
@@ -91,6 +123,29 @@ class SyntheticNodeStyle:
 
 
 @dataclass(slots=True, frozen=True)
+class SyntheticContainerStyle:
+    fill: tuple[int, int, int]
+    outline: tuple[int, int, int]
+    outline_width: int
+
+
+def _pick_container_style(sample_id: str) -> SyntheticContainerStyle:
+    """Pick a visible, varied container style deterministically from the sample id.
+
+    Uses a dedicated RNG seeded from the id (not the main generation stream) so
+    container styling does not perturb node/connector content — a dataset
+    regenerated after this change keeps byte-identical ground truth and only the
+    container's rendered appearance varies.
+    """
+    style_rng = random.Random(zlib.crc32(sample_id.encode("utf-8")))
+    return SyntheticContainerStyle(
+        fill=_CONTAINER_FILL_PALETTE[style_rng.randrange(len(_CONTAINER_FILL_PALETTE))],
+        outline=_CONTAINER_OUTLINE_PALETTE[style_rng.randrange(len(_CONTAINER_OUTLINE_PALETTE))],
+        outline_width=_CONTAINER_OUTLINE_WIDTHS[style_rng.randrange(len(_CONTAINER_OUTLINE_WIDTHS))],
+    )
+
+
+@dataclass(slots=True, frozen=True)
 class SyntheticConnector:
     candidate: AnnotationConnectorCandidate
     start_port: AnnotationPort
@@ -110,6 +165,7 @@ class SyntheticSlideSpec:
     connectors: tuple[SyntheticConnector, ...]
     family_proposal: AnnotationFamilyProposal
     label_font_size: int
+    container_style: SyntheticContainerStyle | None = None
 
     def to_annotation_document(self, *, split: str | None = None, metadata: dict[str, object] | None = None) -> DetectorAnnotationDocument:
         output = DetectorModelOutput(
@@ -281,7 +337,9 @@ def _generate_orthogonal_flow_spec(
         )
 
     container: AnnotationContainer | None = None
+    container_style: SyntheticContainerStyle | None = None
     if rng.random() < 0.5:
+        container_style = _pick_container_style(sample_id)
         pad = min(width, height) * 0.04
         union = _union_bbox([node.bbox for node in nodes])
         container = AnnotationContainer(
@@ -322,6 +380,7 @@ def _generate_orthogonal_flow_spec(
         connectors=tuple(connectors),
         family_proposal=proposal,
         label_font_size=label_font_size,
+        container_style=container_style,
     )
 
 
@@ -382,12 +441,13 @@ def render_spec_image(spec: SyntheticSlideSpec) -> Image.Image:
 
     if spec.container is not None:
         box = spec.container.bbox
+        style = spec.container_style
         draw.rounded_rectangle(
             (box.x0, box.y0, box.x1, box.y1),
             radius=10,
-            fill=(248, 250, 252),
-            outline=(148, 163, 184),
-            width=2,
+            fill=style.fill if style is not None else CONTAINER_FILL,
+            outline=style.outline if style is not None else CONTAINER_OUTLINE,
+            width=style.outline_width if style is not None else CONTAINER_OUTLINE_WIDTH,
         )
 
     for connector in spec.connectors:
