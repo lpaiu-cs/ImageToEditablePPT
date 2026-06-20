@@ -43,6 +43,7 @@ class InferDetectorConfig:
     image_path: Path | None
     score_threshold: float
     infer_connectors: bool = False
+    connector_checkpoint: Path | None = None
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -77,6 +78,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
             "this is a synthetic-oriented post-processor that completes the structural scene."
         ),
     )
+    parser.add_argument(
+        "--connector-checkpoint",
+        type=Path,
+        help=(
+            "Connector segmentation U-Net checkpoint. When given, connectors are extracted "
+            "from the learned pixel mask (preferred over --infer-connectors)."
+        ),
+    )
     return parser
 
 
@@ -107,6 +116,7 @@ def main(argv: list[str] | None = None) -> int:
         image_path=args.image_path,
         score_threshold=float(args.score_threshold),
         infer_connectors=bool(args.infer_connectors),
+        connector_checkpoint=args.connector_checkpoint,
     )
 
     if config.image_width <= 0 or config.image_height <= 0:
@@ -117,6 +127,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--checkpoint requires --image-path")
     if config.checkpoint is not None and not config.checkpoint.exists():
         parser.error(f"checkpoint does not exist: {config.checkpoint}")
+    if config.connector_checkpoint is not None:
+        if config.checkpoint is None:
+            parser.error("--connector-checkpoint requires --checkpoint (it attaches to detected nodes)")
+        if not config.connector_checkpoint.exists():
+            parser.error(f"connector checkpoint does not exist: {config.connector_checkpoint}")
 
     adapter = AnnotationMLAdapter()
     if config.checkpoint is not None:
@@ -126,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
         # detections (their union) instead of the whole-image placeholder.
         focus_bbox = _detection_focus_bbox(node_predictions, container_predictions, config)
         family_predictions = _seed_family_predictions(config, focus_bbox, from_detections=True)
-        connector_predictions, port_predictions = _infer_chain_connectors(node_predictions, config)
+        connector_predictions, port_predictions = _resolve_connectors(node_predictions, config)
         model_output = DetectorModelOutput(
             image_id=config.image_id,
             image_size=AnnotationImageSize(width=config.image_width, height=config.image_height),
@@ -222,6 +237,32 @@ def _detection_focus_bbox(
     if x1 <= x0 or y1 <= y0:
         return whole_image
     return AnnotationBBox(x0=x0, y0=y0, x1=x1, y1=y1)
+
+
+def _resolve_connectors(
+    nodes: tuple[AnnotationNode, ...],
+    config: InferDetectorConfig,
+) -> tuple[tuple[AnnotationConnectorCandidate, ...], tuple[AnnotationPort, ...]]:
+    """Learned segmentation connectors when a checkpoint is given, else heuristic."""
+    if config.connector_checkpoint is not None:
+        return _segment_connectors(nodes, config)
+    return _infer_chain_connectors(nodes, config)
+
+
+def _segment_connectors(
+    nodes: tuple[AnnotationNode, ...],
+    config: InferDetectorConfig,
+) -> tuple[tuple[AnnotationConnectorCandidate, ...], tuple[AnnotationPort, ...]]:
+    import numpy as np
+    from PIL import Image
+
+    from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_mask
+
+    assert config.image_path is not None
+    with Image.open(config.image_path) as image:
+        array = np.asarray(image.convert("RGB"), dtype=np.uint8)
+    mask = segment_connector_mask(str(config.connector_checkpoint), array)
+    return extract_connectors(mask, nodes, image_id=config.image_id)
 
 
 def _infer_chain_connectors(
