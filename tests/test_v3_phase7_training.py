@@ -4,6 +4,10 @@ import json
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("torch")
+pytest.importorskip("lightning")
+
 import torch
 
 import image_to_editable_ppt.ml.generate_dataset as generate_dataset_cli
