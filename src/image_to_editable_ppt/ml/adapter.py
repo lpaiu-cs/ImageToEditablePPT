@@ -144,7 +144,12 @@ class AnnotationMLAdapter:
 
     def to_primitive_scene(self, document: DetectorAnnotationDocument) -> PrimitiveScene:
         scene = document.primitive_scene or AnnotationPrimitiveScene()
-        port_lookup = {(port.owner_id, port.side): port.id for port in scene.ports}
+        # A node may own several ports on the same side (e.g. a tree root branching
+        # to multiple children), so group rather than overwrite; the endpoint is
+        # disambiguated to the nearest port by point in _to_attachment.
+        port_lookup: dict[tuple[str, PortSide], list[AnnotationPort]] = {}
+        for port in scene.ports:
+            port_lookup.setdefault((port.owner_id, port.side), []).append(port)
         return PrimitiveScene(
             image_size=document.image_size.to_image_size(),
             nodes=tuple(self._to_primitive_node(item) for item in scene.nodes),
@@ -312,19 +317,27 @@ class AnnotationMLAdapter:
         self,
         endpoint: AnnotationConnectorEndpoint | None,
         *,
-        port_lookup: dict[tuple[str, PortSide], str],
+        port_lookup: dict[tuple[str, PortSide], list[AnnotationPort]],
     ) -> ConnectorAttachment | None:
         if endpoint is None:
             return None
         if endpoint.owner_id is None or endpoint.owner_kind is None or endpoint.side is None:
             raise AnnotationSchemaError("connector endpoints must include owner_id, owner_kind, and side")
-        port_id = port_lookup.get((endpoint.owner_id, endpoint.side))
-        if port_id is None:
+        candidates = port_lookup.get((endpoint.owner_id, endpoint.side))
+        if not candidates:
             raise AnnotationSchemaError(
                 f"missing AnnotationPort for connector endpoint owner={endpoint.owner_id} side={endpoint.side.value}"
             )
+        if len(candidates) == 1:
+            port = candidates[0]
+        else:
+            port = min(
+                candidates,
+                key=lambda candidate: (candidate.point.x - endpoint.point.x) ** 2
+                + (candidate.point.y - endpoint.point.y) ** 2,
+            )
         return ConnectorAttachment(
-            port_id=port_id,
+            port_id=port.id,
             owner_id=endpoint.owner_id,
             owner_kind=endpoint.owner_kind,
             side=endpoint.side,

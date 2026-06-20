@@ -83,6 +83,15 @@ def test_extract_connectors_arrowhead_flips_orientation() -> None:
     assert connectors[0].end_endpoint.owner_id == "node:t:0"  # arrowhead end = left
 
 
+def test_extract_connectors_clamps_bbox_to_image_bounds() -> None:
+    left = _node("node:t:0", 0, 40, 40, 70)
+    right = _node("node:t:1", 120, 40, 160, 70)
+    line = np.zeros((180, 320), dtype=np.uint8)
+    line[54:57, 0:120] = 1  # stroke touches the left image edge (x=0)
+    connectors, _ = extract_connectors(line, _arrow_at(118), (left, right), image_id="t")
+    assert connectors[0].bbox.x0 >= 0.0  # clamped, not 0 - STROKE_WIDTH = -3
+
+
 def test_extract_connectors_dedupes_fragments_on_same_node_pair() -> None:
     left = _node("node:t:0", 20, 40, 60, 70)
     right = _node("node:t:1", 120, 40, 160, 70)

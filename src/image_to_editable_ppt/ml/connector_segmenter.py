@@ -291,6 +291,7 @@ def extract_connectors(
 
     if len(nodes) < 2:
         return (), ()
+    height_px, width_px = line_mask.shape[:2]
     count, labels, stats, _ = cv2.connectedComponentsWithStats(line_mask.astype(np.uint8), connectivity=8)
     # Collect raw candidates, then keep one per node-pair: a connector fragmented
     # by the mask into several components would otherwise emit duplicate edges.
@@ -302,6 +303,8 @@ def extract_connectors(
         if len(xs) < 2:
             continue
         a_xy, b_xy = _principal_extremes(xs.astype(np.float64), ys.astype(np.float64))
+        if a_xy == b_xy:
+            continue  # degenerate (near-isotropic) component: no usable axis/endpoints
         start_xy, end_xy = _orient_by_arrowhead(a_xy, b_xy, arrow_mask)
         start_owner = _nearest_node(nodes, start_xy)
         end_owner = _nearest_node(nodes, end_xy, exclude=start_owner)
@@ -327,10 +330,12 @@ def extract_connectors(
             "start_point": AnnotationPoint(float(start_xy[0]), float(start_xy[1])),
             "end_point": AnnotationPoint(float(end_xy[0]), float(end_xy[1])),
             # Pad to match the synthetic GT's _path_bbox(pad=3); the painted stroke
-            # is only ~3px wide, so a tight box undershoots thin IoU at 0.5.
+            # is only ~3px wide, so a tight box undershoots thin IoU at 0.5. Clamp to
+            # the image so an edge-touching connector does not produce negative coords.
             "bbox": AnnotationBBox(
-                x0=float(xs.min()) - pad, y0=float(ys.min()) - pad,
-                x1=float(xs.max()) + pad, y1=float(ys.max()) + pad,
+                x0=max(0.0, float(xs.min()) - pad), y0=max(0.0, float(ys.min()) - pad),
+                x1=min(float(width_px), float(xs.max()) + pad),
+                y1=min(float(height_px), float(ys.max()) + pad),
             ),
         }
 

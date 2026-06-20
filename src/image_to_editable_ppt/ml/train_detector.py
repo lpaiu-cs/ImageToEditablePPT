@@ -74,6 +74,9 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("batch-size and max-epochs must be positive; num-workers must be non-negative")
     if config.learning_rate <= 0:
         parser.error("learning-rate must be positive")
+    for name, value in (("limit-train-batches", config.limit_train_batches), ("limit-val-batches", config.limit_val_batches)):
+        if value is not None and value <= 0:
+            parser.error(f"{name} must be positive when provided")
 
     run_manifest = train_detector(config)
     run_manifest_path = config.output_dir / "train_detector_run.json"

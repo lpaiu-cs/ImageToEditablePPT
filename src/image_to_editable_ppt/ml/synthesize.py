@@ -736,6 +736,9 @@ def _edge_point_toward(bbox: AnnotationBBox, target: AnnotationPoint) -> tuple[A
     half_h = (bbox.y1 - bbox.y0) / 2.0
     dx = target.x - center_x
     dy = target.y - center_y
+    if abs(dx) <= 1e-9 and abs(dy) <= 1e-9:
+        # Target coincides with the centre: no ray direction. Default to the top edge.
+        return AnnotationPoint(center_x, bbox.y0), PortSide.TOP
     scale_x = half_w / abs(dx) if abs(dx) > 1e-9 else math.inf
     scale_y = half_h / abs(dy) if abs(dy) > 1e-9 else math.inf
     scale = min(scale_x, scale_y)
@@ -884,13 +887,17 @@ def write_spec_pptx(spec: SyntheticSlideSpec, path: Path) -> None:
         )
 
     if spec.container is not None:
+        style = spec.container_style
+        fill = style.fill if style is not None else CONTAINER_FILL
+        outline = style.outline if style is not None else CONTAINER_OUTLINE
+        outline_width = style.outline_width if style is not None else CONTAINER_OUTLINE_WIDTH
         shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, *emu_box(spec.container.bbox))
         shape.name = spec.container.id
         shape.shadow.inherit = False
         shape.fill.solid()
-        shape.fill.fore_color.rgb = RGBColor(248, 250, 252)
-        shape.line.color.rgb = RGBColor(148, 163, 184)
-        shape.line.width = Pt(1.0)
+        shape.fill.fore_color.rgb = RGBColor(*fill)
+        shape.line.color.rgb = RGBColor(*outline)
+        shape.line.width = Pt(float(outline_width) * 0.75)  # px stroke -> pt at 96 dpi
 
     for node in spec.nodes:
         style = spec.node_styles[node.id]

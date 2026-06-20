@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import random
 from pathlib import Path
 
 import pytest
@@ -332,6 +333,46 @@ def test_metrics_count_unmatched_reference_connectors_as_misses() -> None:
     assert report.connectors.endpoint_accuracy == 0.0
     assert report.connectors.endpoint_reference_count == 2
     assert report.structural.exact is False
+
+
+def test_metrics_zero_reference_connectors_penalize_false_positives() -> None:
+    adapter = AnnotationMLAdapter()
+    reference_output = dataclasses.replace(
+        make_synthetic_model_output(), connector_predictions=(), port_predictions=()
+    )
+    reference = adapter.from_model_output(reference_output)
+
+    # both empty -> nothing to score -> perfect
+    empty_prediction = adapter.from_model_output(reference_output)
+    assert evaluate_detector_predictions(empty_prediction, reference).connectors.endpoint_accuracy == 1.0
+
+    # spurious predicted connectors against a no-connector reference -> 0.0 (was vacuously 1.0)
+    fp_prediction = adapter.from_model_output(make_synthetic_model_output())
+    report = evaluate_detector_predictions(fp_prediction, reference)
+    assert report.connectors.endpoint_reference_count == 0
+    assert report.connectors.endpoint_accuracy == 0.0
+    assert report.structural.connectors_exact is False
+
+
+def test_adapter_attaches_branching_connectors_to_distinct_ports() -> None:
+    from collections import Counter
+
+    from image_to_editable_ppt.ml.synthesize import generate_slide_spec
+
+    spec = generate_slide_spec(random.Random(700), sample_id="bf", family=DiagramFamily.BLOCK_FLOW)
+    starts = Counter(c.candidate.start_endpoint.owner_id for c in spec.connectors)
+    root_id, branch_count = starts.most_common(1)[0]
+    assert branch_count >= 2  # the tree root branches to multiple children (same side)
+
+    slide_ir = AnnotationMLAdapter().to_slide_ir(spec.to_annotation_document())
+    port_ids = [
+        candidate.start_attachment.port_id
+        for candidate in slide_ir.primitive_scene.connector_candidates
+        if candidate.start_attachment is not None and candidate.start_attachment.owner_id == root_id
+    ]
+    # Each branch must resolve to its OWN port, not collapse onto a single shared one.
+    assert len(port_ids) == branch_count
+    assert len(set(port_ids)) == branch_count
 
 
 def test_metrics_penalize_shifted_boxes_and_kind_mismatch() -> None:

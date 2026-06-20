@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -45,6 +46,12 @@ def main(argv: list[str] | None = None) -> int:
 
     prediction = _load_document(config.predictions_json)
     reference = _load_document(config.ground_truth_json)
+    if prediction.image_id != reference.image_id:
+        print(
+            f"warning: prediction image_id ({prediction.image_id!r}) != reference image_id "
+            f"({reference.image_id!r}); metrics may be comparing different images",
+            file=sys.stderr,
+        )
     report = evaluate_detector_predictions(
         prediction,
         reference,

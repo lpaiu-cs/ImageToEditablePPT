@@ -290,7 +290,10 @@ def _connector_attachment_metrics(
                 correct_endpoints += 1
 
     if endpoint_reference_count == 0:
-        endpoint_accuracy = 1.0 if not predictions or len(matches) == len(references) else 0.0
+        # No reference endpoints to score: perfect only when no spurious connectors
+        # were predicted (every prediction matched a reference). Otherwise the
+        # false positives must drag the score to 0 rather than scoring vacuously 1.0.
+        endpoint_accuracy = 1.0 if len(predictions) - len(matches) == 0 else 0.0
     else:
         endpoint_accuracy = correct_endpoints / float(endpoint_reference_count)
     return ConnectorAttachmentMetrics(

@@ -138,6 +138,25 @@ def test_pptx_sidecar_preserves_shape_mapping(tmp_path: Path) -> None:
         assert connector.candidate.id in shape_names
 
 
+def test_pptx_container_uses_varied_style_color(tmp_path: Path) -> None:
+    pptx = pytest.importorskip("pptx")
+    from pptx.dml.color import RGBColor
+
+    spec = next(
+        (s for i in range(60) if (s := generate_slide_spec(random.Random(i), sample_id=f"c{i}")).container is not None),
+        None,
+    )
+    assert spec is not None and spec.container_style is not None
+    path = tmp_path / "container.pptx"
+    write_spec_pptx(spec, path)
+
+    shapes = {shape.name: shape for shape in pptx.Presentation(path).slides[0].shapes}
+    container = shapes[spec.container.id]
+    # The pptx container must honour the per-sample style, not the old faint hardcoded color.
+    assert container.fill.fore_color.rgb == RGBColor(*spec.container_style.fill)
+    assert container.line.color.rgb == RGBColor(*spec.container_style.outline)
+
+
 def test_assign_splits_partitions_every_sample() -> None:
     splits = assign_splits(100, rng=random.Random(3), train_ratio=0.8, val_ratio=0.1)
 
