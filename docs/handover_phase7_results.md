@@ -182,10 +182,27 @@ LibreOffice 설치 후(`winget TheDocumentFoundation.LibreOffice`), `generate_da
 
 **방향성 평가: 부분 검증.** 노드 검출(0.92~0.97), orthogonal container(1.0), cycle family(1.0)는 잘 전이 → 실제 시각 특징을 학습함. 그러나 structural_exact 39/40→0(all-or-nothing이 node_f1 0.968에 민감하게 붕괴), orthogonal family 0.95→0.71, cycle container 0.61로 **도메인 갭**이 드러남. **PIL 평면 렌더에 과적합**했고 PIL 수치는 낙관적이었음.
 
-**처방**: 학습 데이터에 **렌더링 다양성**(soffice 렌더 혼합 또는 그림자/폰트 augmentation) 후 재학습 → 갭 축소 예상. 측정 스크립트 `workbench-ml/measure_soffice_transfer.py`.
+### 7b. 정공법: 혼합 렌더 재학습으로 갭 해소 (소스 변경 없음)
+
+소스 코드 변경 없이 **데이터 오케스트레이션만으로** 처방을 실행: soffice 학습셋 추가 생성(`ds-soffice-big`, seed 31, 260장) → ds-v4(PIL) + ds-soffice-big(soffice)를 **결합 매니페스트**(상대경로 `../ds-*/...`)로 묶음(`ds-mix`, train 688 = PIL 480 + soffice 208). 세 모델을 ds-mix로 재학습(run-v5/run-fc2/run-seg2). 검출기는 lr 1e-3에서 epoch 16 발산 → **lr 3e-4로 안정화**(val_loss 0.127).
+
+**held-out soffice(seed 21, 64장) 재측정 — PIL-only → 혼합:**
+
+| 지표 | PIL-only | 혼합 학습 |
+|---|---|---|
+| family 분류 (overall) | 0.859 | **1.000** |
+| node_f1 (overall) | 0.918 | **1.000** |
+| container_f1 (overall) | 0.797 | **1.000** |
+| orthogonal connector_endpoint | 0.758 | 0.965 |
+| **orthogonal structural_exact** | 0/31 | **26/31 (0.84)** |
+| cycle connector_endpoint | 0.138 | 0.274† |
+
+† cycle은 읽기순서 방향 휴리스틱이 링에 부적합한 설계 한계(전이 무관). cycle node/container/family는 전부 1.0.
+
+**방향성 확정: 맞다.** 합성→학습 파이프라인이 다른 래스터라이저에서도 렌더링 다양성을 학습에 넣으면 거의 in-domain 수준으로 전이. PIL 과적합 갭이 node/container/family 완전, orthogonal connector 대부분 해소. **canonical(전이-강건) 모델 = run-v5/run-fc2/run-seg2.**
 
 ### 남은 후보
 
-1. **렌더링 다양성으로 재학습** (전이 갭 축소) — soffice/PIL 혼합 데이터셋 또는 augmentation. 가장 우선순위 높음.
-2. **cycle을 v3에서 end-to-end로**: v3 families에 cycle detector/parser 등록(현재 orthogonal_flow만). cycle connector 방향은 화살촉 마스크 학습 필요.
-3. 통합 단일 추론 CLI(검출기+분류기+segmenter).
+1. **cycle connector 방향**: 화살촉 인식(arrowhead-aware) 마스크/추출 → cycle structural 활성화. cycle의 유일한 실한계.
+2. **cycle을 v3에서 end-to-end로**: v3 families에 cycle detector/parser 등록(현재 orthogonal_flow만).
+3. 통합 단일 추론 CLI(검출기+분류기+segmenter) + 혼합 렌더를 generator `--renderer mixed`로 1급 지원.
