@@ -16,13 +16,17 @@ import argparse
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
+
+import lightning as L
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from PIL import Image
+from torch.utils.data import DataLoader, Dataset
 
 from image_to_editable_ppt.ml.synthesize import SUPPORTED_FAMILIES
 from image_to_editable_ppt.v3.core.enums import DiagramFamily
-
-if TYPE_CHECKING:
-    import numpy as np
 
 # Class order tracks the generator's supported-family tuple; index == class label.
 FAMILY_CLASS_ORDER: tuple[DiagramFamily, ...] = tuple(SUPPORTED_FAMILIES)
@@ -30,9 +34,7 @@ FAMILY_TO_INDEX: dict[DiagramFamily, int] = {family: index for index, family in 
 INPUT_SIZE = 128  # square resize fed to the CNN
 
 
-def _build_cnn(num_classes: int):
-    import torch.nn as nn
-
+def _build_cnn(num_classes: int) -> nn.Sequential:
     # GroupNorm (not BatchNorm) so train and eval use identical statistics — a
     # tiny CNN with BatchNorm collapsed in eval mode (val_acc ~chance) despite
     # perfect train accuracy.
@@ -52,86 +54,66 @@ def _build_cnn(num_classes: int):
     )
 
 
-def _import_lightning():
-    import lightning as L
+class FamilyClassifierModule(L.LightningModule):
+    def __init__(self, *, num_classes: int = len(FAMILY_CLASS_ORDER), learning_rate: float = 1e-3) -> None:
+        super().__init__()
+        self.save_hyperparameters()
+        self.model = _build_cnn(num_classes)
 
-    return L
+    def forward(self, images: torch.Tensor) -> torch.Tensor:
+        return self.model(images)
 
+    def _step(self, batch, stage: str) -> torch.Tensor:
+        images, labels = batch
+        logits = self.model(images)
+        loss = F.cross_entropy(logits, labels)
+        acc = (logits.argmax(dim=1) == labels).float().mean()
+        self.log(f"{stage}_loss", loss, prog_bar=True, batch_size=len(images))
+        self.log(f"{stage}_acc", acc, prog_bar=True, batch_size=len(images))
+        return loss
 
-def make_module(*, num_classes: int = len(FAMILY_CLASS_ORDER), learning_rate: float = 1e-3):
-    import torch
-    import torch.nn.functional as F
+    def training_step(self, batch, batch_idx: int) -> torch.Tensor:
+        return self._step(batch, "train")
 
-    L = _import_lightning()
+    def validation_step(self, batch, batch_idx: int) -> torch.Tensor:
+        return self._step(batch, "val")
 
-    class FamilyClassifierModule(L.LightningModule):
-        def __init__(self, *, num_classes: int = num_classes, learning_rate: float = learning_rate) -> None:
-            super().__init__()
-            self.save_hyperparameters()
-            self.model = _build_cnn(num_classes)
-
-        def forward(self, images: "torch.Tensor") -> "torch.Tensor":
-            return self.model(images)
-
-        def _step(self, batch, stage: str) -> "torch.Tensor":
-            images, labels = batch
-            logits = self.model(images)
-            loss = F.cross_entropy(logits, labels)
-            acc = (logits.argmax(dim=1) == labels).float().mean()
-            self.log(f"{stage}_loss", loss, prog_bar=True, batch_size=len(images))
-            self.log(f"{stage}_acc", acc, prog_bar=True, batch_size=len(images))
-            return loss
-
-        def training_step(self, batch, batch_idx: int) -> "torch.Tensor":
-            return self._step(batch, "train")
-
-        def validation_step(self, batch, batch_idx: int) -> "torch.Tensor":
-            return self._step(batch, "val")
-
-        def configure_optimizers(self):
-            return torch.optim.AdamW(self.parameters(), lr=self.hparams.learning_rate)
-
-    return FamilyClassifierModule
+    def configure_optimizers(self):
+        return torch.optim.AdamW(self.parameters(), lr=self.hparams.learning_rate)
 
 
-# Module class built lazily so importing this file does not require torch.
-def FamilyClassifierModule(*args, **kwargs):  # noqa: N802 - factory mimicking a class
-    return make_module()(*args, **kwargs)
+_MODULE_CACHE: dict[str, FamilyClassifierModule] = {}
 
 
-def _load_checkpoint_module(checkpoint: str):
-    cls = make_module()
-    module = cls.load_from_checkpoint(checkpoint, map_location="cpu")
+def _load_module(checkpoint: str) -> FamilyClassifierModule:
+    cached = _MODULE_CACHE.get(checkpoint)
+    if cached is not None:
+        return cached
+    module = FamilyClassifierModule.load_from_checkpoint(checkpoint, map_location="cpu")
     module.eval()
+    if module.hparams.num_classes != len(FAMILY_CLASS_ORDER):
+        raise ValueError(
+            f"family classifier checkpoint has {module.hparams.num_classes} classes but the current "
+            f"FAMILY_CLASS_ORDER has {len(FAMILY_CLASS_ORDER)} ({[f.value for f in FAMILY_CLASS_ORDER]}); "
+            "retrain the classifier on the current family set"
+        )
+    _MODULE_CACHE[checkpoint] = module
     return module
 
 
-_MODULE_CACHE: dict[str, object] = {}
-
-
-def _preprocess(image: "np.ndarray"):
-    import numpy as np
-    import torch
-    from PIL import Image
-
+def _preprocess(image: np.ndarray) -> torch.Tensor:
     array = np.asarray(image)
     if array.ndim == 2:
         pil = Image.fromarray(array.astype(np.uint8), mode="L").convert("RGB")
     else:
         pil = Image.fromarray(array.astype(np.uint8)[..., :3], mode="RGB")
     pil = pil.resize((INPUT_SIZE, INPUT_SIZE))
-    tensor = torch.from_numpy(np.asarray(pil, dtype=np.float32) / 255.0).permute(2, 0, 1)
-    return tensor
+    return torch.from_numpy(np.asarray(pil, dtype=np.float32) / 255.0).permute(2, 0, 1)
 
 
-def classify_family(checkpoint: str, image: "np.ndarray") -> tuple[DiagramFamily, float]:
+def classify_family(checkpoint: str, image: np.ndarray) -> tuple[DiagramFamily, float]:
     """Return the predicted family and its softmax probability for one image."""
-    import torch
-
-    module = _MODULE_CACHE.get(checkpoint)
-    if module is None:
-        module = _load_checkpoint_module(checkpoint)
-        _MODULE_CACHE[checkpoint] = module
+    module = _load_module(checkpoint)
     tensor = _preprocess(image).unsqueeze(0)
     with torch.no_grad():
         probs = torch.softmax(module(tensor)[0], dim=0)
@@ -150,12 +132,7 @@ class _ClassifierSample:
     label: int
 
 
-def _build_torch_dataset(dataset_dir: Path, *, split: str):
-    import numpy as np
-    import torch
-    from PIL import Image
-    from torch.utils.data import Dataset
-
+def _build_torch_dataset(dataset_dir: Path, *, split: str) -> Dataset:
     manifest = json.loads((dataset_dir / "dataset_manifest.json").read_text(encoding="utf-8"))
     samples = tuple(
         _ClassifierSample(
@@ -196,9 +173,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 
 def train_family_classifier(args: argparse.Namespace) -> dict[str, object]:
-    import lightning as L
     from lightning.pytorch.callbacks import ModelCheckpoint
-    from torch.utils.data import DataLoader
 
     L.seed_everything(args.seed)
     train_dataset = _build_torch_dataset(args.dataset_dir, split="train")
@@ -208,7 +183,7 @@ def train_family_classifier(args: argparse.Namespace) -> dict[str, object]:
     )
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=args.num_workers)
 
-    module = make_module(learning_rate=args.learning_rate)()
+    module = FamilyClassifierModule(learning_rate=args.learning_rate)
     checkpoint_dir = args.output_dir / "checkpoints"
     checkpoint_cb = ModelCheckpoint(dirpath=checkpoint_dir, filename="family_classifier-{epoch}", save_last=True)
     trainer_kwargs: dict[str, object] = {

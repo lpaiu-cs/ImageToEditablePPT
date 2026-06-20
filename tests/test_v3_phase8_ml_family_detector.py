@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 pytest.importorskip("torch")
+pytest.importorskip("lightning")
 
 import numpy as np
 import torch

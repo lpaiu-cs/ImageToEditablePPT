@@ -497,30 +497,9 @@ def test_seed_family_proposal_marks_provenance_by_source() -> None:
     assert seeded.evidence == ("bootstrap:cli_seed",)
 
 
-def test_infer_chain_connectors_links_consecutive_nodes() -> None:
-    config = _infer_config(infer_connectors=True)
-    nodes = (
-        _node(220.0, 40.0, 280.0, 90.0),  # deliberately out of left-to-right order
-        _node(20.0, 40.0, 80.0, 90.0),
-        _node(120.0, 40.0, 180.0, 90.0),
-    )
-    connectors, ports = infer_detector._infer_chain_connectors(nodes, config)
-    assert len(connectors) == 2  # nodes - 1
-    assert len(ports) == 4  # two per connector
-    # ordered left-to-right by center x, then linked consecutively
-    chain = [(c.start_endpoint.owner_id, c.end_endpoint.owner_id) for c in connectors]
-    assert chain == [(nodes[1].id, nodes[2].id), (nodes[2].id, nodes[0].id)]
-    assert all(c.start_endpoint.side is PortSide.RIGHT and c.end_endpoint.side is PortSide.LEFT for c in connectors)
-    assert all(c.kind is ConnectorKind.ARROW and c.arrowhead_end for c in connectors)
-
-
-def test_infer_chain_connectors_gated_off_by_default_and_family() -> None:
+def test_resolve_connectors_empty_without_connector_checkpoint() -> None:
     nodes = (_node(20.0, 40.0, 80.0, 90.0), _node(120.0, 40.0, 180.0, 90.0))
-    # default: flag off
-    assert infer_detector._infer_chain_connectors(nodes, _infer_config()) == ((), ())
-    # flag on but non-orthogonal family
-    cycle_config = _infer_config(infer_connectors=True, families=(DiagramFamily.CYCLE,))
-    assert infer_detector._infer_chain_connectors(nodes, cycle_config) == ((), ())
+    assert infer_detector._resolve_connectors(nodes, _infer_config()) == ((), ())
 
 
 def test_eval_cli_scores_prediction_against_reference(tmp_path: Path) -> None:
