@@ -96,20 +96,14 @@ def main(argv: list[str] | None = None) -> int:
     if config.checkpoint is not None and not config.checkpoint.exists():
         parser.error(f"checkpoint does not exist: {config.checkpoint}")
 
-    family_predictions = tuple(
-        AnnotationFamilyProposal(
-            id=f"family:{family.value}:{index}",
-            family=family,
-            confidence=config.family_confidence,
-            focus_bbox=AnnotationBBox(0.0, 0.0, float(config.image_width), float(config.image_height)),
-            evidence=("bootstrap:cli_seed",),
-            provenance=("ml_detector:seed_family",),
-        )
-        for index, family in enumerate(config.families)
-    )
     adapter = AnnotationMLAdapter()
     if config.checkpoint is not None:
         node_predictions, container_predictions = _run_checkpoint_inference(config)
+        # The detector predicts nodes/containers but not families, so seed the
+        # family from the CLI flag while grounding its focus_bbox in the actual
+        # detections (their union) instead of the whole-image placeholder.
+        focus_bbox = _detection_focus_bbox(node_predictions, container_predictions, config)
+        family_predictions = _seed_family_predictions(config, focus_bbox, from_detections=True)
         model_output = DetectorModelOutput(
             image_id=config.image_id,
             image_size=AnnotationImageSize(width=config.image_width, height=config.image_height),
@@ -124,6 +118,8 @@ def main(argv: list[str] | None = None) -> int:
             },
         )
     else:
+        whole_image = AnnotationBBox(0.0, 0.0, float(config.image_width), float(config.image_height))
+        family_predictions = _seed_family_predictions(config, whole_image, from_detections=False)
         model_output = DetectorModelOutput(
             image_id=config.image_id,
             image_size=AnnotationImageSize(width=config.image_width, height=config.image_height),
@@ -157,6 +153,49 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"wrote detector bootstrap predictions to {config.output_json}")
     return 0
+
+
+def _seed_family_predictions(
+    config: InferDetectorConfig,
+    focus_bbox: AnnotationBBox,
+    *,
+    from_detections: bool,
+) -> tuple[AnnotationFamilyProposal, ...]:
+    evidence = ("ml_detector:detection_union",) if from_detections else ("bootstrap:cli_seed",)
+    provenance = ("ml_detector:focus_from_detections",) if from_detections else ("ml_detector:seed_family",)
+    return tuple(
+        AnnotationFamilyProposal(
+            id=f"family:{family.value}:{index}",
+            family=family,
+            confidence=config.family_confidence,
+            focus_bbox=focus_bbox,
+            evidence=evidence,
+            provenance=provenance,
+        )
+        for index, family in enumerate(config.families)
+    )
+
+
+def _detection_focus_bbox(
+    nodes: tuple[AnnotationNode, ...],
+    containers: tuple[AnnotationContainer, ...],
+    config: InferDetectorConfig,
+) -> AnnotationBBox:
+    """Union of the detected node/container boxes, clipped to the image.
+
+    Falls back to the whole image when there is nothing to ground the focus on.
+    """
+    boxes = [item.bbox for item in (*nodes, *containers)]
+    whole_image = AnnotationBBox(0.0, 0.0, float(config.image_width), float(config.image_height))
+    if not boxes:
+        return whole_image
+    x0 = max(0.0, min(box.x0 for box in boxes))
+    y0 = max(0.0, min(box.y0 for box in boxes))
+    x1 = min(float(config.image_width), max(box.x1 for box in boxes))
+    y1 = min(float(config.image_height), max(box.y1 for box in boxes))
+    if x1 <= x0 or y1 <= y0:
+        return whole_image
+    return AnnotationBBox(x0=x0, y0=y0, x1=x1, y1=y1)
 
 
 def _run_checkpoint_inference(

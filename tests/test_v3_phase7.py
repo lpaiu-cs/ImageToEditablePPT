@@ -402,6 +402,60 @@ def test_infer_cli_writes_annotation_document_and_summary(tmp_path: Path) -> Non
     assert summary["connector_candidate_count"] == 0
 
 
+def _infer_config(**overrides: object) -> infer_detector.InferDetectorConfig:
+    base = dict(
+        image_id="cfg",
+        image_width=640,
+        image_height=360,
+        output_json=Path("unused.json"),
+        summary_json=None,
+        families=(DiagramFamily.ORTHOGONAL_FLOW,),
+        family_confidence=0.5,
+        validate_ir=False,
+        checkpoint=None,
+        image_path=None,
+        score_threshold=0.5,
+    )
+    base.update(overrides)
+    return infer_detector.InferDetectorConfig(**base)
+
+
+def _node(x0: float, y0: float, x1: float, y1: float) -> AnnotationNode:
+    return AnnotationNode(
+        id=f"node:{x0}:{y0}",
+        kind=NodeKind.BOX,
+        bbox=AnnotationBBox(x0=x0, y0=y0, x1=x1, y1=y1),
+        confidence=0.9,
+        source="ml_detector",
+        provenance=("ml_detector:checkpoint",),
+    )
+
+
+def test_detection_focus_bbox_unions_and_clips_detections() -> None:
+    config = _infer_config()
+    nodes = (_node(20.0, 30.0, 60.0, 70.0), _node(200.0, 40.0, 700.0, 90.0))  # second overruns width
+    focus = infer_detector._detection_focus_bbox(nodes, (), config)
+    assert focus == AnnotationBBox(x0=20.0, y0=30.0, x1=640.0, y1=90.0)
+
+
+def test_detection_focus_bbox_falls_back_to_whole_image_without_detections() -> None:
+    config = _infer_config()
+    focus = infer_detector._detection_focus_bbox((), (), config)
+    assert focus == AnnotationBBox(x0=0.0, y0=0.0, x1=640.0, y1=360.0)
+
+
+def test_seed_family_proposal_marks_provenance_by_source() -> None:
+    config = _infer_config()
+    bbox = AnnotationBBox(x0=10.0, y0=10.0, x1=50.0, y1=50.0)
+    grounded = infer_detector._seed_family_predictions(config, bbox, from_detections=True)[0]
+    assert grounded.focus_bbox == bbox
+    assert grounded.provenance == ("ml_detector:focus_from_detections",)
+    assert grounded.evidence == ("ml_detector:detection_union",)
+    seeded = infer_detector._seed_family_predictions(config, bbox, from_detections=False)[0]
+    assert seeded.provenance == ("ml_detector:seed_family",)
+    assert seeded.evidence == ("bootstrap:cli_seed",)
+
+
 def test_eval_cli_scores_prediction_against_reference(tmp_path: Path) -> None:
     adapter = AnnotationMLAdapter()
     document = adapter.from_model_output(make_synthetic_model_output())
