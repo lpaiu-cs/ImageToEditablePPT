@@ -214,12 +214,31 @@ cycle(링)은 읽기순서 방향이 부적합 → connector segmenter를 **2채
 
 cycle connector_endpoint 0.27→0.977, structural 0/33→31/33. **cycle 방향 한계 해소.** canonical 모델 = run-v5/run-fc2/**run-seg3**.
 
-### 최종 상태 (Phase 8 종합, 실제 LibreOffice 렌더 전이)
+## 8. 4-family 일반화 (commit `9f5b4b5`)
 
-전 능력이 **학습 모델**이고, PIL과 다른 래스터라이저에서도 두 family 모두 **structural_exact 94~100%**. 합성→학습→실전이 루프가 닫힘.
+구조적으로 뚜렷이 다른 family 2종 추가(기존 node/container/connector 어휘 재사용, 새 kind 없음):
+- **table_matrix**: 격자형 cell 노드, connector·container 없음.
+- **block_flow**: 얕은 트리(root→자식들[→손자] 분기, directed connector) — **분기 connector**(한 노드 다중 out-edge) 검증.
+
+family 분류기의 class order를 `SUPPORTED_FAMILIES`에서 자동 도출 → 4-class 자동 확장. 4-family PIL+soffice 혼합(`ds-mix2`, train 880)으로 재학습(run-v6/run-fc3/run-seg4; segmenter는 45 epoch에서 val_dice 0.976).
+
+**held-out soffice(seed 21, 4-family 80장) 전이:**
+
+| family | family분류 | node | container | connector | structural_exact |
+|---|---|---|---|---|---|
+| block_flow(트리) | 1.0 | 1.0 | 1.0 | 1.000 | 19/19 |
+| table_matrix | 1.0 | 1.0 | 1.0 | 1.000 | 12/12 |
+| cycle | 1.0 | 1.0 | 1.0 | 0.991 | 27/28 |
+| orthogonal_flow | 1.0 | 0.982 | 1.0 | 0.971 | 19/21 |
+
+**family 분류 80/80=1.0, node 0.995, container 1.0.** 분기 connector endpoint 1.0. **파이프라인이 4종 다양한 family와 다른 래스터라이저 모두에 일반화.** canonical 모델 = run-v6/run-fc3/run-seg4. 전체 테스트 93 passed.
+
+### 최종 상태
+
+전 능력 **학습 모델**(node/container 검출 + family 4-class 분류 + connector 2채널 segmentation), **4종 family × 실제 LibreOffice 렌더에서 structural_exact 90~100%**. 합성→학습→실전이→다family 일반화 루프 완결.
 
 ### 남은 후보
 
-1. **cycle을 v3에서 end-to-end로**: v3 families에 cycle detector/parser 등록(현재 orthogonal_flow만).
-2. 통합 단일 추론 CLI(검출기+분류기+segmenter) + 혼합 렌더를 generator `--renderer mixed`로 1급 지원.
-3. 더 다양한 family/렌더러(PowerPoint COM 등)로 일반화 확장.
+1. 통합 단일 추론 CLI(검출기+분류기+segmenter) + 혼합 렌더를 generator `--renderer mixed`로 1급 지원.
+2. 나머지 family(swimlane/timeline/layered_stack — 다중 container는 spec 다중-container 확장 필요).
+3. v3 families 레지스트리에 신규 family detector/parser 등록(현재 v3 파이프라인 단계는 orthogonal_flow만; ml/generator는 4종 완비).
