@@ -166,8 +166,26 @@ thin-box(anchor) 검출 대신 **픽셀 semantic segmentation**으로 connector�
 
 휴리스틱(`--infer-connectors`)·CLI family 시드는 이제 **모두 학습 모델로 대체 가능**.
 
+## 7. 실제 렌더 전이 측정 (LibreOffice/soffice)
+
+LibreOffice 설치 후(`winget TheDocumentFoundation.LibreOffice`), `generate_dataset --renderer soffice`로 동일 GT를 **다른 래스터라이저**(그림자·폰트·안티앨리어싱 차이)로 렌더(`workbench-ml/ds-soffice`, test 64장). PIL로 학습한 전 모델(run-v3/run-fc/run-seg)을 그대로 적용.
+
+| 지표 | PIL(기존) | soffice orthogonal(n=31) | soffice cycle(n=33) |
+|---|---|---|---|
+| node_f1 | 0.998 | 0.968 | 0.871 |
+| container_f1 | 1.000 | 1.000 | 0.606 |
+| family 분류 | 0.95 | 0.710 | 1.000 |
+| connector_endpoint | 1.0 | 0.758 | 0.138† |
+| structural_exact | 39/40 | 0/31 | 0/33 |
+
+† cycle connector_endpoint은 읽기순서 방향 휴리스틱이 링에 부적합 — 전이 실패가 아니라 설계 한계.
+
+**방향성 평가: 부분 검증.** 노드 검출(0.92~0.97), orthogonal container(1.0), cycle family(1.0)는 잘 전이 → 실제 시각 특징을 학습함. 그러나 structural_exact 39/40→0(all-or-nothing이 node_f1 0.968에 민감하게 붕괴), orthogonal family 0.95→0.71, cycle container 0.61로 **도메인 갭**이 드러남. **PIL 평면 렌더에 과적합**했고 PIL 수치는 낙관적이었음.
+
+**처방**: 학습 데이터에 **렌더링 다양성**(soffice 렌더 혼합 또는 그림자/폰트 augmentation) 후 재학습 → 갭 축소 예상. 측정 스크립트 `workbench-ml/measure_soffice_transfer.py`.
+
 ### 남은 후보
 
-1. **cycle을 v3에서 end-to-end로**: v3 families 레지스트리에 cycle detector/parser 등록(현재 orthogonal_flow만). 분류기가 cycle을 맞혀도 v3 parser가 없어 DiagramInstance 생성 안 됨. connector 방향도 cycle은 읽기순서 휴리스틱이 안 맞음(화살촉 마스크 학습 필요).
-2. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — soffice 미설치로 보류(LibreOffice 설치 필요).
-3. 통합 단일 추론 CLI(검출기+분류기+segmenter 한 번에) 정리.
+1. **렌더링 다양성으로 재학습** (전이 갭 축소) — soffice/PIL 혼합 데이터셋 또는 augmentation. 가장 우선순위 높음.
+2. **cycle을 v3에서 end-to-end로**: v3 families에 cycle detector/parser 등록(현재 orthogonal_flow만). cycle connector 방향은 화살촉 마스크 학습 필요.
+3. 통합 단일 추론 CLI(검출기+분류기+segmenter).
