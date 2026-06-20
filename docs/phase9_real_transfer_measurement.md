@@ -85,4 +85,12 @@ Goal context: 논문 다이어그램 90% 커버. 이 측정은 합성+soffice로
   (검출은 됐으나 family 분류가 cycle/ortho로 샘). family 분류 정밀도가 다음 레버.
 - C(OOD/비다이어그램 거절) 미착수 — 논문 figure 과반 비다이어그램.
 
-canonical 모델 갱신: **run-v7 / run-fc4 / run-seg5**.
+canonical 모델 갱신: **run-v7 / run-fc4 / run-seg6**.
+
+### 리뷰 후속 수정
+- **P1(febc5c2)**: provider 경로가 connector candidates를 `resolve_connector_candidates`로 풀어
+  `slide_ir.connectors`에 채움(emit은 connectors를 렌더). 안 하면 ML 커넥터가 PPT에서 누락.
+- **P2(run-seg6)**: thin-arrow 랜덤화로 렌더 1~2px인데 segmenter GT 마스크는 고정 3px이던 불일치
+  해소. `AnnotationConnectorCandidate.stroke_width`(합성 GT 전용) 추가 → 마스크를 렌더 width로
+  rasterize. 재학습 run-seg6 val_dice 0.863→**0.913**. 실figure 커넥터(전부 solved)도 개선:
+  architecture 4.6→**6.3**, graph 6.5→**8.2**.

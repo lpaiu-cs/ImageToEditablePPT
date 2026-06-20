@@ -16,7 +16,7 @@ from __future__ import annotations
 import math
 import random
 import zlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -278,7 +278,11 @@ class SyntheticSlideSpec:
             port_predictions=tuple(
                 port for connector in self.connectors for port in (connector.start_port, connector.end_port)
             ),
-            connector_predictions=tuple(connector.candidate for connector in self.connectors),
+            # Persist the rendered stroke width so the connector segmenter's GT mask
+            # matches the rendered line thickness (thin-arrow randomization).
+            connector_predictions=tuple(
+                replace(connector.candidate, stroke_width=connector.width) for connector in self.connectors
+            ),
             metadata={
                 "generator": GENERATOR_NAME,
                 "renderer": RENDERER_NAME,

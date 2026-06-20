@@ -496,6 +496,11 @@ class AnnotationConnectorCandidate:
     arrowhead_end: bool = False
     source: str = "ml_annotation"
     provenance: tuple[str, ...] = ("ml_annotation:connector_candidate",)
+    # Rendered stroke width in px (synthetic GT only). Lets the connector
+    # segmenter rasterize a line mask matching the rendered thickness instead of a
+    # fixed width, so thin-arrow domain-randomized samples are supervised against
+    # masks the same width as their pixels. None -> fall back to the default width.
+    stroke_width: int | None = None
 
     def __post_init__(self) -> None:
         _require_str(self.id, label="connector_candidate.id")
@@ -542,6 +547,7 @@ class AnnotationConnectorCandidate:
             source=_require_str(raw.get("source", "ml_annotation"), label="connector_candidate.source"),
             provenance=_read_string_tuple(raw.get("provenance"), label="connector_candidate.provenance")
             or ("ml_annotation:connector_candidate",),
+            stroke_width=None if raw.get("stroke_width") is None else int(raw["stroke_width"]),
         )
 
 

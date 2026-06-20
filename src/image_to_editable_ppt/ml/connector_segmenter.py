@@ -65,7 +65,10 @@ def rasterize_connector_masks(document: DetectorAnnotationDocument, *, width: in
         for connector in scene.connector_candidates:
             points = [(point.x, point.y) for point in connector.effective_path_points()]
             if len(points) >= 2:
-                line_draw.line(points, fill=1, width=STROKE_WIDTH)
+                # Supervise at the rendered stroke width (thin-arrow randomization);
+                # fall back to the default when the annotation predates this field.
+                mask_width = connector.stroke_width or STROKE_WIDTH
+                line_draw.line(points, fill=1, width=mask_width)
             end = connector.end_endpoint
             if connector.arrowhead_end and end is not None:
                 ex, ey = end.point.x, end.point.y

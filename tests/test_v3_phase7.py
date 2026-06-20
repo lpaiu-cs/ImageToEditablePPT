@@ -275,7 +275,10 @@ def test_annotation_schema_field_names_track_v3_ir() -> None:
 
     candidate_fields = {item.name for item in dataclasses.fields(AnnotationConnectorCandidate)}
     primitive_candidate_fields = {item.name for item in dataclasses.fields(PrimitiveConnectorCandidate)}
-    assert candidate_fields - {"start_endpoint", "end_endpoint"} <= primitive_candidate_fields
+    # start/end_endpoint become attachments in the v3 IR; stroke_width is a
+    # synthetic-GT-only rendering hint (connector mask thickness) with no v3 IR
+    # counterpart. Everything else must still map onto the primitive candidate.
+    assert candidate_fields - {"start_endpoint", "end_endpoint", "stroke_width"} <= primitive_candidate_fields
     assert {"start_attachment", "end_attachment"} <= primitive_candidate_fields
 
 
