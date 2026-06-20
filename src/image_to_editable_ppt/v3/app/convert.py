@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from PIL import Image
@@ -208,6 +208,17 @@ def _convert_via_provider(
     """Structure recovery delegated to an injected SlideIRProvider (e.g. ML)."""
     assert config.slide_ir_provider is not None
     slide_ir = config.slide_ir_provider.build(image, config=config)
+    # Providers emit connector *candidates*; resolve them into ConnectorSpecs the same
+    # way the heuristic path does. Emit reads slide_ir.connectors (not candidates), so
+    # without this every ML-detected connector is silently dropped from the editable
+    # PPT and the solved-connector diagnostics.
+    if slide_ir.connector_candidates and not slide_ir.connectors:
+        slide_ir = replace(
+            slide_ir,
+            connectors=resolve_connector_candidates(
+                connector_candidates=slide_ir.connector_candidates, config=config
+            ),
+        )
     validate_slide_ir(slide_ir)
     scene = slide_ir.primitive_scene
     stage_records = (
@@ -227,6 +238,10 @@ def _convert_via_provider(
         StageRecord(
             stage=StageName.CONNECTOR_ATTACH,
             summary={"connector_candidate_count": len(slide_ir.connector_candidates)},
+        ),
+        StageRecord(
+            stage=StageName.CONNECTOR_RESOLVE,
+            summary={"solved_connector_count": len(slide_ir.connectors)},
         ),
         StageRecord(
             stage=StageName.COMPOSE,

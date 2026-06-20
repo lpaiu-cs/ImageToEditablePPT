@@ -70,3 +70,37 @@ def test_convert_image_without_provider_uses_heuristic_path() -> None:
     result = convert_image(image, config=V3Config())  # no provider
     # blank image -> heuristic pipeline still produces a valid (empty) scene
     assert result.slide_ir.primitive_scene is not None
+
+
+def test_convert_image_provider_resolves_connector_candidates() -> None:
+    """Provider emits connector *candidates*; convert must resolve them into
+    ConnectorSpecs (emit reads slide_ir.connectors, not candidates)."""
+    import random
+
+    from image_to_editable_ppt.ml.synthesize import generate_slide_spec
+
+    spec = generate_slide_spec(random.Random(3), sample_id="conn", family=DiagramFamily.ORTHOGONAL_FLOW)
+    output = DetectorModelOutput(
+        image_id=spec.sample_id,
+        image_size=spec.image_size,
+        family_predictions=(spec.family_proposal,),
+        node_predictions=spec.nodes,
+        port_predictions=tuple(
+            port for connector in spec.connectors for port in (connector.start_port, connector.end_port)
+        ),
+        connector_predictions=tuple(connector.candidate for connector in spec.connectors),
+    )
+    adapter = AnnotationMLAdapter()
+    slide_ir = adapter.to_slide_ir(adapter.from_model_output(output))
+    assert slide_ir.connector_candidates  # adapter produced candidates...
+    assert not slide_ir.connectors  # ...but leaves them unresolved (like the real provider)
+
+    provider = _StubProvider(slide_ir)
+    image = Image.fromarray(
+        np.full((spec.image_size.height, spec.image_size.width, 3), 255, dtype=np.uint8), mode="RGB"
+    )
+    result = convert_image(image, config=V3Config(slide_ir_provider=provider))
+
+    # convert resolved every candidate -> ConnectorSpecs that emit can render.
+    assert len(result.slide_ir.connectors) == len(slide_ir.connector_candidates)
+    assert StageName.CONNECTOR_RESOLVE in {record.stage for record in result.stage_records}
