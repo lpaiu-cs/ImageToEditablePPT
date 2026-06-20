@@ -113,8 +113,24 @@ varied가 single-bold를 이김(1.0 vs 0.95): 단일 가짜 단서 과적합 불
 
 **전체 테스트 77 passed / 1 skipped.** canonical 검출기 = run-v3.
 
+### 5c. inferred family focus_bbox를 검출 기반으로 (commit `5329ba0`)
+
+`infer_detector`가 family proposal의 focus_bbox를 whole-image CLI 시드로 채워 ml eval의 `family_proposal_accuracy`가 구조적으로 0이었음. 체크포인트 사용 시 **검출된 node/container의 union**(클립)으로 focus를 잡도록 변경(검출 없으면 whole-image fallback, placeholder 모드는 기존 유지). evidence/provenance로 출처 구분.
+
+**ds-v3 test 40장(run-v3) 재평가**: `family_proposal_accuracy` **0.0 → 1.0** (node_f1 0.998, container_f1 1.0 불변). → **4개 도메인 지표 중 3개 만점.** `structural_exact`는 여전히 0 — 모델이 connector를 예측하지 않아서(아래).
+
+### 현재 지표 요약 (run-v3, ds-v3 test 40장, IoU 0.5)
+
+| 지표 | 값 | 상태 |
+|---|---|---|
+| family_proposal_accuracy | 1.000 | ✅ (5c에서 활성화) |
+| node_f1 | 0.998 | ✅ |
+| container_f1 | 1.000 | ✅ (container fix) |
+| connector_endpoint_accuracy | 0.000 | ❌ 모델이 connector 미예측 |
+| structural_exact | 0/40 | ❌ connector에 막힘 |
+
 ### 남은 후보
 
-1. family focus_bbox **회귀**를 모델 자체에 학습(현재는 검출 union으로 근사). connector/port 추출 추가 → connector_endpoint·structural_exact 지표 활성화.
-2. cycle을 **포함한** 데이터셋으로 재학습 + v3 cycle detector/parser 등록(현재 v3 families 레지스트리는 orthogonal_flow만; cycle은 generator에만 존재).
-3. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — 진짜 도메인 검증.
+1. **connector 활성화** (structural_exact 잠금 해제): (a) 검출 노드 기하에서 connector를 추론하는 후처리(orthogonal_flow는 인접 노드 체인 — 합성 한정 휴리스틱), 또는 (b) connector/line을 예측하는 모델 헤드 추가(아키텍처 변경, 큼). **전체 테스트 80 passed.**
+2. cycle을 **포함한** 데이터셋으로 재학습 + v3 cycle detector/parser 등록(현재 v3 families 레지스트리는 orthogonal_flow만; cycle은 generator에만 존재). 단, family **분류**가 없어 ML detector는 family-blind(현재 --family/enabled로 태깅).
+3. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — soffice 미설치로 보류.
