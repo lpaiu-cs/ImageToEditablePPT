@@ -10,6 +10,11 @@ workbench/**
 workbench2.0/**
 !workbench2.0/**/
 !workbench2.0/**/*.json
+# Phase 7/8 ML workbench: local datasets, model runs, experiment scripts (regenerable).
+workbench-ml/
 artifacts/
+
+# Python build artifacts
+*.egg-info/
 
 .env

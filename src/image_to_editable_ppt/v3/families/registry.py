@@ -45,6 +45,17 @@ def detect_family_proposals(
     raster_layer: RasterLayerResult,
     config: V3Config,
 ) -> tuple[FamilyProposal, ...]:
+    override = config.family_detector_override
+    if override is not None:
+        return tuple(
+            override.detect(
+                canvas,
+                text_layer=text_layer,
+                raster_layer=raster_layer,
+                config=config,
+            )
+        )
+
     proposals: list[FamilyProposal] = []
     for definition in iter_enabled_family_definitions(config):
         proposals.extend(
