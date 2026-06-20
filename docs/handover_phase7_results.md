@@ -137,8 +137,18 @@ varied가 single-bold를 이김(1.0 vs 0.95): 단일 가짜 단서 과적합 불
 
 **전체 테스트 82 passed / 1 skipped.** 4개 기본 도메인 지표 전부 만점급, 슬라이드 단위 structural_exact 39/40.
 
-### 남은 후보 (실제 능력 확장)
+## 6. 학습된 능력으로 휴리스틱 대체 (track A)
 
-1. **학습된 connector 검출**(현재 휴리스틱 대체): connector/line·port를 모델이 직접 예측하는 헤드 추가 → 실이미지에서도 동작. structural_exact의 유일한 1개 miss는 node 1개 누락(node_f1 0.998) 연쇄.
-2. **family 분류**를 모델에 학습(현재 family-blind, --family/enabled로 태깅) + cycle 포함 재학습 + v3 families에 cycle detector/parser 등록.
+### 6a. 학습된 family 분류기 (commit `d28ae3e`)
+
+검출기는 family-blind라 family가 고정 태그였음. 슬라이드의 다이어그램 family(orthogonal_flow vs cycle)를 분류하는 소형 from-scratch CNN(`ml/family_classifier.py`)을 혼합 데이터셋(ds-v4: 480/60/60, cycle 282+orth 318)에 오프라인 학습. **GroupNorm 사용**(BatchNorm은 eval 모드에서 chance로 붕괴 — train_acc 1.0인데 val_acc 0.48이었음; train/eval 통계 동일한 GroupNorm으로 해결).
+
+`MLFamilyDetector.family_classifier_checkpoint`(opt-in) 설정 시 FamilyProposal의 family·confidence를 분류기 결과로 채움 → v3 FAMILY_DETECT가 더 이상 family-blind 아님.
+
+**held-out test 정확도 57/60 = 0.950** (단독 및 run-v3 검출기+분류기 v3 seam 통과 end-to-end 동일). 혼동: orth→cycle 2, cycle→orth 1. 산출물: `workbench-ml/{ds-v4,run-fc}`. 주의: ModelCheckpoint는 같은 output-dir 재사용 시 `last.ckpt`를 덮지 않고 `last-v1/v2`로 버전팅 → 학습은 깨끗한 dir에.
+
+### 남은 후보
+
+1. **학습된 connector 검출**(현재 `--infer-connectors` 휴리스틱 대체): connector/line·port를 모델이 직접 예측 → 실이미지에서도 동작. 위험: Faster R-CNN의 thin-box 검출 난점. structural_exact의 1개 miss는 node 1개 누락 연쇄.
+2. **cycle을 v3에서 end-to-end로**: v3 families 레지스트리에 cycle detector/parser 등록(현재 orthogonal_flow만). 분류기가 cycle을 맞혀도 v3 parser가 없어 DiagramInstance 생성 안 됨.
 3. **실제** PPT 렌더 이미지(합성 아닌)로 전이 측정 — soffice 미설치로 보류(LibreOffice 설치 필요).
