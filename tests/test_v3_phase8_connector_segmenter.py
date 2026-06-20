@@ -11,6 +11,7 @@ from image_to_editable_ppt.ml.annotation_schema import AnnotationBBox, Annotatio
 from image_to_editable_ppt.ml.connector_segmenter import (
     extract_connectors,
     rasterize_connector_mask,
+    rasterize_connector_masks,
     segment_connector_mask,
 )
 from image_to_editable_ppt.ml.dataset import load_annotation_document
@@ -33,28 +34,48 @@ def test_rasterize_connector_mask_paints_strokes(tmp_path: Path) -> None:
     manifest = json.loads((dataset_dir / "dataset_manifest.json").read_text(encoding="utf-8"))
     sample = manifest["samples"][0]
     document = load_annotation_document(dataset_dir / sample["annotation"])
-    mask = rasterize_connector_mask(document, width=320, height=180)
-    assert mask.shape == (180, 320)
-    # orthogonal_flow always has connectors → some painted pixels, but a sparse mask
-    assert mask.sum() > 0
-    assert mask.mean() < 0.1
+    masks = rasterize_connector_masks(document, width=320, height=180)
+    assert masks.shape == (2, 180, 320)
+    assert masks[0].sum() > 0  # line channel painted
+    assert masks[1].sum() > 0  # arrowhead channel painted
+    assert masks[0].mean() < 0.1
+    # line-only helper returns channel 0
+    assert np.array_equal(rasterize_connector_mask(document, width=320, height=180), masks[0])
 
 
-def test_extract_connectors_links_two_nodes_with_correct_sides() -> None:
-    left = _node("node:t:0", 20, 40, 60, 70)
-    right = _node("node:t:1", 120, 40, 160, 70)
+def _line_mask() -> np.ndarray:
     mask = np.zeros((180, 320), dtype=np.uint8)
     mask[54:57, 60:120] = 1  # horizontal stroke spanning the gap
-    connectors, ports = extract_connectors(mask, (left, right), image_id="t")
-    assert len(connectors) == 1
-    assert len(ports) == 2
+    return mask
+
+
+def _arrow_at(cx: int) -> np.ndarray:
+    arrow = np.zeros((180, 320), dtype=np.uint8)
+    arrow[49:62, cx - 6 : cx + 6] = 1
+    return arrow
+
+
+def test_extract_connectors_orients_by_arrowhead() -> None:
+    left = _node("node:t:0", 20, 40, 60, 70)
+    right = _node("node:t:1", 120, 40, 160, 70)
+    # arrowhead at the RIGHT end -> directed left->right
+    connectors, ports = extract_connectors(_line_mask(), _arrow_at(118), (left, right), image_id="t")
+    assert len(connectors) == 1 and len(ports) == 2
     connector = connectors[0]
-    assert connector.start_endpoint.owner_id == "node:t:0"  # left, by reading order
+    assert connector.start_endpoint.owner_id == "node:t:0"
     assert connector.end_endpoint.owner_id == "node:t:1"
     assert connector.start_endpoint.side is PortSide.RIGHT
     assert connector.end_endpoint.side is PortSide.LEFT
-    # bbox is padded beyond the tight stroke (GT uses pad=3)
     assert connector.bbox.y0 < 54 and connector.bbox.y1 > 56
+
+
+def test_extract_connectors_arrowhead_flips_orientation() -> None:
+    left = _node("node:t:0", 20, 40, 60, 70)
+    right = _node("node:t:1", 120, 40, 160, 70)
+    # arrowhead at the LEFT end -> directed right->left (opposite of reading order)
+    connectors, _ = extract_connectors(_line_mask(), _arrow_at(62), (left, right), image_id="t")
+    assert connectors[0].start_endpoint.owner_id == "node:t:1"  # right is the source
+    assert connectors[0].end_endpoint.owner_id == "node:t:0"  # arrowhead end = left
 
 
 def test_extract_connectors_dedupes_fragments_on_same_node_pair() -> None:
@@ -63,7 +84,8 @@ def test_extract_connectors_dedupes_fragments_on_same_node_pair() -> None:
     mask = np.zeros((180, 320), dtype=np.uint8)
     mask[50:53, 60:120] = 1  # fragment A between the same pair
     mask[58:61, 60:120] = 1  # fragment B between the same pair
-    connectors, _ = extract_connectors(mask, (left, right), image_id="t")
+    no_arrow = np.zeros((180, 320), dtype=np.uint8)
+    connectors, _ = extract_connectors(mask, no_arrow, (left, right), image_id="t")
     assert len(connectors) == 1  # collapsed to one edge per node-pair
 
 

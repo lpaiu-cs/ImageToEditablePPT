@@ -256,13 +256,13 @@ def _segment_connectors(
     import numpy as np
     from PIL import Image
 
-    from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_mask
+    from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_masks
 
     assert config.image_path is not None
     with Image.open(config.image_path) as image:
         array = np.asarray(image.convert("RGB"), dtype=np.uint8)
-    mask = segment_connector_mask(str(config.connector_checkpoint), array)
-    return extract_connectors(mask, nodes, image_id=config.image_id)
+    line_mask, arrow_mask = segment_connector_masks(str(config.connector_checkpoint), array)
+    return extract_connectors(line_mask, arrow_mask, nodes, image_id=config.image_id)
 
 
 def _infer_chain_connectors(

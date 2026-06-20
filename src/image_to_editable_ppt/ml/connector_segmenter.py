@@ -39,6 +39,8 @@ from image_to_editable_ppt.ml.annotation_schema import (
 from image_to_editable_ppt.v3.core.enums import ConnectorKind, PortOwnerKind, PortSide
 
 STROKE_WIDTH = 3  # matches the synthetic renderer's connector stroke
+ARROW_RADIUS = 6  # arrowhead disc radius painted at the directed (end) endpoint
+OUT_CHANNELS = 2  # channel 0 = connector line, channel 1 = arrowhead end
 _DOWNSAMPLE = 8  # U-Net depth-3; inputs are padded to a multiple of this
 
 
@@ -47,17 +49,36 @@ _DOWNSAMPLE = 8  # U-Net depth-3; inputs are padded to a multiple of this
 # --------------------------------------------------------------------------- #
 
 
-def rasterize_connector_mask(document: DetectorAnnotationDocument, *, width: int, height: int) -> np.ndarray:
-    """Binary (H, W) float32 mask of connector strokes from path_points."""
-    mask = Image.new("L", (width, height), 0)
-    draw = ImageDraw.Draw(mask)
+def rasterize_connector_masks(document: DetectorAnnotationDocument, *, width: int, height: int) -> np.ndarray:
+    """(2, H, W) float32 target: channel 0 = connector line, channel 1 = arrowhead end.
+
+    The arrowhead channel marks each connector's directed end with a small disc so
+    a segmenter can recover orientation (the line alone is direction-ambiguous).
+    """
+    line = Image.new("L", (width, height), 0)
+    arrow = Image.new("L", (width, height), 0)
+    line_draw = ImageDraw.Draw(line)
+    arrow_draw = ImageDraw.Draw(arrow)
     scene = document.primitive_scene
     if scene is not None:
         for connector in scene.connector_candidates:
             points = [(point.x, point.y) for point in connector.effective_path_points()]
             if len(points) >= 2:
-                draw.line(points, fill=1, width=STROKE_WIDTH)
-    return np.asarray(mask, dtype=np.float32)
+                line_draw.line(points, fill=1, width=STROKE_WIDTH)
+            end = connector.end_endpoint
+            if connector.arrowhead_end and end is not None:
+                ex, ey = end.point.x, end.point.y
+                arrow_draw.ellipse(
+                    [ex - ARROW_RADIUS, ey - ARROW_RADIUS, ex + ARROW_RADIUS, ey + ARROW_RADIUS], fill=1
+                )
+    return np.stack(
+        [np.asarray(line, dtype=np.float32), np.asarray(arrow, dtype=np.float32)], axis=0
+    )
+
+
+def rasterize_connector_mask(document: DetectorAnnotationDocument, *, width: int, height: int) -> np.ndarray:
+    """Binary (H, W) line-only mask (channel 0 of :func:`rasterize_connector_masks`)."""
+    return rasterize_connector_masks(document, width=width, height=height)[0]
 
 
 # --------------------------------------------------------------------------- #
@@ -94,7 +115,7 @@ class _UNet(nn.Module):
         self.dec2 = _conv_block(64, 32)
         self.up1 = nn.ConvTranspose2d(32, 16, kernel_size=2, stride=2)
         self.dec1 = _conv_block(32, 16)
-        self.head = nn.Conv2d(16, 1, kernel_size=1)
+        self.head = nn.Conv2d(16, OUT_CHANNELS, kernel_size=1)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         e1 = self.enc1(x)
@@ -188,8 +209,8 @@ class ConnectorSegDataset(Dataset):
         document = DetectorAnnotationDocument.from_dict(
             json.loads(sample.annotation_path.read_text(encoding="utf-8"))
         )
-        mask = rasterize_connector_mask(document, width=width, height=height)
-        mask_tensor = _pad_to_multiple(torch.from_numpy(mask).unsqueeze(0))
+        masks = rasterize_connector_masks(document, width=width, height=height)  # (2, H, W)
+        mask_tensor = _pad_to_multiple(torch.from_numpy(masks))
         return image_tensor, mask_tensor
 
 
@@ -219,8 +240,10 @@ def _load_module(checkpoint: str) -> ConnectorSegModule:
     return module
 
 
-def segment_connector_mask(checkpoint: str, image: np.ndarray, *, threshold: float = 0.5) -> np.ndarray:
-    """Binary connector mask (H, W) at the input image's native resolution."""
+def segment_connector_masks(
+    checkpoint: str, image: np.ndarray, *, threshold: float = 0.5
+) -> tuple[np.ndarray, np.ndarray]:
+    """(line_mask, arrowhead_mask), both binary (H, W) at the input resolution."""
     array = np.asarray(image)
     if array.ndim == 2:
         array = np.stack([array, array, array], axis=-1)
@@ -233,9 +256,15 @@ def segment_connector_mask(checkpoint: str, image: np.ndarray, *, threshold: flo
     tensor = _pad_to_multiple(torch.from_numpy(array[..., :3]).permute(2, 0, 1)).unsqueeze(0)
     module = _load_module(checkpoint)
     with torch.no_grad():
-        logits = module(tensor)
-    probs = torch.sigmoid(logits)[0, 0, :height, :width].cpu().numpy()
-    return (probs >= threshold).astype(np.uint8)
+        probs = torch.sigmoid(module(tensor))[0, :, :height, :width].cpu().numpy()
+    line = (probs[0] >= threshold).astype(np.uint8)
+    arrow = (probs[1] >= threshold).astype(np.uint8)
+    return line, arrow
+
+
+def segment_connector_mask(checkpoint: str, image: np.ndarray, *, threshold: float = 0.5) -> np.ndarray:
+    """Binary connector line mask (H, W); see :func:`segment_connector_masks` for arrowheads."""
+    return segment_connector_masks(checkpoint, image, threshold=threshold)[0]
 
 
 # --------------------------------------------------------------------------- #
@@ -244,24 +273,25 @@ def segment_connector_mask(checkpoint: str, image: np.ndarray, *, threshold: flo
 
 
 def extract_connectors(
-    mask: np.ndarray,
+    line_mask: np.ndarray,
+    arrow_mask: np.ndarray,
     nodes: tuple[AnnotationNode, ...],
     *,
     image_id: str,
     min_area: int = 12,
 ) -> tuple[tuple[AnnotationConnectorCandidate, ...], tuple[AnnotationPort, ...]]:
-    """Turn a binary connector mask into connector candidates attached to nodes.
+    """Turn predicted connector masks into connector candidates attached to nodes.
 
-    Each connected component becomes one connector: its principal-axis extremes
-    are the endpoints, oriented by reading order (left->right / top->bottom, the
-    synthetic generator's convention since the mask carries no arrowhead), and
-    each endpoint attaches to the nearest node with the matching side.
+    Each connected component of ``line_mask`` becomes one connector: its
+    principal-axis extremes are the endpoints, oriented by the learned
+    ``arrow_mask`` (the end nearer an arrowhead disc is the directed end; reading
+    order is only a fallback), and each endpoint attaches to the nearest node.
     """
     import cv2
 
     if len(nodes) < 2:
         return (), ()
-    count, labels, stats, _ = cv2.connectedComponentsWithStats(mask.astype(np.uint8), connectivity=8)
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(line_mask.astype(np.uint8), connectivity=8)
     # Collect raw candidates, then keep one per node-pair: a connector fragmented
     # by the mask into several components would otherwise emit duplicate edges.
     raw: dict[frozenset[str], dict] = {}
@@ -271,7 +301,8 @@ def extract_connectors(
         ys, xs = np.where(labels == component)
         if len(xs) < 2:
             continue
-        start_xy, end_xy = _principal_extremes(xs.astype(np.float64), ys.astype(np.float64))
+        a_xy, b_xy = _principal_extremes(xs.astype(np.float64), ys.astype(np.float64))
+        start_xy, end_xy = _orient_by_arrowhead(a_xy, b_xy, arrow_mask)
         start_owner = _nearest_node(nodes, start_xy)
         end_owner = _nearest_node(nodes, end_xy, exclude=start_owner)
         if start_owner is None or end_owner is None or start_owner.id == end_owner.id:
@@ -281,12 +312,18 @@ def extract_connectors(
         if key in raw and raw[key]["span"] >= span:
             continue
         pad = float(STROKE_WIDTH)
+        # Sides face the partner node's center (matches the generator's
+        # _edge_point_toward convention), robust for diagonal/ring connectors.
+        start_center = ((start_owner.bbox.x0 + start_owner.bbox.x1) / 2.0,
+                        (start_owner.bbox.y0 + start_owner.bbox.y1) / 2.0)
+        end_center = ((end_owner.bbox.x0 + end_owner.bbox.x1) / 2.0,
+                      (end_owner.bbox.y0 + end_owner.bbox.y1) / 2.0)
         raw[key] = {
             "span": span,
             "start_owner": start_owner,
             "end_owner": end_owner,
-            "start_side": _side_toward(start_owner, start_xy),
-            "end_side": _side_toward(end_owner, end_xy),
+            "start_side": _side_toward(start_owner, end_center),
+            "end_side": _side_toward(end_owner, start_center),
             "start_point": AnnotationPoint(float(start_xy[0]), float(start_xy[1])),
             "end_point": AnnotationPoint(float(end_xy[0]), float(end_xy[1])),
             # Pad to match the synthetic GT's _path_bbox(pad=3); the painted stroke
@@ -328,21 +365,45 @@ def extract_connectors(
 
 
 def _principal_extremes(xs: np.ndarray, ys: np.ndarray) -> tuple[tuple[float, float], tuple[float, float]]:
+    """The two endpoints of a component (extremes along its principal axis), unordered."""
     coords = np.stack([xs, ys], axis=1)
     centered = coords - coords.mean(axis=0)
-    # Principal direction via the covariance's dominant eigenvector.
     cov = np.cov(centered, rowvar=False)
     eigvals, eigvecs = np.linalg.eigh(cov)
     direction = eigvecs[:, int(np.argmax(eigvals))]
     projection = centered @ direction
     a = coords[int(np.argmin(projection))]
     b = coords[int(np.argmax(projection))]
-    # Orient by reading order along the dominant span (mask has no arrowhead).
+    return (float(a[0]), float(a[1])), (float(b[0]), float(b[1]))
+
+
+def _orient_by_arrowhead(
+    a: tuple[float, float], b: tuple[float, float], arrow_mask: np.ndarray
+) -> tuple[tuple[float, float], tuple[float, float]]:
+    """Return (start, end) with ``end`` the endpoint nearer an arrowhead disc.
+
+    Falls back to reading order (left->right / top->bottom) when neither end has
+    an arrowhead signal.
+    """
+    score_a = _arrowhead_score(arrow_mask, a)
+    score_b = _arrowhead_score(arrow_mask, b)
+    if score_a > score_b:
+        return b, a  # arrowhead at a -> a is the end
+    if score_b > score_a:
+        return a, b
     if abs(b[0] - a[0]) >= abs(b[1] - a[1]):
-        start, end = (a, b) if a[0] <= b[0] else (b, a)
-    else:
-        start, end = (a, b) if a[1] <= b[1] else (b, a)
-    return (float(start[0]), float(start[1])), (float(end[0]), float(end[1]))
+        return (a, b) if a[0] <= b[0] else (b, a)
+    return (a, b) if a[1] <= b[1] else (b, a)
+
+
+def _arrowhead_score(arrow_mask: np.ndarray, point: tuple[float, float], *, radius: int = ARROW_RADIUS * 2) -> int:
+    height, width = arrow_mask.shape[:2]
+    cx, cy = int(round(point[0])), int(round(point[1]))
+    x0, x1 = max(0, cx - radius), min(width, cx + radius + 1)
+    y0, y1 = max(0, cy - radius), min(height, cy + radius + 1)
+    if x1 <= x0 or y1 <= y0:
+        return 0
+    return int(arrow_mask[y0:y1, x0:x1].sum())
 
 
 def _nearest_node(
@@ -364,11 +425,21 @@ def _nearest_node(
 
 
 def _side_toward(node: AnnotationNode, point: tuple[float, float]) -> PortSide:
+    """Edge the ray toward ``point`` exits, accounting for box aspect ratio.
+
+    Mirrors the generator's _edge_point_toward so sides agree for non-square
+    nodes (a mostly-horizontal direction can still exit a wide-but-short node's
+    top edge) — critical for diagonal/ring connectors.
+    """
+    half_w = (node.bbox.x1 - node.bbox.x0) / 2.0
+    half_h = (node.bbox.y1 - node.bbox.y0) / 2.0
     center_x = (node.bbox.x0 + node.bbox.x1) / 2.0
     center_y = (node.bbox.y0 + node.bbox.y1) / 2.0
     dx = point[0] - center_x
     dy = point[1] - center_y
-    if abs(dx) >= abs(dy):
+    scale_x = half_w / abs(dx) if abs(dx) > 1e-9 else float("inf")
+    scale_y = half_h / abs(dy) if abs(dy) > 1e-9 else float("inf")
+    if scale_x <= scale_y:
         return PortSide.RIGHT if dx >= 0 else PortSide.LEFT
     return PortSide.BOTTOM if dy >= 0 else PortSide.TOP
 
