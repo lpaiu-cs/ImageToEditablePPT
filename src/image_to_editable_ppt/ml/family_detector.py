@@ -52,6 +52,10 @@ class MLFamilyDetector:
     checkpoint: str
     score_threshold: float = 0.5
     family: DiagramFamily = field(default=DiagramFamily.ORTHOGONAL_FLOW)
+    # Opt-in: when set, the slide's family is predicted by the learned family
+    # classifier instead of using the fixed ``family`` above (detector is
+    # family-blind on its own).
+    family_classifier_checkpoint: str | None = None
 
     def detect(
         self,
@@ -85,20 +89,31 @@ class MLFamilyDetector:
         if not kept_boxes:
             return ()
 
+        family = self.family
+        family_confidence: float | None = None
+        evidence = [
+            f"ml_detection_count={len(kept_boxes)}",
+            f"max_score={max(kept_scores):.4f}",
+            f"score_threshold={self.score_threshold:.3f}",
+        ]
+        provenance = ["branch:structural_canvas", "detector:ml_checkpoint"]
+        if self.family_classifier_checkpoint is not None:
+            from image_to_editable_ppt.ml.family_classifier import classify_family
+
+            family, family_confidence = classify_family(self.family_classifier_checkpoint, canvas.image)
+            evidence.append(f"family_classifier_prob={family_confidence:.4f}")
+            provenance.append("family:ml_classifier")
+
         height, width = canvas.image.shape[:2]
         focus_bbox = _clip(_union(kept_boxes), width=int(width), height=int(height))
-        confidence = min(0.99, max(kept_scores))
+        confidence = family_confidence if family_confidence is not None else min(0.99, max(kept_scores))
         return (
             FamilyProposal(
-                id=f"family:{self.family.value}:ml:1",
-                family=self.family,
+                id=f"family:{family.value}:ml:1",
+                family=family,
                 confidence=confidence,
-                evidence=(
-                    f"ml_detection_count={len(kept_boxes)}",
-                    f"max_score={max(kept_scores):.4f}",
-                    f"score_threshold={self.score_threshold:.3f}",
-                ),
-                provenance=("branch:structural_canvas", "detector:ml_checkpoint"),
+                evidence=tuple(evidence),
+                provenance=tuple(provenance),
                 focus_bbox=focus_bbox,
             ),
         )

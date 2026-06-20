@@ -83,6 +83,22 @@ def test_registry_routes_to_override_when_set(monkeypatch) -> None:
     assert "detector:ml_checkpoint" in proposals[0].provenance
 
 
+def test_ml_detector_uses_family_classifier_when_set(monkeypatch) -> None:
+    _patch_model(monkeypatch, _StubDetectorModel(boxes=[[20, 30, 60, 70]], scores=[0.9], labels=[1]))
+    # Stub the classifier so no real checkpoint is needed; it forces CYCLE.
+    from image_to_editable_ppt.ml import family_classifier
+
+    monkeypatch.setattr(family_classifier, "classify_family", lambda checkpoint, image: (DiagramFamily.CYCLE, 0.88))
+    detector = MLFamilyDetector(
+        checkpoint="dummy.ckpt", score_threshold=0.5, family_classifier_checkpoint="fc.ckpt"
+    )
+    proposal = detector.detect(_canvas(), text_layer=None, raster_layer=None, config=V3Config())[0]
+    assert proposal.family is DiagramFamily.CYCLE  # learned, not the default ORTHOGONAL_FLOW
+    assert proposal.confidence == 0.88
+    assert "family:ml_classifier" in proposal.provenance
+    assert any("family_classifier_prob=0.8800" in item for item in proposal.evidence)
+
+
 def test_registry_uses_heuristic_when_no_override(monkeypatch) -> None:
     # No override and no enabled families with a real canvas → heuristic path runs and yields nothing here.
     config = V3Config(enabled_families=frozenset())
