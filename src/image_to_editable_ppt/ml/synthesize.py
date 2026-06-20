@@ -81,7 +81,12 @@ _CONTAINER_FILL_PALETTE = (
 )
 _CONTAINER_OUTLINE_WIDTHS = (2, 3, 4)
 
-SUPPORTED_FAMILIES = (DiagramFamily.ORTHOGONAL_FLOW, DiagramFamily.CYCLE)
+SUPPORTED_FAMILIES = (
+    DiagramFamily.ORTHOGONAL_FLOW,
+    DiagramFamily.CYCLE,
+    DiagramFamily.TABLE_MATRIX,
+    DiagramFamily.BLOCK_FLOW,
+)
 
 _LABEL_VOCAB = (
     "Plan",
@@ -219,6 +224,10 @@ def generate_slide_spec(
     size = image_size or AnnotationImageSize(width=1280, height=720)
     if family is DiagramFamily.CYCLE:
         return _generate_cycle_spec(rng, sample_id=sample_id, image_size=size)
+    if family is DiagramFamily.TABLE_MATRIX:
+        return _generate_table_matrix_spec(rng, sample_id=sample_id, image_size=size)
+    if family is DiagramFamily.BLOCK_FLOW:
+        return _generate_block_flow_spec(rng, sample_id=sample_id, image_size=size)
     return _generate_orthogonal_flow_spec(rng, sample_id=sample_id, image_size=size)
 
 
@@ -538,6 +547,184 @@ def _generate_cycle_spec(
         family_proposal=proposal,
         label_font_size=label_font_size,
         container_style=container_style,
+    )
+
+
+def _generate_table_matrix_spec(
+    rng: random.Random,
+    *,
+    sample_id: str,
+    image_size: AnnotationImageSize,
+) -> SyntheticSlideSpec:
+    """A regular grid of cell nodes — no connectors, no container."""
+    rows = rng.randint(2, 3)
+    cols = rng.randint(2, 4)
+    node_kind = NodeKind.BOX if rng.random() < 0.6 else NodeKind.ROUNDED_BOX
+    palette_index = rng.randrange(len(_FILL_PALETTE))
+    style = SyntheticNodeStyle(fill=_FILL_PALETTE[palette_index], stroke=_STROKE_PALETTE[palette_index])
+
+    width, height = float(image_size.width), float(image_size.height)
+    margin_x, margin_y = width * 0.1, height * 0.12
+    cell_w = (width - 2 * margin_x) / cols
+    cell_h = (height - 2 * margin_y) / rows
+    gap_x = cell_w * rng.uniform(0.12, 0.22)
+    gap_y = cell_h * rng.uniform(0.18, 0.28)
+    label_font_size = max(14, int((cell_h - gap_y) * 0.28))
+    font = ImageFont.load_default(size=label_font_size)
+    labels = rng.sample(_LABEL_VOCAB, rows * cols)
+
+    nodes: list[AnnotationNode] = []
+    text_regions: list[AnnotationTextRegion] = []
+    node_styles: dict[str, SyntheticNodeStyle] = {}
+    index = 0
+    for row in range(rows):
+        for col in range(cols):
+            x0 = margin_x + col * cell_w + gap_x / 2.0
+            y0 = margin_y + row * cell_h + gap_y / 2.0
+            bbox = AnnotationBBox(x0=x0, y0=y0, x1=x0 + cell_w - gap_x, y1=y0 + cell_h - gap_y)
+            node_id = f"node:{sample_id}:{index}"
+            text_id = f"text:{sample_id}:{index}"
+            label = labels[index]
+            nodes.append(
+                AnnotationNode(
+                    id=node_id, kind=node_kind, bbox=bbox, confidence=1.0, label=label,
+                    text_region_ids=(text_id,), source="synthetic_gt", provenance=(f"{GENERATOR_NAME}:node",),
+                )
+            )
+            node_styles[node_id] = style
+            text_regions.append(
+                AnnotationTextRegion(
+                    id=text_id, bbox=_label_bbox(label, font=font, node_bbox=bbox), confidence=1.0,
+                    role=TextRegionRole.LABEL, text=label, source="synthetic_gt",
+                    provenance=(f"{GENERATOR_NAME}:text",),
+                )
+            )
+            index += 1
+
+    focus = _union_bbox([node.bbox for node in nodes])
+    proposal = AnnotationFamilyProposal(
+        id=f"family:{sample_id}:0", family=DiagramFamily.TABLE_MATRIX, confidence=1.0, focus_bbox=focus,
+        evidence=(f"{GENERATOR_NAME}:layout",), provenance=(f"{GENERATOR_NAME}:family_proposal",),
+    )
+    return SyntheticSlideSpec(
+        sample_id=sample_id, family=DiagramFamily.TABLE_MATRIX, image_size=image_size, nodes=tuple(nodes),
+        node_styles=node_styles, text_regions=tuple(text_regions), container=None, connectors=(),
+        family_proposal=proposal, label_font_size=label_font_size, container_style=None,
+    )
+
+
+def _generate_block_flow_spec(
+    rng: random.Random,
+    *,
+    sample_id: str,
+    image_size: AnnotationImageSize,
+) -> SyntheticSlideSpec:
+    """A shallow tree: a root branches to children (and optionally grandchildren)."""
+    node_kind = NodeKind.ROUNDED_BOX if rng.random() < 0.5 else NodeKind.BOX
+    palette_index = rng.randrange(len(_FILL_PALETTE))
+    style = SyntheticNodeStyle(fill=_FILL_PALETTE[palette_index], stroke=_STROKE_PALETTE[palette_index])
+
+    width, height = float(image_size.width), float(image_size.height)
+    child_count = rng.randint(2, 3)
+    grand_count = rng.randint(0, 2)
+    levels = 3 if grand_count > 0 else 2
+    node_w, node_h = width * 0.16, height * 0.16
+    margin_y = height * 0.1
+    level_gap = (height - 2 * margin_y - node_h) / (levels - 1)
+    label_font_size = max(14, int(node_h * 0.28))
+    font = ImageFont.load_default(size=label_font_size)
+    labels = rng.sample(_LABEL_VOCAB, 1 + child_count + grand_count)
+
+    nodes: list[AnnotationNode] = []
+    node_styles: dict[str, SyntheticNodeStyle] = {}
+    text_regions: list[AnnotationTextRegion] = []
+
+    def add_node(index: int, center_x: float, center_y: float) -> AnnotationNode:
+        bbox = AnnotationBBox(
+            x0=center_x - node_w / 2.0, y0=center_y - node_h / 2.0,
+            x1=center_x + node_w / 2.0, y1=center_y + node_h / 2.0,
+        )
+        node_id = f"node:{sample_id}:{index}"
+        text_id = f"text:{sample_id}:{index}"
+        label = labels[index]
+        node = AnnotationNode(
+            id=node_id, kind=node_kind, bbox=bbox, confidence=1.0, label=label,
+            text_region_ids=(text_id,), source="synthetic_gt", provenance=(f"{GENERATOR_NAME}:node",),
+        )
+        nodes.append(node)
+        node_styles[node_id] = style
+        text_regions.append(
+            AnnotationTextRegion(
+                id=text_id, bbox=_label_bbox(label, font=font, node_bbox=bbox), confidence=1.0,
+                role=TextRegionRole.LABEL, text=label, source="synthetic_gt",
+                provenance=(f"{GENERATOR_NAME}:text",),
+            )
+        )
+        return node
+
+    root = add_node(0, width / 2.0, margin_y + node_h / 2.0)
+    child_y = margin_y + node_h / 2.0 + level_gap
+    children = [add_node(1 + i, width * (i + 1) / (child_count + 1), child_y) for i in range(child_count)]
+    grandchildren: list[AnnotationNode] = []
+    if grand_count > 0:
+        base_cx = (children[0].bbox.x0 + children[0].bbox.x1) / 2.0
+        grand_y = margin_y + node_h / 2.0 + 2 * level_gap
+        for j in range(grand_count):
+            gx = base_cx + (j - (grand_count - 1) / 2.0) * node_w * 1.3
+            grandchildren.append(add_node(1 + child_count + j, gx, grand_y))
+
+    edges = [(root, child) for child in children] + [(children[0], g) for g in grandchildren]
+    connectors: list[SyntheticConnector] = []
+    for index, (parent, child) in enumerate(edges):
+        parent_center = AnnotationPoint((parent.bbox.x0 + parent.bbox.x1) / 2.0, (parent.bbox.y0 + parent.bbox.y1) / 2.0)
+        child_center = AnnotationPoint((child.bbox.x0 + child.bbox.x1) / 2.0, (child.bbox.y0 + child.bbox.y1) / 2.0)
+        start_point, start_side = _edge_point_toward(parent.bbox, child_center)
+        end_point, end_side = _edge_point_toward(child.bbox, parent_center)
+        connector_id = f"connector:{sample_id}:{index}"
+        path = (start_point, end_point)
+        connectors.append(
+            SyntheticConnector(
+                candidate=AnnotationConnectorCandidate(
+                    id=connector_id, kind=ConnectorKind.ARROW, bbox=_path_bbox(path), confidence=1.0,
+                    source_evidence_id=f"evidence:{connector_id}", path_points=path,
+                    start_endpoint=AnnotationConnectorEndpoint(
+                        point=start_point, owner_id=parent.id, owner_kind=PortOwnerKind.NODE, side=start_side),
+                    end_endpoint=AnnotationConnectorEndpoint(
+                        point=end_point, owner_id=child.id, owner_kind=PortOwnerKind.NODE, side=end_side),
+                    arrowhead_end=True, source="synthetic_gt", provenance=(f"{GENERATOR_NAME}:connector",),
+                ),
+                start_port=_port_for(parent.id, sample_id, index, "start", side=start_side, point=start_point),
+                end_port=_port_for(child.id, sample_id, index, "end", side=end_side, point=end_point),
+                stroke=style.stroke,
+            )
+        )
+
+    container: AnnotationContainer | None = None
+    container_style: SyntheticContainerStyle | None = None
+    if rng.random() < 0.4:
+        container_style = _pick_container_style(sample_id)
+        pad = min(width, height) * 0.04
+        union = _union_bbox([node.bbox for node in nodes])
+        container = AnnotationContainer(
+            id=f"container:{sample_id}:0", kind=ContainerKind.FLOW_CLUSTER,
+            bbox=AnnotationBBox(
+                x0=max(2.0, union.x0 - pad), y0=max(2.0, union.y0 - pad),
+                x1=min(width - 2.0, union.x1 + pad), y1=min(height - 2.0, union.y1 + pad)),
+            confidence=1.0, member_node_ids=tuple(node.id for node in nodes), source="synthetic_gt",
+            provenance=(f"{GENERATOR_NAME}:container",),
+        )
+
+    focus = container.bbox if container is not None else _union_bbox(
+        [node.bbox for node in nodes] + [connector.candidate.bbox for connector in connectors]
+    )
+    proposal = AnnotationFamilyProposal(
+        id=f"family:{sample_id}:0", family=DiagramFamily.BLOCK_FLOW, confidence=1.0, focus_bbox=focus,
+        evidence=(f"{GENERATOR_NAME}:layout",), provenance=(f"{GENERATOR_NAME}:family_proposal",),
+    )
+    return SyntheticSlideSpec(
+        sample_id=sample_id, family=DiagramFamily.BLOCK_FLOW, image_size=image_size, nodes=tuple(nodes),
+        node_styles=node_styles, text_regions=tuple(text_regions), container=container, connectors=tuple(connectors),
+        family_proposal=proposal, label_font_size=label_font_size, container_style=container_style,
     )
 
 

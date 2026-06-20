@@ -65,6 +65,35 @@ def test_generated_cycle_specs_satisfy_slide_ir_contract() -> None:
         assert spec.family_proposal.family is DiagramFamily.CYCLE
 
 
+def test_generated_table_matrix_specs_satisfy_slide_ir_contract() -> None:
+    rng = random.Random(44)
+    for index in range(25):
+        spec = generate_slide_spec(rng, sample_id=f"tm_{index:03d}", family=DiagramFamily.TABLE_MATRIX)
+        validate_spec_contract(spec)
+        assert spec.family is DiagramFamily.TABLE_MATRIX
+        assert len(spec.nodes) >= 4  # at least a 2x2 grid
+        assert spec.connectors == ()  # a matrix has no connectors
+        assert spec.container is None
+        assert len(spec.text_regions) == len(spec.nodes)
+
+
+def test_generated_block_flow_specs_are_trees_with_branching_connectors() -> None:
+    rng = random.Random(45)
+    saw_branch = False
+    for index in range(25):
+        spec = generate_slide_spec(rng, sample_id=f"bf_{index:03d}", family=DiagramFamily.BLOCK_FLOW)
+        validate_spec_contract(spec)
+        assert spec.family is DiagramFamily.BLOCK_FLOW
+        assert len(spec.nodes) >= 3
+        assert len(spec.connectors) == len(spec.nodes) - 1  # a tree: edges = nodes - 1
+        roots = {c.candidate.start_endpoint.owner_id for c in spec.connectors}
+        if any(
+            sum(1 for c in spec.connectors if c.candidate.start_endpoint.owner_id == r) >= 2 for r in roots
+        ):
+            saw_branch = True
+    assert saw_branch  # at least one slide has a node with multiple out-edges
+
+
 def test_cycle_connectors_form_a_closed_ring() -> None:
     spec = generate_slide_spec(random.Random(7), sample_id="ring", family=DiagramFamily.CYCLE)
     node_ids = [node.id for node in spec.nodes]

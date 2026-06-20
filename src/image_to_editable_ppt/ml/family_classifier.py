@@ -18,13 +18,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from image_to_editable_ppt.ml.synthesize import SUPPORTED_FAMILIES
 from image_to_editable_ppt.v3.core.enums import DiagramFamily
 
 if TYPE_CHECKING:
     import numpy as np
 
-# Class order is the generator's supported-family tuple; index == class label.
-FAMILY_CLASS_ORDER: tuple[DiagramFamily, ...] = (DiagramFamily.ORTHOGONAL_FLOW, DiagramFamily.CYCLE)
+# Class order tracks the generator's supported-family tuple; index == class label.
+FAMILY_CLASS_ORDER: tuple[DiagramFamily, ...] = tuple(SUPPORTED_FAMILIES)
 FAMILY_TO_INDEX: dict[DiagramFamily, int] = {family: index for index, family in enumerate(FAMILY_CLASS_ORDER)}
 INPUT_SIZE = 128  # square resize fed to the CNN
 
