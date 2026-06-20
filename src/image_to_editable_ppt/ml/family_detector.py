@@ -36,15 +36,16 @@ _MODEL_CACHE: dict[str, object] = {}
 
 
 def _load_module(checkpoint: str) -> object:
-    cached = _MODEL_CACHE.get(checkpoint)
-    if cached is not None:
-        return cached
-    from image_to_editable_ppt.ml.lightning_module import DetectorLightningModule
+    from image_to_editable_ppt.ml.dataset import get_or_load
 
-    module = DetectorLightningModule.load_from_checkpoint(checkpoint, map_location="cpu")
-    module.eval()
-    _MODEL_CACHE[checkpoint] = module
-    return module
+    def _load() -> object:
+        from image_to_editable_ppt.ml.lightning_module import DetectorLightningModule
+
+        module = DetectorLightningModule.load_from_checkpoint(checkpoint, map_location="cpu")
+        module.eval()
+        return module
+
+    return get_or_load(_MODEL_CACHE, checkpoint, _load)
 
 
 @dataclass(slots=True, frozen=True)
@@ -69,8 +70,10 @@ class MLFamilyDetector:
 
         import torch
 
+        from image_to_editable_ppt.ml.dataset import to_rgb_chw_tensor
+
         module = _load_module(self.checkpoint)
-        image_tensor = _to_rgb_tensor(canvas.image)
+        image_tensor = to_rgb_chw_tensor(canvas.image)
         with torch.no_grad():
             prediction = module([image_tensor])[0]
 
@@ -117,21 +120,6 @@ class MLFamilyDetector:
                 focus_bbox=focus_bbox,
             ),
         )
-
-
-def _to_rgb_tensor(image: "np.ndarray"):
-    import numpy as np
-    import torch
-
-    array = np.asarray(image)
-    if array.ndim == 2:
-        array = np.stack([array, array, array], axis=-1)
-    elif array.ndim == 3 and array.shape[2] == 1:
-        array = np.repeat(array, 3, axis=2)
-    array = array.astype(np.float32)
-    if array.max() > 1.0:
-        array = array / 255.0
-    return torch.from_numpy(array).permute(2, 0, 1)
 
 
 def _union(boxes: list[tuple[float, float, float, float]]) -> BBox:

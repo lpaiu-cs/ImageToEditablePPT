@@ -743,11 +743,21 @@ def _edge_point_toward(bbox: AnnotationBBox, target: AnnotationPoint) -> tuple[A
     scale_y = half_h / abs(dy) if abs(dy) > 1e-9 else math.inf
     scale = min(scale_x, scale_y)
     point = AnnotationPoint(center_x + dx * scale, center_y + dy * scale)
+    return point, edge_side(half_w, half_h, dx, dy)
+
+
+def edge_side(half_w: float, half_h: float, dx: float, dy: float) -> PortSide:
+    """Which edge a ray (dx, dy) from a box centre exits, accounting for aspect ratio.
+
+    Shared by the generator and the connector segmenter's endpoint-side assignment
+    so they agree for non-square nodes (a mostly-horizontal direction can still
+    exit a wide-but-short box's top edge).
+    """
+    scale_x = half_w / abs(dx) if abs(dx) > 1e-9 else math.inf
+    scale_y = half_h / abs(dy) if abs(dy) > 1e-9 else math.inf
     if scale_x <= scale_y:
-        side = PortSide.RIGHT if dx >= 0 else PortSide.LEFT
-    else:
-        side = PortSide.BOTTOM if dy >= 0 else PortSide.TOP
-    return point, side
+        return PortSide.RIGHT if dx >= 0 else PortSide.LEFT
+    return PortSide.BOTTOM if dy >= 0 else PortSide.TOP
 
 
 def _port_for(owner_id: str, sample_id: str, index: int, role: str, *, side: PortSide, point: AnnotationPoint) -> AnnotationPort:

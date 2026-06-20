@@ -43,6 +43,37 @@ def label_to_kind(label: int) -> NodeKind | ContainerKind:
     return kind
 
 
+def get_or_load(cache: dict, key: str, loader):
+    """Return ``cache[key]``, computing it via ``loader()`` and storing it on a miss.
+
+    Shared by the checkpoint caches in the inference modules. Note: never
+    invalidated, which is fine for one-shot CLI processes but means a checkpoint
+    retrained to the same path within a live process serves the stale model.
+    """
+    cached = cache.get(key)
+    if cached is None:
+        cached = loader()
+        cache[key] = cached
+    return cached
+
+
+def to_rgb_chw_tensor(image: np.ndarray) -> torch.Tensor:
+    """Image array -> float32 (3, H, W) tensor in [0, 1].
+
+    Accepts grayscale (H, W), single-channel (H, W, 1), or RGB(A) arrays, and
+    scales 0-255 inputs to [0, 1] (already-normalized arrays are left as-is).
+    """
+    array = np.asarray(image)
+    if array.ndim == 2:
+        array = np.stack([array, array, array], axis=-1)
+    elif array.ndim == 3 and array.shape[2] == 1:
+        array = np.repeat(array, 3, axis=2)
+    array = array.astype(np.float32)
+    if array.max() > 1.0:
+        array = array / 255.0
+    return torch.from_numpy(array[..., :3]).permute(2, 0, 1)
+
+
 @dataclass(slots=True, frozen=True)
 class DetectorSample:
     sample_id: str

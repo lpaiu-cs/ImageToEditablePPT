@@ -36,6 +36,7 @@ from image_to_editable_ppt.ml.annotation_schema import (
     AnnotationPort,
     DetectorAnnotationDocument,
 )
+from image_to_editable_ppt.ml.dataset import get_or_load, to_rgb_chw_tensor
 from image_to_editable_ppt.v3.core.enums import ConnectorKind, PortOwnerKind, PortSide
 
 STROKE_WIDTH = 3  # matches the synthetic renderer's connector stroke
@@ -231,29 +232,20 @@ _MODULE_CACHE: dict[str, ConnectorSegModule] = {}
 
 
 def _load_module(checkpoint: str) -> ConnectorSegModule:
-    cached = _MODULE_CACHE.get(checkpoint)
-    if cached is not None:
-        return cached
-    module = ConnectorSegModule.load_from_checkpoint(checkpoint, map_location="cpu")
-    module.eval()
-    _MODULE_CACHE[checkpoint] = module
-    return module
+    def _load() -> ConnectorSegModule:
+        module = ConnectorSegModule.load_from_checkpoint(checkpoint, map_location="cpu")
+        module.eval()
+        return module
+
+    return get_or_load(_MODULE_CACHE, checkpoint, _load)
 
 
 def segment_connector_masks(
     checkpoint: str, image: np.ndarray, *, threshold: float = 0.5
 ) -> tuple[np.ndarray, np.ndarray]:
     """(line_mask, arrowhead_mask), both binary (H, W) at the input resolution."""
-    array = np.asarray(image)
-    if array.ndim == 2:
-        array = np.stack([array, array, array], axis=-1)
-    elif array.ndim == 3 and array.shape[2] == 1:
-        array = np.repeat(array, 3, axis=2)
-    array = array.astype(np.float32)
-    if array.max() > 1.0:
-        array = array / 255.0
-    height, width = array.shape[:2]
-    tensor = _pad_to_multiple(torch.from_numpy(array[..., :3]).permute(2, 0, 1)).unsqueeze(0)
+    height, width = np.asarray(image).shape[:2]
+    tensor = _pad_to_multiple(to_rgb_chw_tensor(image)).unsqueeze(0)
     module = _load_module(checkpoint)
     with torch.no_grad():
         probs = torch.sigmoid(module(tensor))[0, :, :height, :width].cpu().numpy()
@@ -430,23 +422,14 @@ def _nearest_node(
 
 
 def _side_toward(node: AnnotationNode, point: tuple[float, float]) -> PortSide:
-    """Edge the ray toward ``point`` exits, accounting for box aspect ratio.
+    """Edge of ``node`` the ray toward ``point`` exits (shares the generator's rule)."""
+    from image_to_editable_ppt.ml.synthesize import edge_side
 
-    Mirrors the generator's _edge_point_toward so sides agree for non-square
-    nodes (a mostly-horizontal direction can still exit a wide-but-short node's
-    top edge) — critical for diagonal/ring connectors.
-    """
     half_w = (node.bbox.x1 - node.bbox.x0) / 2.0
     half_h = (node.bbox.y1 - node.bbox.y0) / 2.0
     center_x = (node.bbox.x0 + node.bbox.x1) / 2.0
     center_y = (node.bbox.y0 + node.bbox.y1) / 2.0
-    dx = point[0] - center_x
-    dy = point[1] - center_y
-    scale_x = half_w / abs(dx) if abs(dx) > 1e-9 else float("inf")
-    scale_y = half_h / abs(dy) if abs(dy) > 1e-9 else float("inf")
-    if scale_x <= scale_y:
-        return PortSide.RIGHT if dx >= 0 else PortSide.LEFT
-    return PortSide.BOTTOM if dy >= 0 else PortSide.TOP
+    return edge_side(half_w, half_h, point[0] - center_x, point[1] - center_y)
 
 
 def _port(owner_id: str, image_id: str, index: int, role: str, side: PortSide, point: AnnotationPoint) -> AnnotationPort:

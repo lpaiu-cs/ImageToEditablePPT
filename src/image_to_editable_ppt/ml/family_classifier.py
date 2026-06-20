@@ -25,6 +25,7 @@ import torch.nn.functional as F
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 
+from image_to_editable_ppt.ml.dataset import get_or_load
 from image_to_editable_ppt.ml.synthesize import SUPPORTED_FAMILIES
 from image_to_editable_ppt.v3.core.enums import DiagramFamily
 
@@ -86,19 +87,18 @@ _MODULE_CACHE: dict[str, FamilyClassifierModule] = {}
 
 
 def _load_module(checkpoint: str) -> FamilyClassifierModule:
-    cached = _MODULE_CACHE.get(checkpoint)
-    if cached is not None:
-        return cached
-    module = FamilyClassifierModule.load_from_checkpoint(checkpoint, map_location="cpu")
-    module.eval()
-    if module.hparams.num_classes != len(FAMILY_CLASS_ORDER):
-        raise ValueError(
-            f"family classifier checkpoint has {module.hparams.num_classes} classes but the current "
-            f"FAMILY_CLASS_ORDER has {len(FAMILY_CLASS_ORDER)} ({[f.value for f in FAMILY_CLASS_ORDER]}); "
-            "retrain the classifier on the current family set"
-        )
-    _MODULE_CACHE[checkpoint] = module
-    return module
+    def _load() -> FamilyClassifierModule:
+        module = FamilyClassifierModule.load_from_checkpoint(checkpoint, map_location="cpu")
+        module.eval()
+        if module.hparams.num_classes != len(FAMILY_CLASS_ORDER):
+            raise ValueError(
+                f"family classifier checkpoint has {module.hparams.num_classes} classes but the current "
+                f"FAMILY_CLASS_ORDER has {len(FAMILY_CLASS_ORDER)} ({[f.value for f in FAMILY_CLASS_ORDER]}); "
+                "retrain the classifier on the current family set"
+            )
+        return module
+
+    return get_or_load(_MODULE_CACHE, checkpoint, _load)
 
 
 def _preprocess(image: np.ndarray) -> torch.Tensor:
