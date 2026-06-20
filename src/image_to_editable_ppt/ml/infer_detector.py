@@ -8,13 +8,24 @@ from pathlib import Path
 from image_to_editable_ppt.ml.adapter import AnnotationMLAdapter, DetectorModelOutput
 from image_to_editable_ppt.ml.annotation_schema import (
     AnnotationBBox,
+    AnnotationConnectorCandidate,
+    AnnotationConnectorEndpoint,
     AnnotationContainer,
     AnnotationFamilyProposal,
     AnnotationImageSize,
     AnnotationNode,
+    AnnotationPoint,
+    AnnotationPort,
     DetectorAnnotationDocument,
 )
-from image_to_editable_ppt.v3.core.enums import ContainerKind, DiagramFamily, NodeKind
+from image_to_editable_ppt.v3.core.enums import (
+    ConnectorKind,
+    ContainerKind,
+    DiagramFamily,
+    NodeKind,
+    PortOwnerKind,
+    PortSide,
+)
 from image_to_editable_ppt.v3.ir.validate import validate_slide_ir
 
 
@@ -31,6 +42,7 @@ class InferDetectorConfig:
     checkpoint: Path | None
     image_path: Path | None
     score_threshold: float
+    infer_connectors: bool = False
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -55,6 +67,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--validate-ir",
         action="store_true",
         help="Validate the adapted SlideIR payload after inference.",
+    )
+    parser.add_argument(
+        "--infer-connectors",
+        action="store_true",
+        help=(
+            "Heuristically infer chain connectors (and ports) between detected nodes "
+            "for the orthogonal_flow family. The detector does not predict connectors; "
+            "this is a synthetic-oriented post-processor that completes the structural scene."
+        ),
     )
     return parser
 
@@ -85,6 +106,7 @@ def main(argv: list[str] | None = None) -> int:
         checkpoint=args.checkpoint,
         image_path=args.image_path,
         score_threshold=float(args.score_threshold),
+        infer_connectors=bool(args.infer_connectors),
     )
 
     if config.image_width <= 0 or config.image_height <= 0:
@@ -104,17 +126,21 @@ def main(argv: list[str] | None = None) -> int:
         # detections (their union) instead of the whole-image placeholder.
         focus_bbox = _detection_focus_bbox(node_predictions, container_predictions, config)
         family_predictions = _seed_family_predictions(config, focus_bbox, from_detections=True)
+        connector_predictions, port_predictions = _infer_chain_connectors(node_predictions, config)
         model_output = DetectorModelOutput(
             image_id=config.image_id,
             image_size=AnnotationImageSize(width=config.image_width, height=config.image_height),
             family_predictions=family_predictions,
             node_predictions=node_predictions,
             container_predictions=container_predictions,
+            port_predictions=port_predictions,
+            connector_predictions=connector_predictions,
             metadata={
                 "stage": "phase7_ml_experiment_bootstrap",
                 "inference_mode": "checkpoint",
                 "checkpoint": str(config.checkpoint),
                 "score_threshold": config.score_threshold,
+                "connectors_inferred": bool(connector_predictions),
             },
         )
     else:
@@ -196,6 +222,108 @@ def _detection_focus_bbox(
     if x1 <= x0 or y1 <= y0:
         return whole_image
     return AnnotationBBox(x0=x0, y0=y0, x1=x1, y1=y1)
+
+
+def _infer_chain_connectors(
+    nodes: tuple[AnnotationNode, ...],
+    config: InferDetectorConfig,
+) -> tuple[tuple[AnnotationConnectorCandidate, ...], tuple[AnnotationPort, ...]]:
+    """Heuristic chain connectors between detected nodes for orthogonal_flow.
+
+    The detector predicts boxes, not connectors. For the orthogonal_flow family
+    (a linear chain), nodes are ordered along the dominant layout axis and linked
+    consecutively, mirroring how the synthetic generator builds connectors. Each
+    connector also emits matching ports so the SlideIR adapter validates. This is
+    a synthetic-oriented post-processor, gated behind --infer-connectors.
+    """
+    if not config.infer_connectors or DiagramFamily.ORTHOGONAL_FLOW not in config.families or len(nodes) < 2:
+        return (), ()
+
+    centers = [((node.bbox.x0 + node.bbox.x1) / 2.0, (node.bbox.y0 + node.bbox.y1) / 2.0) for node in nodes]
+    xs = [center[0] for center in centers]
+    ys = [center[1] for center in centers]
+    horizontal = (max(xs) - min(xs)) >= (max(ys) - min(ys))
+    order = sorted(range(len(nodes)), key=lambda i: centers[i][0] if horizontal else centers[i][1])
+    ordered = [nodes[i] for i in order]
+
+    connectors: list[AnnotationConnectorCandidate] = []
+    ports: list[AnnotationPort] = []
+    for index in range(len(ordered) - 1):
+        start_node, end_node = ordered[index], ordered[index + 1]
+        start_cx = (start_node.bbox.x0 + start_node.bbox.x1) / 2.0
+        start_cy = (start_node.bbox.y0 + start_node.bbox.y1) / 2.0
+        end_cx = (end_node.bbox.x0 + end_node.bbox.x1) / 2.0
+        end_cy = (end_node.bbox.y0 + end_node.bbox.y1) / 2.0
+        if horizontal:
+            start_side, end_side = PortSide.RIGHT, PortSide.LEFT
+            start_point = AnnotationPoint(start_node.bbox.x1, start_cy)
+            end_point = AnnotationPoint(end_node.bbox.x0, end_cy)
+        else:
+            start_side, end_side = PortSide.BOTTOM, PortSide.TOP
+            start_point = AnnotationPoint(start_cx, start_node.bbox.y1)
+            end_point = AnnotationPoint(end_cx, end_node.bbox.y0)
+        path = _orthogonal_path(start_point, end_point, horizontal=horizontal)
+        connector_id = f"connector:{config.image_id}:{index}"
+        connectors.append(
+            AnnotationConnectorCandidate(
+                id=connector_id,
+                kind=ConnectorKind.ARROW,
+                bbox=_path_bbox(path),
+                confidence=min(start_node.confidence, end_node.confidence),
+                source_evidence_id=f"evidence:{connector_id}",
+                path_points=path,
+                start_endpoint=AnnotationConnectorEndpoint(
+                    point=start_point, owner_id=start_node.id, owner_kind=PortOwnerKind.NODE, side=start_side
+                ),
+                end_endpoint=AnnotationConnectorEndpoint(
+                    point=end_point, owner_id=end_node.id, owner_kind=PortOwnerKind.NODE, side=end_side
+                ),
+                arrowhead_end=True,
+                source="ml_detector",
+                provenance=("ml_detector:inferred_chain_connector",),
+            )
+        )
+        ports.append(
+            AnnotationPort(
+                id=f"port:{config.image_id}:{index}:start",
+                owner_id=start_node.id,
+                owner_kind=PortOwnerKind.NODE,
+                side=start_side,
+                point=start_point,
+                confidence=1.0,
+                source="ml_detector",
+                provenance=("ml_detector:inferred_port",),
+            )
+        )
+        ports.append(
+            AnnotationPort(
+                id=f"port:{config.image_id}:{index}:end",
+                owner_id=end_node.id,
+                owner_kind=PortOwnerKind.NODE,
+                side=end_side,
+                point=end_point,
+                confidence=1.0,
+                source="ml_detector",
+                provenance=("ml_detector:inferred_port",),
+            )
+        )
+    return tuple(connectors), tuple(ports)
+
+
+def _orthogonal_path(start: AnnotationPoint, end: AnnotationPoint, *, horizontal: bool) -> tuple[AnnotationPoint, ...]:
+    if horizontal and abs(start.y - end.y) > 0.5:
+        mid_x = (start.x + end.x) / 2.0
+        return (start, AnnotationPoint(mid_x, start.y), AnnotationPoint(mid_x, end.y), end)
+    if not horizontal and abs(start.x - end.x) > 0.5:
+        mid_y = (start.y + end.y) / 2.0
+        return (start, AnnotationPoint(start.x, mid_y), AnnotationPoint(end.x, mid_y), end)
+    return (start, end)
+
+
+def _path_bbox(path: tuple[AnnotationPoint, ...], *, pad: float = 3.0) -> AnnotationBBox:
+    xs = [point.x for point in path]
+    ys = [point.y for point in path]
+    return AnnotationBBox(x0=min(xs) - pad, y0=min(ys) - pad, x1=max(xs) + pad, y1=max(ys) + pad)
 
 
 def _run_checkpoint_inference(
