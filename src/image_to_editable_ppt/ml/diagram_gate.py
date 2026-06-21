@@ -62,17 +62,23 @@ def _build_scratch_cnn() -> nn.Sequential:
     )
 
 
-def _build_model(backbone: str) -> nn.Module:
+def _build_model(backbone: str, *, pretrained: bool = True) -> nn.Module:
+    """Build the gate architecture. ``pretrained`` fetches ImageNet weights — needed
+    to *train* a backbone, but skipped when *loading a checkpoint* (the fine-tuned
+    state overwrites them anyway), so inference never needs a network or the
+    torchvision weight cache."""
     if backbone == "scratch":
         return _build_scratch_cnn()
     from torchvision import models
 
     if backbone == "mobilenet_v3_small":
-        model = models.mobilenet_v3_small(weights=models.MobileNet_V3_Small_Weights.IMAGENET1K_V1)
+        weights = models.MobileNet_V3_Small_Weights.IMAGENET1K_V1 if pretrained else None
+        model = models.mobilenet_v3_small(weights=weights)
         model.classifier[-1] = nn.Linear(model.classifier[-1].in_features, 2)
         return model
     if backbone == "resnet18":
-        model = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
+        weights = models.ResNet18_Weights.IMAGENET1K_V1 if pretrained else None
+        model = models.resnet18(weights=weights)
         model.fc = nn.Linear(model.fc.in_features, 2)
         return model
     raise ValueError(f"unknown backbone {backbone!r}")
@@ -117,10 +123,11 @@ class DiagramGateModule(L.LightningModule):
         backbone: str = "scratch",
         learning_rate: float = 1e-3,
         class_weights: tuple[float, float] | None = None,
+        pretrained: bool = True,
     ) -> None:
         super().__init__()
         self.save_hyperparameters()
-        self.model = _build_model(backbone)
+        self.model = _build_model(backbone, pretrained=pretrained)
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
         return self.model(images)
@@ -256,7 +263,9 @@ _MODULE_CACHE: dict[str, DiagramGateModule] = {}
 
 def _load_module(checkpoint: str) -> DiagramGateModule:
     def _load() -> DiagramGateModule:
-        module = DiagramGateModule.load_from_checkpoint(checkpoint, map_location="cpu")
+        # pretrained=False: the checkpoint's fine-tuned weights replace the backbone,
+        # so don't trigger torchvision's ImageNet download at inference (works offline).
+        module = DiagramGateModule.load_from_checkpoint(checkpoint, map_location="cpu", pretrained=False)
         module.eval()
         return module
 
