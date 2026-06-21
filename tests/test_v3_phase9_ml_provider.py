@@ -72,6 +72,24 @@ def test_convert_image_without_provider_uses_heuristic_path() -> None:
     assert result.slide_ir.primitive_scene is not None
 
 
+def test_ml_provider_abstains_on_ood_figure(monkeypatch) -> None:
+    """When the diagram gate rejects a figure, the provider returns an empty,
+    contract-valid scene (no nodes, no family) instead of fabricating a diagram —
+    so a chart/screenshot/photo emits nothing rather than a spurious diagram."""
+    import image_to_editable_ppt.ml.diagram_gate as gate
+    from image_to_editable_ppt.ml.slide_ir_provider import MLSlideIRProvider
+
+    monkeypatch.setattr(gate, "is_diagram", lambda checkpoint, rgb, *, threshold=0.5: (False, 0.02))
+    provider = MLSlideIRProvider(detector_checkpoint="unused.ckpt", diagram_gate_checkpoint="gate.ckpt")
+    image = Image.fromarray(np.full((240, 320, 3), 255, dtype=np.uint8), mode="RGB")
+
+    slide_ir = provider.build(image, config=None)  # type: ignore[arg-type]
+
+    assert slide_ir.primitive_scene is not None
+    assert len(slide_ir.primitive_scene.nodes) == 0
+    assert slide_ir.family_proposals == ()
+
+
 def test_convert_image_provider_resolves_connector_candidates() -> None:
     """Provider emits connector *candidates*; convert must resolve them into
     ConnectorSpecs (emit reads slide_ir.connectors, not candidates)."""

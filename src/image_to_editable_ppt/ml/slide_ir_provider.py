@@ -58,6 +58,13 @@ class MLSlideIRProvider:
     # CNN collapses trees into flow/cycle. When the fraction clears this threshold
     # (with enough nodes), promote the family to TREE. Set None to disable.
     tree_text_fraction_gate: float | None = 0.25
+    # OOD gate: when set, a binary diagram/not-a-diagram classifier runs first and,
+    # if the figure does not look like a convertible diagram (chart, screenshot,
+    # photo, …), the provider abstains — returning an empty scene flagged
+    # ``ood_rejected`` rather than fabricating a diagram. Papers are majority
+    # non-diagram figures, so this is what makes real-paper precision possible.
+    diagram_gate_checkpoint: str | None = None
+    diagram_gate_threshold: float = 0.5
     image_id: str = "slide"
 
     def build(self, image: "Image.Image", *, config: "V3Config") -> "SlideIR":
@@ -70,6 +77,22 @@ class MLSlideIRProvider:
 
         rgb = np.asarray(image.convert("RGB"), dtype=np.uint8)
         height, width = rgb.shape[:2]
+
+        if self.diagram_gate_checkpoint is not None:
+            from image_to_editable_ppt.ml.diagram_gate import is_diagram
+
+            keep, p_diagram = is_diagram(self.diagram_gate_checkpoint, rgb, threshold=self.diagram_gate_threshold)
+            if not keep:
+                adapter = AnnotationMLAdapter()
+                rejected = DetectorModelOutput(
+                    image_id=self.image_id,
+                    image_size=AnnotationImageSize(width=int(width), height=int(height)),
+                    family_predictions=(),
+                    node_predictions=(),
+                    container_predictions=(),
+                    metadata={"stage": "ml_slide_ir_provider", "ood_rejected": True, "diagram_probability": p_diagram},
+                )
+                return adapter.to_slide_ir(adapter.from_model_output(rejected))
 
         module = _load_detector(self.detector_checkpoint)
         with torch.no_grad():

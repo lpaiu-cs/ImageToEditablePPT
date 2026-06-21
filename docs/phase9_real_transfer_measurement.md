@@ -148,3 +148,27 @@ label-anchor 노이즈 augmentation 모두 미해결. **근본 한계: 구조 �
 tree→tree **0→11** 회복(무회귀: 비-tree 오탐 1~3). 픽셀 분류기는 arch/NN/table에 강건 유지.
 **남은 한계**: graph 인식 약함(graph→graph 5~6/30; FSM/의존그래프는 종종 flow처럼 보임) —
 엣지 회수 개선 없이는 구조적으로 구분 난해.
+
+---
+
+## 레버3: OOD/비다이어그램 게이트 (2026-06-21)
+
+논문 figure의 과반이 비다이어그램(차트/스크린샷/사진/혼동행렬)인데 파이프라인은 무엇이든 family로
+강제 분류. 실전 정밀도엔 **거절(abstain)**이 필요. **이진 게이트**(diagram vs not)를 학습:
+- positive=실 ACL-fig 다이어그램 150(arch/graph/tree/table/neural), negative=실 ACL-fig 비다이어그램
+  200(natural image/confusion matrix/bar·line·pie·scatter chart/screenshot/boxplot 각 25).
+  **양쪽 모두 실figure** → synthetic-vs-real이 아니라 diagram-vs-not을 학습.
+- 작은 pixel CNN(GroupNorm, 160²) + flip/밝기 augmentation. `ml/diagram_gate.py`, run-gate1.
+- provider: 게이트가 먼저 실행, 비다이어그램이면 **빈 scene(노드·family 없음) 조기 반환**(emit이
+  아무것도 생성 안 함). `diagram_gate_checkpoint`/`diagram_gate_threshold`.
+
+**결과** — val(held-out): diagram recall **0.85**, non-diagram reject **0.87**. end-to-end(350장):
+다이어그램 유지 **125/150(83%)**, 비다이어그램 거절 **178/200(89%, 오수용 11%)**. 임계값으로
+recall↔precision 조절 가능(기본 0.5). 비다이어그램을 가짜 다이어그램으로 변환하던 문제 해소.
+
+canonical: 검출 run-v8 / family run-fc5(+tree gate) / connector run-seg7 / OOD run-gate1.
+
+## 3개 레버 종합 (phase9b)
+- 레버1(컨테이너): 실figure container 회수↑, arch/NN→table 과분류 해소(table_matrix 56→23/150).
+- 레버2(family): 구조 분류기는 엣지 회수 한계로 폐기, tree text-gate로 tree 0→11/30 무회귀 회복.
+- 레버3(OOD): 비다이어그램 89% 거절 / 다이어그램 83% 유지로 실전 정밀도 확보.
