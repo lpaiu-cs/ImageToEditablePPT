@@ -52,6 +52,19 @@ class MLSlideIRProvider:
     score_threshold: float = 0.5
     family_classifier_checkpoint: str | None = None
     connector_checkpoint: str | None = None
+    # Structural tree gate: parse/derivation trees are defined by text-only nodes,
+    # and the detected text-node (LABEL_ANCHOR) fraction separates them cleanly on
+    # real figures (~0.45 for trees vs ~0.05 for everything else) where the pixel
+    # CNN collapses trees into flow/cycle. When the fraction clears this threshold
+    # (with enough nodes), promote the family to TREE. Set None to disable.
+    tree_text_fraction_gate: float | None = 0.25
+    # OOD gate: when set, a binary diagram/not-a-diagram classifier runs first and,
+    # if the figure does not look like a convertible diagram (chart, screenshot,
+    # photo, …), the provider abstains — returning an empty scene flagged
+    # ``ood_rejected`` rather than fabricating a diagram. Papers are majority
+    # non-diagram figures, so this is what makes real-paper precision possible.
+    diagram_gate_checkpoint: str | None = None
+    diagram_gate_threshold: float = 0.5
     image_id: str = "slide"
 
     def build(self, image: "Image.Image", *, config: "V3Config") -> "SlideIR":
@@ -64,6 +77,22 @@ class MLSlideIRProvider:
 
         rgb = np.asarray(image.convert("RGB"), dtype=np.uint8)
         height, width = rgb.shape[:2]
+
+        if self.diagram_gate_checkpoint is not None:
+            from image_to_editable_ppt.ml.diagram_gate import is_diagram
+
+            keep, p_diagram = is_diagram(self.diagram_gate_checkpoint, rgb, threshold=self.diagram_gate_threshold)
+            if not keep:
+                adapter = AnnotationMLAdapter()
+                rejected = DetectorModelOutput(
+                    image_id=self.image_id,
+                    image_size=AnnotationImageSize(width=int(width), height=int(height)),
+                    family_predictions=(),
+                    node_predictions=(),
+                    container_predictions=(),
+                    metadata={"stage": "ml_slide_ir_provider", "ood_rejected": True, "diagram_probability": p_diagram},
+                )
+                return adapter.to_slide_ir(adapter.from_model_output(rejected))
 
         module = _load_detector(self.detector_checkpoint)
         with torch.no_grad():
@@ -95,11 +124,31 @@ class MLSlideIRProvider:
                     )
                 )
 
+        # Connectors first: the structure-based family classifier needs the
+        # recovered topology, so segmentation must run before family selection.
+        connectors: tuple = ()
+        ports: tuple = ()
+        if self.connector_checkpoint is not None:
+            from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_masks
+
+            line_mask, arrow_mask = segment_connector_masks(self.connector_checkpoint, rgb)
+            connectors, ports = extract_connectors(line_mask, arrow_mask, tuple(nodes), image_id=self.image_id)
+
         family, family_confidence = DiagramFamily.ORTHOGONAL_FLOW, self.score_threshold
         if self.family_classifier_checkpoint is not None:
             from image_to_editable_ppt.ml.family_classifier import classify_family
 
             family, family_confidence = classify_family(self.family_classifier_checkpoint, rgb)
+
+        # Structural tree gate: the pixel CNN collapses text-label trees into
+        # flow/cycle, but a high detected text-node fraction is a clean, robustly
+        # transferring tree signal. Override toward TREE only when it clears the
+        # threshold (and there are enough nodes) — false positives on flow/table
+        # are negligible since their text fraction is ~0.05.
+        if self.tree_text_fraction_gate is not None and len(nodes) >= 4:
+            text_fraction = sum(1 for node in nodes if node.kind is NodeKind.LABEL_ANCHOR) / len(nodes)
+            if text_fraction >= self.tree_text_fraction_gate:
+                family, family_confidence = DiagramFamily.TREE, max(family_confidence, text_fraction)
 
         boxes = [node.bbox for node in nodes] + [container.bbox for container in containers]
         if boxes:
@@ -116,14 +165,6 @@ class MLSlideIRProvider:
             focus_bbox=focus, evidence=("ml_detector:detection_union",),
             provenance=("ml_detector:slide_ir_provider",),
         )
-
-        connectors: tuple = ()
-        ports: tuple = ()
-        if self.connector_checkpoint is not None:
-            from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_masks
-
-            line_mask, arrow_mask = segment_connector_masks(self.connector_checkpoint, rgb)
-            connectors, ports = extract_connectors(line_mask, arrow_mask, tuple(nodes), image_id=self.image_id)
 
         output = DetectorModelOutput(
             image_id=self.image_id,

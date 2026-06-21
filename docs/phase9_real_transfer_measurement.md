@@ -94,3 +94,81 @@ canonical 모델 갱신: **run-v7 / run-fc4 / run-seg6**.
   해소. `AnnotationConnectorCandidate.stroke_width`(합성 GT 전용) 추가 → 마스크를 렌더 width로
   rasterize. 재학습 run-seg6 val_dice 0.863→**0.913**. 실figure 커넥터(전부 solved)도 개선:
   architecture 4.6→**6.3**, graph 6.5→**8.2**.
+
+---
+
+## 레버1: container head 강화 (2026-06-21)
+
+생성기 컨테이너를 실논문 그룹박스에 맞춰 다양화: 멀티/중첩 패널(outer + nested subset),
+**대시 보더**, 회색 패널, 빈도↑(flow/stack 0.5~0.7). spec을 단일→다중 컨테이너(`containers`/
+`container_styles` 튜플)로 확장. 데이터셋 재생성(컨테이너 38%·멀티 13%) → run-v8/fc5/seg7 재학습.
+
+**실figure 150 — Before(run-v7/fc4/seg6) → After(run-v8/fc5/seg7)**
+
+| 카테고리 | container avg | family 변화(핵심) |
+|---|---|---|
+| architecture | 0.2→**0.7** | table_matrix 오분류 17→**6**/30 (ortho 11→**22**) |
+| neural_net | 0.5→**0.8** | table_matrix 오분류 15→**2**/30 (ortho 12→**23**) |
+| tree | 0.0→**0.3** | — |
+| 전체 table_matrix 과분류 | 56→**24**/150 | — |
+
+육안: 실 arch 다이어그램의 대시 그룹 패널("Résumé guidé") + 중첩 패널을 2개 컨테이너로 검출
+(16노드+7커넥터+2컨테이너+orthogonal_flow). **보너스**: 컨테이너가 flow vs table 구별 단서가 되어
+arch/NN→table_matrix 과분류가 크게 해소(레버2 일부 선해결). node/connector 무회귀. 단 graph/tree
+**family 인식**은 여전히 약함(tree→tree 거의 0) → 레버2.
+
+canonical 모델 갱신: **run-v8 / run-fc5 / run-seg7**.
+
+---
+
+## 레버2: family 분류 정밀도 (2026-06-21)
+
+레버1이 이미 최대 혼동(arch/NN→table_matrix)을 해소했고, 남은 문제는 graph/tree **인식**.
+
+**시도(폐기): 구조 기반 family 분류기(learned MLP).** family는 구조적 속성이라 검출된
+노드/커넥터 토폴로지로 분류하면 픽셀 도메인 갭을 피할 수 있다는 가설. 합성 GT/검출 구조로
+MLP 학습(val_acc 0.99). **그러나 실figure 전이 실패**: 실 flow는 **엣지 검출이 불완전**해
+구조적으로 sparse=tree처럼 보여 arch→tree로 대량 오분류(arch ortho 22→0). soft-vote 앙상블·
+label-anchor 노이즈 augmentation 모두 미해결. **근본 한계: 구조 기반 family는 엣지 회수
+완전성에 종속**. → 모듈 폐기, 픽셀 분류기(run-fc5) 유지가 flow에 더 강건.
+
+**채택: 구조적 tree 게이트.** 단 하나의 robust 신호 — **검출 텍스트 노드(LABEL_ANCHOR) 비율**이
+실figure에서 tree(~0.45)와 나머지(~0.05)를 명확히 분리. provider가 픽셀 family 결정 후,
+텍스트 비율≥0.25(노드≥4)면 family를 TREE로 승격(`tree_text_fraction_gate`).
+
+**실figure 150 — tree 게이트 효과**
+
+| 카테고리 | family (run-v8/fc5/seg7 + gate) | tree 오탐 |
+|---|---|---|
+| architecture | ortho20, tbl6, layered2 | 2 |
+| neural_net | ortho22, layered5, tbl2 | 1 |
+| table | tbl12, ortho9, layered7 | 2 |
+| **tree** | **tree11**, ortho10, cycle4, graph3 | — |
+
+tree→tree **0→11** 회복(무회귀: 비-tree 오탐 1~3). 픽셀 분류기는 arch/NN/table에 강건 유지.
+**남은 한계**: graph 인식 약함(graph→graph 5~6/30; FSM/의존그래프는 종종 flow처럼 보임) —
+엣지 회수 개선 없이는 구조적으로 구분 난해.
+
+---
+
+## 레버3: OOD/비다이어그램 게이트 (2026-06-21)
+
+논문 figure의 과반이 비다이어그램(차트/스크린샷/사진/혼동행렬)인데 파이프라인은 무엇이든 family로
+강제 분류. 실전 정밀도엔 **거절(abstain)**이 필요. **이진 게이트**(diagram vs not)를 학습:
+- positive=실 ACL-fig 다이어그램 150(arch/graph/tree/table/neural), negative=실 ACL-fig 비다이어그램
+  200(natural image/confusion matrix/bar·line·pie·scatter chart/screenshot/boxplot 각 25).
+  **양쪽 모두 실figure** → synthetic-vs-real이 아니라 diagram-vs-not을 학습.
+- 작은 pixel CNN(GroupNorm, 160²) + flip/밝기 augmentation. `ml/diagram_gate.py`, run-gate1.
+- provider: 게이트가 먼저 실행, 비다이어그램이면 **빈 scene(노드·family 없음) 조기 반환**(emit이
+  아무것도 생성 안 함). `diagram_gate_checkpoint`/`diagram_gate_threshold`.
+
+**결과** — val(held-out): diagram recall **0.85**, non-diagram reject **0.87**. end-to-end(350장):
+다이어그램 유지 **125/150(83%)**, 비다이어그램 거절 **178/200(89%, 오수용 11%)**. 임계값으로
+recall↔precision 조절 가능(기본 0.5). 비다이어그램을 가짜 다이어그램으로 변환하던 문제 해소.
+
+canonical: 검출 run-v8 / family run-fc5(+tree gate) / connector run-seg7 / OOD run-gate1.
+
+## 3개 레버 종합 (phase9b)
+- 레버1(컨테이너): 실figure container 회수↑, arch/NN→table 과분류 해소(table_matrix 56→23/150).
+- 레버2(family): 구조 분류기는 엣지 회수 한계로 폐기, tree text-gate로 tree 0→11/30 무회귀 회복.
+- 레버3(OOD): 비다이어그램 89% 거절 / 다이어그램 83% 유지로 실전 정밀도 확보.
