@@ -76,6 +76,9 @@ def test_ml_provider_abstains_on_ood_figure(monkeypatch) -> None:
     """When the diagram gate rejects a figure, the provider returns an empty,
     contract-valid scene (no nodes, no family) instead of fabricating a diagram —
     so a chart/screenshot/photo emits nothing rather than a spurious diagram."""
+    import pytest
+
+    pytest.importorskip("lightning")  # diagram_gate imports lightning; CI installs only .[test]
     import image_to_editable_ppt.ml.diagram_gate as gate
     from image_to_editable_ppt.ml.slide_ir_provider import MLSlideIRProvider
 
