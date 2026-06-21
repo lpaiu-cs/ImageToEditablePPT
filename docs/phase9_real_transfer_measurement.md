@@ -94,3 +94,27 @@ canonical 모델 갱신: **run-v7 / run-fc4 / run-seg6**.
   해소. `AnnotationConnectorCandidate.stroke_width`(합성 GT 전용) 추가 → 마스크를 렌더 width로
   rasterize. 재학습 run-seg6 val_dice 0.863→**0.913**. 실figure 커넥터(전부 solved)도 개선:
   architecture 4.6→**6.3**, graph 6.5→**8.2**.
+
+---
+
+## 레버1: container head 강화 (2026-06-21)
+
+생성기 컨테이너를 실논문 그룹박스에 맞춰 다양화: 멀티/중첩 패널(outer + nested subset),
+**대시 보더**, 회색 패널, 빈도↑(flow/stack 0.5~0.7). spec을 단일→다중 컨테이너(`containers`/
+`container_styles` 튜플)로 확장. 데이터셋 재생성(컨테이너 38%·멀티 13%) → run-v8/fc5/seg7 재학습.
+
+**실figure 150 — Before(run-v7/fc4/seg6) → After(run-v8/fc5/seg7)**
+
+| 카테고리 | container avg | family 변화(핵심) |
+|---|---|---|
+| architecture | 0.2→**0.7** | table_matrix 오분류 17→**6**/30 (ortho 11→**22**) |
+| neural_net | 0.5→**0.8** | table_matrix 오분류 15→**2**/30 (ortho 12→**23**) |
+| tree | 0.0→**0.3** | — |
+| 전체 table_matrix 과분류 | 56→**24**/150 | — |
+
+육안: 실 arch 다이어그램의 대시 그룹 패널("Résumé guidé") + 중첩 패널을 2개 컨테이너로 검출
+(16노드+7커넥터+2컨테이너+orthogonal_flow). **보너스**: 컨테이너가 flow vs table 구별 단서가 되어
+arch/NN→table_matrix 과분류가 크게 해소(레버2 일부 선해결). node/connector 무회귀. 단 graph/tree
+**family 인식**은 여전히 약함(tree→tree 거의 0) → 레버2.
+
+canonical 모델 갱신: **run-v8 / run-fc5 / run-seg7**.

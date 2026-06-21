@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import math
 import random
-import zlib
 from dataclasses import dataclass, replace
 from pathlib import Path
 
@@ -61,10 +60,14 @@ CONTAINER_FILL = (248, 250, 252)
 CONTAINER_OUTLINE = (71, 85, 105)
 CONTAINER_OUTLINE_WIDTH = 3
 
-# Palettes for per-sample container styling. Every outline is saturated/dark
-# enough to be clearly visible against the white background and the light fills.
+# Palettes for per-container styling. Every outline is saturated/dark enough to
+# be clearly visible against the white background and the light fills. Fills lean
+# toward grey panels because real paper group boxes are most often grey/white
+# rounded or dashed panels rather than saturated colours.
 _CONTAINER_OUTLINE_PALETTE = (
     (71, 85, 105),    # slate
+    (55, 65, 81),     # gray-700
+    (31, 41, 55),     # gray-800
     (37, 99, 235),    # blue
     (190, 18, 60),    # rose
     (15, 118, 110),   # teal
@@ -73,8 +76,11 @@ _CONTAINER_OUTLINE_PALETTE = (
 )
 _CONTAINER_FILL_PALETTE = (
     (255, 255, 255),  # white (border-only container)
+    (255, 255, 255),  # white (weighted: many real panels are border-only)
     (248, 250, 252),  # slate-50
     (241, 245, 249),  # slate-100
+    (236, 238, 241),  # grey panel
+    (228, 230, 235),  # darker grey panel
     (239, 246, 255),  # blue-50
     (240, 253, 244),  # green-50
     (254, 249, 235),  # amber-50
@@ -225,21 +231,25 @@ class SyntheticContainerStyle:
     fill: tuple[int, int, int]
     outline: tuple[int, int, int]
     outline_width: int
+    dashed: bool = False
+    shape: str = "round"  # round | rect
 
 
-def _pick_container_style(sample_id: str) -> SyntheticContainerStyle:
-    """Pick a visible, varied container style deterministically from the sample id.
+def _pick_container_style(rng: random.Random) -> SyntheticContainerStyle:
+    """Pick a visible, varied container style (grey/white panel, dashed or solid).
 
-    Uses a dedicated RNG seeded from the id (not the main generation stream) so
-    container styling does not perturb node/connector content — a dataset
-    regenerated after this change keeps byte-identical ground truth and only the
-    container's rendered appearance varies.
+    Dashed rectangular group boxes and plain grey panels are the dominant real
+    paper container looks, so the sampler weights toward them; styling only
+    affects appearance, never the emitted ground-truth geometry.
     """
-    style_rng = random.Random(zlib.crc32(sample_id.encode("utf-8")))
+    dashed = rng.random() < 0.4
     return SyntheticContainerStyle(
-        fill=_CONTAINER_FILL_PALETTE[style_rng.randrange(len(_CONTAINER_FILL_PALETTE))],
-        outline=_CONTAINER_OUTLINE_PALETTE[style_rng.randrange(len(_CONTAINER_OUTLINE_PALETTE))],
-        outline_width=_CONTAINER_OUTLINE_WIDTHS[style_rng.randrange(len(_CONTAINER_OUTLINE_WIDTHS))],
+        fill=_CONTAINER_FILL_PALETTE[rng.randrange(len(_CONTAINER_FILL_PALETTE))],
+        outline=_CONTAINER_OUTLINE_PALETTE[rng.randrange(len(_CONTAINER_OUTLINE_PALETTE))],
+        outline_width=_CONTAINER_OUTLINE_WIDTHS[rng.randrange(len(_CONTAINER_OUTLINE_WIDTHS))],
+        dashed=dashed,
+        # dashed group boxes are almost always rectangular; solid ones often rounded.
+        shape="rect" if dashed or rng.random() < 0.4 else "round",
     )
 
 
@@ -261,11 +271,11 @@ class SyntheticSlideSpec:
     nodes: tuple[AnnotationNode, ...]
     node_styles: dict[str, SyntheticNodeStyle]
     text_regions: tuple[AnnotationTextRegion, ...]
-    container: AnnotationContainer | None
+    containers: tuple[AnnotationContainer, ...]
     connectors: tuple[SyntheticConnector, ...]
     family_proposal: AnnotationFamilyProposal
     label_font_size: int
-    container_style: SyntheticContainerStyle | None = None
+    container_styles: tuple[SyntheticContainerStyle, ...] = ()
 
     def to_annotation_document(self, *, split: str | None = None, metadata: dict[str, object] | None = None) -> DetectorAnnotationDocument:
         output = DetectorModelOutput(
@@ -273,7 +283,7 @@ class SyntheticSlideSpec:
             image_size=self.image_size,
             family_predictions=(self.family_proposal,),
             node_predictions=self.nodes,
-            container_predictions=() if self.container is None else (self.container,),
+            container_predictions=self.containers,
             text_predictions=self.text_regions,
             port_predictions=tuple(
                 port for connector in self.connectors for port in (connector.start_port, connector.end_port)
@@ -454,28 +464,10 @@ def _generate_orthogonal_flow_spec(
             )
         )
 
-    container: AnnotationContainer | None = None
-    container_style: SyntheticContainerStyle | None = None
-    if rng.random() < 0.5:
-        container_style = _pick_container_style(sample_id)
-        pad = min(width, height) * 0.04
-        union = _union_bbox([node.bbox for node in nodes])
-        container = AnnotationContainer(
-            id=f"container:{sample_id}:0",
-            kind=ContainerKind.FLOW_CLUSTER,
-            bbox=AnnotationBBox(
-                x0=max(2.0, union.x0 - pad),
-                y0=max(2.0, union.y0 - pad),
-                x1=min(width - 2.0, union.x1 + pad),
-                y1=min(height - 2.0, union.y1 + pad),
-            ),
-            confidence=1.0,
-            member_node_ids=tuple(node.id for node in nodes),
-            source="synthetic_gt",
-            provenance=(f"{GENERATOR_NAME}:container",),
-        )
-
-    focus = container.bbox if container is not None else _union_bbox(
+    containers, container_styles = _build_containers(
+        rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.65
+    )
+    focus = containers[0].bbox if containers else _union_bbox(
         [node.bbox for node in nodes] + [connector.candidate.bbox for connector in connectors]
     )
     proposal = AnnotationFamilyProposal(
@@ -494,11 +486,11 @@ def _generate_orthogonal_flow_spec(
         nodes=tuple(nodes),
         node_styles=node_styles,
         text_regions=tuple(text_regions),
-        container=container,
+        containers=containers,
         connectors=tuple(connectors),
         family_proposal=proposal,
         label_font_size=label_font_size,
-        container_style=container_style,
+        container_styles=container_styles,
     )
 
 
@@ -610,28 +602,10 @@ def _generate_cycle_spec(
             )
         )
 
-    container: AnnotationContainer | None = None
-    container_style: SyntheticContainerStyle | None = None
-    if rng.random() < 0.5:
-        container_style = _pick_container_style(sample_id)
-        pad = min(width, height) * 0.04
-        union = _union_bbox([node.bbox for node in nodes])
-        container = AnnotationContainer(
-            id=f"container:{sample_id}:0",
-            kind=ContainerKind.FLOW_CLUSTER,
-            bbox=AnnotationBBox(
-                x0=max(2.0, union.x0 - pad),
-                y0=max(2.0, union.y0 - pad),
-                x1=min(width - 2.0, union.x1 + pad),
-                y1=min(height - 2.0, union.y1 + pad),
-            ),
-            confidence=1.0,
-            member_node_ids=tuple(node.id for node in nodes),
-            source="synthetic_gt",
-            provenance=(f"{GENERATOR_NAME}:container",),
-        )
-
-    focus = container.bbox if container is not None else _union_bbox(
+    containers, container_styles = _build_containers(
+        rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.5
+    )
+    focus = containers[0].bbox if containers else _union_bbox(
         [node.bbox for node in nodes] + [connector.candidate.bbox for connector in connectors]
     )
     proposal = AnnotationFamilyProposal(
@@ -650,11 +624,11 @@ def _generate_cycle_spec(
         nodes=tuple(nodes),
         node_styles=node_styles,
         text_regions=tuple(text_regions),
-        container=container,
+        containers=containers,
         connectors=tuple(connectors),
         family_proposal=proposal,
         label_font_size=label_font_size,
-        container_style=container_style,
+        container_styles=container_styles,
     )
 
 
@@ -717,8 +691,8 @@ def _generate_table_matrix_spec(
     )
     return SyntheticSlideSpec(
         sample_id=sample_id, family=DiagramFamily.TABLE_MATRIX, image_size=image_size, nodes=tuple(nodes),
-        node_styles=node_styles, text_regions=tuple(text_regions), container=None, connectors=(),
-        family_proposal=proposal, label_font_size=label_font_size, container_style=None,
+        node_styles=node_styles, text_regions=tuple(text_regions), containers=(), connectors=(),
+        family_proposal=proposal, label_font_size=label_font_size, container_styles=(),
     )
 
 
@@ -810,22 +784,10 @@ def _generate_block_flow_spec(
             )
         )
 
-    container: AnnotationContainer | None = None
-    container_style: SyntheticContainerStyle | None = None
-    if rng.random() < 0.4:
-        container_style = _pick_container_style(sample_id)
-        pad = min(width, height) * 0.04
-        union = _union_bbox([node.bbox for node in nodes])
-        container = AnnotationContainer(
-            id=f"container:{sample_id}:0", kind=ContainerKind.FLOW_CLUSTER,
-            bbox=AnnotationBBox(
-                x0=max(2.0, union.x0 - pad), y0=max(2.0, union.y0 - pad),
-                x1=min(width - 2.0, union.x1 + pad), y1=min(height - 2.0, union.y1 + pad)),
-            confidence=1.0, member_node_ids=tuple(node.id for node in nodes), source="synthetic_gt",
-            provenance=(f"{GENERATOR_NAME}:container",),
-        )
-
-    focus = container.bbox if container is not None else _union_bbox(
+    containers, container_styles = _build_containers(
+        rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.5
+    )
+    focus = containers[0].bbox if containers else _union_bbox(
         [node.bbox for node in nodes] + [connector.candidate.bbox for connector in connectors]
     )
     proposal = AnnotationFamilyProposal(
@@ -834,8 +796,8 @@ def _generate_block_flow_spec(
     )
     return SyntheticSlideSpec(
         sample_id=sample_id, family=DiagramFamily.BLOCK_FLOW, image_size=image_size, nodes=tuple(nodes),
-        node_styles=node_styles, text_regions=tuple(text_regions), container=container, connectors=tuple(connectors),
-        family_proposal=proposal, label_font_size=label_font_size, container_style=container_style,
+        node_styles=node_styles, text_regions=tuple(text_regions), containers=containers, connectors=tuple(connectors),
+        family_proposal=proposal, label_font_size=label_font_size, container_styles=container_styles,
     )
 
 
@@ -895,23 +857,20 @@ def _make_text_region(label: str, *, sample_id: str, index: int, font: ImageFont
     )
 
 
-def _optional_container(
-    rng: random.Random,
+def _container_for(
+    members: list[AnnotationNode],
     *,
     sample_id: str,
-    nodes: list[AnnotationNode],
+    index: int,
     image_size: AnnotationImageSize,
-    probability: float,
-    kind: ContainerKind = ContainerKind.FLOW_CLUSTER,
-) -> tuple[AnnotationContainer | None, SyntheticContainerStyle | None]:
-    if rng.random() >= probability:
-        return None, None
+    pad_scale: float,
+    kind: ContainerKind,
+) -> AnnotationContainer:
     width, height = float(image_size.width), float(image_size.height)
-    style = _pick_container_style(sample_id)
-    pad = min(width, height) * 0.04
-    union = _union_bbox([node.bbox for node in nodes])
-    container = AnnotationContainer(
-        id=f"container:{sample_id}:0",
+    pad = min(width, height) * pad_scale
+    union = _union_bbox([node.bbox for node in members])
+    return AnnotationContainer(
+        id=f"container:{sample_id}:{index}",
         kind=kind,
         bbox=AnnotationBBox(
             x0=max(2.0, union.x0 - pad),
@@ -920,11 +879,49 @@ def _optional_container(
             y1=min(height - 2.0, union.y1 + pad),
         ),
         confidence=1.0,
-        member_node_ids=tuple(node.id for node in nodes),
+        member_node_ids=tuple(node.id for node in members),
         source="synthetic_gt",
         provenance=(f"{GENERATOR_NAME}:container",),
     )
-    return container, style
+
+
+def _build_containers(
+    rng: random.Random,
+    *,
+    sample_id: str,
+    nodes: list[AnnotationNode],
+    image_size: AnnotationImageSize,
+    probability: float,
+) -> tuple[tuple[AnnotationContainer, ...], tuple[SyntheticContainerStyle, ...]]:
+    """Build 0-2 group containers (panels) around the nodes.
+
+    Real paper figures group nodes in grey/dashed panels — frequently, sometimes
+    nested. Emits an outer panel around all nodes and occasionally a nested inner
+    panel around a contiguous subset, each with an independent style. ``nodes``
+    list order is used for the subset so flows/stacks get a spatially-contiguous
+    inner panel; overlapping containers are permitted by the contract.
+    """
+    if not nodes or rng.random() >= probability:
+        return (), ()
+    containers: list[AnnotationContainer] = []
+    styles: list[SyntheticContainerStyle] = []
+    containers.append(
+        _container_for(
+            list(nodes), sample_id=sample_id, index=0, image_size=image_size,
+            pad_scale=rng.uniform(0.03, 0.06), kind=ContainerKind.PANEL,
+        )
+    )
+    styles.append(_pick_container_style(rng))
+    if len(nodes) >= 3 and rng.random() < 0.35:
+        cut = rng.randint(2, len(nodes) - 1)
+        containers.append(
+            _container_for(
+                list(nodes[:cut]), sample_id=sample_id, index=1, image_size=image_size,
+                pad_scale=rng.uniform(0.012, 0.025), kind=ContainerKind.FLOW_CLUSTER,
+            )
+        )
+        styles.append(_pick_container_style(rng))
+    return tuple(containers), tuple(styles)
 
 
 def _generate_graph_spec(
@@ -999,10 +996,10 @@ def _generate_graph_spec(
             )
         )
 
-    container, container_style = _optional_container(
-        rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.3
+    containers, container_styles = _build_containers(
+        rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.4
     )
-    focus = container.bbox if container is not None else _union_bbox(
+    focus = containers[0].bbox if containers else _union_bbox(
         [node.bbox for node in nodes] + [connector.candidate.bbox for connector in connectors]
     )
     proposal = AnnotationFamilyProposal(
@@ -1011,8 +1008,8 @@ def _generate_graph_spec(
     )
     return SyntheticSlideSpec(
         sample_id=sample_id, family=DiagramFamily.GRAPH, image_size=image_size, nodes=tuple(nodes),
-        node_styles=node_styles, text_regions=tuple(text_regions), container=container, connectors=tuple(connectors),
-        family_proposal=proposal, label_font_size=label_font_size, container_style=container_style,
+        node_styles=node_styles, text_regions=tuple(text_regions), containers=containers, connectors=tuple(connectors),
+        family_proposal=proposal, label_font_size=label_font_size, container_styles=container_styles,
     )
 
 
@@ -1149,8 +1146,8 @@ def _generate_tree_spec(
     )
     return SyntheticSlideSpec(
         sample_id=sample_id, family=DiagramFamily.TREE, image_size=image_size, nodes=tuple(nodes),
-        node_styles=node_styles, text_regions=tuple(text_regions), container=None, connectors=tuple(connectors),
-        family_proposal=proposal, label_font_size=label_font_size, container_style=None,
+        node_styles=node_styles, text_regions=tuple(text_regions), containers=(), connectors=tuple(connectors),
+        family_proposal=proposal, label_font_size=label_font_size, container_styles=(),
     )
 
 
@@ -1215,10 +1212,10 @@ def _generate_layered_stack_spec(
             )
         )
 
-    container, container_style = _optional_container(
-        rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.6, kind=ContainerKind.PANEL
+    containers, container_styles = _build_containers(
+        rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.7
     )
-    focus = container.bbox if container is not None else _union_bbox(
+    focus = containers[0].bbox if containers else _union_bbox(
         [node.bbox for node in nodes] + [connector.candidate.bbox for connector in connectors]
     )
     proposal = AnnotationFamilyProposal(
@@ -1227,8 +1224,8 @@ def _generate_layered_stack_spec(
     )
     return SyntheticSlideSpec(
         sample_id=sample_id, family=DiagramFamily.LAYERED_STACK, image_size=image_size, nodes=tuple(nodes),
-        node_styles=node_styles, text_regions=tuple(text_regions), container=container, connectors=tuple(connectors),
-        family_proposal=proposal, label_font_size=label_font_size, container_style=container_style,
+        node_styles=node_styles, text_regions=tuple(text_regions), containers=containers, connectors=tuple(connectors),
+        family_proposal=proposal, label_font_size=label_font_size, container_styles=container_styles,
     )
 
 
@@ -1319,16 +1316,22 @@ def render_spec_image(spec: SyntheticSlideSpec) -> Image.Image:
     image = Image.new("RGB", (spec.image_size.width, spec.image_size.height), (255, 255, 255))
     draw = ImageDraw.Draw(image)
 
-    if spec.container is not None:
-        box = spec.container.bbox
-        style = spec.container_style
-        draw.rounded_rectangle(
-            (box.x0, box.y0, box.x1, box.y1),
-            radius=10,
-            fill=style.fill if style is not None else CONTAINER_FILL,
-            outline=style.outline if style is not None else CONTAINER_OUTLINE,
-            width=style.outline_width if style is not None else CONTAINER_OUTLINE_WIDTH,
-        )
+    # Containers first (behind nodes/connectors). Outer panels precede nested ones.
+    for index, container in enumerate(spec.containers):
+        box = container.bbox
+        style = spec.container_styles[index] if index < len(spec.container_styles) else None
+        fill = style.fill if style is not None else CONTAINER_FILL
+        outline = style.outline if style is not None else CONTAINER_OUTLINE
+        outline_width = style.outline_width if style is not None else CONTAINER_OUTLINE_WIDTH
+        if style is not None and style.dashed:
+            draw.rectangle((box.x0, box.y0, box.x1, box.y1), fill=fill)
+            _draw_dashed_rectangle(draw, box, color=outline, width=outline_width)
+        elif style is not None and style.shape == "rect":
+            draw.rectangle((box.x0, box.y0, box.x1, box.y1), fill=fill, outline=outline, width=outline_width)
+        else:
+            draw.rounded_rectangle(
+                (box.x0, box.y0, box.x1, box.y1), radius=12, fill=fill, outline=outline, width=outline_width
+            )
 
     for connector in spec.connectors:
         points = [(point.x, point.y) for point in connector.candidate.path_points]
@@ -1377,6 +1380,38 @@ def _resolve_shape(style: SyntheticNodeStyle, kind: NodeKind) -> str:
     return "rect"
 
 
+def _draw_dashed_rectangle(
+    draw: ImageDraw.ImageDraw,
+    box: AnnotationBBox,
+    *,
+    color: tuple[int, int, int],
+    width: int,
+    dash: int = 12,
+    gap: int = 8,
+) -> None:
+    """Draw a dashed rectangle outline (PIL has no native dashed stroke)."""
+    x0, y0, x1, y1 = box.x0, box.y0, box.x1, box.y1
+    step = dash + gap
+
+    def dashed_segment(ax: float, ay: float, bx: float, by: float) -> None:
+        length = math.hypot(bx - ax, by - ay)
+        if length <= 0:
+            return
+        ux, uy = (bx - ax) / length, (by - ay) / length
+        pos = 0.0
+        while pos < length:
+            end = min(pos + dash, length)
+            draw.line(
+                [(ax + ux * pos, ay + uy * pos), (ax + ux * end, ay + uy * end)], fill=color, width=width
+            )
+            pos += step
+
+    dashed_segment(x0, y0, x1, y0)
+    dashed_segment(x1, y0, x1, y1)
+    dashed_segment(x1, y1, x0, y1)
+    dashed_segment(x0, y1, x0, y0)
+
+
 def _draw_arrowhead(
     draw: ImageDraw.ImageDraw,
     tail: tuple[float, float],
@@ -1418,18 +1453,27 @@ def write_spec_pptx(spec: SyntheticSlideSpec, path: Path) -> None:
             Emu(int(bbox.height * EMU_PER_PIXEL)),
         )
 
-    if spec.container is not None:
-        style = spec.container_style
+    for c_index, container in enumerate(spec.containers):
+        style = spec.container_styles[c_index] if c_index < len(spec.container_styles) else None
         fill = style.fill if style is not None else CONTAINER_FILL
         outline = style.outline if style is not None else CONTAINER_OUTLINE
         outline_width = style.outline_width if style is not None else CONTAINER_OUTLINE_WIDTH
-        shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, *emu_box(spec.container.bbox))
-        shape.name = spec.container.id
+        mso_shape = (
+            MSO_SHAPE.RECTANGLE
+            if style is not None and (style.dashed or style.shape == "rect")
+            else MSO_SHAPE.ROUNDED_RECTANGLE
+        )
+        shape = slide.shapes.add_shape(mso_shape, *emu_box(container.bbox))
+        shape.name = container.id
         shape.shadow.inherit = False
         shape.fill.solid()
         shape.fill.fore_color.rgb = RGBColor(*fill)
         shape.line.color.rgb = RGBColor(*outline)
         shape.line.width = Pt(float(outline_width) * 0.75)  # px stroke -> pt at 96 dpi
+        if style is not None and style.dashed:
+            line_element = shape.line._get_or_add_ln()
+            dash = line_element.makeelement(qn("a:prstDash"), {"val": "dash"})
+            line_element.append(dash)
 
     for node in spec.nodes:
         style = spec.node_styles[node.id]

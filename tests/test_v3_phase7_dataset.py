@@ -73,7 +73,7 @@ def test_generated_table_matrix_specs_satisfy_slide_ir_contract() -> None:
         assert spec.family is DiagramFamily.TABLE_MATRIX
         assert len(spec.nodes) >= 4  # at least a 2x2 grid
         assert spec.connectors == ()  # a matrix has no connectors
-        assert spec.container is None
+        assert spec.containers == ()
         assert len(spec.text_regions) == len(spec.nodes)
 
 
@@ -136,8 +136,8 @@ def test_pptx_sidecar_preserves_shape_mapping(tmp_path: Path) -> None:
     shape_names = [shape.name for shape in presentation.slides[0].shapes]
     for node in spec.nodes:
         assert node.id in shape_names
-    if spec.container is not None:
-        assert spec.container.id in shape_names
+    for container in spec.containers:
+        assert container.id in shape_names
     for connector in spec.connectors:
         assert connector.candidate.id in shape_names
 
@@ -147,18 +147,18 @@ def test_pptx_container_uses_varied_style_color(tmp_path: Path) -> None:
     from pptx.dml.color import RGBColor
 
     spec = next(
-        (s for i in range(60) if (s := generate_slide_spec(random.Random(i), sample_id=f"c{i}")).container is not None),
+        (s for i in range(60) if (s := generate_slide_spec(random.Random(i), sample_id=f"c{i}")).containers),
         None,
     )
-    assert spec is not None and spec.container_style is not None
+    assert spec is not None and spec.container_styles
     path = tmp_path / "container.pptx"
     write_spec_pptx(spec, path)
 
     shapes = {shape.name: shape for shape in pptx.Presentation(path).slides[0].shapes}
-    container = shapes[spec.container.id]
+    container = shapes[spec.containers[0].id]
     # The pptx container must honour the per-sample style, not the old faint hardcoded color.
-    assert container.fill.fore_color.rgb == RGBColor(*spec.container_style.fill)
-    assert container.line.color.rgb == RGBColor(*spec.container_style.outline)
+    assert container.fill.fore_color.rgb == RGBColor(*spec.container_styles[0].fill)
+    assert container.line.color.rgb == RGBColor(*spec.container_styles[0].outline)
 
 
 def test_assign_splits_partitions_every_sample() -> None:
