@@ -118,3 +118,33 @@ arch/NN→table_matrix 과분류가 크게 해소(레버2 일부 선해결). nod
 **family 인식**은 여전히 약함(tree→tree 거의 0) → 레버2.
 
 canonical 모델 갱신: **run-v8 / run-fc5 / run-seg7**.
+
+---
+
+## 레버2: family 분류 정밀도 (2026-06-21)
+
+레버1이 이미 최대 혼동(arch/NN→table_matrix)을 해소했고, 남은 문제는 graph/tree **인식**.
+
+**시도(폐기): 구조 기반 family 분류기(learned MLP).** family는 구조적 속성이라 검출된
+노드/커넥터 토폴로지로 분류하면 픽셀 도메인 갭을 피할 수 있다는 가설. 합성 GT/검출 구조로
+MLP 학습(val_acc 0.99). **그러나 실figure 전이 실패**: 실 flow는 **엣지 검출이 불완전**해
+구조적으로 sparse=tree처럼 보여 arch→tree로 대량 오분류(arch ortho 22→0). soft-vote 앙상블·
+label-anchor 노이즈 augmentation 모두 미해결. **근본 한계: 구조 기반 family는 엣지 회수
+완전성에 종속**. → 모듈 폐기, 픽셀 분류기(run-fc5) 유지가 flow에 더 강건.
+
+**채택: 구조적 tree 게이트.** 단 하나의 robust 신호 — **검출 텍스트 노드(LABEL_ANCHOR) 비율**이
+실figure에서 tree(~0.45)와 나머지(~0.05)를 명확히 분리. provider가 픽셀 family 결정 후,
+텍스트 비율≥0.25(노드≥4)면 family를 TREE로 승격(`tree_text_fraction_gate`).
+
+**실figure 150 — tree 게이트 효과**
+
+| 카테고리 | family (run-v8/fc5/seg7 + gate) | tree 오탐 |
+|---|---|---|
+| architecture | ortho20, tbl6, layered2 | 2 |
+| neural_net | ortho22, layered5, tbl2 | 1 |
+| table | tbl12, ortho9, layered7 | 2 |
+| **tree** | **tree11**, ortho10, cycle4, graph3 | — |
+
+tree→tree **0→11** 회복(무회귀: 비-tree 오탐 1~3). 픽셀 분류기는 arch/NN/table에 강건 유지.
+**남은 한계**: graph 인식 약함(graph→graph 5~6/30; FSM/의존그래프는 종종 flow처럼 보임) —
+엣지 회수 개선 없이는 구조적으로 구분 난해.
