@@ -63,8 +63,10 @@ class MLSlideIRProvider:
     # photo, …), the provider abstains — returning an empty scene flagged
     # ``ood_rejected`` rather than fabricating a diagram. Papers are majority
     # non-diagram figures, so this is what makes real-paper precision possible.
+    # Default 0.6 suits the pretrained-backbone gate (run-gate4): recall ~0.95 /
+    # reject ~0.90 on held-out figures; 0.6-0.75 all keep both sides ~0.94.
     diagram_gate_checkpoint: str | None = None
-    diagram_gate_threshold: float = 0.5
+    diagram_gate_threshold: float = 0.6
     image_id: str = "slide"
 
     def build(self, image: "Image.Image", *, config: "V3Config") -> "SlideIR":

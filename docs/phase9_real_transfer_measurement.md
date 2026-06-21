@@ -191,6 +191,16 @@ bar/scatter/maps/word cloud)은 잘 거절(0.75~1.0)하나, **텍스트형(algor
 - 텍스트형 대폭 개선: algorithms 0.56→**0.89**, NLP grammar 0.44→**0.89**.
 - run-gate3에서 recall 0.89와 reject 0.77 **동시 달성**(gate2는 trade-off로 불가).
 
-canonical OOD: **run-gate3**(thr 0.45~0.5 권장). 측정도구 workbench-ml/eval_gate.py(임계값 sweep).
-**남은 한계**: 픽셀 from-scratch CNN의 천장(~0.83 balanced). 작은 데이터에서 더 끌어올리려면 사전학습
-백본(1회 가중 다운로드, offline 관례 변경) 또는 검출 구조 증거 융합이 다음 후보.
+측정도구 workbench-ml/eval_gate.py(임계값 sweep). from-scratch 천장 ~0.83 balanced.
+
+**사전학습 백본 도입(run-gate4)**: ImageNet 사전학습 MobileNetV3-Small 전이학습(`--backbone
+mobilenet_v3_small`, 입력 224+ImageNet 정규화). detector의 weights=None offline 관례를 OOD 게이트에
+한해 변경(1회 가중 9.8MB 다운로드, 이후 캐시). 작은 실데이터에서 **큰 도약**:
+- held-out 테스트 **best balanced 0.830→0.939**(@thr 0.75, recall 0.94·reject 0.94 동시). val acc 0.94.
+- thr 0.4~0.9 전 구간 recall 0.93~0.97 + reject 0.87~0.95(안정·캘리브레이션 양호).
+- 카테고리별(@thr 0.6): 다이어그램 유지 0.88~1.0, 비다이어그램 거절 — confusion matrix·screenshots·
+  maps·scatter·pie·natural·venn **1.0**, NLP grammar 0.89·bar 0.89·line graph 0.78. 최난 algorithms 0.67.
+
+canonical OOD: **run-gate4**(MobileNetV3 사전학습, provider 기본 thr 0.6 → recall 0.95/reject 0.90).
+`diagram_gate.py`는 backbone 선택(scratch/mobilenet_v3_small/resnet18) 지원, 체크포인트에 backbone 기록.
+**남은 한계**: algorithms(pseudocode)은 텍스트 구조라 tree와 본질 혼동(0.67). 검출 구조 증거 융합이 후보.
