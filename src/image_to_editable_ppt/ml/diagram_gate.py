@@ -49,7 +49,7 @@ def preprocess(rgb: np.ndarray) -> torch.Tensor:
 
 
 class DiagramGateModule(L.LightningModule):
-    def __init__(self, *, learning_rate: float = 1e-3) -> None:
+    def __init__(self, *, learning_rate: float = 1e-3, class_weights: tuple[float, float] | None = None) -> None:
         super().__init__()
         self.save_hyperparameters()
         self.model = _build_cnn()
@@ -60,7 +60,12 @@ class DiagramGateModule(L.LightningModule):
     def _step(self, batch, stage: str) -> torch.Tensor:
         images, labels = batch
         logits = self.model(images)
-        loss = F.cross_entropy(logits, labels)
+        weight = (
+            torch.tensor(self.hparams.class_weights, dtype=logits.dtype, device=logits.device)
+            if self.hparams.class_weights is not None
+            else None
+        )
+        loss = F.cross_entropy(logits, labels, weight=weight)
         preds = logits.argmax(dim=1)
         acc = (preds == labels).float().mean()
         self.log(f"{stage}_loss", loss, prog_bar=True, batch_size=len(images))
@@ -105,16 +110,30 @@ class _GateDataset(Dataset):
 
         path, label = self._items[index]
         with Image.open(path) as raw:
-            image = raw.convert("RGB").resize((INPUT_SIZE, INPUT_SIZE))
+            image = raw.convert("RGB")
         if self._augment:
+            # Geometric + photometric jitter so a from-scratch CNN generalizes from
+            # a few hundred figures: flips, small scan-skew rotation, a zoom crop,
+            # brightness/contrast, and light noise.
             if random.random() < 0.5:
                 image = image.transpose(Image.FLIP_LEFT_RIGHT)
-            if random.random() < 0.3:
+            if random.random() < 0.25:
                 image = image.transpose(Image.FLIP_TOP_BOTTOM)
+            if random.random() < 0.4:
+                image = image.rotate(random.uniform(-6.0, 6.0), expand=False, fillcolor=(255, 255, 255))
+            if random.random() < 0.4:
+                w, h = image.size
+                crop = random.uniform(0.82, 1.0)
+                cw, ch = int(w * crop), int(h * crop)
+                left, top = random.randint(0, w - cw), random.randint(0, h - ch)
+                image = image.crop((left, top, left + cw, top + ch))
+            image = image.resize((INPUT_SIZE, INPUT_SIZE))
             array = np.asarray(image, dtype=np.float32) / 255.0
-            array = np.clip(array * random.uniform(0.85, 1.15) + random.uniform(-0.05, 0.05), 0.0, 1.0)
+            array = np.clip(array * random.uniform(0.8, 1.2) + random.uniform(-0.06, 0.06), 0.0, 1.0)
+            if random.random() < 0.3:
+                array = np.clip(array + np.random.normal(0.0, 0.03, array.shape).astype(np.float32), 0.0, 1.0)
         else:
-            array = np.asarray(image, dtype=np.float32) / 255.0
+            array = np.asarray(image.resize((INPUT_SIZE, INPUT_SIZE)), dtype=np.float32) / 255.0
         return torch.from_numpy(array).permute(2, 0, 1), label
 
 
@@ -157,7 +176,13 @@ def train_diagram_gate(args: argparse.Namespace) -> dict[str, object]:
     val_loader = DataLoader(
         _GateDataset(val_items, augment=False), batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers
     )
-    module = DiagramGateModule(learning_rate=args.learning_rate)
+    # Balance the loss: with all non-diagram types pooled, negatives outnumber
+    # diagrams, which would bias the gate toward rejecting (lower diagram recall).
+    n_pos = sum(1 for _, label in train_items if label == 1) or 1
+    n_neg = sum(1 for _, label in train_items if label == 0) or 1
+    total = n_pos + n_neg
+    class_weights = (total / (2.0 * n_neg), total / (2.0 * n_pos))  # index 0=non-diagram, 1=diagram
+    module = DiagramGateModule(learning_rate=args.learning_rate, class_weights=class_weights)
     checkpoint = ModelCheckpoint(dirpath=args.output_dir / "checkpoints", save_last=True, monitor="val_acc", mode="max")
     trainer = L.Trainer(
         max_epochs=args.max_epochs, accelerator=args.accelerator, devices=1,

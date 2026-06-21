@@ -172,3 +172,25 @@ canonical: 검출 run-v8 / family run-fc5(+tree gate) / connector run-seg7 / OOD
 - 레버1(컨테이너): 실figure container 회수↑, arch/NN→table 과분류 해소(table_matrix 56→23/150).
 - 레버2(family): 구조 분류기는 엣지 회수 한계로 폐기, tree text-gate로 tree 0→11/30 무회귀 회복.
 - 레버3(OOD): 비다이어그램 89% 거절 / 다이어그램 83% 유지로 실전 정밀도 확보.
+
+---
+
+## OOD 게이트 개선 (2026-06-22)
+
+레버3의 run-gate1은 narrow negative(차트/사진 8종)로 측정돼 낙관적이었음. **정직한 측정**을 위해
+ACL-fig **14종 전체 비다이어그램** + 5종 diagram을 train/test 분리(train 1353, held-out test 181)로
+재구성. `data/ood/{train,test}/{diagram,nondiagram}/<label>/`.
+
+**진단(run-gate2, 14종 held-out)**: 흔한 비다이어그램(natural image/confusion matrix/pie/venn/
+bar/scatter/maps/word cloud)은 잘 거절(0.75~1.0)하나, **텍스트형(algorithms 0.33·NLP grammar 0.44)
+과 line graph(0.44)는 과소학습**으로 실패. diagram 유지는 0.75~0.94 양호.
+
+**개선(run-gate3)**: ① 하드 negative 데이터 36→90/종 증량(train 727→1353) ② 강화 augmentation
+(flip·회전·zoom crop·밝기/대비·노이즈) ③ **클래스 가중 손실**(negative 다수로 인한 거절 편향 보정).
+- held-out 테스트: **best balanced acc 0.799→0.830** (@thr 0.45, recall 0.89·reject 0.77). val reject 0.61→0.85.
+- 텍스트형 대폭 개선: algorithms 0.56→**0.89**, NLP grammar 0.44→**0.89**.
+- run-gate3에서 recall 0.89와 reject 0.77 **동시 달성**(gate2는 trade-off로 불가).
+
+canonical OOD: **run-gate3**(thr 0.45~0.5 권장). 측정도구 workbench-ml/eval_gate.py(임계값 sweep).
+**남은 한계**: 픽셀 from-scratch CNN의 천장(~0.83 balanced). 작은 데이터에서 더 끌어올리려면 사전학습
+백본(1회 가중 다운로드, offline 관례 변경) 또는 검출 구조 증거 융합이 다음 후보.
