@@ -3,9 +3,15 @@
 Papers are full of non-diagram figures — bar/line/scatter charts, confusion
 matrices, screenshots, photos — and the rest of the pipeline will happily force
 any of them into a diagram family. For real-paper precision the pipeline must be
-able to *abstain*. This is a small pixel CNN trained on real ACL-fig diagrams
-(positives) vs real ACL-fig charts/screenshots/photos (negatives); both sides are
-real figures so it learns diagram-vs-not, not synthetic-vs-real.
+able to *abstain*. This is a small image classifier trained on real ACL-fig
+diagrams (positives) vs real ACL-fig charts/screenshots/photos (negatives); both
+sides are real figures so it learns diagram-vs-not, not synthetic-vs-real.
+
+The from-scratch CNN plateaus around 0.83 balanced accuracy on a few hundred
+figures per class; an ImageNet-pretrained backbone (``--backbone
+mobilenet_v3_small`` / ``resnet18``) transfers far better on this little data.
+The backbone is recorded in the checkpoint so inference applies the matching
+input size / normalization automatically.
 
 Public surface:
 - ``DiagramGateModule`` — the Lightning binary classifier.
@@ -28,11 +34,25 @@ from torch.utils.data import DataLoader, Dataset
 
 from image_to_editable_ppt.ml.dataset import get_or_load
 
-INPUT_SIZE = 160
 _IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".webp", ".bmp")
+_IMAGENET_MEAN = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+_IMAGENET_STD = np.array([0.229, 0.224, 0.225], dtype=np.float32)
+
+# backbone -> (input_size, imagenet_normalize)
+_BACKBONES: dict[str, tuple[int, bool]] = {
+    "scratch": (160, False),
+    "mobilenet_v3_small": (224, True),
+    "resnet18": (224, True),
+}
 
 
-def _build_cnn() -> nn.Sequential:
+def _backbone_config(backbone: str) -> tuple[int, bool]:
+    if backbone not in _BACKBONES:
+        raise ValueError(f"unknown backbone {backbone!r}; choices: {sorted(_BACKBONES)}")
+    return _BACKBONES[backbone]
+
+
+def _build_scratch_cnn() -> nn.Sequential:
     return nn.Sequential(
         nn.Conv2d(3, 16, 3, stride=2, padding=1), nn.GroupNorm(4, 16), nn.ReLU(inplace=True),
         nn.Conv2d(16, 32, 3, stride=2, padding=1), nn.GroupNorm(8, 32), nn.ReLU(inplace=True),
@@ -42,17 +62,72 @@ def _build_cnn() -> nn.Sequential:
     )
 
 
-def preprocess(rgb: np.ndarray) -> torch.Tensor:
-    image = Image.fromarray(rgb).convert("RGB").resize((INPUT_SIZE, INPUT_SIZE))
-    array = np.asarray(image, dtype=np.float32) / 255.0
+def _build_model(backbone: str, *, pretrained: bool = True) -> nn.Module:
+    """Build the gate architecture. ``pretrained`` fetches ImageNet weights — needed
+    to *train* a backbone, but skipped when *loading a checkpoint* (the fine-tuned
+    state overwrites them anyway), so inference never needs a network or the
+    torchvision weight cache."""
+    if backbone == "scratch":
+        return _build_scratch_cnn()
+    from torchvision import models
+
+    if backbone == "mobilenet_v3_small":
+        weights = models.MobileNet_V3_Small_Weights.IMAGENET1K_V1 if pretrained else None
+        model = models.mobilenet_v3_small(weights=weights)
+        model.classifier[-1] = nn.Linear(model.classifier[-1].in_features, 2)
+        return model
+    if backbone == "resnet18":
+        weights = models.ResNet18_Weights.IMAGENET1K_V1 if pretrained else None
+        model = models.resnet18(weights=weights)
+        model.fc = nn.Linear(model.fc.in_features, 2)
+        return model
+    raise ValueError(f"unknown backbone {backbone!r}")
+
+
+def _image_to_tensor(
+    image: Image.Image,
+    *,
+    input_size: int,
+    imagenet_norm: bool,
+    augment: bool = False,
+    rng=None,
+) -> torch.Tensor:
+    image = image.convert("RGB")
+    if augment:
+        if rng.random() < 0.5:
+            image = image.transpose(Image.FLIP_LEFT_RIGHT)
+        if rng.random() < 0.25:
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        if rng.random() < 0.4:
+            image = image.rotate(rng.uniform(-6.0, 6.0), expand=False, fillcolor=(255, 255, 255))
+        if rng.random() < 0.4:
+            w, h = image.size
+            crop = rng.uniform(0.82, 1.0)
+            cw, ch = int(w * crop), int(h * crop)
+            left, top = rng.randint(0, w - cw), rng.randint(0, h - ch)
+            image = image.crop((left, top, left + cw, top + ch))
+    array = np.asarray(image.resize((input_size, input_size)), dtype=np.float32) / 255.0
+    if augment:
+        array = np.clip(array * rng.uniform(0.8, 1.2) + rng.uniform(-0.06, 0.06), 0.0, 1.0)
+        if rng.random() < 0.3:
+            array = np.clip(array + np.random.normal(0.0, 0.03, array.shape).astype(np.float32), 0.0, 1.0)
+    if imagenet_norm:
+        array = (array - _IMAGENET_MEAN) / _IMAGENET_STD
     return torch.from_numpy(array).permute(2, 0, 1)
 
 
 class DiagramGateModule(L.LightningModule):
-    def __init__(self, *, learning_rate: float = 1e-3) -> None:
+    def __init__(
+        self,
+        *,
+        backbone: str = "scratch",
+        learning_rate: float = 1e-3,
+        class_weights: tuple[float, float] | None = None,
+        pretrained: bool = True,
+    ) -> None:
         super().__init__()
         self.save_hyperparameters()
-        self.model = _build_cnn()
+        self.model = _build_model(backbone, pretrained=pretrained)
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
         return self.model(images)
@@ -60,15 +135,17 @@ class DiagramGateModule(L.LightningModule):
     def _step(self, batch, stage: str) -> torch.Tensor:
         images, labels = batch
         logits = self.model(images)
-        loss = F.cross_entropy(logits, labels)
+        weight = (
+            torch.tensor(self.hparams.class_weights, dtype=logits.dtype, device=logits.device)
+            if self.hparams.class_weights is not None
+            else None
+        )
+        loss = F.cross_entropy(logits, labels, weight=weight)
         preds = logits.argmax(dim=1)
-        acc = (preds == labels).float().mean()
         self.log(f"{stage}_loss", loss, prog_bar=True, batch_size=len(images))
-        self.log(f"{stage}_acc", acc, prog_bar=True, batch_size=len(images))
+        self.log(f"{stage}_acc", (preds == labels).float().mean(), prog_bar=True, batch_size=len(images))
         if stage == "val":
-            # diagram == class 1; track recall (kept diagrams) and specificity (rejected non).
-            pos = labels == 1
-            neg = labels == 0
+            pos, neg = labels == 1, labels == 0
             recall = (preds[pos] == 1).float().mean() if pos.any() else torch.tensor(0.0)
             specificity = (preds[neg] == 0).float().mean() if neg.any() else torch.tensor(0.0)
             self.log("val_diagram_recall", recall, prog_bar=True, batch_size=len(images))
@@ -93,8 +170,10 @@ def _list_images(roots: list[Path]) -> list[Path]:
 
 
 class _GateDataset(Dataset):
-    def __init__(self, items: list[tuple[Path, int]], *, augment: bool) -> None:
+    def __init__(self, items: list[tuple[Path, int]], *, input_size: int, imagenet_norm: bool, augment: bool) -> None:
         self._items = items
+        self._input_size = input_size
+        self._imagenet_norm = imagenet_norm
         self._augment = augment
 
     def __len__(self) -> int:
@@ -105,17 +184,11 @@ class _GateDataset(Dataset):
 
         path, label = self._items[index]
         with Image.open(path) as raw:
-            image = raw.convert("RGB").resize((INPUT_SIZE, INPUT_SIZE))
-        if self._augment:
-            if random.random() < 0.5:
-                image = image.transpose(Image.FLIP_LEFT_RIGHT)
-            if random.random() < 0.3:
-                image = image.transpose(Image.FLIP_TOP_BOTTOM)
-            array = np.asarray(image, dtype=np.float32) / 255.0
-            array = np.clip(array * random.uniform(0.85, 1.15) + random.uniform(-0.05, 0.05), 0.0, 1.0)
-        else:
-            array = np.asarray(image, dtype=np.float32) / 255.0
-        return torch.from_numpy(array).permute(2, 0, 1), label
+            tensor = _image_to_tensor(
+                raw, input_size=self._input_size, imagenet_norm=self._imagenet_norm,
+                augment=self._augment, rng=random,
+            )
+        return tensor, label
 
 
 def _split_items(diagram_dirs: list[Path], nondiagram_dirs: list[Path], *, val_ratio: float, seed: int):
@@ -130,9 +203,10 @@ def _split_items(diagram_dirs: list[Path], nondiagram_dirs: list[Path], *, val_r
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train the diagram / not-a-diagram OOD gate.")
-    parser.add_argument("--diagram-dir", type=Path, action="append", required=True, help="Directory tree of diagram (positive) images; repeatable.")
-    parser.add_argument("--nondiagram-dir", type=Path, action="append", required=True, help="Directory tree of non-diagram (negative) images; repeatable.")
+    parser.add_argument("--diagram-dir", type=Path, action="append", required=True, help="Diagram (positive) image tree; repeatable.")
+    parser.add_argument("--nondiagram-dir", type=Path, action="append", required=True, help="Non-diagram (negative) image tree; repeatable.")
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--backbone", choices=tuple(_BACKBONES), default="scratch")
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--max-epochs", type=int, default=40)
     parser.add_argument("--accelerator", default="auto")
@@ -148,16 +222,25 @@ def train_diagram_gate(args: argparse.Namespace) -> dict[str, object]:
     from lightning.pytorch.loggers import CSVLogger
 
     L.seed_everything(args.seed, workers=True)
+    input_size, imagenet_norm = _backbone_config(args.backbone)
     train_items, val_items = _split_items(
         args.diagram_dir, args.nondiagram_dir, val_ratio=args.val_ratio, seed=args.seed
     )
     train_loader = DataLoader(
-        _GateDataset(train_items, augment=True), batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers
+        _GateDataset(train_items, input_size=input_size, imagenet_norm=imagenet_norm, augment=True),
+        batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
     )
     val_loader = DataLoader(
-        _GateDataset(val_items, augment=False), batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers
+        _GateDataset(val_items, input_size=input_size, imagenet_norm=imagenet_norm, augment=False),
+        batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers,
     )
-    module = DiagramGateModule(learning_rate=args.learning_rate)
+    # Balance the loss: with all non-diagram types pooled, negatives outnumber
+    # diagrams, which would bias the gate toward rejecting (lower diagram recall).
+    n_pos = sum(1 for _, label in train_items if label == 1) or 1
+    n_neg = sum(1 for _, label in train_items if label == 0) or 1
+    total = n_pos + n_neg
+    class_weights = (total / (2.0 * n_neg), total / (2.0 * n_pos))  # index 0=non-diagram, 1=diagram
+    module = DiagramGateModule(backbone=args.backbone, learning_rate=args.learning_rate, class_weights=class_weights)
     checkpoint = ModelCheckpoint(dirpath=args.output_dir / "checkpoints", save_last=True, monitor="val_acc", mode="max")
     trainer = L.Trainer(
         max_epochs=args.max_epochs, accelerator=args.accelerator, devices=1,
@@ -167,7 +250,7 @@ def train_diagram_gate(args: argparse.Namespace) -> dict[str, object]:
     metrics = {key: float(value) for key, value in trainer.callback_metrics.items()}
     manifest = {
         "status": "trained",
-        "config": {"train": len(train_items), "val": len(val_items), "seed": args.seed},
+        "config": {"backbone": args.backbone, "train": len(train_items), "val": len(val_items), "seed": args.seed},
         "final_metrics": metrics,
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -180,7 +263,9 @@ _MODULE_CACHE: dict[str, DiagramGateModule] = {}
 
 def _load_module(checkpoint: str) -> DiagramGateModule:
     def _load() -> DiagramGateModule:
-        module = DiagramGateModule.load_from_checkpoint(checkpoint, map_location="cpu")
+        # pretrained=False: the checkpoint's fine-tuned weights replace the backbone,
+        # so don't trigger torchvision's ImageNet download at inference (works offline).
+        module = DiagramGateModule.load_from_checkpoint(checkpoint, map_location="cpu", pretrained=False)
         module.eval()
         return module
 
@@ -190,8 +275,10 @@ def _load_module(checkpoint: str) -> DiagramGateModule:
 def is_diagram(checkpoint: str, rgb: np.ndarray, *, threshold: float = 0.5) -> tuple[bool, float]:
     """Return (keep, p_diagram): keep is True when the figure looks like a diagram."""
     module = _load_module(checkpoint)
+    input_size, imagenet_norm = _backbone_config(getattr(module.hparams, "backbone", "scratch"))
+    tensor = _image_to_tensor(Image.fromarray(rgb), input_size=input_size, imagenet_norm=imagenet_norm)
     with torch.no_grad():
-        prob = float(F.softmax(module(preprocess(rgb).unsqueeze(0)), dim=1)[0, 1])
+        prob = float(F.softmax(module(tensor.unsqueeze(0)), dim=1)[0, 1])
     return prob >= threshold, prob
 
 
