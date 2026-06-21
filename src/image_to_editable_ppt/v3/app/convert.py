@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from PIL import Image
@@ -59,6 +59,9 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
     image = _load_image(input_image)
     multiview = build_multiview_bundle(image, config=active_config)
     validate_multiview_bundle(multiview)
+
+    if active_config.slide_ir_provider is not None:
+        return _convert_via_provider(image, multiview, active_config)
 
     text_layer = _extract_text_layer(multiview, active_config)
     validate_text_layer_result(text_layer)
@@ -191,6 +194,66 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
     )
     return V3ConversionResult(
         config=active_config,
+        multiview=multiview,
+        slide_ir=slide_ir,
+        stage_records=stage_records,
+    )
+
+
+def _convert_via_provider(
+    image: Image.Image,
+    multiview: MultiViewBundle,
+    config: V3Config,
+) -> V3ConversionResult:
+    """Structure recovery delegated to an injected SlideIRProvider (e.g. ML)."""
+    assert config.slide_ir_provider is not None
+    slide_ir = config.slide_ir_provider.build(image, config=config)
+    # Providers emit connector *candidates*; resolve them into ConnectorSpecs the same
+    # way the heuristic path does. Emit reads slide_ir.connectors (not candidates), so
+    # without this every ML-detected connector is silently dropped from the editable
+    # PPT and the solved-connector diagnostics.
+    if slide_ir.connector_candidates and not slide_ir.connectors:
+        slide_ir = replace(
+            slide_ir,
+            connectors=resolve_connector_candidates(
+                connector_candidates=slide_ir.connector_candidates, config=config
+            ),
+        )
+    validate_slide_ir(slide_ir)
+    scene = slide_ir.primitive_scene
+    stage_records = (
+        StageRecord(
+            stage=StageName.MULTIVIEW,
+            summary={"branch_count": len(multiview.branches), "image_size": multiview.image_size.as_tuple()},
+        ),
+        StageRecord(
+            stage=StageName.FAMILY_DETECT,
+            summary={
+                "proposal_count": len(slide_ir.family_proposals),
+                "families": sorted({proposal.family.value for proposal in slide_ir.family_proposals}),
+                "provider": "slide_ir_provider",
+            },
+        ),
+        StageRecord(stage=StageName.FAMILY_PARSE, summary={"instance_count": len(slide_ir.diagram_instances)}),
+        StageRecord(
+            stage=StageName.CONNECTOR_ATTACH,
+            summary={"connector_candidate_count": len(slide_ir.connector_candidates)},
+        ),
+        StageRecord(
+            stage=StageName.CONNECTOR_RESOLVE,
+            summary={"solved_connector_count": len(slide_ir.connectors)},
+        ),
+        StageRecord(
+            stage=StageName.COMPOSE,
+            summary={
+                "primitive_node_count": len(scene.nodes) if scene is not None else 0,
+                "primitive_container_count": len(scene.containers) if scene is not None else 0,
+                "primitive_text_count": len(scene.texts) if scene is not None else 0,
+            },
+        ),
+    )
+    return V3ConversionResult(
+        config=config,
         multiview=multiview,
         slide_ir=slide_ir,
         stage_records=stage_records,

@@ -22,6 +22,7 @@ if TYPE_CHECKING:
         ResidualCanvasResult,
         ResidualStructuralCanvas,
         ResidualRegion,
+        SlideIR,
         StyleToken,
         TextLayerResult,
         UnattachedConnectorEvidence,
@@ -66,6 +67,18 @@ class FamilyDetector(Protocol):
         raster_layer: "RasterLayerResult",
         config: "V3Config",
     ) -> Sequence["FamilyProposal"]: ...
+
+
+class SlideIRProvider(Protocol):
+    """Produces a complete SlideIR straight from the image.
+
+    An alternative to the heuristic family/connector stages: when one is set on
+    the config, convert_image delegates structure recovery to it (e.g. an
+    ML-backed provider that runs the detector, classifier, and connector
+    segmenter). Implemented outside the v3 package so v3 keeps no ml dependency.
+    """
+
+    def build(self, image: "Image.Image", *, config: "V3Config") -> "SlideIR": ...
 
 
 class FamilyParser(Protocol):

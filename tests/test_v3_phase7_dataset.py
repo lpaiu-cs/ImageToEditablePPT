@@ -112,11 +112,15 @@ def test_render_draws_structures_at_annotated_positions() -> None:
     assert image.size == (spec.image_size.width, spec.image_size.height)
     background = image.getpixel((2, 2))
     assert background == (255, 255, 255)
+    # Each node must render *something* within its annotated bbox (fill, outline,
+    # or — for text-only/mono styles — the label glyphs). Probing exact centre/edge
+    # pixels is too brittle now that nodes can be unfilled, text-only, or elliptical.
     for node in spec.nodes:
-        center = (int((node.bbox.x0 + node.bbox.x1) / 2), int((node.bbox.y0 + node.bbox.y1) / 2))
-        edge = (int(node.bbox.x0) + 1, int((node.bbox.y0 + node.bbox.y1) / 2))
-        assert image.getpixel(center) != (255, 255, 255)
-        assert image.getpixel(edge) != (255, 255, 255)
+        region = image.crop(
+            (int(node.bbox.x0), int(node.bbox.y0), int(node.bbox.x1) + 1, int(node.bbox.y1) + 1)
+        )
+        extrema = region.getextrema()
+        assert any(channel_min < 255 for channel_min, _ in extrema), f"node {node.id} region is blank"
 
 
 def test_pptx_sidecar_preserves_shape_mapping(tmp_path: Path) -> None:

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from image_to_editable_ppt.v3.core.enums import DiagramFamily
 
 if TYPE_CHECKING:
-    from image_to_editable_ppt.v3.core.contracts import FamilyDetector
+    from image_to_editable_ppt.v3.core.contracts import FamilyDetector, SlideIRProvider
 
 
 DEFAULT_ENABLED_FAMILIES = frozenset(
@@ -31,6 +31,10 @@ class V3Config:
     # implementation (image_to_editable_ppt.ml.family_detector.MLFamilyDetector)
     # is constructed outside v3 and injected here.
     family_detector_override: "FamilyDetector | None" = None
+    # Opt-in: when set, convert_image delegates the whole structure recovery to
+    # this provider (e.g. the ML detector + classifier + connector segmenter) and
+    # bypasses the heuristic family/connector stages. Injected from outside v3.
+    slide_ir_provider: "SlideIRProvider | None" = None
 
     def family_enabled(self, family: DiagramFamily) -> bool:
         return family in self.enabled_families
