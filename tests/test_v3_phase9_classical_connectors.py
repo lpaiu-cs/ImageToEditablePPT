@@ -1,0 +1,32 @@
+from __future__ import annotations
+
+from image_to_editable_ppt.ml.classical_connectors import (
+    _Box,
+    filter_connector_segments,
+)
+
+
+def test_filter_keeps_inter_node_segment():
+    # two boxes with a horizontal gap; a stroke spanning the gap is a connector
+    a, b = _Box(10, 40, 30, 60), _Box(80, 40, 100, 60)
+    seg = (30.0, 50.0, 80.0, 50.0)  # between the boxes
+    assert filter_connector_segments([seg], [a, b]) == [seg]
+
+
+def test_filter_drops_box_outline_segment():
+    a = _Box(10, 40, 60, 80)
+    top_edge = (10.0, 40.0, 60.0, 40.0)  # runs along the box's top edge
+    left_edge = (10.0, 40.0, 10.0, 80.0)
+    assert filter_connector_segments([top_edge, left_edge], [a]) == []
+
+
+def test_filter_drops_segment_inside_node():
+    a = _Box(10, 40, 90, 80)
+    inside = (30.0, 60.0, 70.0, 62.0)  # a text stroke inside the box
+    assert filter_connector_segments([inside], [a]) == []
+
+
+def test_filter_drops_too_short_segments():
+    a, b = _Box(10, 40, 30, 60), _Box(80, 40, 100, 60)
+    tiny = (45.0, 50.0, 50.0, 50.0)  # 5px, below min_length
+    assert filter_connector_segments([tiny], [a, b]) == []

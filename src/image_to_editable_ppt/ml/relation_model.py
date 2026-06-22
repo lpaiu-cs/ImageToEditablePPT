@@ -280,9 +280,32 @@ def _sample_pairs(document, line_mask, arrow_mask, *, width, height, rng: random
     return pos + neg[: max(5, neg_per_pos * len(pos))]
 
 
+def _masks_for_training(document, image, connector_source: str, connector_checkpoint: str | None):
+    """Line/arrow masks for a synthetic training image: from the learned segmenter,
+    or from classical detection (filtered with the sample's GT node/container boxes)."""
+    if connector_source == "classical":
+        from image_to_editable_ppt.ml.classical_connectors import classical_connector_masks
+
+        scene = document.primitive_scene
+        return classical_connector_masks(image, list(scene.nodes), list(scene.containers))
+    from image_to_editable_ppt.ml.connector_segmenter import segment_connector_masks
+
+    if not connector_checkpoint:
+        raise ValueError("segmenter source requires --connector-checkpoint")
+    return segment_connector_masks(connector_checkpoint, image)
+
+
 class _RelationDataset(Dataset):
-    def __init__(self, dataset_dir: Path, *, split: str, connector_checkpoint: str, augment: bool, seed: int) -> None:
-        from image_to_editable_ppt.ml.connector_segmenter import segment_connector_masks
+    def __init__(
+        self,
+        dataset_dir: Path,
+        *,
+        split: str,
+        augment: bool,
+        seed: int,
+        connector_source: str = "segmenter",
+        connector_checkpoint: str | None = None,
+    ) -> None:
         from image_to_editable_ppt.ml.dataset import load_annotation_document
 
         manifest = json.loads((dataset_dir / "dataset_manifest.json").read_text(encoding="utf-8"))
@@ -294,7 +317,7 @@ class _RelationDataset(Dataset):
             document = load_annotation_document(dataset_dir / item["annotation"])
             with Image.open(dataset_dir / item["image"]) as raw:
                 image = np.asarray(raw.convert("RGB"), dtype=np.uint8)
-            line, arrow = segment_connector_masks(connector_checkpoint, image)
+            line, arrow = _masks_for_training(document, image, connector_source, connector_checkpoint)
             h, w = image.shape[:2]
             self._rows.extend(_sample_pairs(document, line, arrow, width=w, height=h, rng=rng))
         self._augment = augment
@@ -319,7 +342,9 @@ class _RelationDataset(Dataset):
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train the pairwise node-relation model.")
     parser.add_argument("--dataset-dir", type=Path, required=True)
-    parser.add_argument("--connector-checkpoint", required=True, help="Segmenter checkpoint for line/arrow masks.")
+    parser.add_argument("--connector-source", choices=("segmenter", "classical"), default="classical",
+                        help="Line/arrow mask source: classical CV detection (default) or the learned segmenter.")
+    parser.add_argument("--connector-checkpoint", default=None, help="Segmenter checkpoint (required for --connector-source segmenter).")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--max-epochs", type=int, default=40)
@@ -336,10 +361,12 @@ def train_relation_model(args: argparse.Namespace) -> dict[str, object]:
 
     L.seed_everything(args.seed, workers=True)
     train_set = _RelationDataset(
-        args.dataset_dir, split="train", connector_checkpoint=args.connector_checkpoint, augment=True, seed=args.seed
+        args.dataset_dir, split="train", augment=True, seed=args.seed,
+        connector_source=args.connector_source, connector_checkpoint=args.connector_checkpoint,
     )
     val_set = _RelationDataset(
-        args.dataset_dir, split="val", connector_checkpoint=args.connector_checkpoint, augment=False, seed=args.seed
+        args.dataset_dir, split="val", augment=False, seed=args.seed,
+        connector_source=args.connector_source, connector_checkpoint=args.connector_checkpoint,
     )
     counts = train_set.class_counts()
     total = sum(counts) or 1
