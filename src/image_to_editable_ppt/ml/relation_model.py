@@ -39,7 +39,7 @@ from torch.utils.data import DataLoader, Dataset
 from image_to_editable_ppt.ml.dataset import get_or_load
 
 GEOM_DIM = 9
-LINE_DIM = 6
+LINE_DIM = 7
 FEATURE_DIM = GEOM_DIM + LINE_DIM
 NUM_CLASSES = 3  # 0 = no edge, 1 = i->j, 2 = j->i
 
@@ -92,21 +92,24 @@ def segment_line_features(
     box_i: _Box,
     box_j: _Box,
     *,
+    occluders: Sequence[_Box] = (),
     n_samples: int = 28,
     radius: int = 3,
 ) -> list[float]:
     """Sample the segmenter line/arrowhead masks along the i->j segment.
 
     Returns [coverage, max_gap_frac, abs_coverage, arrow_near_i, arrow_near_j,
-    has_samples]. Coverage is the fraction of inter-node samples sitting on a
-    segmented connector stroke — the *honest* edge signal. (A raw image-darkness
-    feature was tried to lift recall but rejected: real inter-node space is full
-    of text/other nodes, so any-darkness fired everywhere and produced edges that
-    cross unrelated nodes; the segmenter mask is the learned line detector.)
+    occlusion, has_samples]. Coverage is the fraction of inter-node samples on a
+    segmented connector stroke — the *honest* edge signal. ``occlusion`` is the
+    fraction of the straight segment that passes through *other* nodes: real edges
+    route around nodes, so a high value flags a spurious long-range pair that only
+    looks connected because the straight line clips intervening boxes/arrows. (A
+    raw image-darkness feature was tried for recall but rejected — it fired on any
+    darkness; the segmenter mask is the learned line detector.)
     """
     h, w = line_mask.shape
     ci, cj = (box_i.cx, box_i.cy), (box_j.cx, box_j.cy)
-    covered = total = 0
+    covered = total = occluded = 0
     cur_gap = max_gap = 0
     arrow_i = arrow_j = 0.0
     for k in range(n_samples + 1):
@@ -116,6 +119,8 @@ def segment_line_features(
         if _inside(box_i, x, y) or _inside(box_j, x, y):
             continue
         total += 1
+        if any(_inside(box, x, y) for box in occluders):
+            occluded += 1
         xi, yi = int(round(x)), int(round(y))
         x0, x1 = max(0, xi - radius), min(w, xi + radius + 1)
         y0, y1 = max(0, yi - radius), min(h, yi + radius + 1)
@@ -139,15 +144,23 @@ def segment_line_features(
         covered / float(n_samples),
         arrow_i,
         arrow_j,
+        occluded / denom,
         1.0 if total > 0 else 0.0,
     ]
 
 
 def pair_features(
-    line_mask: np.ndarray, arrow_mask: np.ndarray, box_i: _Box, box_j: _Box, *, width: float, height: float
+    line_mask: np.ndarray,
+    arrow_mask: np.ndarray,
+    box_i: _Box,
+    box_j: _Box,
+    *,
+    width: float,
+    height: float,
+    occluders: Sequence[_Box] = (),
 ) -> list[float]:
     return pair_geometric_features(box_i, box_j, width=width, height=height) + segment_line_features(
-        line_mask, arrow_mask, box_i, box_j
+        line_mask, arrow_mask, box_i, box_j, occluders=occluders
     )
 
 
@@ -210,7 +223,8 @@ def _sample_pairs(document, line_mask, arrow_mask, *, width, height, rng: random
     for i in range(len(nodes)):
         for j in range(i + 1, len(nodes)):
             label = 1 if (i, j) in directed else (2 if (j, i) in directed else 0)
-            feat = pair_features(line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height)
+            occluders = [boxes[k] for k in range(len(nodes)) if k != i and k != j]
+            feat = pair_features(line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height, occluders=occluders)
             (pos if label else neg).append((feat, label))
     rng.shuffle(neg)
     return pos + neg[: max(5, neg_per_pos * len(pos))]
@@ -336,7 +350,13 @@ def predict_relations(
     if not pairs:
         return []
     feats = torch.tensor(
-        [pair_features(line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height) for i, j in pairs],
+        [
+            pair_features(
+                line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height,
+                occluders=[boxes[k] for k in range(len(boxes)) if k != i and k != j],
+            )
+            for i, j in pairs
+        ],
         dtype=torch.float32,
     )
     with torch.no_grad():
