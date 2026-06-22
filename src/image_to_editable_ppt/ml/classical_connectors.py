@@ -184,12 +184,61 @@ def extract_connectors_morphological(
         if ni is None or nj is None or ni == nj:
             continue
         key = (min(ni, nj), max(ni, nj))
-        if key not in edges:
-            edges[key] = ClassicalEdge(
-                source=ni, target=nj,
-                polyline=((float(end_a[0]), float(end_a[1])), (float(end_b[0]), float(end_b[1]))),
-            )
+        if key in edges:
+            continue
+        # Trace the connector's *actual* route through the component (a shortest
+        # path on the component pixels) instead of a straight end-to-end line. The
+        # box regions are holes in connector_ink, so the route necessarily follows
+        # the orthogonal ink and bends around nodes — no diagonals, no box crossings.
+        sub = (labels[y : y + bh, x : x + bw] == ci)
+        route = _route_through_component(
+            sub, (int(round(end_a[1])) - y, int(round(end_a[0])) - x),
+            (int(round(end_b[1])) - y, int(round(end_b[0])) - x),
+        )
+        if route is None:
+            polyline = ((float(end_a[0]), float(end_a[1])), (float(end_b[0]), float(end_b[1])))
+        else:
+            polyline = tuple((float(c + x), float(r + y)) for r, c in _simplify_route(route))
+        edges[key] = ClassicalEdge(source=ni, target=nj, polyline=polyline)
     return list(edges.values())
+
+
+def _route_through_component(sub: np.ndarray, start: tuple[int, int], goal: tuple[int, int]):
+    """Shortest 8-connected path between two pixels within a component mask (BFS)."""
+    from collections import deque
+
+    h, w = sub.shape
+    if not (0 <= start[0] < h and 0 <= start[1] < w and 0 <= goal[0] < h and 0 <= goal[1] < w):
+        return None
+    if not sub[start] or not sub[goal]:
+        return None
+    parent: dict[tuple[int, int], tuple[int, int] | None] = {start: None}
+    queue = deque([start])
+    while queue:
+        cur = queue.popleft()
+        if cur == goal:
+            path = [cur]
+            while parent[path[-1]] is not None:
+                path.append(parent[path[-1]])  # type: ignore[arg-type]
+            return list(reversed(path))
+        r, c = cur
+        for dr in (-1, 0, 1):
+            for dc in (-1, 0, 1):
+                if dr == 0 and dc == 0:
+                    continue
+                nb = (r + dr, c + dc)
+                if 0 <= nb[0] < h and 0 <= nb[1] < w and sub[nb] and nb not in parent:
+                    parent[nb] = cur
+                    queue.append(nb)
+    return None
+
+
+def _simplify_route(route: list[tuple[int, int]], *, epsilon: float = 4.0) -> list[tuple[int, int]]:
+    import cv2
+
+    pts = np.array([[c, r] for r, c in route], dtype=np.int32).reshape(-1, 1, 2)
+    approx = cv2.approxPolyDP(pts, epsilon, False)
+    return [(int(p[0][1]), int(p[0][0])) for p in approx]
 
 
 def _nearest_node_to_point(point: np.ndarray, nodes: Sequence[_Box], *, max_dist: float) -> int | None:
