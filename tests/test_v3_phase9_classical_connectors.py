@@ -86,6 +86,17 @@ def test_node_snaps_to_drawn_rectangle_so_interior_text_is_not_a_connector():
     assert all({e.source, e.target} != {1, 2} for e in edges)
 
 
+def test_edge_offset_zero_at_edge_midpoint_half_at_corner():
+    """edge_off is a learned feature: ~0 when an endpoint lands at an edge midpoint
+    (where real connectors attach), ~0.5 at a corner (where braces/decorations touch)."""
+    from image_to_editable_ppt.ml.classical_connectors import _Box, _edge_offset
+
+    b = _Box(100, 100, 200, 140)
+    assert _edge_offset((96, 120), b) < 0.1  # beside the left-edge midpoint -> central
+    assert _edge_offset((150, 96), b) < 0.1  # above the top-edge midpoint -> central
+    assert _edge_offset((96, 102), b) > 0.4  # near the top-left corner -> off-centre
+
+
 def test_panel_outline_is_not_a_snap_target():
     """A rectangle drawn around other boxes is a panel: a node inside must NOT snap to
     it (that would fill the panel and erase its inner connectors). Leaf-vs-panel is the

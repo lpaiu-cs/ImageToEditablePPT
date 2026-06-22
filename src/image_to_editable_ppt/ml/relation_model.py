@@ -36,12 +36,18 @@ import torch.nn.functional as F
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 
+from image_to_editable_ppt.ml.classical_connectors import (
+    CANDIDATE_FEATURE_DIM,
+    NO_CANDIDATE_FEATURES,
+    candidate_features,
+)
 from image_to_editable_ppt.ml.dataset import get_or_load
 
 GEOM_DIM = 9
 LINE_DIM = 7
 PATH_DIM = 2
-FEATURE_DIM = GEOM_DIM + LINE_DIM + PATH_DIM
+CAND_DIM = CANDIDATE_FEATURE_DIM  # morphological-candidate geometry (existence + shape)
+FEATURE_DIM = GEOM_DIM + LINE_DIM + PATH_DIM + CAND_DIM
 NUM_CLASSES = 3  # 0 = no edge, 1 = i->j, 2 = j->i
 
 
@@ -202,11 +208,13 @@ def pair_features(
     height: float,
     occluders: Sequence[_Box] = (),
     path_feats: Sequence[float] = (0.0, 0.0),
+    cand_feats: Sequence[float] | None = None,
 ) -> list[float]:
     return (
         pair_geometric_features(box_i, box_j, width=width, height=height)
         + segment_line_features(line_mask, arrow_mask, box_i, box_j, occluders=occluders)
         + list(path_feats)
+        + list(cand_feats if cand_feats is not None else NO_CANDIDATE_FEATURES)
     )
 
 
@@ -252,7 +260,7 @@ class RelationModule(L.LightningModule):
         return torch.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)
 
 
-def _sample_pairs(document, line_mask, arrow_mask, *, width, height, rng: random.Random, neg_per_pos: int = 3):
+def _sample_pairs(document, image, line_mask, arrow_mask, *, width, height, rng: random.Random, neg_per_pos: int = 3):
     scene = document.primitive_scene
     nodes = list(scene.nodes)
     if len(nodes) < 2:
@@ -266,6 +274,7 @@ def _sample_pairs(document, line_mask, arrow_mask, *, width, height, rng: random
         if s in index_of and t in index_of and index_of[s] != index_of[t]:
             directed[(index_of[s], index_of[t])] = 1
     node_labels, fanout = compute_node_components(line_mask, boxes)
+    cand = candidate_features(image, nodes, list(scene.containers))
     pos, neg = [], []
     for i in range(len(nodes)):
         for j in range(i + 1, len(nodes)):
@@ -274,6 +283,7 @@ def _sample_pairs(document, line_mask, arrow_mask, *, width, height, rng: random
             feat = pair_features(
                 line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height,
                 occluders=occluders, path_feats=path_features(node_labels[i], node_labels[j], fanout),
+                cand_feats=cand.get((i, j), NO_CANDIDATE_FEATURES),
             )
             (pos if label else neg).append((feat, label))
     rng.shuffle(neg)
@@ -319,7 +329,7 @@ class _RelationDataset(Dataset):
                 image = np.asarray(raw.convert("RGB"), dtype=np.uint8)
             line, arrow = _masks_for_training(document, image, connector_source, connector_checkpoint)
             h, w = image.shape[:2]
-            self._rows.extend(_sample_pairs(document, line, arrow, width=w, height=h, rng=rng))
+            self._rows.extend(_sample_pairs(document, image, line, arrow, width=w, height=h, rng=rng))
         self._augment = augment
 
     def __len__(self) -> int:
@@ -419,20 +429,26 @@ def predict_relations(
     width: float,
     height: float,
     threshold: float = 0.5,
+    image: np.ndarray | None = None,
+    container_boxes: Sequence[object] = (),
 ) -> list[PredictedEdge]:
-    """Predict directed edges among detected nodes from the segmenter masks."""
+    """Predict directed edges among detected nodes from the line/arrow masks plus the
+    morphological-candidate geometry. ``image`` is needed for the candidate features;
+    without it every pair falls back to the no-candidate sentinel."""
     module = _load_module(checkpoint)
     boxes = [_as_box(box) for box in node_boxes]
     pairs = [(i, j) for i in range(len(boxes)) for j in range(i + 1, len(boxes))]
     if not pairs:
         return []
     node_labels, fanout = compute_node_components(line_mask, boxes)
+    cand = candidate_features(image, node_boxes, container_boxes) if image is not None else {}
     feats = torch.tensor(
         [
             pair_features(
                 line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height,
                 occluders=[boxes[k] for k in range(len(boxes)) if k != i and k != j],
                 path_feats=path_features(node_labels[i], node_labels[j], fanout),
+                cand_feats=cand.get((i, j), NO_CANDIDATE_FEATURES),
             )
             for i, j in pairs
         ],

@@ -6,6 +6,7 @@ import pytest
 pytest.importorskip("torch")
 
 from image_to_editable_ppt.ml.relation_model import (
+    CAND_DIM,
     FEATURE_DIM,
     GEOM_DIM,
     LINE_DIM,
@@ -24,7 +25,7 @@ def _boxes():
 
 
 def test_feature_dims_match():
-    assert FEATURE_DIM == GEOM_DIM + LINE_DIM + PATH_DIM
+    assert FEATURE_DIM == GEOM_DIM + LINE_DIM + PATH_DIM + CAND_DIM
     bi, bj = _boxes()
     feats = pair_features(
         np.zeros((100, 100), np.uint8), np.zeros((100, 100), np.uint8), bi, bj, width=100, height=100

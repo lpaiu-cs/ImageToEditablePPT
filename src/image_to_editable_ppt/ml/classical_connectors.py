@@ -115,6 +115,11 @@ class ClassicalEdge:
     source: int  # node index
     target: int
     polyline: tuple[tuple[float, float], ...]
+    # Geometry the learned judge consumes as features (never hand-thresholded here):
+    gap: float = 0.0  # px from the looser endpoint to its node border (attachment slack)
+    ortho: float = 1.0  # fraction of route length on axis-aligned segments (0..1)
+    excursion: float = 0.0  # max route stray outside the two nodes' union bbox, / image diag
+    edge_off: float = 0.0  # looser end's offset from its node-edge midpoint (0 central .. 0.5 corner)
 
 
 def detect_box_outlines(gray: np.ndarray, *, ink_threshold: int = 160, min_frac: float = 0.001, max_frac: float = 0.4) -> list[_Box]:
@@ -308,7 +313,11 @@ def extract_connectors_morphological(
             polyline = ((float(end_a[0]), float(end_a[1])), (float(end_b[0]), float(end_b[1])))
         else:
             polyline = tuple((float(c + x), float(r + y)) for r, c in _simplify_route(route))
-        edges[key] = ClassicalEdge(source=ni, target=nj, polyline=polyline)
+        gap = max(_point_to_box(end_a, nodes[ni]), _point_to_box(end_b, nodes[nj]))
+        ortho, excursion, edge_off = _route_geometry(polyline, nodes[ni], nodes[nj], diag=math.hypot(w, h))
+        edges[key] = ClassicalEdge(
+            source=ni, target=nj, polyline=polyline, gap=gap, ortho=ortho, excursion=excursion, edge_off=edge_off
+        )
     return list(edges.values())
 
 
@@ -350,12 +359,49 @@ def _simplify_route(route: list[tuple[int, int]], *, epsilon: float = 4.0) -> li
     return [(int(p[0][1]), int(p[0][0])) for p in approx]
 
 
+def _point_to_box(point: np.ndarray, b: _Box) -> float:
+    dx = max(b.x0 - point[0], 0.0, point[0] - b.x1)
+    dy = max(b.y0 - point[1], 0.0, point[1] - b.y1)
+    return math.hypot(dx, dy)
+
+
+def _edge_offset(point: tuple[float, float], b: _Box) -> float:
+    """How far the attachment lands from the nearest node-edge midpoint.
+
+    0.0 = dead centre of an edge face (where real connectors attach), → 0.5 = at a
+    corner (where a brace/decoration tip tends to touch). A learned feature, not a gate.
+    """
+    px, py = float(point[0]), float(point[1])
+    ax, ay = min(max(px, b.x0), b.x1), min(max(py, b.y0), b.y1)
+    if min(abs(py - b.y0), abs(py - b.y1)) <= min(abs(px - b.x0), abs(px - b.x1)):
+        return abs((ax - b.x0) / max(1.0, b.x1 - b.x0) - 0.5)  # nearest is a horizontal edge
+    return abs((ay - b.y0) / max(1.0, b.y1 - b.y0) - 0.5)  # nearest is a vertical edge
+
+
+def _route_geometry(
+    polyline: tuple[tuple[float, float], ...], box_i: _Box, box_j: _Box, *, diag: float
+) -> tuple[float, float, float]:
+    """(ortho, excursion, edge_off) for a candidate route — see ClassicalEdge fields."""
+    pts = [(float(px), float(py)) for px, py in polyline]
+    route_len = ortho_len = 0.0
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        ddx, ddy = abs(bx - ax), abs(by - ay)
+        seg = math.hypot(ddx, ddy)
+        route_len += seg
+        if min(ddx, ddy) <= 0.36 * max(ddx, ddy, 1e-6):  # within ~20 deg of an axis
+            ortho_len += seg
+    ortho = ortho_len / route_len if route_len else 1.0
+    ux0, uy0 = min(box_i.x0, box_j.x0), min(box_i.y0, box_j.y0)
+    ux1, uy1 = max(box_i.x1, box_j.x1), max(box_i.y1, box_j.y1)
+    excursion = max(max(ux0 - px, 0.0, px - ux1) + max(uy0 - py, 0.0, py - uy1) for px, py in pts) / max(1.0, diag)
+    edge_off = max(_edge_offset(pts[0], box_i), _edge_offset(pts[-1], box_j))
+    return ortho, excursion, edge_off
+
+
 def _nearest_node_to_point(point: np.ndarray, nodes: Sequence[_Box], *, max_dist: float) -> int | None:
     best, best_d = None, max_dist
     for idx, b in enumerate(nodes):
-        dx = max(b.x0 - point[0], 0.0, point[0] - b.x1)
-        dy = max(b.y0 - point[1], 0.0, point[1] - b.y1)
-        d = math.hypot(dx, dy)
+        d = _point_to_box(point, b)
         if d <= best_d:
             best, best_d = idx, d
     return best
@@ -382,3 +428,34 @@ def classical_connector_masks(
     line_mask = rasterize_segments(kept, width=width, height=height)
     arrow_mask = np.zeros((height, width), dtype=np.uint8)
     return line_mask, arrow_mask
+
+
+# Per-pair geometry the learned relation judge consumes: a candidate's existence plus
+# its shape. These are *features for a model to weigh*, not thresholds applied here.
+CANDIDATE_FEATURE_DIM = 5
+# Sentinel for a pair the extractor proposed no connector for (no stroke between them).
+NO_CANDIDATE_FEATURES = [0.0, 0.0, 0.0, 0.0, 0.0]
+
+
+def candidate_features(
+    image: np.ndarray, node_boxes: Sequence[object], container_boxes: Sequence[object] = ()
+) -> dict[tuple[int, int], list[float]]:
+    """Morphological-candidate geometry per node pair, for the relation judge.
+
+    Key = ``(min(i, j), max(i, j))``; value = ``[has_candidate, gap_frac, ortho,
+    excursion, edge_off]``. Pairs with no proposed connector are simply absent — the
+    caller fills them with ``NO_CANDIDATE_FEATURES``. The classical extractor is the
+    high-recall proposer; the learned model decides which proposals are real.
+    """
+    import cv2
+
+    rgb = np.asarray(image)
+    gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY) if rgb.ndim == 3 else rgb
+    h, w = gray.shape[:2]
+    diag = max(1.0, math.hypot(w, h))
+    feats: dict[tuple[int, int], list[float]] = {}
+    for e in extract_connectors_morphological(image, node_boxes, container_boxes):
+        feats[(min(e.source, e.target), max(e.source, e.target))] = [
+            1.0, min(1.0, e.gap / diag), e.ortho, e.excursion, e.edge_off
+        ]
+    return feats
