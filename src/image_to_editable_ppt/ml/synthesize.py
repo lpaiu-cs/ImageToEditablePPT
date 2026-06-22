@@ -264,6 +264,20 @@ class SyntheticConnector:
 
 
 @dataclass(slots=True, frozen=True)
+class SyntheticDecoration:
+    """A non-connector mark (brace, bracket, annotation line) drawn as a polyline.
+
+    Rendered into the image but deliberately NOT ground truth — these are the hard
+    negatives (the curly brace grouping two output nodes is the canonical real-figure
+    false positive). Classical extraction proposes them as connectors; seeing them
+    labelled as non-edges is what teaches the relation judge to reject them."""
+
+    points: tuple[tuple[float, float], ...]
+    stroke: tuple[int, int, int] = (0, 0, 0)
+    width: int = 2
+
+
+@dataclass(slots=True, frozen=True)
 class SyntheticSlideSpec:
     sample_id: str
     family: DiagramFamily
@@ -276,6 +290,7 @@ class SyntheticSlideSpec:
     family_proposal: AnnotationFamilyProposal
     label_font_size: int
     container_styles: tuple[SyntheticContainerStyle, ...] = ()
+    decorations: tuple[SyntheticDecoration, ...] = ()  # rendered, non-GT hard negatives
 
     def to_annotation_document(self, *, split: str | None = None, metadata: dict[str, object] | None = None) -> DetectorAnnotationDocument:
         output = DetectorModelOutput(
@@ -331,22 +346,75 @@ def generate_slide_spec(
         raise ValueError(f"unsupported synthetic family: {family.value} (supported: {[f.value for f in SUPPORTED_FAMILIES]})")
     size = image_size or AnnotationImageSize(width=1280, height=720)
     if family is DiagramFamily.CYCLE:
-        return _generate_cycle_spec(rng, sample_id=sample_id, image_size=size)
-    if family is DiagramFamily.TABLE_MATRIX:
-        return _generate_table_matrix_spec(rng, sample_id=sample_id, image_size=size)
-    if family is DiagramFamily.BLOCK_FLOW:
-        return _generate_block_flow_spec(rng, sample_id=sample_id, image_size=size)
-    if family is DiagramFamily.GRAPH:
-        return _generate_graph_spec(rng, sample_id=sample_id, image_size=size)
-    if family is DiagramFamily.TREE:
-        return _generate_tree_spec(rng, sample_id=sample_id, image_size=size)
-    if family is DiagramFamily.LAYERED_STACK:
-        return _generate_layered_stack_spec(rng, sample_id=sample_id, image_size=size)
-    if family is DiagramFamily.ORTHOGONAL_FLOW and rng.random() < 0.55:
+        spec = _generate_cycle_spec(rng, sample_id=sample_id, image_size=size)
+    elif family is DiagramFamily.TABLE_MATRIX:
+        spec = _generate_table_matrix_spec(rng, sample_id=sample_id, image_size=size)
+    elif family is DiagramFamily.BLOCK_FLOW:
+        spec = _generate_block_flow_spec(rng, sample_id=sample_id, image_size=size)
+    elif family is DiagramFamily.GRAPH:
+        spec = _generate_graph_spec(rng, sample_id=sample_id, image_size=size)
+    elif family is DiagramFamily.TREE:
+        spec = _generate_tree_spec(rng, sample_id=sample_id, image_size=size)
+    elif family is DiagramFamily.LAYERED_STACK:
+        spec = _generate_layered_stack_spec(rng, sample_id=sample_id, image_size=size)
+    elif family is DiagramFamily.ORTHOGONAL_FLOW and rng.random() < 0.55:
         # Half of orthogonal flows use the realistic 2D-grid block-diagram layout
         # with solid-black elbow connectors (the dominant real-paper look).
-        return _generate_grid_flow_spec(rng, sample_id=sample_id, image_size=size)
-    return _generate_orthogonal_flow_spec(rng, sample_id=sample_id, image_size=size)
+        spec = _generate_grid_flow_spec(rng, sample_id=sample_id, image_size=size)
+    else:
+        spec = _generate_orthogonal_flow_spec(rng, sample_id=sample_id, image_size=size)
+    decorations = _sample_decorations(rng, spec)
+    return replace(spec, decorations=decorations) if decorations else spec
+
+
+def _brace_points(
+    x_tip: float, y0: float, y1: float, depth: float, side: int
+) -> tuple[tuple[float, float], ...]:
+    """A curly-brace ``}``/``{`` polyline: two tips at (x_tip, y0/y1) with the spine
+    bulging ``side`` (±1) by ``depth`` and a point poking out twice as far at the mid."""
+    ymid = (y0 + y1) / 2.0
+    return (
+        (x_tip, y0),
+        (x_tip + side * depth, y0 + (ymid - y0) * 0.3),
+        (x_tip + side * depth, ymid - (ymid - y0) * 0.3),
+        (x_tip + side * 2 * depth, ymid),
+        (x_tip + side * depth, ymid + (y1 - ymid) * 0.3),
+        (x_tip + side * depth, y1 - (y1 - ymid) * 0.3),
+        (x_tip, y1),
+    )
+
+
+def _sample_decorations(rng: random.Random, spec: SyntheticSlideSpec) -> tuple[SyntheticDecoration, ...]:
+    """Occasionally add a non-GT brace grouping the top- and bottom-most nodes in the
+    right margin — the canonical real-figure false connector (cf. the "Résumé" brace
+    grouping the two output boxes). It must span two nodes that are NOT truly connected,
+    so the classical candidate it induces is a genuine negative, not a mislabelled
+    positive on top of a real edge."""
+    nodes = spec.nodes
+    if len(nodes) < 3 or rng.random() >= 0.45:
+        return ()
+    idx = {n.id: i for i, n in enumerate(nodes)}
+    gt_pairs = set()
+    for con in spec.connectors:
+        s = con.candidate.start_endpoint.owner_id if con.candidate.start_endpoint else None
+        t = con.candidate.end_endpoint.owner_id if con.candidate.end_endpoint else None
+        if s in idx and t in idx:
+            gt_pairs.add(frozenset((idx[s], idx[t])))
+    order = sorted(range(len(nodes)), key=lambda i: (nodes[i].bbox.y0 + nodes[i].bbox.y1) / 2.0)
+    top, bot = nodes[order[0]], nodes[order[-1]]
+    if frozenset((order[0], order[-1])) in gt_pairs:
+        return ()  # would sit on a real edge; skip rather than mislabel
+    # Place the brace in the clear margin right of EVERY node and container, so it is a
+    # single isolated component (not cut into per-row fragments by node erasure, which
+    # would otherwise attach to adjacent connected pairs and mislabel them positive).
+    width = float(spec.image_size.width)
+    right_limit = max([n.bbox.x1 for n in nodes] + [c.bbox.x1 for c in spec.containers])
+    depth = rng.randint(10, 20)
+    x_tip = right_limit + rng.randint(24, 50)
+    if x_tip + 2 * depth > width - 4 or bot.bbox.y1 - top.bbox.y0 <= 60:
+        return ()  # no room in the right margin, or the span is too short to be brace-like
+    points = _brace_points(x_tip, top.bbox.y0, bot.bbox.y1, depth, side=1)
+    return (SyntheticDecoration(points=points, width=rng.randint(2, 3)),)
 
 
 def _generate_grid_flow_spec(
@@ -427,6 +495,19 @@ def _generate_grid_flow_spec(
             connect(ni, grid[(r, c + 1)], PortSide.RIGHT, PortSide.LEFT)
         if (r + 1, c) in grid and rng.random() < 0.7:
             connect(ni, grid[(r + 1, c)], PortSide.BOTTOM, PortSide.TOP)
+
+    if not connectors and len(nodes) >= 2:
+        # A block diagram is always wired: if the probabilistic pass produced nothing,
+        # force the first adjacent grid pair (or any two nodes) so there is >=1 edge.
+        for (r, c), ni in grid.items():
+            if (r, c + 1) in grid:
+                connect(ni, grid[(r, c + 1)], PortSide.RIGHT, PortSide.LEFT)
+                break
+            if (r + 1, c) in grid:
+                connect(ni, grid[(r + 1, c)], PortSide.BOTTOM, PortSide.TOP)
+                break
+        else:
+            connect(0, 1, PortSide.RIGHT, PortSide.LEFT)
 
     containers, container_styles = _build_containers(
         rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.5
@@ -1488,6 +1569,10 @@ def render_spec_image(spec: SyntheticSlideSpec) -> Image.Image:
         else:
             draw.rectangle(box, fill=style.fill, outline=style.stroke, width=style.stroke_width)
 
+    # Non-GT decorations (braces, margin lines) on top — hard negatives, not connectors.
+    for deco in spec.decorations:
+        draw.line([(float(px), float(py)) for px, py in deco.points], fill=deco.stroke, width=deco.width)
+
     font = ImageFont.load_default(size=spec.label_font_size)
     for text_region in spec.text_regions:
         if text_region.text is None:
@@ -1676,6 +1761,21 @@ def write_spec_pptx(spec: SyntheticSlideSpec, path: Path) -> None:
                 line_element = shape.line._get_or_add_ln()
                 tail = line_element.makeelement(qn("a:tailEnd"), {"type": "triangle"})
                 line_element.append(tail)
+
+    # Non-GT decorations (braces, margin lines): rendered as plain straight segments
+    # with no arrowhead, never added to the ground-truth connector set.
+    for d_index, deco in enumerate(spec.decorations):
+        for start, end in zip(deco.points, deco.points[1:]):
+            shape = slide.shapes.add_connector(
+                MSO_CONNECTOR.STRAIGHT,
+                Emu(int(start[0] * EMU_PER_PIXEL)),
+                Emu(int(start[1] * EMU_PER_PIXEL)),
+                Emu(int(end[0] * EMU_PER_PIXEL)),
+                Emu(int(end[1] * EMU_PER_PIXEL)),
+            )
+            shape.name = f"decoration:{d_index}"
+            shape.line.color.rgb = RGBColor(*deco.stroke)
+            shape.line.width = Pt(max(1.0, float(deco.width)) * 0.75)
 
     path.parent.mkdir(parents=True, exist_ok=True)
     presentation.save(path)

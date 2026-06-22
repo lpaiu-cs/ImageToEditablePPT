@@ -39,6 +39,21 @@ def test_generated_specs_satisfy_slide_ir_contract() -> None:
         assert len(spec.text_regions) == len(spec.nodes)
 
 
+def test_decorations_are_rendered_but_not_ground_truth() -> None:
+    # Decorations (braces etc.) are hard negatives: drawn into the image but never GT.
+    spec = None
+    for seed in range(60):
+        candidate = generate_slide_spec(random.Random(seed), sample_id=f"deco_{seed}")
+        if candidate.decorations:
+            spec = candidate
+            break
+    assert spec is not None, "no decoration produced in 60 seeds"
+    document = spec.to_annotation_document()
+    assert len(document.primitive_scene.connector_candidates) == len(spec.connectors)
+    # rendering with a decoration must not raise (PIL path)
+    render_spec_image(spec)
+
+
 def test_generation_is_deterministic_for_equal_seeds() -> None:
     spec_a = generate_slide_spec(random.Random(123), sample_id="det")
     spec_b = generate_slide_spec(random.Random(123), sample_id="det")
