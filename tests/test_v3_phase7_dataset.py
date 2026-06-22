@@ -31,8 +31,11 @@ def test_generated_specs_satisfy_slide_ir_contract() -> None:
     for index in range(25):
         spec = generate_slide_spec(rng, sample_id=f"contract_{index:03d}")
         validate_spec_contract(spec)
-        assert 3 <= len(spec.nodes) <= 6
-        assert len(spec.connectors) == len(spec.nodes) - 1
+        # orthogonal_flow now spans a single-row chain (3-6 nodes) and a realistic
+        # 2D-grid block diagram (more nodes, variable connectors), so the per-node
+        # text-region pairing is the layout-agnostic invariant to assert here.
+        assert 3 <= len(spec.nodes) <= 16
+        assert len(spec.connectors) >= 1
         assert len(spec.text_regions) == len(spec.nodes)
 
 

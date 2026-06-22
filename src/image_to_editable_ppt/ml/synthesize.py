@@ -342,7 +342,107 @@ def generate_slide_spec(
         return _generate_tree_spec(rng, sample_id=sample_id, image_size=size)
     if family is DiagramFamily.LAYERED_STACK:
         return _generate_layered_stack_spec(rng, sample_id=sample_id, image_size=size)
+    if family is DiagramFamily.ORTHOGONAL_FLOW and rng.random() < 0.55:
+        # Half of orthogonal flows use the realistic 2D-grid block-diagram layout
+        # with solid-black elbow connectors (the dominant real-paper look).
+        return _generate_grid_flow_spec(rng, sample_id=sample_id, image_size=size)
     return _generate_orthogonal_flow_spec(rng, sample_id=sample_id, image_size=size)
+
+
+def _generate_grid_flow_spec(
+    rng: random.Random,
+    *,
+    sample_id: str,
+    image_size: AnnotationImageSize,
+) -> SyntheticSlideSpec:
+    """A realistic block diagram: a 2D grid of boxes wired by solid-black elbow
+    (right-angle) connectors, like the PowerPoint-built architecture figures that
+    fill real papers. The connector segmenter trained only on thin straight
+    single-row connectors barely fired on these, so this is the key real-transfer
+    lever for connectors/topology."""
+    theme = _pick_theme(rng)
+    fill, stroke = _theme_fill_stroke(rng, theme)
+    node_kind = NodeKind.ROUNDED_BOX if rng.random() < 0.5 else NodeKind.BOX
+    node_shape = "round" if node_kind is NodeKind.ROUNDED_BOX else "rect"
+    style = SyntheticNodeStyle(fill=fill, stroke=stroke, shape=node_shape, stroke_width=theme.node_stroke_width)
+    # Real connectors are solid black/dark, medium weight, with triangle heads.
+    connector_stroke = (0, 0, 0) if rng.random() < 0.8 else _GRAY_STROKE_PALETTE[rng.randrange(len(_GRAY_STROKE_PALETTE))]
+    connector_width = rng.choice((2, 3))
+
+    width, height = float(image_size.width), float(image_size.height)
+    rows, cols = rng.randint(2, 4), rng.randint(2, 4)
+    margin_x, margin_y = width * 0.07, height * 0.1
+    cell_w = (width - 2 * margin_x) / cols
+    cell_h = (height - 2 * margin_y) / rows
+    box_w = cell_w * rng.uniform(0.55, 0.74)
+    box_h = cell_h * rng.uniform(0.4, 0.62)
+    label_font_size = max(13, int(box_h * 0.3))
+    font = ImageFont.load_default(size=label_font_size)
+
+    nodes: list[AnnotationNode] = []
+    text_regions: list[AnnotationTextRegion] = []
+    node_styles: dict[str, SyntheticNodeStyle] = {}
+    grid: dict[tuple[int, int], int] = {}
+    index = 0
+    for r in range(rows):
+        for c in range(cols):
+            if rng.random() < 0.15 and not (r == 0 and c == 0):
+                continue  # occasional empty cell, like real diagrams
+            cx = margin_x + c * cell_w + cell_w / 2.0
+            cy = margin_y + r * cell_h + cell_h / 2.0
+            bbox = AnnotationBBox(x0=cx - box_w / 2.0, y0=cy - box_h / 2.0, x1=cx + box_w / 2.0, y1=cy + box_h / 2.0)
+            node_id = f"node:{sample_id}:{index}"
+            label = rng.choice(_LABEL_VOCAB)
+            nodes.append(
+                AnnotationNode(
+                    id=node_id, kind=node_kind, bbox=bbox, confidence=1.0, label=label,
+                    text_region_ids=(f"text:{sample_id}:{index}",), source="synthetic_gt",
+                    provenance=(f"{GENERATOR_NAME}:node",),
+                )
+            )
+            node_styles[node_id] = style
+            text_regions.append(_make_text_region(label, sample_id=sample_id, index=index, font=font, node_bbox=bbox))
+            grid[(r, c)] = index
+            index += 1
+
+    connectors: list[SyntheticConnector] = []
+    edge_index = 0
+
+    def connect(a: int, b: int, start_side: PortSide, end_side: PortSide) -> None:
+        nonlocal edge_index
+        start_point = _side_point(nodes[a].bbox, start_side)
+        end_point = _side_point(nodes[b].bbox, end_side)
+        connectors.append(
+            _make_connector(
+                sample_id=sample_id, index=edge_index, start_node=nodes[a], end_node=nodes[b],
+                start_point=start_point, start_side=start_side, end_point=end_point, end_side=end_side,
+                theme=theme, node_stroke=stroke, path=_elbow_path(start_point, start_side, end_point, end_side),
+                stroke_override=connector_stroke, width_override=connector_width,
+            )
+        )
+        edge_index += 1
+
+    for (r, c), ni in grid.items():
+        if (r, c + 1) in grid and rng.random() < 0.8:
+            connect(ni, grid[(r, c + 1)], PortSide.RIGHT, PortSide.LEFT)
+        if (r + 1, c) in grid and rng.random() < 0.7:
+            connect(ni, grid[(r + 1, c)], PortSide.BOTTOM, PortSide.TOP)
+
+    containers, container_styles = _build_containers(
+        rng, sample_id=sample_id, nodes=nodes, image_size=image_size, probability=0.5
+    )
+    focus = containers[0].bbox if containers else _union_bbox(
+        [node.bbox for node in nodes] + [connector.candidate.bbox for connector in connectors]
+    )
+    proposal = AnnotationFamilyProposal(
+        id=f"family:{sample_id}:0", family=DiagramFamily.ORTHOGONAL_FLOW, confidence=1.0, focus_bbox=focus,
+        evidence=(f"{GENERATOR_NAME}:layout",), provenance=(f"{GENERATOR_NAME}:family_proposal",),
+    )
+    return SyntheticSlideSpec(
+        sample_id=sample_id, family=DiagramFamily.ORTHOGONAL_FLOW, image_size=image_size, nodes=tuple(nodes),
+        node_styles=node_styles, text_regions=tuple(text_regions), containers=containers, connectors=tuple(connectors),
+        family_proposal=proposal, label_font_size=label_font_size, container_styles=container_styles,
+    )
 
 
 def _generate_orthogonal_flow_spec(
@@ -815,8 +915,14 @@ def _make_connector(
     node_stroke: tuple[int, int, int],
     path: tuple[AnnotationPoint, ...] | None = None,
     draw_arrowhead: bool = True,
+    stroke_override: tuple[int, int, int] | None = None,
+    width_override: int | None = None,
 ) -> SyntheticConnector:
-    """Build a directed SyntheticConnector + its ports with theme-aware styling."""
+    """Build a directed SyntheticConnector + its ports with theme-aware styling.
+
+    ``stroke_override`` / ``width_override`` force a specific connector look (e.g.
+    the solid-black elbow connectors of PowerPoint-style block diagrams).
+    """
     resolved_path = path if path is not None else (start_point, end_point)
     connector_id = f"connector:{sample_id}:{index}"
     return SyntheticConnector(
@@ -839,10 +945,38 @@ def _make_connector(
         ),
         start_port=_port_for(start_node.id, sample_id, index, "start", side=start_side, point=start_point),
         end_port=_port_for(end_node.id, sample_id, index, "end", side=end_side, point=end_point),
-        stroke=_connector_stroke(theme, node_stroke),
-        width=theme.connector_width,
+        stroke=stroke_override if stroke_override is not None else _connector_stroke(theme, node_stroke),
+        width=width_override if width_override is not None else theme.connector_width,
         draw_arrowhead=draw_arrowhead,
     )
+
+
+def _side_point(box: AnnotationBBox, side: PortSide) -> AnnotationPoint:
+    mid_x = (box.x0 + box.x1) / 2.0
+    mid_y = (box.y0 + box.y1) / 2.0
+    if side is PortSide.RIGHT:
+        return AnnotationPoint(box.x1, mid_y)
+    if side is PortSide.LEFT:
+        return AnnotationPoint(box.x0, mid_y)
+    if side is PortSide.TOP:
+        return AnnotationPoint(mid_x, box.y0)
+    return AnnotationPoint(mid_x, box.y1)
+
+
+def _elbow_path(
+    start: AnnotationPoint, start_side: PortSide, end: AnnotationPoint, end_side: PortSide
+) -> tuple[AnnotationPoint, ...]:
+    """Right-angle (elbow) route between two side points — the PowerPoint look."""
+    horizontal_sides = (PortSide.LEFT, PortSide.RIGHT)
+    if start_side in horizontal_sides and end_side in horizontal_sides:
+        mid_x = (start.x + end.x) / 2.0
+        return (start, AnnotationPoint(mid_x, start.y), AnnotationPoint(mid_x, end.y), end)
+    if start_side not in horizontal_sides and end_side not in horizontal_sides:
+        mid_y = (start.y + end.y) / 2.0
+        return (start, AnnotationPoint(start.x, mid_y), AnnotationPoint(end.x, mid_y), end)
+    if start_side in horizontal_sides:
+        return (start, AnnotationPoint(end.x, start.y), end)
+    return (start, AnnotationPoint(start.x, end.y), end)
 
 
 def _make_text_region(label: str, *, sample_id: str, index: int, font: ImageFont.ImageFont | ImageFont.FreeTypeFont, node_bbox: AnnotationBBox) -> AnnotationTextRegion:
