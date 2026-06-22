@@ -144,11 +144,68 @@ def detect_box_outlines(gray: np.ndarray, *, ink_threshold: int = 160, min_frac:
     return rects
 
 
+def _box_area(b: _Box) -> float:
+    return max(1.0, (b.x1 - b.x0) * (b.y1 - b.y0))
+
+
+def _intersection_area(a: _Box, b: _Box) -> float:
+    ix = max(0.0, min(a.x1, b.x1) - max(a.x0, b.x0))
+    iy = max(0.0, min(a.y1, b.y1) - max(a.y0, b.y0))
+    return ix * iy
+
+
+def _leaf_outlines(outlines: Sequence[_Box], *, contain_frac: float = 0.8) -> list[_Box]:
+    """Drawn rectangles that enclose no smaller rectangle — i.e. true node boxes.
+
+    A panel is, by its drawn structure, a rectangle around *other* boxes; a node box
+    contains only text. So a panel is identified by the honest fact that it encloses
+    another rectangle, not by any size threshold. Leaves are the boxes a node may snap
+    to; panels are deliberately excluded (snapping a node to a panel would fill the
+    panel and erase the connectors inside it).
+    """
+    leaves: list[_Box] = []
+    for i, r in enumerate(outlines):
+        r_area = _box_area(r)
+        encloses_other = any(
+            j != i and _box_area(o) < r_area and _intersection_area(o, r) >= contain_frac * _box_area(o)
+            for j, o in enumerate(outlines)
+        )
+        if not encloses_other:
+            leaves.append(r)
+    return leaves
+
+
+def _snap_nodes_to_outlines(
+    nodes: Sequence[_Box], outlines: Sequence[_Box], *, contain_frac: float = 0.8
+) -> list[_Box]:
+    """Replace each detector node box with the exact drawn rectangle it lives in.
+
+    The detector decides *that a node is here* (semantics); the classical rectangle
+    gives *exactly where its border is* (geometry). Snapping a node to the smallest
+    leaf rectangle that contains it fuses the two with no node-vs-panel gate: the
+    node's own box wins over an enclosing panel because the panel is not a leaf, and a
+    shape with no drawn rectangle (an ellipse, or a box only the detector saw) simply
+    keeps its detector box. This also fixes the interior-text leak — the detector box
+    hugs the text and can miss part of it, but the drawn rectangle covers all of it.
+    """
+    leaves = _leaf_outlines(outlines)
+    snapped: list[_Box] = []
+    for n in nodes:
+        threshold = contain_frac * _box_area(n)
+        best, best_area = None, None
+        for r in leaves:
+            if _intersection_area(n, r) >= threshold:
+                area = _box_area(r)
+                if best_area is None or area < best_area:
+                    best, best_area = r, area
+        snapped.append(best if best is not None else n)
+    return snapped
+
+
 def _node_ink_mask(
     shape: tuple[int, int],
     nodes: Sequence[_Box],
     containers: Sequence[_Box],
-    outlines: Sequence[_Box] = (),
     *,
     pad: int,
     border: int,
@@ -158,9 +215,8 @@ def _node_ink_mask(
     mask = np.zeros(shape, dtype=np.uint8)
     for b in nodes:  # whole node box (interior text + border)
         cv2.rectangle(mask, (int(b.x0) - pad, int(b.y0) - pad), (int(b.x1) + pad, int(b.y1) + pad), 1, -1)
-    # Only the border band for panels and classically-detected box outlines — keep
-    # interiors (connectors live inside panels) but erase the exact drawn outlines.
-    for b in list(containers) + list(outlines):
+    # Only the border band for panels — keep interiors (connectors live inside panels).
+    for b in containers:
         cv2.rectangle(mask, (int(b.x0) - pad, int(b.y0) - pad), (int(b.x1) + pad, int(b.y1) + pad), 1, border)
     return mask
 
@@ -176,13 +232,20 @@ def extract_connectors_morphological(
 ) -> list[ClassicalEdge]:
     """Recover connectors as connected ink components (the robust extractor).
 
-    A connector is a stroke that lives *between* nodes. So binarise the ink, remove
-    node boxes (interior text + outline) and container border bands, and take the
-    connected components of what remains: each component is one whole connector —
-    elbow and curved routes stay intact, unlike straight LSD segments. A component
-    is attached to the (up to two) nearest node boxes; touching two distinct nodes
-    makes an edge. Components are kept only if elongated (line-like), dropping stray
-    text blobs floating outside nodes.
+    A connector is a stroke that lives *between* nodes. So binarise the ink, remove the
+    nodes, and take the connected components of what remains: each component is one
+    whole connector — elbow and curved routes stay intact, unlike straight LSD
+    segments. A component is attached to the (up to two) nearest node boxes; touching
+    two distinct nodes makes an edge. Components are kept only if elongated (line-like),
+    dropping stray text blobs floating outside nodes.
+
+    Removing the nodes relies on a clean division of labour: the detector owns
+    *semantics* (a node/container is here) and the classical rectangles own *geometry*
+    (the exact border). Each node is snapped to its drawn rectangle so its whole
+    interior — including text the text-tight detector box missed — is erased, and the
+    thin border of every drawn rectangle is wiped (a box outline is never a connector).
+    There is deliberately no node-vs-panel classification: a panel is simply a
+    rectangle that no node snaps to, left open so the connectors inside it survive.
     """
     import cv2
 
@@ -194,10 +257,14 @@ def extract_connectors_morphological(
     if not nodes:
         return []
     ink = (gray < ink_threshold).astype(np.uint8)
-    # Erase exact drawn box outlines too, so an imprecise detector bbox can't leave
-    # a box border behind to be read as a connector.
+    # Snap nodes to their exact drawn rectangles (precise geometry, kills interior
+    # text), then fill those and erase the border of every drawn rectangle. Panels are
+    # the rectangles no node snapped to: their border is wiped but their interior is
+    # kept, so connectors routed inside them survive.
     outlines = detect_box_outlines(gray)
-    connector_ink = ink & (1 - _node_ink_mask((h, w), nodes, containers, outlines, pad=4, border=6))
+    nodes = _snap_nodes_to_outlines(nodes, outlines)
+    mask = _node_ink_mask((h, w), nodes, list(containers) + list(outlines), pad=4, border=6)
+    connector_ink = ink & (1 - mask)
     count, labels, stats, _ = cv2.connectedComponentsWithStats(connector_ink, connectivity=8)
     attach_dist = attach_frac * math.hypot(w, h)
     edges: dict[tuple[int, int], ClassicalEdge] = {}
@@ -222,6 +289,8 @@ def extract_connectors_morphological(
         ni = _nearest_node_to_point(end_a, nodes, max_dist=attach_dist)
         nj = _nearest_node_to_point(end_b, nodes, max_dist=attach_dist)
         if ni is None or nj is None or ni == nj:
+            continue
+        if nodes[ni] == nodes[nj]:  # two detector boxes snapped to the same drawn rectangle
             continue
         key = (min(ni, nj), max(ni, nj))
         if key in edges:
