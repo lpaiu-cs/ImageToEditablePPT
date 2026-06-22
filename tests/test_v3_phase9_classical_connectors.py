@@ -30,3 +30,20 @@ def test_filter_drops_too_short_segments():
     a, b = _Box(10, 40, 30, 60), _Box(80, 40, 100, 60)
     tiny = (45.0, 50.0, 50.0, 50.0)  # 5px, below min_length
     assert filter_connector_segments([tiny], [a, b]) == []
+
+
+def test_morphological_extractor_links_two_boxes_via_a_drawn_line():
+    import pytest
+
+    pytest.importorskip("cv2")
+    import numpy as np
+
+    from image_to_editable_ppt.ml.classical_connectors import _Box, extract_connectors_morphological
+
+    img = np.full((200, 300, 3), 255, np.uint8)
+    a, b = _Box(20, 90, 70, 130), _Box(230, 90, 280, 130)
+    # a black connector stroke from box a's right edge to box b's left edge
+    img[108:112, 70:230] = 0
+    edges = extract_connectors_morphological(img, [a, b])
+    assert len(edges) == 1
+    assert {edges[0].source, edges[0].target} == {0, 1}

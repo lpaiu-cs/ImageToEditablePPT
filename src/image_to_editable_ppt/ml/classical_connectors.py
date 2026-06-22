@@ -110,6 +110,99 @@ def rasterize_segments(segments: Sequence[Segment], *, width: int, height: int, 
     return mask
 
 
+@dataclass(slots=True, frozen=True)
+class ClassicalEdge:
+    source: int  # node index
+    target: int
+    polyline: tuple[tuple[float, float], ...]
+
+
+def _node_ink_mask(shape: tuple[int, int], nodes: Sequence[_Box], containers: Sequence[_Box], *, pad: int, border: int):
+    import cv2
+
+    mask = np.zeros(shape, dtype=np.uint8)
+    for b in nodes:  # whole node box (interior text + border)
+        cv2.rectangle(mask, (int(b.x0) - pad, int(b.y0) - pad), (int(b.x1) + pad, int(b.y1) + pad), 1, -1)
+    for b in containers:  # only the panel border band — connectors live inside panels
+        cv2.rectangle(mask, (int(b.x0) - pad, int(b.y0) - pad), (int(b.x1) + pad, int(b.y1) + pad), 1, border)
+    return mask
+
+
+def extract_connectors_morphological(
+    image: np.ndarray,
+    node_boxes: Sequence[object],
+    container_boxes: Sequence[object] = (),
+    *,
+    ink_threshold: int = 140,
+    min_area: int = 18,
+    attach_frac: float = 0.05,
+) -> list[ClassicalEdge]:
+    """Recover connectors as connected ink components (the robust extractor).
+
+    A connector is a stroke that lives *between* nodes. So binarise the ink, remove
+    node boxes (interior text + outline) and container border bands, and take the
+    connected components of what remains: each component is one whole connector —
+    elbow and curved routes stay intact, unlike straight LSD segments. A component
+    is attached to the (up to two) nearest node boxes; touching two distinct nodes
+    makes an edge. Components are kept only if elongated (line-like), dropping stray
+    text blobs floating outside nodes.
+    """
+    import cv2
+
+    rgb = np.asarray(image)
+    gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY) if rgb.ndim == 3 else rgb
+    h, w = gray.shape[:2]
+    nodes = [_as_box(b) for b in node_boxes]
+    containers = [_as_box(b) for b in container_boxes]
+    if not nodes:
+        return []
+    ink = (gray < ink_threshold).astype(np.uint8)
+    connector_ink = ink & (1 - _node_ink_mask((h, w), nodes, containers, pad=4, border=6))
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(connector_ink, connectivity=8)
+    attach_dist = attach_frac * math.hypot(w, h)
+    edges: dict[tuple[int, int], ClassicalEdge] = {}
+    for ci in range(1, count):
+        x, y, bw, bh, area = stats[ci]
+        if area < min_area:
+            continue
+        if max(bw, bh) / max(1, min(bw, bh)) < 2.5 and area / max(1, bw * bh) > 0.5:
+            continue  # blobby (text), not a line-like connector
+        ys, xs = np.where(labels[y : y + bh, x : x + bw] == ci)
+        ys = ys.astype(np.float64) + y
+        xs = xs.astype(np.float64) + x
+        # The connector's two *ends* are the extreme pixels along the component's
+        # principal axis (PCA). Attach each end to the node nearest *that end* — not
+        # to any node near the middle — so an elbow routed past a third node does
+        # not spuriously link to it.
+        pts = np.column_stack([xs, ys])
+        centred = pts - pts.mean(axis=0)
+        axis = np.linalg.eigh(centred.T @ centred)[1][:, -1]
+        proj = centred @ axis
+        end_a, end_b = pts[int(proj.argmin())], pts[int(proj.argmax())]
+        ni = _nearest_node_to_point(end_a, nodes, max_dist=attach_dist)
+        nj = _nearest_node_to_point(end_b, nodes, max_dist=attach_dist)
+        if ni is None or nj is None or ni == nj:
+            continue
+        key = (min(ni, nj), max(ni, nj))
+        if key not in edges:
+            edges[key] = ClassicalEdge(
+                source=ni, target=nj,
+                polyline=((float(end_a[0]), float(end_a[1])), (float(end_b[0]), float(end_b[1]))),
+            )
+    return list(edges.values())
+
+
+def _nearest_node_to_point(point: np.ndarray, nodes: Sequence[_Box], *, max_dist: float) -> int | None:
+    best, best_d = None, max_dist
+    for idx, b in enumerate(nodes):
+        dx = max(b.x0 - point[0], 0.0, point[0] - b.x1)
+        dy = max(b.y0 - point[1], 0.0, point[1] - b.y1)
+        d = math.hypot(dx, dy)
+        if d <= best_d:
+            best, best_d = idx, d
+    return best
+
+
 def classical_connector_masks(
     image: np.ndarray,
     node_boxes: Sequence[object],
