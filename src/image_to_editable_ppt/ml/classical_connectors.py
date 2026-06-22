@@ -117,13 +117,50 @@ class ClassicalEdge:
     polyline: tuple[tuple[float, float], ...]
 
 
-def _node_ink_mask(shape: tuple[int, int], nodes: Sequence[_Box], containers: Sequence[_Box], *, pad: int, border: int):
+def detect_box_outlines(gray: np.ndarray, *, ink_threshold: int = 160, min_frac: float = 0.001, max_frac: float = 0.4) -> list[_Box]:
+    """Detect drawn rectangular box outlines (closed 4-corner convex contours).
+
+    The learned detector's node bboxes are often a few px off, so a box's real
+    outline leaks into the connector ink and is mistaken for a connector. Classical
+    rectangle detection finds the *actual* outlines precisely (no domain gap), so
+    they can be masked out exactly regardless of detector precision.
+    """
+    import cv2
+
+    binary = ((gray < ink_threshold).astype(np.uint8)) * 255
+    contours, _ = cv2.findContours(binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    img_area = float(gray.size)
+    rects: list[_Box] = []
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area < min_frac * img_area or area > max_frac * img_area:
+            continue
+        approx = cv2.approxPolyDP(contour, 0.04 * cv2.arcLength(contour, True), True)
+        if len(approx) != 4 or not cv2.isContourConvex(approx):
+            continue
+        x, y, bw, bh = cv2.boundingRect(approx)
+        if area / max(1, bw * bh) > 0.8 and 0.15 < bw / max(1, bh) < 8:
+            rects.append(_Box(float(x), float(y), float(x + bw), float(y + bh)))
+    return rects
+
+
+def _node_ink_mask(
+    shape: tuple[int, int],
+    nodes: Sequence[_Box],
+    containers: Sequence[_Box],
+    outlines: Sequence[_Box] = (),
+    *,
+    pad: int,
+    border: int,
+):
     import cv2
 
     mask = np.zeros(shape, dtype=np.uint8)
     for b in nodes:  # whole node box (interior text + border)
         cv2.rectangle(mask, (int(b.x0) - pad, int(b.y0) - pad), (int(b.x1) + pad, int(b.y1) + pad), 1, -1)
-    for b in containers:  # only the panel border band — connectors live inside panels
+    # Only the border band for panels and classically-detected box outlines — keep
+    # interiors (connectors live inside panels) but erase the exact drawn outlines.
+    for b in list(containers) + list(outlines):
         cv2.rectangle(mask, (int(b.x0) - pad, int(b.y0) - pad), (int(b.x1) + pad, int(b.y1) + pad), 1, border)
     return mask
 
@@ -157,7 +194,10 @@ def extract_connectors_morphological(
     if not nodes:
         return []
     ink = (gray < ink_threshold).astype(np.uint8)
-    connector_ink = ink & (1 - _node_ink_mask((h, w), nodes, containers, pad=4, border=6))
+    # Erase exact drawn box outlines too, so an imprecise detector bbox can't leave
+    # a box border behind to be read as a connector.
+    outlines = detect_box_outlines(gray)
+    connector_ink = ink & (1 - _node_ink_mask((h, w), nodes, containers, outlines, pad=4, border=6))
     count, labels, stats, _ = cv2.connectedComponentsWithStats(connector_ink, connectivity=8)
     attach_dist = attach_frac * math.hypot(w, h)
     edges: dict[tuple[int, int], ClassicalEdge] = {}

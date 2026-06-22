@@ -47,3 +47,20 @@ def test_morphological_extractor_links_two_boxes_via_a_drawn_line():
     edges = extract_connectors_morphological(img, [a, b])
     assert len(edges) == 1
     assert {edges[0].source, edges[0].target} == {0, 1}
+
+
+def test_detect_box_outlines_finds_a_drawn_rectangle():
+    import pytest
+
+    pytest.importorskip("cv2")
+    import numpy as np
+
+    from image_to_editable_ppt.ml.classical_connectors import detect_box_outlines
+
+    img = np.full((200, 300), 255, np.uint8)
+    img[50:150, 80:220] = 255
+    import cv2
+
+    cv2.rectangle(img, (80, 50), (220, 150), 0, 2)  # a drawn box outline
+    rects = detect_box_outlines(img)
+    assert any(abs(r.x0 - 80) < 6 and abs(r.x1 - 220) < 6 and abs(r.y0 - 50) < 6 and abs(r.y1 - 150) < 6 for r in rects)
