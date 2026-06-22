@@ -40,7 +40,8 @@ from image_to_editable_ppt.ml.dataset import get_or_load
 
 GEOM_DIM = 9
 LINE_DIM = 7
-FEATURE_DIM = GEOM_DIM + LINE_DIM
+PATH_DIM = 2
+FEATURE_DIM = GEOM_DIM + LINE_DIM + PATH_DIM
 NUM_CLASSES = 3  # 0 = no edge, 1 = i->j, 2 = j->i
 
 
@@ -149,6 +150,48 @@ def segment_line_features(
     ]
 
 
+def compute_node_components(
+    line_mask: np.ndarray, boxes: Sequence[_Box], *, dilate_iter: int = 2, ring: int = 5
+) -> tuple[list[set[int]], dict[int, int]]:
+    """Label the line mask's connected strokes and, per node, the stroke labels that
+    touch a ring around its box. ``fanout[label]`` = how many nodes that stroke
+    touches (a clean connector touches 2; a merged/crossing blob touches more).
+
+    This is the mask-path signal: two nodes joined by the *same* stroke component
+    are connected along the actual (elbow) route, whereas an unrelated arrow that a
+    straight segment merely clips is a different component touching only one of them.
+    """
+    from scipy import ndimage as ndi
+
+    mask = line_mask > 0
+    if dilate_iter:
+        mask = ndi.binary_dilation(mask, iterations=dilate_iter)
+    labels, _ = ndi.label(mask, structure=np.ones((3, 3), dtype=np.uint8))
+    h, w = labels.shape
+    node_labels: list[set[int]] = []
+    label_nodes: dict[int, set[int]] = {}
+    for idx, box in enumerate(boxes):
+        x0, y0 = max(0, int(box.x0) - ring), max(0, int(box.y0) - ring)
+        x1, y1 = min(w, int(box.x1) + ring), min(h, int(box.y1) + ring)
+        region = labels[y0:y1, x0:x1]
+        labs = {int(value) for value in np.unique(region) if value > 0}
+        node_labels.append(labs)
+        for label in labs:
+            label_nodes.setdefault(label, set()).add(idx)
+    fanout = {label: len(nodes) for label, nodes in label_nodes.items()}
+    return node_labels, fanout
+
+
+def path_features(labels_i: set[int], labels_j: set[int], fanout: dict[int, int]) -> list[float]:
+    """[path_connected, clean_connector] from shared stroke components."""
+    shared = labels_i & labels_j
+    if not shared:
+        return [0.0, 0.0]
+    min_fanout = min(fanout.get(label, 99) for label in shared)
+    # A clean connector's stroke touches just its two endpoints (fanout 2).
+    return [1.0, 1.0 if min_fanout <= 3 else 0.0]
+
+
 def pair_features(
     line_mask: np.ndarray,
     arrow_mask: np.ndarray,
@@ -158,9 +201,12 @@ def pair_features(
     width: float,
     height: float,
     occluders: Sequence[_Box] = (),
+    path_feats: Sequence[float] = (0.0, 0.0),
 ) -> list[float]:
-    return pair_geometric_features(box_i, box_j, width=width, height=height) + segment_line_features(
-        line_mask, arrow_mask, box_i, box_j, occluders=occluders
+    return (
+        pair_geometric_features(box_i, box_j, width=width, height=height)
+        + segment_line_features(line_mask, arrow_mask, box_i, box_j, occluders=occluders)
+        + list(path_feats)
     )
 
 
@@ -219,12 +265,16 @@ def _sample_pairs(document, line_mask, arrow_mask, *, width, height, rng: random
         t = connector.end_endpoint.owner_id if connector.end_endpoint else None
         if s in index_of and t in index_of and index_of[s] != index_of[t]:
             directed[(index_of[s], index_of[t])] = 1
+    node_labels, fanout = compute_node_components(line_mask, boxes)
     pos, neg = [], []
     for i in range(len(nodes)):
         for j in range(i + 1, len(nodes)):
             label = 1 if (i, j) in directed else (2 if (j, i) in directed else 0)
             occluders = [boxes[k] for k in range(len(nodes)) if k != i and k != j]
-            feat = pair_features(line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height, occluders=occluders)
+            feat = pair_features(
+                line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height,
+                occluders=occluders, path_feats=path_features(node_labels[i], node_labels[j], fanout),
+            )
             (pos if label else neg).append((feat, label))
     rng.shuffle(neg)
     return pos + neg[: max(5, neg_per_pos * len(pos))]
@@ -349,11 +399,13 @@ def predict_relations(
     pairs = [(i, j) for i in range(len(boxes)) for j in range(i + 1, len(boxes))]
     if not pairs:
         return []
+    node_labels, fanout = compute_node_components(line_mask, boxes)
     feats = torch.tensor(
         [
             pair_features(
                 line_mask, arrow_mask, boxes[i], boxes[j], width=width, height=height,
                 occluders=[boxes[k] for k in range(len(boxes)) if k != i and k != j],
+                path_feats=path_features(node_labels[i], node_labels[j], fanout),
             )
             for i, j in pairs
         ],
