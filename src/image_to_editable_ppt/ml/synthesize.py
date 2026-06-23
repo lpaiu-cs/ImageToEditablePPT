@@ -269,8 +269,9 @@ class SyntheticDecoration:
 
     Rendered into the image but deliberately NOT ground truth — these are the hard
     negatives (the curly brace grouping two output nodes is the canonical real-figure
-    false positive). Classical extraction proposes them as connectors; seeing them
-    labelled as non-edges is what teaches the relation judge to reject them."""
+    false positive). They are opt-in (see ``generate_slide_spec``) and belong to a
+    future element-level "is this ink a connector?" judge — the brace is a connector-
+    detection question, not a relation one, so it must never enter relation training."""
 
     points: tuple[tuple[float, float], ...]
     stroke: tuple[int, int, int] = (0, 0, 0)
@@ -341,6 +342,7 @@ def generate_slide_spec(
     sample_id: str,
     family: DiagramFamily = DiagramFamily.ORTHOGONAL_FLOW,
     image_size: AnnotationImageSize | None = None,
+    with_decorations: bool = False,
 ) -> SyntheticSlideSpec:
     if family not in SUPPORTED_FAMILIES:
         raise ValueError(f"unsupported synthetic family: {family.value} (supported: {[f.value for f in SUPPORTED_FAMILIES]})")
@@ -363,8 +365,14 @@ def generate_slide_spec(
         spec = _generate_grid_flow_spec(rng, sample_id=sample_id, image_size=size)
     else:
         spec = _generate_orthogonal_flow_spec(rng, sample_id=sample_id, image_size=size)
-    decorations = _sample_decorations(rng, spec)
-    return replace(spec, decorations=decorations) if decorations else spec
+    # Decorations (braces etc.) are opt-in hard negatives for a future element-level
+    # "is this a connector?" judge. They are NOT emitted by default, so they never
+    # pollute detector/relation training, whose inputs are assumed clean.
+    if with_decorations:
+        decorations = _sample_decorations(rng, spec)
+        if decorations:
+            return replace(spec, decorations=decorations)
+    return spec
 
 
 def _brace_points(

@@ -44,6 +44,7 @@ class GenerateDatasetConfig:
     val_ratio: float
     write_pptx: bool
     renderer: str = "pil"
+    with_decorations: bool = False
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -69,6 +70,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default="pil",
         help="png renderer: deterministic PIL rasterizer, or LibreOffice rendering of the generated pptx.",
     )
+    parser.add_argument(
+        "--decorations",
+        action="store_true",
+        help="Add opt-in non-GT decorations (braces) as hard negatives — for an element-level connector-validity judge, not detector/relation training.",
+    )
     return parser
 
 
@@ -86,6 +92,7 @@ def main(argv: list[str] | None = None) -> int:
         val_ratio=float(args.val_ratio),
         write_pptx=not args.no_pptx,
         renderer=args.renderer,
+        with_decorations=args.decorations,
     )
 
     if config.count <= 0:
@@ -119,7 +126,10 @@ def build_dataset(config: GenerateDatasetConfig) -> dict[str, object]:
         family = config.families[rng.randrange(len(config.families))]
         sample_id = f"{family.value}_{config.seed:04d}_{index:05d}"
         split = splits[index]
-        spec = generate_slide_spec(rng, sample_id=sample_id, family=family, image_size=image_size)
+        spec = generate_slide_spec(
+            rng, sample_id=sample_id, family=family, image_size=image_size,
+            with_decorations=config.with_decorations,
+        )
         validate_spec_contract(spec)
 
         sample_dir = config.output_dir / split

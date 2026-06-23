@@ -40,10 +40,12 @@ def test_generated_specs_satisfy_slide_ir_contract() -> None:
 
 
 def test_decorations_are_rendered_but_not_ground_truth() -> None:
-    # Decorations (braces etc.) are hard negatives: drawn into the image but never GT.
+    # Decorations (braces etc.) are opt-in hard negatives: drawn into the image but
+    # never GT, and only when explicitly requested (off by default).
+    assert generate_slide_spec(random.Random(0), sample_id="d").decorations == ()  # default off
     spec = None
     for seed in range(60):
-        candidate = generate_slide_spec(random.Random(seed), sample_id=f"deco_{seed}")
+        candidate = generate_slide_spec(random.Random(seed), sample_id=f"deco_{seed}", with_decorations=True)
         if candidate.decorations:
             spec = candidate
             break

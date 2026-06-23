@@ -428,34 +428,3 @@ def classical_connector_masks(
     line_mask = rasterize_segments(kept, width=width, height=height)
     arrow_mask = np.zeros((height, width), dtype=np.uint8)
     return line_mask, arrow_mask
-
-
-# Per-pair geometry the learned relation judge consumes: a candidate's existence plus
-# its shape. These are *features for a model to weigh*, not thresholds applied here.
-CANDIDATE_FEATURE_DIM = 5
-# Sentinel for a pair the extractor proposed no connector for (no stroke between them).
-NO_CANDIDATE_FEATURES = [0.0, 0.0, 0.0, 0.0, 0.0]
-
-
-def candidate_features(
-    image: np.ndarray, node_boxes: Sequence[object], container_boxes: Sequence[object] = ()
-) -> dict[tuple[int, int], list[float]]:
-    """Morphological-candidate geometry per node pair, for the relation judge.
-
-    Key = ``(min(i, j), max(i, j))``; value = ``[has_candidate, gap_frac, ortho,
-    excursion, edge_off]``. Pairs with no proposed connector are simply absent — the
-    caller fills them with ``NO_CANDIDATE_FEATURES``. The classical extractor is the
-    high-recall proposer; the learned model decides which proposals are real.
-    """
-    import cv2
-
-    rgb = np.asarray(image)
-    gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY) if rgb.ndim == 3 else rgb
-    h, w = gray.shape[:2]
-    diag = max(1.0, math.hypot(w, h))
-    feats: dict[tuple[int, int], list[float]] = {}
-    for e in extract_connectors_morphological(image, node_boxes, container_boxes):
-        feats[(min(e.source, e.target), max(e.source, e.target))] = [
-            1.0, min(1.0, e.gap / diag), e.ortho, e.excursion, e.edge_off
-        ]
-    return feats
