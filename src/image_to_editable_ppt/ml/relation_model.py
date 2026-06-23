@@ -386,7 +386,16 @@ def train_relation_model(args: argparse.Namespace) -> dict[str, object]:
     metrics = {key: float(value) for key, value in trainer.callback_metrics.items()}
     manifest = {
         "status": "trained",
-        "config": {"train_pairs": len(train_set), "val_pairs": len(val_set), "class_counts": counts, "seed": args.seed},
+        "config": {
+            "train_pairs": len(train_set),
+            "val_pairs": len(val_set),
+            "class_counts": counts,
+            "seed": args.seed,
+            # The mask source changes the line/arrow features built from the same
+            # dataset, so record it for reproducibility.
+            "connector_source": args.connector_source,
+            "connector_checkpoint": args.connector_checkpoint,
+        },
         "final_metrics": metrics,
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)

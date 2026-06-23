@@ -102,6 +102,21 @@ def test_nodes_inside_a_panel_do_not_snap_to_it():
     assert _snap_nodes_to_outlines([a], [own]) == [own]
 
 
+def test_node_does_not_snap_to_a_detected_container():
+    """A detected container is a panel by the detector's own call, so a node inside it
+    must not snap to it even when it is the only detected member (filling it would erase
+    the connectors routed through the panel)."""
+    from image_to_editable_ppt.ml.classical_connectors import _Box, _snap_nodes_to_outlines
+
+    container = _Box(40, 40, 360, 200)
+    node = _Box(70, 90, 320, 150)  # the sole detected node inside the panel
+    # Without the container hint and no other node, the panel is the only leaf holding
+    # the node, so it would wrongly snap (the reported bug)...
+    assert _snap_nodes_to_outlines([node], [container]) == [container]
+    # ...passing the detected container keeps that panel out of snap candidates.
+    assert _snap_nodes_to_outlines([node], [container], [container]) == [node]
+
+
 def test_overlapping_fragments_still_snap_to_their_shared_rectangle():
     """Detector over-segmentation (two overlapping boxes for one drawn box) must still
     snap both to that box, so its interior text is erased — overlap, not size, tells a

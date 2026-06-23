@@ -164,6 +164,11 @@ def _center_inside(inner: _Box, outer: _Box) -> bool:
     return outer.x0 <= cx <= outer.x1 and outer.y0 <= cy <= outer.y1
 
 
+def _iou(a: _Box, b: _Box) -> float:
+    inter = _intersection_area(a, b)
+    return inter / max(1.0, _box_area(a) + _box_area(b) - inter)
+
+
 def _leaf_outlines(outlines: Sequence[_Box], *, contain_frac: float = 0.8) -> list[_Box]:
     """Drawn rectangles that enclose no smaller rectangle — i.e. true node boxes.
 
@@ -186,7 +191,7 @@ def _leaf_outlines(outlines: Sequence[_Box], *, contain_frac: float = 0.8) -> li
 
 
 def _snap_nodes_to_outlines(
-    nodes: Sequence[_Box], outlines: Sequence[_Box], *, contain_frac: float = 0.8
+    nodes: Sequence[_Box], outlines: Sequence[_Box], containers: Sequence[_Box] = (), *, contain_frac: float = 0.8
 ) -> list[_Box]:
     """Replace each detector node box with the exact drawn rectangle it lives in.
 
@@ -197,6 +202,10 @@ def _snap_nodes_to_outlines(
     shape with no drawn rectangle (an ellipse, or a box only the detector saw) simply
     keeps its detector box. This also fixes the interior-text leak — the detector box
     hugs the text and can miss part of it, but the drawn rectangle covers all of it.
+
+    A rectangle is never a snap target if it is a detected ``container`` (a panel, by
+    the detector's own call) or if it also encloses a *separate* (non-overlapping)
+    node; either would fill the panel and erase the connectors routed inside it.
     """
     leaves = _leaf_outlines(outlines)
     snapped: list[_Box] = []
@@ -206,12 +215,15 @@ def _snap_nodes_to_outlines(
         for r in leaves:
             if _intersection_area(n, r) < threshold:
                 continue
-            # Don't snap to a panel: a rectangle enclosing a *separate* (non-overlapping)
-            # node groups several nodes (e.g. a container around ellipse/text nodes — no
-            # inner rectangle, so it reads as a leaf), and filling it would erase the
-            # connectors inside. Overlapping detections are fragments of one box (detector
-            # over-segmentation), so they still snap. Overlap, not a size threshold,
-            # distinguishes the two.
+            # A detected container is a panel by the detector's own call — keep it out
+            # of snap candidates regardless of how many member nodes were detected.
+            if any(_iou(r, c) > 0.5 for c in containers):
+                continue
+            # Also exclude an undetected panel: a rectangle enclosing a *separate*
+            # (non-overlapping) node groups several nodes (e.g. a container around
+            # ellipse/text nodes — no inner rectangle, so it reads as a leaf). Overlapping
+            # detections are fragments of one box (detector over-segmentation), so they
+            # still snap. Overlap, not a size threshold, distinguishes the two.
             if any(
                 j != i and _center_inside(other, r) and _intersection_area(other, n) <= 0.0
                 for j, other in enumerate(nodes)
@@ -284,7 +296,7 @@ def extract_connectors_morphological(
     # the rectangles no node snapped to: their border is wiped but their interior is
     # kept, so connectors routed inside them survive.
     outlines = detect_box_outlines(gray)
-    nodes = _snap_nodes_to_outlines(nodes, outlines)
+    nodes = _snap_nodes_to_outlines(nodes, outlines, containers)
     mask = _node_ink_mask((h, w), nodes, list(containers) + list(outlines), pad=4, border=6)
     connector_ink = ink & (1 - mask)
     count, labels, stats, _ = cv2.connectedComponentsWithStats(connector_ink, connectivity=8)
@@ -431,9 +443,14 @@ def classical_connector_masks(
     *,
     margin: float = 5.0,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """(line_mask, arrow_mask): classical replacement for the learned segmenter's
-    masks. arrow_mask is currently empty (direction recovery is a follow-up); the
-    line mask is the connectivity signal the relation/topology model needs."""
+    """(line_mask, arrow_mask): classical replacement for the learned segmenter's masks.
+
+    arrow_mask is currently empty — classical arrowhead extraction is a tracked
+    follow-up. With no arrowhead evidence the relation model cannot determine edge
+    *direction* from this source: i->j vs j->i collapses to a learned spatial prior, so
+    upstream / right-to-left flows may be reversed. Use the segmenter source (which
+    fills the arrow channel) when direction matters; the classical line mask is the
+    honest signal for edge *existence* / topology, not orientation."""
     import cv2
 
     rgb = np.asarray(image)
