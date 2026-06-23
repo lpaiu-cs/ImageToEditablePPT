@@ -375,9 +375,19 @@ def train_relation_model(args: argparse.Namespace) -> dict[str, object]:
     total = sum(counts) or 1
     class_weights = tuple(total / (NUM_CLASSES * c) if c else 0.0 for c in counts)
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
-    val_loader = DataLoader(val_set, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
+    # No validation rows (e.g. --val-ratio 0, or a count that rounds val to zero) means
+    # val_edge_recall is never logged, so don't monitor it — just keep last.ckpt.
+    has_val = len(val_set) > 0
+    val_loader = (
+        DataLoader(val_set, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
+        if has_val
+        else None
+    )
     module = RelationModule(learning_rate=args.learning_rate, class_weights=class_weights)
-    checkpoint = ModelCheckpoint(dirpath=args.output_dir / "checkpoints", save_last=True, monitor="val_edge_recall", mode="max")
+    checkpoint = ModelCheckpoint(
+        dirpath=args.output_dir / "checkpoints", save_last=True,
+        monitor="val_edge_recall" if has_val else None, mode="max",
+    )
     trainer = L.Trainer(
         max_epochs=args.max_epochs, accelerator=args.accelerator, devices=1,
         logger=CSVLogger(save_dir=str(args.output_dir), name="logs"), callbacks=[checkpoint], enable_progress_bar=True,
