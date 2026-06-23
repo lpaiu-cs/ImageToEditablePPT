@@ -161,12 +161,15 @@ def compute_node_components(
     are connected along the actual (elbow) route, whereas an unrelated arrow that a
     straight segment merely clips is a different component touching only one of them.
     """
-    from scipy import ndimage as ndi
+    import cv2  # base dependency (opencv-python-headless); avoids requiring scipy
 
-    mask = line_mask > 0
+    mask = (line_mask > 0).astype(np.uint8)
     if dilate_iter:
-        mask = ndi.binary_dilation(mask, iterations=dilate_iter)
-    labels, _ = ndi.label(mask, structure=np.ones((3, 3), dtype=np.uint8))
+        # Cross (4-connectivity) element matches the previous scipy.ndimage default,
+        # so the path features are unchanged (no relation-model retrain needed).
+        cross = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=np.uint8)
+        mask = cv2.dilate(mask, cross, iterations=dilate_iter)
+    _, labels = cv2.connectedComponents(mask, connectivity=8)
     h, w = labels.shape
     node_labels: list[set[int]] = []
     label_nodes: dict[int, set[int]] = {}
