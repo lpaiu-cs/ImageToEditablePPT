@@ -39,6 +39,15 @@ def test_generated_specs_satisfy_slide_ir_contract() -> None:
         assert len(spec.text_regions) == len(spec.nodes)
 
 
+def test_grid_flow_always_meets_node_and_connector_minimums() -> None:
+    # The grid branch drops cells probabilistically; it must still never fall below the
+    # orthogonal-flow invariant (>=3 nodes, >=1 connector), even on a small 2x2 grid.
+    for seed in range(120):
+        spec = generate_slide_spec(random.Random(seed), sample_id=f"g{seed}", family=DiagramFamily.ORTHOGONAL_FLOW)
+        assert len(spec.nodes) >= 3, (seed, len(spec.nodes))
+        assert len(spec.connectors) >= 1, (seed, len(spec.connectors))
+
+
 def test_decorations_are_rendered_but_not_ground_truth() -> None:
     # Decorations (braces etc.) are opt-in hard negatives: drawn into the image but
     # never GT, and only when explicitly requested (off by default).

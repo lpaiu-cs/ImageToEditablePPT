@@ -177,6 +177,7 @@ def build_dataset(config: GenerateDatasetConfig) -> dict[str, object]:
             "train_ratio": config.train_ratio,
             "val_ratio": config.val_ratio,
             "pptx_written": config.write_pptx,
+            "with_decorations": config.with_decorations,
         },
         "split_counts": {name: splits.count(name) for name in SPLIT_NAMES},
         "family_counts": family_counts,

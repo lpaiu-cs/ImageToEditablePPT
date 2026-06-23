@@ -455,6 +455,14 @@ def _generate_grid_flow_spec(
     label_font_size = max(13, int(box_h * 0.3))
     font = ImageFont.load_default(size=label_font_size)
 
+    # Decide populated cells up front so the node count is guaranteed: always keep the
+    # origin, drop others ~15% of the time (occasional empty cell, like real diagrams),
+    # but never fall below 3 nodes (the orthogonal-flow invariant the contract asserts).
+    all_cells = [(r, c) for r in range(rows) for c in range(cols)]
+    dropped = {rc for rc in all_cells if rc != (0, 0) and rng.random() < 0.15}
+    while len(all_cells) - len(dropped) < min(3, len(all_cells)):
+        dropped.pop()
+
     nodes: list[AnnotationNode] = []
     text_regions: list[AnnotationTextRegion] = []
     node_styles: dict[str, SyntheticNodeStyle] = {}
@@ -462,8 +470,8 @@ def _generate_grid_flow_spec(
     index = 0
     for r in range(rows):
         for c in range(cols):
-            if rng.random() < 0.15 and not (r == 0 and c == 0):
-                continue  # occasional empty cell, like real diagrams
+            if (r, c) in dropped:
+                continue
             cx = margin_x + c * cell_w + cell_w / 2.0
             cy = margin_y + r * cell_h + cell_h / 2.0
             bbox = AnnotationBBox(x0=cx - box_w / 2.0, y0=cy - box_h / 2.0, x1=cx + box_w / 2.0, y1=cy + box_h / 2.0)
