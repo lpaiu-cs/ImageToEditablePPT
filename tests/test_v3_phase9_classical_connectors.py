@@ -86,6 +86,33 @@ def test_node_snaps_to_drawn_rectangle_so_interior_text_is_not_a_connector():
     assert all({e.source, e.target} != {1, 2} for e in edges)
 
 
+def test_nodes_inside_a_panel_do_not_snap_to_it():
+    """A container around ellipse/text nodes has no inner rectangle, so it reads as a
+    leaf. Nodes inside it must NOT snap to the panel — otherwise the panel gets filled
+    and the connectors routed inside it are erased (the graph-with-container case)."""
+    from image_to_editable_ppt.ml.classical_connectors import _Box, _snap_nodes_to_outlines
+
+    panel = _Box(40, 40, 360, 200)
+    a, b = _Box(70, 90, 150, 150), _Box(240, 90, 320, 150)  # two nodes inside the panel
+    # Each node is fully inside the panel, but the panel also holds the other node, so
+    # neither snaps: the result is the original detector boxes unchanged.
+    assert _snap_nodes_to_outlines([a, b], [panel]) == [a, b]
+    # A node whose own drawn rectangle bounds it alone still snaps.
+    own = _Box(72, 92, 148, 148)
+    assert _snap_nodes_to_outlines([a], [own]) == [own]
+
+
+def test_overlapping_fragments_still_snap_to_their_shared_rectangle():
+    """Detector over-segmentation (two overlapping boxes for one drawn box) must still
+    snap both to that box, so its interior text is erased — overlap, not size, tells a
+    fragmented node box apart from a panel of separate nodes."""
+    from image_to_editable_ppt.ml.classical_connectors import _Box, _snap_nodes_to_outlines
+
+    drawn = _Box(150, 80, 250, 120)
+    f1, f2 = _Box(158, 86, 215, 100), _Box(190, 92, 242, 110)  # overlapping fragments
+    assert _snap_nodes_to_outlines([f1, f2], [drawn]) == [drawn, drawn]
+
+
 def test_edge_offset_zero_at_edge_midpoint_half_at_corner():
     """edge_off is a learned feature: ~0 when an endpoint lands at an edge midpoint
     (where real connectors attach), ~0.5 at a corner (where braces/decorations touch)."""

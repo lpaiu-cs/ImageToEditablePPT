@@ -159,6 +159,11 @@ def _intersection_area(a: _Box, b: _Box) -> float:
     return ix * iy
 
 
+def _center_inside(inner: _Box, outer: _Box) -> bool:
+    cx, cy = (inner.x0 + inner.x1) / 2.0, (inner.y0 + inner.y1) / 2.0
+    return outer.x0 <= cx <= outer.x1 and outer.y0 <= cy <= outer.y1
+
+
 def _leaf_outlines(outlines: Sequence[_Box], *, contain_frac: float = 0.8) -> list[_Box]:
     """Drawn rectangles that enclose no smaller rectangle — i.e. true node boxes.
 
@@ -195,14 +200,26 @@ def _snap_nodes_to_outlines(
     """
     leaves = _leaf_outlines(outlines)
     snapped: list[_Box] = []
-    for n in nodes:
+    for i, n in enumerate(nodes):
         threshold = contain_frac * _box_area(n)
         best, best_area = None, None
         for r in leaves:
-            if _intersection_area(n, r) >= threshold:
-                area = _box_area(r)
-                if best_area is None or area < best_area:
-                    best, best_area = r, area
+            if _intersection_area(n, r) < threshold:
+                continue
+            # Don't snap to a panel: a rectangle enclosing a *separate* (non-overlapping)
+            # node groups several nodes (e.g. a container around ellipse/text nodes — no
+            # inner rectangle, so it reads as a leaf), and filling it would erase the
+            # connectors inside. Overlapping detections are fragments of one box (detector
+            # over-segmentation), so they still snap. Overlap, not a size threshold,
+            # distinguishes the two.
+            if any(
+                j != i and _center_inside(other, r) and _intersection_area(other, n) <= 0.0
+                for j, other in enumerate(nodes)
+            ):
+                continue
+            area = _box_area(r)
+            if best_area is None or area < best_area:
+                best, best_area = r, area
         snapped.append(best if best is not None else n)
     return snapped
 
