@@ -31,9 +31,38 @@ def test_generated_specs_satisfy_slide_ir_contract() -> None:
     for index in range(25):
         spec = generate_slide_spec(rng, sample_id=f"contract_{index:03d}")
         validate_spec_contract(spec)
-        assert 3 <= len(spec.nodes) <= 6
-        assert len(spec.connectors) == len(spec.nodes) - 1
+        # orthogonal_flow now spans a single-row chain (3-6 nodes) and a realistic
+        # 2D-grid block diagram (more nodes, variable connectors), so the per-node
+        # text-region pairing is the layout-agnostic invariant to assert here.
+        assert 3 <= len(spec.nodes) <= 16
+        assert len(spec.connectors) >= 1
         assert len(spec.text_regions) == len(spec.nodes)
+
+
+def test_grid_flow_always_meets_node_and_connector_minimums() -> None:
+    # The grid branch drops cells probabilistically; it must still never fall below the
+    # orthogonal-flow invariant (>=3 nodes, >=1 connector), even on a small 2x2 grid.
+    for seed in range(120):
+        spec = generate_slide_spec(random.Random(seed), sample_id=f"g{seed}", family=DiagramFamily.ORTHOGONAL_FLOW)
+        assert len(spec.nodes) >= 3, (seed, len(spec.nodes))
+        assert len(spec.connectors) >= 1, (seed, len(spec.connectors))
+
+
+def test_decorations_are_rendered_but_not_ground_truth() -> None:
+    # Decorations (braces etc.) are opt-in hard negatives: drawn into the image but
+    # never GT, and only when explicitly requested (off by default).
+    assert generate_slide_spec(random.Random(0), sample_id="d").decorations == ()  # default off
+    spec = None
+    for seed in range(60):
+        candidate = generate_slide_spec(random.Random(seed), sample_id=f"deco_{seed}", with_decorations=True)
+        if candidate.decorations:
+            spec = candidate
+            break
+    assert spec is not None, "no decoration produced in 60 seeds"
+    document = spec.to_annotation_document()
+    assert len(document.primitive_scene.connector_candidates) == len(spec.connectors)
+    # rendering with a decoration must not raise (PIL path)
+    render_spec_image(spec)
 
 
 def test_generation_is_deterministic_for_equal_seeds() -> None:
