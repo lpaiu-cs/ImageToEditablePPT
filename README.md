@@ -6,16 +6,26 @@
 
 ## 현재 상태
 
-- broad PPT export는 아직 복구하지 않았다.
+- **이미지 → 편집 가능한 .pptx 루프가 동작한다** (Phase 10).
+  - ML provider(검출기 + family 분류기 + connector segmenter + OOD 게이트) 또는 휴리스틱 경로로 구조를 복원하고, OCR로 텍스트를 복원해 native PowerPoint primitive로 emit한다.
 - old v2 runtime과 old CLI 동작은 의도적으로 제거되었다.
-- 현재 실제로 동작하는 경로는 **v3 debug/inspection path**다.
-- 지원 family는 아직 좁다.
-  - 현재 활성 family: `orthogonal_flow`
-- benchmark / eval / GT sidecar / workbench 자산은 보존되어 있다.
-- 다만 old validation runtime은 복구하지 않았다.
-- 대신 debug path에서 읽는 최소 `eval_runtime` adapter와 emit diff inspection bootstrap은 추가되었다.
+- 휴리스틱 경로의 지원 family는 아직 좁다(`orthogonal_flow`). ML 경로는 7 family를 다룬다.
+- benchmark / eval / GT sidecar / workbench 자산은 보존되어 있다. old validation runtime은 복구하지 않았다.
 
 ## 현재 진입점
+
+이미지 → 편집 가능한 .pptx:
+
+```bash
+python -m pip install -e ".[ml,ocr]"
+py -3.12 tools/convert_to_pptx.py figure.png                 # -> figure.pptx
+py -3.12 tools/convert_to_pptx.py figs/ -o out/              # 배치 변환
+py -3.12 tools/convert_to_pptx.py figure.png --no-ml         # 휴리스틱 경로
+```
+
+- canonical 체크포인트는 기본적으로 `workbench-ml/run-*/checkpoints/last.ckpt`에서 찾는다 (`--models-dir` 또는 `IEP_MODELS_DIR`로 변경).
+- OOD 게이트가 비다이어그램(차트/스크린샷/사진)을 거절하면 빈 pptx와 함께 `[EMPTY]`를 알린다 (`--no-gate`로 강제 변환).
+- OCR 백엔드(rapidocr)가 없으면 텍스트만 비운 채 구조는 그대로 변환된다.
 
 개발용 inspection 경로:
 
@@ -83,10 +93,11 @@ print(result.slide_ir.primitive_scene)
 
 아직 하지 않은 것:
 
-- broad PPT emit
 - old validation runtime 복구
-- 여러 family 동시 확장
+- 휴리스틱 경로의 여러 family 동시 확장
 - full connector routing/optimization
+- relation 모델(run-rel8)의 provider 통합
+- style token 본격 추출(현재는 대표 단색 샘플링만)
 
 ## 설계 원칙 요약
 

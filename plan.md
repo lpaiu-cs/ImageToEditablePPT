@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
-최종 업데이트: 2026-06-11  
-상태: `Phase 7: ML experiment bootstrap 완료 (generate -> train -> infer -> eval 루프 동작). 다음: 본 학습 수렴 확인 또는 Phase 8 family 확장`
+최종 업데이트: 2026-07-03  
+상태: `Phase 10 (사용자 루프 닫기) 완료 — 이미지 → 편집 가능 .pptx CLI 동작. 다음 후보: relation 모델(run-rel8) provider 통합, 고전 화살촉 방향, 스캔 figure 검출 강건성, 수작업 절감(edit-cost) 평가축`
 
 ---
 
@@ -877,6 +877,72 @@ connector evidence -> attachment-aware connector candidate의 목적:
 
 **완료 조건**
 - 최소 MVP family 세트에 대해 품질과 실패 양상이 측정 가능해야 한다.
+
+---
+
+### Phase 9. 실전이 측정 + 도메인 랜덤화 + OOD 게이트 (완료, 상세는 별도 문서)
+
+Phase 9는 ML 트랙에서 진행되었고 상세 기록은 `docs/phase9_real_transfer_measurement.md`에 있다.
+
+- 실 논문 figure(ACL-fig 150장) 전이 측정 → 도메인 랜덤화 + 7-family 확장(graph/tree/layered_stack/grid_flow 포함)으로 cycle 붕괴·tree zero-node 해소.
+- container 강화, tree text-fraction 게이트, OOD/비다이어그램 거절 게이트(run-gate4, 사전학습 백본).
+- honest topology: 고전 커넥터 기하 + 순수 relation 모델, 검출 컨테이너 스냅 제외.
+- canonical 모델: 검출 `run-v8` / family `run-fc5`(+tree gate) / connector `run-seg8` / OOD `run-gate4` / relation `run-rel8`.
+- `MLSlideIRProvider`(`ml/slide_ir_provider.py`)가 `V3Config.slide_ir_provider`로 주입되어 `convert_image`가 ML 구조 복원을 사용할 수 있다.
+
+---
+
+### Phase 10. 사용자 루프 닫기 (provider 결선 + 최소 editable pptx emit + OCR)
+
+이번 단계 이름:
+
+- `Phase 10: close the user loop`
+
+왜 지금 이 단계인가:
+
+- 본질 목적(principle.md)은 "수작업 감소"인데, 지금까지의 성공 지표는 전부 대리 지표(detection F1, family 정확도)였다.
+- 실 이미지 → **열어서 바로 편집 가능한 .pptx** 경로가 아직 없다. emit는 `EmitScene`(image-space)까지 오고 멈춘다.
+- 텍스트는 재타이핑 수작업의 최대 항목인데 provider 경로는 text 브랜치를 건너뛰고, 휴리스틱 text 브랜치도 OCR 없이 bbox만 낸다.
+- 검출 레버를 더 쌓는 것보다 루프를 닫는 것이 본질 목적에 대한 한계 기여가 크다 (2026-07-03 방향 점검 결론).
+
+이번 단계 목표:
+
+- `EmitScene` → 편집 가능한 .pptx를 쓰는 **최소 writer** (`v3/emit/pptx_writer.py`). 좌표 계약은 합성 generator와 동일한 1 px = 9525 EMU (96 dpi).
+- 원본 이미지에서 노드/컨테이너 대표 단색을 샘플링하는 보수적 style sampler (`v3/emit/style.py`) — 원칙 4 "대표 단색으로 요약".
+- OCR 텍스트 복원 (`v3/text/ocr.py`): 백엔드는 rapidocr(onnxruntime, 시스템 의존성 없음), 신뢰도 임계 미달이면 text=None 유지 — 원칙 "텍스트도 신뢰할 수 있을 때만 변환".
+- provider 경로에 text 브랜치 합류: `_convert_via_provider`가 휴리스틱 text layer(+OCR)를 추출해 SlideIR에 병합하고, 텍스트 region을 노드/컨테이너에 귀속시켜 label로 승격 (`v3/compose/merge_text.py`).
+- 사용자 진입점 CLI: 이미지 → .pptx (`tools/convert_to_pptx.py`, canonical 체크포인트 기본값 + `--no-ml` 휴리스틱 폴백).
+
+이번 단계 비목표:
+
+- connector route 최적화, 곡선/엘보 완성도
+- style token 본격 추출(그라데이션/폰트 매칭 등)
+- relation 모델(run-rel8)의 provider 통합 — 다음 단계 후보로 유지
+- OOD 게이트 개선
+
+emit writer 원칙:
+
+- 확실한 것만 쓴다: path_points가 없는 connector, text가 없는 standalone 텍스트 region은 쓰지 않는다(공백은 실패가 아니다).
+- 노드에 귀속된 텍스트는 별도 텍스트박스가 아니라 **도형 내부 text_frame**으로 넣는다(도형과 함께 움직여야 편집 가능성이 산다).
+- 샘플링 fill이 배경과 구분되지 않으면 채우지 않는다(원칙 5의 보수성).
+
+완료 조건:
+
+- 실 논문 figure 1장을 CLI 한 줄로 넣으면 PowerPoint에서 열리는 .pptx가 나온다.
+- pptx 안의 도형/커넥터/텍스트가 native primitive여서 이동·수정·삭제가 가능하다.
+- writer/merge/OCR에 대한 테스트가 있다 (`tests/test_v3_phase10_pptx_emit.py`).
+- OCR 백엔드가 없어도 전체 경로가 죽지 않고 텍스트만 비운 채 동작한다.
+
+실제 완료 결과 (2026-07-03):
+
+- `v3/emit/pptx_writer.py`: EmitScene → native pptx (1px=9525EMU). 컨테이너→노드→커넥터→텍스트 z-order, 노드 귀속 텍스트는 도형 text_frame으로 흡수, path 없는 커넥터·미인식 standalone 텍스트는 쓰지 않음. 폰트 크기는 관측 bbox의 높이·폭·줄수에서 산정(겹침 방지).
+- `v3/emit/style.py`: 노드 내부/보더 median 색 샘플링. 배경과 구분 안 되면 채우지 않음(보수성), 단 검출된 도형은 중립 외곽선으로 항상 보이게 유지.
+- `v3/text/ocr.py`: rapidocr(onnxruntime) 백엔드, 줄 구조 보존(수직 겹침 기반 라인 그룹핑), 신뢰도<임계 → text=None. 백엔드 없으면 그대로 통과.
+- `v3/compose/merge_text.py`: provider SlideIR에 text layer 병합. 최소 포함 노드가 텍스트를 소유하고 label로 승격.
+- `V3Config.recover_text` / `ocr_min_confidence` 추가. `_convert_via_provider`가 text 브랜치를 합류시키고 TEXT_SPLIT stage record를 남김.
+- CLI: `tools/convert_to_pptx.py` (= `image-to-editable-ppt-convert`). canonical run 기본값, `--no-ml/--no-gate/--no-ocr/--no-style/--width`. OOD 거절 시 `[EMPTY]` 안내.
+- e2e 확인: ACL-fig 실 figure (architecture/tree/OOD) → 편집 가능한 pptx. tree figure에서 tree family+7노드+7커넥터+22/36 텍스트 복원, 비다이어그램은 거절. LibreOffice 렌더 육안 확인.
+- 테스트 126개 전체 통과. `pyproject` ocr extra를 rapidocr로 교체.
 
 ---
 

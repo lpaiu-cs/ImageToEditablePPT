@@ -9,6 +9,8 @@ from .models import (
     EmitShapePrimitive,
     EmitTextPrimitive,
 )
+from .pptx_writer import write_pptx
+from .style import ShapeVisualStyle, sample_shape_styles
 
 __all__ = [
     "EmitConnectorPrimitive",
@@ -17,6 +19,9 @@ __all__ = [
     "EmitScene",
     "EmitShapePrimitive",
     "EmitTextPrimitive",
+    "ShapeVisualStyle",
     "build_emit_scene",
     "diff_emit_scene",
+    "sample_shape_styles",
+    "write_pptx",
 ]

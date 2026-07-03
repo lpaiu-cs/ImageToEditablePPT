@@ -35,6 +35,12 @@ class V3Config:
     # this provider (e.g. the ML detector + classifier + connector segmenter) and
     # bypasses the heuristic family/connector stages. Injected from outside v3.
     slide_ir_provider: "SlideIRProvider | None" = None
+    # Opt-in (Phase 10): restore editable text. The provider path additionally
+    # runs the heuristic text branch and merges the regions into the SlideIR;
+    # both paths annotate regions with OCR when a backend is installed. Regions
+    # whose recognition falls below the confidence threshold keep text=None.
+    recover_text: bool = False
+    ocr_min_confidence: float = 0.6
 
     def family_enabled(self, family: DiagramFamily) -> bool:
         return family in self.enabled_families
