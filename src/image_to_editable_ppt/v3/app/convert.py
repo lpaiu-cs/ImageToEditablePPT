@@ -225,8 +225,16 @@ def _convert_via_provider(
     # Phase 10: the provider recovers structure only; text stays a v3 branch.
     # Extract (and OCR-annotate) the heuristic text layer and merge it so node
     # labels and standalone text survive into the editable output.
+    #
+    # Skip the merge when the provider abstained (OOD gate) or found no structure:
+    # it returns an empty SlideIR (no family, no nodes) and merging OCR regions
+    # would put editable text boxes into a pptx we report as [EMPTY], breaking the
+    # not-a-diagram/blank-output contract. "Has structure" mirrors the CLI's
+    # [EMPTY] test so the reported and saved outputs stay consistent.
+    scene = slide_ir.primitive_scene
+    has_structure = bool(slide_ir.family_proposals) or (scene is not None and len(scene.nodes) > 0)
     text_layer = None
-    if config.recover_text:
+    if config.recover_text and has_structure:
         text_layer = extract_text_layer(multiview, config=config)
         text_layer = _annotate_text_layer_with_ocr(multiview, text_layer, config)
         slide_ir = merge_text_layer_into_slide_ir(slide_ir, text_layer)

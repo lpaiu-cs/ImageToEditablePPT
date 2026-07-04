@@ -36,6 +36,11 @@ class OrthogonalConnectorEvidenceExtractor:
         )
         if line_segments is None:
             return ()
+        # HoughLinesP returns (N, 1, 4) on most OpenCV builds but (N, 4) on some;
+        # normalise so the `[:, 0, :]` indexing below is valid either way.
+        line_segments = np.asarray(line_segments)
+        if line_segments.ndim == 2:
+            line_segments = line_segments[:, None, :]
         arrowhead_hints = _find_arrowhead_hints(mask, line_segments)
 
         all_nodes = tuple(node for instance in instances for node in instance.nodes)

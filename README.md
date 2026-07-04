@@ -27,7 +27,7 @@ py -3.12 tools/convert_to_pptx.py figure.png --no-ml         # 휴리스틱 경�
 - OOD 게이트가 비다이어그램(차트/스크린샷/사진)을 거절하면 빈 pptx와 함께 `[EMPTY]`를 알린다 (`--no-gate`로 강제 변환).
 - OCR 백엔드(rapidocr)가 없으면 텍스트만 비운 채 구조는 그대로 변환된다.
 
-개발용 inspection 경로:
+개발용 inspection 경로 (v3 debug/inspection path):
 
 ```bash
 python -m pip install -e .

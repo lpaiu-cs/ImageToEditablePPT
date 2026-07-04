@@ -125,3 +125,37 @@ def test_convert_image_provider_resolves_connector_candidates() -> None:
     # convert resolved every candidate -> ConnectorSpecs that emit can render.
     assert len(result.slide_ir.connectors) == len(slide_ir.connector_candidates)
     assert StageName.CONNECTOR_RESOLVE in {record.stage for record in result.stage_records}
+
+
+def _empty_slide_ir(*, width: int, height: int):
+    """An abstained/empty SlideIR: valid scene, no family, no nodes (OOD gate output)."""
+    output = DetectorModelOutput(
+        image_id="ood",
+        image_size=AnnotationImageSize(width=width, height=height),
+        family_predictions=(),
+        node_predictions=(),
+        container_predictions=(),
+        metadata={"ood_rejected": True},
+    )
+    adapter = AnnotationMLAdapter()
+    return adapter.to_slide_ir(adapter.from_model_output(output))
+
+
+def test_recover_text_skips_merge_when_provider_abstains() -> None:
+    """recover_text must not inject editable text boxes into an abstained (empty)
+    scene: a rejected chart/screenshot with labels would otherwise emit text while
+    the run is reported [EMPTY], breaking the not-a-diagram/blank-output contract."""
+    width, height = 320, 240
+    provider = _StubProvider(_empty_slide_ir(width=width, height=height))
+    # A figure with clear text that OCR could pick up if the merge ran.
+    array = np.full((height, width, 3), 255, dtype=np.uint8)
+    array[40:70, 30:200] = 0  # dark band -> text-like region proposal
+    image = Image.fromarray(array, mode="RGB")
+
+    result = convert_image(image, config=V3Config(slide_ir_provider=provider, recover_text=True))
+
+    assert result.slide_ir.family_proposals == ()
+    assert len(result.slide_ir.primitive_scene.nodes) == 0
+    assert result.slide_ir.primitive_scene.texts == ()  # no text merged into an empty scene
+    assert result.slide_ir.text_regions == ()
+    assert StageName.TEXT_SPLIT not in {record.stage for record in result.stage_records}
