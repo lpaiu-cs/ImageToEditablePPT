@@ -32,8 +32,11 @@ from image_to_editable_ppt.ml.annotation_schema import (
     AnnotationPort,
 )
 from image_to_editable_ppt.ml.classical_connectors import ClassicalEdge, extract_connectors_morphological
-from image_to_editable_ppt.ml.connector_segmenter import _port, _side_toward
-from image_to_editable_ppt.v3.core.enums import ConnectorKind, PortOwnerKind
+from image_to_editable_ppt.v3.core.enums import ConnectorKind, PortOwnerKind, PortSide
+
+# NB: helpers (_side_toward/_port) are inlined below rather than imported from
+# connector_segmenter, which imports lightning/torch at module load — the live
+# morphological path (and its tests) must stay import-light for the .[test] CI env.
 
 
 def morphological_connectors(
@@ -110,6 +113,38 @@ def morphological_connectors(
 
 def _center(bbox) -> tuple[float, float]:
     return ((bbox.x0 + bbox.x1) / 2.0, (bbox.y0 + bbox.y1) / 2.0)
+
+
+def _side_toward(node: AnnotationNode, point: tuple[float, float]) -> PortSide:
+    """Edge of ``node`` the ray toward ``point`` exits (same rule as the generator).
+
+    Inlined from the aspect-ratio-aware ``edge_side`` so this module needs no
+    torch/lightning-importing dependency.
+    """
+    import math
+
+    half_w = (node.bbox.x1 - node.bbox.x0) / 2.0
+    half_h = (node.bbox.y1 - node.bbox.y0) / 2.0
+    cx, cy = _center(node.bbox)
+    dx, dy = point[0] - cx, point[1] - cy
+    scale_x = half_w / abs(dx) if abs(dx) > 1e-9 else math.inf
+    scale_y = half_h / abs(dy) if abs(dy) > 1e-9 else math.inf
+    if scale_x <= scale_y:
+        return PortSide.RIGHT if dx >= 0 else PortSide.LEFT
+    return PortSide.BOTTOM if dy >= 0 else PortSide.TOP
+
+
+def _port(owner_id: str, image_id: str, index: int, role: str, side: PortSide, point: AnnotationPoint) -> AnnotationPort:
+    return AnnotationPort(
+        id=f"port:{image_id}:{index}:{role}",
+        owner_id=owner_id,
+        owner_kind=PortOwnerKind.NODE,
+        side=side,
+        point=point,
+        confidence=1.0,
+        source="morphological",
+        provenance=("morphological:port",),
+    )
 
 
 def _polyline_bbox(polyline: list[tuple[float, float]], *, pad: float = 3.0) -> AnnotationBBox:
