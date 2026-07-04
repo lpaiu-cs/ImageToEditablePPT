@@ -89,3 +89,38 @@ def test_orthogonalize_snaps_near_axis_and_keeps_diagonal():
     # a real diagonal is preserved
     diagonal = _orthogonalize([(0.0, 0.0), (100.0, 100.0)])
     assert abs(diagonal[-1][1] - diagonal[0][1]) > 50
+
+
+def test_provider_honors_requested_strategy_without_silent_fallback():
+    """Requesting 'relation' with no relation checkpoint must NOT silently run the
+    segmenter (which would corrupt strategy experiments): it warns and emits no
+    connectors even though a segmenter checkpoint is present."""
+    import warnings
+
+    from image_to_editable_ppt.ml.slide_ir_provider import MLSlideIRProvider
+
+    provider = MLSlideIRProvider(
+        detector_checkpoint="unused.ckpt",
+        connector_checkpoint="segmenter.ckpt",  # present, but must not be used
+        connector_strategy="relation",
+        relation_checkpoint=None,  # requested strategy's checkpoint is missing
+    )
+    img, nodes = _two_box_image_with_connector(arrow=False)
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        connectors, ports = provider._recover_connectors(img, nodes, ())
+
+    assert connectors == () and ports == ()  # no segmenter substitution
+    assert any("relation" in str(w.message) for w in caught)
+
+
+def test_provider_morphological_strategy_recovers_connectors():
+    """The default strategy runs the morphological extractor (no checkpoints needed)."""
+    from image_to_editable_ppt.ml.slide_ir_provider import MLSlideIRProvider
+
+    provider = MLSlideIRProvider(detector_checkpoint="unused.ckpt", connector_strategy="morphological")
+    img, nodes = _two_box_image_with_connector(arrow=True)
+    connectors, ports = provider._recover_connectors(img, nodes, ())
+    assert len(connectors) == 1
+    assert connectors[0].arrowhead_end is True

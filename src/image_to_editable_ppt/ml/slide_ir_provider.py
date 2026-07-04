@@ -139,21 +139,7 @@ class MLSlideIRProvider:
 
         # Connectors first: the structure-based family classifier needs the
         # recovered topology, so connector recovery must run before family selection.
-        connectors: tuple = ()
-        ports: tuple = ()
-        if self.connector_strategy == "morphological":
-            from image_to_editable_ppt.ml.morphological_connectors import morphological_connectors
-
-            connectors, ports = morphological_connectors(
-                rgb, tuple(nodes), tuple(containers), image_id=self.image_id
-            )
-        elif self.connector_strategy == "relation" and self.relation_checkpoint is not None:
-            connectors, ports = self._relation_connectors(rgb, nodes)
-        elif self.connector_checkpoint is not None:
-            from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_masks
-
-            line_mask, arrow_mask = segment_connector_masks(self.connector_checkpoint, rgb)
-            connectors, ports = extract_connectors(line_mask, arrow_mask, tuple(nodes), image_id=self.image_id)
+        connectors, ports = self._recover_connectors(rgb, nodes, containers)
 
         family, family_confidence = DiagramFamily.ORTHOGONAL_FLOW, self.score_threshold
         if self.family_classifier_checkpoint is not None:
@@ -199,6 +185,35 @@ class MLSlideIRProvider:
         )
         adapter = AnnotationMLAdapter()
         return adapter.to_slide_ir(adapter.from_model_output(output))
+
+    def _recover_connectors(self, rgb, nodes, containers):
+        """Recover connectors with exactly the requested strategy.
+
+        Honors ``connector_strategy`` literally: a missing checkpoint yields no
+        connectors and a warning, never a silent fallback to a different strategy
+        (which would corrupt strategy-comparison experiments).
+        """
+        import warnings
+
+        if self.connector_strategy == "morphological":
+            from image_to_editable_ppt.ml.morphological_connectors import morphological_connectors
+
+            return morphological_connectors(rgb, tuple(nodes), tuple(containers), image_id=self.image_id)
+        if self.connector_strategy == "relation":
+            if self.relation_checkpoint is None:
+                warnings.warn("connector_strategy='relation' but no relation_checkpoint; emitting no connectors")
+                return (), ()
+            return self._relation_connectors(rgb, nodes)
+        if self.connector_strategy == "segmenter":
+            if self.connector_checkpoint is None:
+                warnings.warn("connector_strategy='segmenter' but no connector_checkpoint; emitting no connectors")
+                return (), ()
+            from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_masks
+
+            line_mask, arrow_mask = segment_connector_masks(self.connector_checkpoint, rgb)
+            return extract_connectors(line_mask, arrow_mask, tuple(nodes), image_id=self.image_id)
+        warnings.warn(f"unknown connector_strategy={self.connector_strategy!r}; emitting no connectors")
+        return (), ()
 
     def _relation_connectors(self, rgb, nodes):
         """Opt-in: directed edges from the relation model over classical masks.
