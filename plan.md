@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
-최종 업데이트: 2026-07-03  
-상태: `Phase 10 (사용자 루프 닫기) 완료 — 이미지 → 편집 가능 .pptx CLI 동작. 다음 후보: relation 모델(run-rel8) provider 통합, 고전 화살촉 방향, 스캔 figure 검출 강건성, 수작업 절감(edit-cost) 평가축`
+최종 업데이트: 2026-07-04  
+상태: `Phase 11 (라이브 커넥터 품질) 완료 — 형태학적 추출기를 provider 기본 커넥터 경로로, 고전 화살촉 방향 + 직교 정리. 다음 후보: 화살촉 정밀도(박스 보더 잉크와 분리), style 샘플러 과채움 보정, 스캔 figure 검출 강건성, edit-cost 평가축`
 
 ---
 
@@ -943,6 +943,48 @@ emit writer 원칙:
 - CLI: `tools/convert_to_pptx.py` (= `image-to-editable-ppt-convert`). canonical run 기본값, `--no-ml/--no-gate/--no-ocr/--no-style/--width`. OOD 거절 시 `[EMPTY]` 안내.
 - e2e 확인: ACL-fig 실 figure (architecture/tree/OOD) → 편집 가능한 pptx. tree figure에서 tree family+7노드+7커넥터+22/36 텍스트 복원, 비다이어그램은 거절. LibreOffice 렌더 육안 확인.
 - 테스트 126개 전체 통과. `pyproject` ocr extra를 rapidocr로 교체.
+
+---
+
+### Phase 11. 라이브 커넥터 품질 (형태학적 추출기 + 화살촉 방향)
+
+이번 단계 이름:
+
+- `Phase 11: live connector quality`
+
+왜 이제 이 단계인가 (실 figure 측정, 2026-07-04):
+
+- Phase 10 provider 라이브 경로는 커넥터를 아직 blind segmenter(`extract_connectors`)로 뽑았다.
+- 실 figure 15장에서 세 경로를 측정: 순수 relation(run-rel8)과 학습 segmenter는 실 논문 화살표를
+  거의 못 잡고(직선·기하 prior), `extract_connectors_morphological`(고전 잉크 성분 추적)은 실제
+  경로를 따라 대부분의 커넥터를 회수했다(육안 확인: relation 빨간선은 엉뚱한 위치, 형태학 파란선은
+  모든 연결을 제 위치에 잡음). → relation은 폐기가 아니라 opt-in으로 강등, 형태학을 라이브 기본으로.
+- 이는 Phase 9에서 구조기반 family 분류기를 실전이 실패로 폐기한 것과 같은 판단(엣지 회수 완전성
+  종속). "증거 있는 연결만"(잉크가 있을 때만 엣지) 원칙에도 형태학이 더 부합.
+
+이번 단계에서 한 것:
+
+- `ml/morphological_connectors.py`: `ClassicalEdge` → `(AnnotationConnectorCandidate, AnnotationPort)`
+  변환. segmenter 경로와 동일 출력 형태라 adapter/emit 파이프라인 무변경.
+  - **고전 화살촉 방향**: 커넥터 양 끝 잉크 질량 비교로 화살촉 끝 판정. 명확할 때만 방향 부여(절대·비율
+    마진), 아니면 무방향 plain line 유지(방향 추측보다 정직한 선이 낫다).
+  - **직교 정리**: 축에 가까운 세그먼트를 정확히 수평/수직으로 스냅(픽셀 추적의 지글거림 제거). 진짜
+    대각/곡선 세그먼트는 보존.
+- `MLSlideIRProvider.connector_strategy`("morphological" 기본 | "segmenter" | "relation") +
+  `relation_checkpoint`. relation 경로도 유지(고전 마스크+predict_relations, 실험용).
+- CLI `--connectors` 플래그(기본 morphological), `--relation-run` 기본 run-rel8.
+- 테스트 `tests/test_v3_phase11_morphological_connectors.py`(회수·방향·무방향·직교·화살촉).
+
+이번 단계 비목표:
+
+- 화살촉 정밀도 향상(현재 박스 보더 잉크와 화살촉 삼각형 분리가 약해 방향 부여율이 보수적).
+- relation/형태학 융합(형태학 라우트 + relation 판정).
+- style 샘플러 과채움(밀집 어두운 영역을 solid fill로 잡는) 보정 — 별개 이슈.
+
+완료 결과:
+
+- provider 기본이 형태학 커넥터로 동작. 실 figure e2e: arch/FSM에서 실제 화살표를 제 위치의 깔끔한
+  elbow로 복원, 편집 가능 pptx까지 연결(LibreOffice 렌더 육안 확인). 테스트 134 통과.
 
 ---
 

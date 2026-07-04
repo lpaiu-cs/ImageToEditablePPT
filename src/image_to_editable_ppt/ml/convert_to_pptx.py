@@ -24,6 +24,7 @@ CANONICAL_RUNS = {
     "family": "run-fc5",
     "segmenter": "run-seg8",
     "gate": "run-gate4",
+    "relation": "run-rel8",
 }
 DEFAULT_TARGET_WIDTH = 768  # inference scale the canonical models were measured at
 
@@ -41,6 +42,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--family-run", default=CANONICAL_RUNS["family"])
     parser.add_argument("--segmenter-run", default=CANONICAL_RUNS["segmenter"])
     parser.add_argument("--gate-run", default=CANONICAL_RUNS["gate"])
+    parser.add_argument("--relation-run", default=CANONICAL_RUNS["relation"])
+    parser.add_argument(
+        "--connectors",
+        choices=("morphological", "segmenter", "relation"),
+        default="morphological",
+        help="connector recovery: morphological classical tracing (default, best real transfer), "
+        "learned segmenter, or the relation model (experimental)",
+    )
     parser.add_argument("--threshold", type=float, default=0.5, help="detector score threshold")
     parser.add_argument("--gate-threshold", type=float, default=0.6, help="OOD diagram-gate threshold")
     parser.add_argument("--width", type=int, default=DEFAULT_TARGET_WIDTH, help="resize input to this width (0 = keep)")
@@ -69,11 +78,15 @@ def _build_provider(args: argparse.Namespace):
     family = _checkpoint(models_dir, args.family_run)
     segmenter = _checkpoint(models_dir, args.segmenter_run)
     gate = _checkpoint(models_dir, args.gate_run)
+    relation = _checkpoint(models_dir, args.relation_run)
     return MLSlideIRProvider(
         detector_checkpoint=str(detector),
         score_threshold=args.threshold,
         family_classifier_checkpoint=str(family) if family.exists() else None,
         connector_checkpoint=str(segmenter) if segmenter.exists() else None,
+        connector_strategy=args.connectors,
+        relation_checkpoint=str(relation) if relation.exists() else None,
+        relation_threshold=args.threshold,
         diagram_gate_checkpoint=str(gate) if gate.exists() and not args.no_gate else None,
         diagram_gate_threshold=args.gate_threshold,
     )
