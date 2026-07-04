@@ -52,6 +52,17 @@ class MLSlideIRProvider:
     score_threshold: float = 0.5
     family_classifier_checkpoint: str | None = None
     connector_checkpoint: str | None = None
+    # Connector recovery strategy (real-figure measurement 2026-07-04):
+    #   "morphological" (default) — classical ink-component tracing + classical
+    #     arrowhead direction; recovers real routes with no domain gap, and is the
+    #     live default because it out-recovers the learned paths on real figures.
+    #   "segmenter" — the learned U-Net masks + component extraction
+    #     (requires connector_checkpoint).
+    #   "relation" — the pairwise relation model over segmenter/classical masks
+    #     (requires relation_checkpoint); kept for experiments, weak on real transfer.
+    connector_strategy: str = "morphological"
+    relation_checkpoint: str | None = None
+    relation_threshold: float = 0.5
     # Structural tree gate: parse/derivation trees are defined by text-only nodes,
     # and the detected text-node (LABEL_ANCHOR) fraction separates them cleanly on
     # real figures (~0.45 for trees vs ~0.05 for everything else) where the pixel
@@ -127,14 +138,8 @@ class MLSlideIRProvider:
                 )
 
         # Connectors first: the structure-based family classifier needs the
-        # recovered topology, so segmentation must run before family selection.
-        connectors: tuple = ()
-        ports: tuple = ()
-        if self.connector_checkpoint is not None:
-            from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_masks
-
-            line_mask, arrow_mask = segment_connector_masks(self.connector_checkpoint, rgb)
-            connectors, ports = extract_connectors(line_mask, arrow_mask, tuple(nodes), image_id=self.image_id)
+        # recovered topology, so connector recovery must run before family selection.
+        connectors, ports = self._recover_connectors(rgb, nodes, containers)
 
         family, family_confidence = DiagramFamily.ORTHOGONAL_FLOW, self.score_threshold
         if self.family_classifier_checkpoint is not None:
@@ -180,3 +185,106 @@ class MLSlideIRProvider:
         )
         adapter = AnnotationMLAdapter()
         return adapter.to_slide_ir(adapter.from_model_output(output))
+
+    def _recover_connectors(self, rgb, nodes, containers):
+        """Recover connectors with exactly the requested strategy.
+
+        Honors ``connector_strategy`` literally: a missing checkpoint yields no
+        connectors and a warning, never a silent fallback to a different strategy
+        (which would corrupt strategy-comparison experiments).
+        """
+        import warnings
+
+        if self.connector_strategy == "morphological":
+            from image_to_editable_ppt.ml.morphological_connectors import morphological_connectors
+
+            return morphological_connectors(rgb, tuple(nodes), tuple(containers), image_id=self.image_id)
+        if self.connector_strategy == "relation":
+            if self.relation_checkpoint is None:
+                warnings.warn("connector_strategy='relation' but no relation_checkpoint; emitting no connectors")
+                return (), ()
+            return self._relation_connectors(rgb, nodes)
+        if self.connector_strategy == "segmenter":
+            if self.connector_checkpoint is None:
+                warnings.warn("connector_strategy='segmenter' but no connector_checkpoint; emitting no connectors")
+                return (), ()
+            from image_to_editable_ppt.ml.connector_segmenter import extract_connectors, segment_connector_masks
+
+            line_mask, arrow_mask = segment_connector_masks(self.connector_checkpoint, rgb)
+            return extract_connectors(line_mask, arrow_mask, tuple(nodes), image_id=self.image_id)
+        warnings.warn(f"unknown connector_strategy={self.connector_strategy!r}; emitting no connectors")
+        return (), ()
+
+    def _relation_connectors(self, rgb, nodes):
+        """Opt-in: directed edges from the relation model over classical masks.
+
+        Kept for experiments; weak on real-figure transfer (edges come from a
+        geometry prior because real thin arrows barely segment), so it is not the
+        default. Endpoints are placed at the node-edge midpoint facing the partner.
+        """
+        from image_to_editable_ppt.ml.annotation_schema import (
+            AnnotationBBox,
+            AnnotationConnectorCandidate,
+            AnnotationConnectorEndpoint,
+            AnnotationPoint,
+        )
+        from image_to_editable_ppt.ml.classical_connectors import classical_connector_masks
+        from image_to_editable_ppt.ml.connector_segmenter import _port, _side_toward
+        from image_to_editable_ppt.ml.relation_model import predict_relations
+        from image_to_editable_ppt.v3.core.enums import ConnectorKind, PortOwnerKind
+
+        node_list = list(nodes)
+        if len(node_list) < 2:
+            return (), ()
+        line_mask, arrow_mask = classical_connector_masks(rgb, [n.bbox for n in node_list])
+        height, width = rgb.shape[:2]
+        edges = predict_relations(
+            self.relation_checkpoint, line_mask, arrow_mask, [n.bbox for n in node_list],
+            width=width, height=height, threshold=self.relation_threshold,
+        )
+        connectors, ports = [], []
+        for index, edge in enumerate(edges):
+            start_node, end_node = node_list[edge.source], node_list[edge.target]
+            start_side = _side_toward(start_node, _center(end_node.bbox))
+            end_side = _side_toward(end_node, _center(start_node.bbox))
+            start_pt = AnnotationPoint(*_side_point(start_node.bbox, start_side))
+            end_pt = AnnotationPoint(*_side_point(end_node.bbox, end_side))
+            connector_id = f"connector:{self.image_id}:{index}"
+            connectors.append(
+                AnnotationConnectorCandidate(
+                    id=connector_id, kind=ConnectorKind.ARROW,
+                    bbox=AnnotationBBox(
+                        x0=min(start_pt.x, end_pt.x) - 3, y0=min(start_pt.y, end_pt.y) - 3,
+                        x1=max(start_pt.x, end_pt.x) + 3, y1=max(start_pt.y, end_pt.y) + 3,
+                    ),
+                    confidence=float(edge.probability), source_evidence_id=f"evidence:{connector_id}",
+                    path_points=(start_pt, end_pt),
+                    start_endpoint=AnnotationConnectorEndpoint(
+                        point=start_pt, owner_id=start_node.id, owner_kind=PortOwnerKind.NODE, side=start_side,
+                    ),
+                    end_endpoint=AnnotationConnectorEndpoint(
+                        point=end_pt, owner_id=end_node.id, owner_kind=PortOwnerKind.NODE, side=end_side,
+                    ),
+                    arrowhead_end=True, source="relation", provenance=("relation:predict",),
+                )
+            )
+            ports.append(_port(start_node.id, self.image_id, index, "start", start_side, start_pt))
+            ports.append(_port(end_node.id, self.image_id, index, "end", end_side, end_pt))
+        return tuple(connectors), tuple(ports)
+
+
+def _center(bbox) -> tuple[float, float]:
+    return ((bbox.x0 + bbox.x1) / 2.0, (bbox.y0 + bbox.y1) / 2.0)
+
+
+def _side_point(bbox, side) -> tuple[float, float]:
+    from image_to_editable_ppt.v3.core.enums import PortSide
+
+    cx, cy = _center(bbox)
+    if side is PortSide.TOP:
+        return (cx, bbox.y0)
+    if side is PortSide.BOTTOM:
+        return (cx, bbox.y1)
+    if side is PortSide.LEFT:
+        return (bbox.x0, cy)
+    return (bbox.x1, cy)

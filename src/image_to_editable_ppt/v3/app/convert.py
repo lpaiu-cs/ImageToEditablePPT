@@ -7,6 +7,7 @@ from PIL import Image
 
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.compose import build_primitive_scene
+from image_to_editable_ppt.v3.compose.merge_text import merge_text_layer_into_slide_ir
 from image_to_editable_ppt.v3.connectors import (
     attach_connector_evidence,
     extract_connector_evidence,
@@ -64,6 +65,8 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
         return _convert_via_provider(image, multiview, active_config)
 
     text_layer = _extract_text_layer(multiview, active_config)
+    if active_config.recover_text:
+        text_layer = _annotate_text_layer_with_ocr(multiview, text_layer, active_config)
     validate_text_layer_result(text_layer)
     raster_layer = _extract_raster_layer(multiview, text_layer, active_config)
     validate_raster_layer_result(raster_layer)
@@ -219,13 +222,44 @@ def _convert_via_provider(
                 connector_candidates=slide_ir.connector_candidates, config=config
             ),
         )
+    # Phase 10: the provider recovers structure only; text stays a v3 branch.
+    # Extract (and OCR-annotate) the heuristic text layer and merge it so node
+    # labels and standalone text survive into the editable output.
+    #
+    # Skip the merge when the provider recovered no actual primitives: it may
+    # still carry a default family proposal (the provider sets one even with zero
+    # nodes/containers), so gate on recovered nodes/containers, not family alone.
+    # Otherwise a non-diagram that slips the OOD gate (or --no-gate) would merge
+    # OCR regions into an empty detection and emit a text-only pptx, breaking the
+    # not-a-diagram/blank-output contract.
+    scene = slide_ir.primitive_scene
+    has_structure = scene is not None and (len(scene.nodes) > 0 or len(scene.containers) > 0)
+    text_layer = None
+    if config.recover_text and has_structure:
+        text_layer = extract_text_layer(multiview, config=config)
+        text_layer = _annotate_text_layer_with_ocr(multiview, text_layer, config)
+        slide_ir = merge_text_layer_into_slide_ir(slide_ir, text_layer)
     validate_slide_ir(slide_ir)
     scene = slide_ir.primitive_scene
+    text_split_records = (
+        (
+            StageRecord(
+                stage=StageName.TEXT_SPLIT,
+                summary={
+                    "text_region_count": len(text_layer.regions),
+                    "recognized_text_count": sum(1 for region in text_layer.regions if region.text),
+                },
+            ),
+        )
+        if text_layer is not None
+        else ()
+    )
     stage_records = (
         StageRecord(
             stage=StageName.MULTIVIEW,
             summary={"branch_count": len(multiview.branches), "image_size": multiview.image_size.as_tuple()},
         ),
+        *text_split_records,
         StageRecord(
             stage=StageName.FAMILY_DETECT,
             summary={
@@ -268,6 +302,23 @@ def _load_image(input_image: str | Path | Image.Image) -> Image.Image:
 
 def _extract_text_layer(multiview: MultiViewBundle, config: V3Config) -> TextLayerResult:
     return extract_text_layer(multiview, config=config)
+
+
+def _annotate_text_layer_with_ocr(
+    multiview: MultiViewBundle,
+    text_layer: TextLayerResult,
+    config: V3Config,
+) -> TextLayerResult:
+    from image_to_editable_ppt.v3.core.enums import BranchKind
+    from image_to_editable_ppt.v3.text.ocr import annotate_text_regions
+
+    rgb = multiview.branch(BranchKind.RGB).image
+    text_layer.regions = annotate_text_regions(
+        rgb,
+        text_layer.regions,
+        min_confidence=config.ocr_min_confidence,
+    )
+    return text_layer
 
 
 def _extract_raster_layer(
