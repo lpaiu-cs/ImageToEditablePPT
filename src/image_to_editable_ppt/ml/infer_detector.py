@@ -248,6 +248,7 @@ def _run_checkpoint_inference(
     from PIL import Image
 
     from image_to_editable_ppt.ml.dataset import label_to_kind
+    from image_to_editable_ppt.ml.detection_postprocess import select_detection_indices
     from image_to_editable_ppt.ml.lightning_module import DetectorLightningModule
 
     module = DetectorLightningModule.load_from_checkpoint(config.checkpoint, map_location="cpu")
@@ -262,13 +263,9 @@ def _run_checkpoint_inference(
 
     nodes: list[AnnotationNode] = []
     containers: list[AnnotationContainer] = []
-    for index in range(len(prediction["scores"])):
+    for index in select_detection_indices(prediction, score_threshold=config.score_threshold):
         score = float(prediction["scores"][index])
-        if score < config.score_threshold:
-            continue
         x0, y0, x1, y1 = (float(value) for value in prediction["boxes"][index])
-        if x1 <= x0 or y1 <= y0:
-            continue
         bbox = AnnotationBBox(x0=x0, y0=y0, x1=x1, y1=y1)
         kind = label_to_kind(int(prediction["labels"][index]))
         if isinstance(kind, NodeKind):

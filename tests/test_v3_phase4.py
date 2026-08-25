@@ -7,7 +7,12 @@ from PIL import Image, ImageDraw
 from image_to_editable_ppt.v3.app.config import V3Config
 from image_to_editable_ppt.v3.app.convert import convert_image
 from image_to_editable_ppt.v3.core.enums import ConnectorOrientation, DiagramFamily
+from image_to_editable_ppt.v3.core.types import BBox, Point
+from image_to_editable_ppt.v3.connectors.evidence import _detect_arrowheads, _is_container_border_segment, _mask_node_ink
 from image_to_editable_ppt.v3.diagnostics import run_v3_debug
+from image_to_editable_ppt.v3.families.orthogonal_flow import _build_nodes, _dedupe_bboxes
+from image_to_editable_ppt.v3.ir.models import DiagramContainer
+from image_to_editable_ppt.v3.core.enums import ContainerKind
 from image_to_editable_ppt.v3.preprocessing import build_multiview_bundle, build_residual_canvas
 from image_to_editable_ppt.v3.raster import extract_raster_layer
 from image_to_editable_ppt.v3.text import extract_text_layer
@@ -68,6 +73,32 @@ def test_textless_node_fallback_is_allowed_but_low_confidence() -> None:
     assert any(node.confidence < 0.7 for node in instance.nodes)
 
 
+def test_text_region_without_geometry_does_not_invent_a_box() -> None:
+    from image_to_editable_ppt.v3.core.enums import TextRegionRole
+    from image_to_editable_ppt.v3.ir.models import FamilyProposal, TextRegion
+
+    proposal = FamilyProposal(
+        id="proposal:1",
+        family=DiagramFamily.ORTHOGONAL_FLOW,
+        confidence=0.7,
+        focus_bbox=BBox(10, 10, 190, 90),
+    )
+    region = TextRegion(
+        id="text:1",
+        bbox=BBox(50, 35, 120, 55),
+        confidence=0.9,
+        role=TextRegionRole.LABEL,
+        text="Floating label",
+    )
+
+    assert _build_nodes(
+        instance_id="diagram:1",
+        proposal=proposal,
+        node_boxes=(),
+        member_regions=(region,),
+    ) == []
+
+
 def test_connector_evidence_captures_orthogonal_segments_and_arrowhead_hint() -> None:
     result = convert_image(make_arrow_flow_image())
 
@@ -75,6 +106,83 @@ def test_connector_evidence_captures_orthogonal_segments_and_arrowhead_hint() ->
     assert any(evidence.orientation is ConnectorOrientation.HORIZONTAL for evidence in result.slide_ir.connector_evidence)
     assert any(evidence.arrowhead_end or evidence.arrowhead_start for evidence in result.slide_ir.connector_evidence)
     assert any(evidence.start_nearby_node_ids or evidence.end_nearby_node_ids for evidence in result.slide_ir.connector_evidence)
+
+
+def test_node_box_filter_rejects_connector_closed_overlap_contour() -> None:
+    true_nodes = [
+        BBox(82, 152, 191, 209),
+        BBox(266, 152, 375, 209),
+        BBox(82, 248, 191, 305),
+        BBox(266, 248, 375, 305),
+    ]
+    connector_closed_contour = BBox(137, 181, 320, 276)
+
+    filtered = _dedupe_bboxes([*true_nodes, connector_closed_contour])
+
+    assert connector_closed_contour not in filtered
+    assert all(node in filtered for node in true_nodes)
+
+
+def test_long_container_border_is_not_connector_evidence() -> None:
+    container = DiagramContainer(
+        id="container:1",
+        kind=ContainerKind.FLOW_CLUSTER,
+        bbox=BBox(56, 30, 584, 331),
+        confidence=0.8,
+    )
+
+    assert _is_container_border_segment(
+        Point(68, 80),
+        Point(68, 281),
+        orientation=ConnectorOrientation.VERTICAL,
+        containers=(container,),
+    )
+    assert not _is_container_border_segment(
+        Point(68, 140),
+        Point(68, 190),
+        orientation=ConnectorOrientation.VERTICAL,
+        containers=(container,),
+    )
+
+
+def test_arrow_signal_ignores_node_borders_but_keeps_external_tip() -> None:
+    import cv2
+    import numpy as np
+
+    mask = np.zeros((100, 200), dtype=np.uint8)
+    cv2.rectangle(mask, (20, 30), (70, 70), 255, 2)
+    cv2.rectangle(mask, (130, 30), (180, 70), 255, 2)
+    cv2.line(mask, (70, 50), (130, 50), 255, 2)
+    nodes = (
+        _diagram_node("source", BBox(20, 30, 70, 70)),
+        _diagram_node("target", BBox(130, 30, 180, 70)),
+    )
+    masked = _mask_node_ink(mask, nodes)
+
+    assert _detect_arrowheads(
+        Point(70, 50),
+        Point(130, 50),
+        (),
+        mask=masked,
+        orientation=ConnectorOrientation.HORIZONTAL,
+    ) == (False, False)
+
+    cv2.fillPoly(mask, [np.array([[128, 50], [118, 43], [118, 57]], dtype=np.int32)], 255)
+    masked = _mask_node_ink(mask, nodes)
+    assert _detect_arrowheads(
+        Point(70, 50),
+        Point(130, 50),
+        (),
+        mask=masked,
+        orientation=ConnectorOrientation.HORIZONTAL,
+    ) == (False, True)
+
+
+def _diagram_node(node_id: str, bbox: BBox):
+    from image_to_editable_ppt.v3.core.enums import NodeKind
+    from image_to_editable_ppt.v3.ir.models import DiagramNode
+
+    return DiagramNode(id=node_id, kind=NodeKind.BOX, bbox=bbox, confidence=0.9)
 
 
 def make_arrow_flow_image() -> Image.Image:

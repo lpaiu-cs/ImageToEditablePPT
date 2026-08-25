@@ -172,8 +172,20 @@ def _arrowhead_end(
     margins); otherwise return None and let the connector stay undirected — a guess
     at direction is worse than an honest plain line.
     """
-    start_ink = _tip_ink(gray, polyline[0], ink_threshold=ink_threshold, radius=radius)
-    end_ink = _tip_ink(gray, polyline[-1], ink_threshold=ink_threshold, radius=radius)
+    start_ink = _tip_ink(
+        gray,
+        polyline[0],
+        owner_bbox=box_start,
+        ink_threshold=ink_threshold,
+        radius=radius,
+    )
+    end_ink = _tip_ink(
+        gray,
+        polyline[-1],
+        owner_bbox=box_end,
+        ink_threshold=ink_threshold,
+        radius=radius,
+    )
     if end_ink >= start_ink * ratio and end_ink - start_ink >= min_excess:
         return "end"
     if start_ink >= end_ink * ratio and start_ink - end_ink >= min_excess:
@@ -181,15 +193,29 @@ def _arrowhead_end(
     return None
 
 
-def _tip_ink(gray: np.ndarray, point: tuple[float, float], *, ink_threshold: int, radius: int) -> float:
+def _tip_ink(
+    gray: np.ndarray,
+    point: tuple[float, float],
+    *,
+    owner_bbox,
+    ink_threshold: int,
+    radius: int,
+) -> float:
     h, w = gray.shape[:2]
     cx, cy = int(round(point[0])), int(round(point[1]))
     x0, x1 = max(0, cx - radius), min(w, cx + radius + 1)
     y0, y1 = max(0, cy - radius), min(h, cy + radius + 1)
     if x1 <= x0 or y1 <= y0:
         return 0.0
-    window = gray[y0:y1, x0:x1]
-    return float((window < ink_threshold).sum())
+    ink = gray[y0:y1, x0:x1] < ink_threshold
+    if owner_bbox is not None:
+        owner_x0 = max(x0, int(np.floor(owner_bbox.x0)))
+        owner_y0 = max(y0, int(np.floor(owner_bbox.y0)))
+        owner_x1 = min(x1, int(np.ceil(owner_bbox.x1)) + 1)
+        owner_y1 = min(y1, int(np.ceil(owner_bbox.y1)) + 1)
+        if owner_x1 > owner_x0 and owner_y1 > owner_y0:
+            ink[owner_y0 - y0 : owner_y1 - y0, owner_x0 - x0 : owner_x1 - x0] = False
+    return float(ink.sum())
 
 
 def _orthogonalize(polyline: list[tuple[float, float]], *, axis_tol: float = 0.34) -> list[tuple[float, float]]:

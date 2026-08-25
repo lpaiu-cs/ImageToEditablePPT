@@ -110,6 +110,8 @@ def test_train_infer_eval_loop_produces_valid_artifacts(tiny_dataset_dir: Path, 
     assert run_manifest["status"] == "trained"
     assert "train_loss" in run_manifest["final_metrics"]
     assert run_manifest["dataset"]["generator"]["seed"] == 13
+    assert run_manifest["checkpoint"]["best"] is not None
+    assert Path(run_manifest["checkpoint"]["best"]).exists()
     checkpoint = run_manifest["checkpoint"]["last"]
     assert checkpoint is not None and Path(checkpoint).exists()
     metrics_csv = list(run_dir.rglob("metrics.csv"))

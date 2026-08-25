@@ -6,8 +6,12 @@
 
 ## 현재 상태
 
-- **이미지 → 편집 가능한 .pptx 루프가 동작한다** (Phase 10).
-  - ML provider(검출기 + family 분류기 + connector segmenter + OOD 게이트) 또는 휴리스틱 경로로 구조를 복원하고, OCR로 텍스트를 복원해 native PowerPoint primitive로 emit한다.
+- **이미지 → 편집 가능한 .pptx 루프가 동작한다** (Phase 10~14).
+  - ML provider(검출기 + family 분류기 + connector 추출기 + OOD 게이트) 또는 휴리스틱 경로로 구조를 복원하고, OCR로 텍스트를 복원해 native PowerPoint primitive로 emit한다.
+  - writer/composition은 GT 구조를 사용한 oracle 실험에서 정확한 native object와 도형에 결속된 connector를 만들었다.
+  - 고정 직교 흐름도 표본은 node/container/topology/direction F1 1.0, label 8/8, 편집 작업 하한 0까지 회복했고 PowerPoint 렌더도 육안 확인했다.
+  - 휴리스틱 경로는 복잡한 실제형 입력에서 거짓 양성을 버리고 확실한 일부만 내보내지만, 아직 전체 구조를 복원하는 제품 품질은 아니다.
+  - Phase 14에서 checksum-bound ML bundle과 고정 real benchmark/holdout을 실제로 끝까지 검증했다. 개발셋의 느슨한 개수 기준은 통과했지만 독립 holdout과 PowerPoint 육안 품질은 실사용 기준에 큰 폭으로 미달했다. 현재 모델은 연구용 `candidate`이며 실제 사용자용으로 추천하지 않는다. canonical 모델은 아직 없다.
 - old v2 runtime과 old CLI 동작은 의도적으로 제거되었다.
 - 휴리스틱 경로의 지원 family는 아직 좁다(`orthogonal_flow`). ML 경로는 7 family를 다룬다.
 - benchmark / eval / GT sidecar / workbench 자산은 보존되어 있다. old validation runtime은 복구하지 않았다.
@@ -17,15 +21,30 @@
 이미지 → 편집 가능한 .pptx:
 
 ```bash
-python -m pip install -e ".[ml,ocr]"
+python -m pip install -e ".[ml,ocr,test]"
 py -3.12 tools/convert_to_pptx.py figure.png                 # -> figure.pptx
 py -3.12 tools/convert_to_pptx.py figs/ -o out/              # 배치 변환
 py -3.12 tools/convert_to_pptx.py figure.png --no-ml         # 휴리스틱 경로
+py -3.12 tools/convert_to_pptx.py figure.png --bundle workbench-ml/model_bundle.candidate.json --allow-candidate-bundle
 ```
 
-- canonical 체크포인트는 기본적으로 `workbench-ml/run-*/checkpoints/last.ckpt`에서 찾는다 (`--models-dir` 또는 `IEP_MODELS_DIR`로 변경).
-- OOD 게이트가 비다이어그램(차트/스크린샷/사진)을 거절하면 빈 pptx와 함께 `[EMPTY]`를 알린다 (`--no-gate`로 강제 변환).
+- `--bundle`은 checkpoint와 training/evidence artifact의 SHA-256을 검증한다. `workbench-ml/model_bundle.json`이 있으면 자동으로 사용한다.
+- canonical이 아닌 bundle은 기본적으로 거절된다. 품질 미달이 확인된 실험용 candidate는 연구·진단 목적으로만 `--allow-candidate-bundle`을 명시해 실행할 수 있다.
+- bundle/model 파일과 외부 benchmark 이미지는 저장소에 포함되지 않으므로 clean checkout만으로 Phase 14 결과를 재현할 수는 없다.
+- gate checkpoint가 없으면 자동으로 gate를 끄지 않고 실패한다. 의도적으로 gate 없이 실행할 때만 `--no-gate`를 사용한다.
+- OOD 게이트가 비다이어그램(차트/스크린샷/사진)을 거절하거나 결과에 primitive가 없으면 빈 pptx와 함께 `[EMPTY]`를 알린다.
 - OCR 백엔드(rapidocr)가 없으면 텍스트만 비운 채 구조는 그대로 변환된다.
+- 일반 OCR에서 놓친 흰색 라벨은 이미 검출된 닫힌 노드 내부에서만 다시 읽는다. 떠 있는 비-title OCR 텍스트는 출력하지 않는다.
+- 배치 변환에서 서로 다른 입력이 같은 출력 파일명으로 정규화되면 덮어쓰지 않고 시작 전에 오류로 종료한다.
+
+PPTX의 편집 가능성과 GT 대비 구조 오류를 측정하려면:
+
+```bash
+py -3.12 tools/evaluate_pptx_editability.py output.pptx
+py -3.12 tools/evaluate_pptx_editability.py output.pptx --annotation figure.json --output editability.json
+```
+
+평가기와 기준선은 [docs/phase12_edit_cost_experiment.md](docs/phase12_edit_cost_experiment.md), canonical 승격 실험과 NO-GO 근거는 [docs/phase14_canonical_acceptance_experiment.md](docs/phase14_canonical_acceptance_experiment.md)에 기록되어 있다.
 
 개발용 inspection 경로 (v3 debug/inspection path):
 

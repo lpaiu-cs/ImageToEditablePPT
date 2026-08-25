@@ -106,15 +106,24 @@ def train_detector(config: TrainDetectorConfig) -> dict[str, object]:
             batch_size=config.batch_size,
             shuffle=shuffle,
             num_workers=config.num_workers,
+            persistent_workers=config.num_workers > 0,
             collate_fn=detection_collate,
         )
 
     module = DetectorLightningModule(learning_rate=config.learning_rate)
-    checkpoint_callback = ModelCheckpoint(
-        dirpath=config.output_dir / "checkpoints",
-        filename="detector-{epoch:02d}",
-        save_last=True,
-    )
+    checkpoint_options: dict[str, object] = {
+        "dirpath": config.output_dir / "checkpoints",
+        "filename": "detector-{epoch:02d}",
+        "save_last": True,
+    }
+    if len(val_dataset) > 0:
+        checkpoint_options.update(
+            filename="detector-{epoch:02d}-{val_loss:.4f}",
+            monitor="val_loss",
+            mode="min",
+            save_top_k=1,
+        )
+    checkpoint_callback = ModelCheckpoint(**checkpoint_options)
     trainer = L.Trainer(
         accelerator=config.accelerator,
         max_epochs=config.max_epochs,

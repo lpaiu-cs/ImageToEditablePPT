@@ -30,7 +30,11 @@ class OrthogonalConnectorEvidenceExtractor:
             mask,
             rho=1,
             theta=np.pi / 180.0,
-            threshold=max(12, min(canvas.image.shape[:2]) // 9),
+            # Short inter-row arrows in paper figures can be only ~10% of the
+            # image height. A //9 vote threshold dropped them even though they
+            # cleared minLineLength; //15 recovers them while later node/container
+            # geometry filters reject box borders.
+            threshold=max(12, min(canvas.image.shape[:2]) // 15),
             minLineLength=max(12, min(canvas.image.shape[:2]) // 14),
             maxLineGap=6,
         )
@@ -41,10 +45,10 @@ class OrthogonalConnectorEvidenceExtractor:
         line_segments = np.asarray(line_segments)
         if line_segments.ndim == 2:
             line_segments = line_segments[:, None, :]
-        arrowhead_hints = _find_arrowhead_hints(mask, line_segments)
-
         all_nodes = tuple(node for instance in instances for node in instance.nodes)
         all_containers = tuple(container for instance in instances for container in instance.containers)
+        arrow_signal_mask = _mask_node_ink(mask, all_nodes)
+        arrowhead_hints = _find_arrowhead_hints(arrow_signal_mask, line_segments)
         evidence_by_key: dict[tuple[tuple[int, int], tuple[int, int]], ConnectorEvidence] = {}
 
         for segment in line_segments[:, 0, :]:
@@ -53,6 +57,8 @@ class OrthogonalConnectorEvidenceExtractor:
             end = Point(float(x1), float(y1))
             orientation = _classify_orientation(start, end)
             if orientation not in {ConnectorOrientation.HORIZONTAL, ConnectorOrientation.VERTICAL}:
+                continue
+            if _is_container_border_segment(start, end, orientation=orientation, containers=all_containers):
                 continue
 
             start_nodes = _nearby_node_ids(start, all_nodes)
@@ -68,7 +74,7 @@ class OrthogonalConnectorEvidenceExtractor:
                 start,
                 end,
                 arrowhead_hints,
-                mask=mask,
+                mask=arrow_signal_mask,
                 orientation=orientation,
             )
             nearby_container_ids = _nearby_container_ids(_segment_bbox(start, end), all_containers)
@@ -199,6 +205,52 @@ def _point_to_bbox_distance(point: Point, bbox: BBox) -> float:
     return math.hypot(dx, dy)
 
 
+def _mask_node_ink(mask: np.ndarray, nodes: tuple[DiagramNode, ...]) -> np.ndarray:
+    masked = mask.copy()
+    height, width = masked.shape[:2]
+    for node in nodes:
+        # Rounded borders and shadows can spill ~2 px beyond the contour bbox.
+        # A wider exclusion starts erasing arrow tips in short inter-row gaps.
+        x0 = max(0, int(math.floor(node.bbox.x0)) - 2)
+        y0 = max(0, int(math.floor(node.bbox.y0)) - 2)
+        x1 = min(width, int(math.ceil(node.bbox.x1)) + 3)
+        y1 = min(height, int(math.ceil(node.bbox.y1)) + 3)
+        if x1 > x0 and y1 > y0:
+            masked[y0:y1, x0:x1] = 0
+    return masked
+
+
+def _is_container_border_segment(
+    start: Point,
+    end: Point,
+    *,
+    orientation: ConnectorOrientation,
+    containers: tuple[DiagramContainer, ...],
+) -> bool:
+    """Reject long Hough segments that trace a container's outer border.
+
+    Rounded container sides sit slightly inside the bounding-box extrema, so the
+    tolerance scales with container size. Short lines near an edge remain valid
+    connector evidence; only a segment spanning much of one side is excluded.
+    """
+    for container in containers:
+        bbox = container.bbox
+        tolerance = max(8.0, min(20.0, min(bbox.width, bbox.height) * 0.055))
+        if orientation is ConnectorOrientation.VERTICAL:
+            side_distance = min(abs(start.x - bbox.x0), abs(start.x - bbox.x1), abs(end.x - bbox.x0), abs(end.x - bbox.x1))
+            coverage = abs(end.y - start.y) / max(1.0, bbox.height)
+            midpoint = (start.y + end.y) / 2.0
+            if side_distance <= tolerance and coverage >= 0.45 and bbox.y0 <= midpoint <= bbox.y1:
+                return True
+        elif orientation is ConnectorOrientation.HORIZONTAL:
+            side_distance = min(abs(start.y - bbox.y0), abs(start.y - bbox.y1), abs(end.y - bbox.y0), abs(end.y - bbox.y1))
+            coverage = abs(end.x - start.x) / max(1.0, bbox.width)
+            midpoint = (start.x + end.x) / 2.0
+            if side_distance <= tolerance and coverage >= 0.45 and bbox.x0 <= midpoint <= bbox.x1:
+                return True
+    return False
+
+
 def _find_arrowhead_hints(mask: np.ndarray, line_segments: np.ndarray) -> tuple[Point, ...]:
     contours, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     hints: list[Point] = []
@@ -259,31 +311,18 @@ def _endpoint_arrow_signal(
     x = int(round(endpoint.x))
     y = int(round(endpoint.y))
     height, width = mask.shape[:2]
-    radius = 7
+    radius = 10
+    x0 = max(0, x - radius)
+    x1 = min(width, x + radius + 1)
+    y0 = max(0, y - radius)
+    y1 = min(height, y + radius + 1)
+    patch = mask[y0:y1, x0:x1]
+    if patch.size == 0:
+        return False
     if orientation is ConnectorOrientation.HORIZONTAL:
-        direction = 1 if endpoint.x >= anchor.x else -1
-        x0 = max(0, x + 1 if direction > 0 else x - radius)
-        x1 = min(width, x + radius + 1 if direction > 0 else x)
-        y0 = max(0, y - radius)
-        y1 = min(height, y + radius + 1)
-        patch = mask[y0:y1, x0:x1]
-        if patch.size == 0:
-            return False
-        mid = y - y0
-        upper = int(np.count_nonzero(patch[:mid, :]))
-        lower = int(np.count_nonzero(patch[mid + 1 :, :]))
-        return upper >= 3 and lower >= 3
+        occupied_rows = np.flatnonzero(np.any(patch > 0, axis=1))
+        return occupied_rows.size >= 2 and int(occupied_rows[-1] - occupied_rows[0] + 1) >= 6
     if orientation is ConnectorOrientation.VERTICAL:
-        direction = 1 if endpoint.y >= anchor.y else -1
-        x0 = max(0, x - radius)
-        x1 = min(width, x + radius + 1)
-        y0 = max(0, y + 1 if direction > 0 else y - radius)
-        y1 = min(height, y + radius + 1 if direction > 0 else y)
-        patch = mask[y0:y1, x0:x1]
-        if patch.size == 0:
-            return False
-        mid = x - x0
-        left = int(np.count_nonzero(patch[:, :mid]))
-        right = int(np.count_nonzero(patch[:, mid + 1 :]))
-        return left >= 3 and right >= 3
+        occupied_columns = np.flatnonzero(np.any(patch > 0, axis=0))
+        return occupied_columns.size >= 2 and int(occupied_columns[-1] - occupied_columns[0] + 1) >= 6
     return False

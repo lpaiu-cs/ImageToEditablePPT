@@ -82,6 +82,16 @@ def test_arrowhead_end_returns_none_when_symmetric():
     assert _arrowhead_end(gray, [(10.0, 30.0), (100.0, 30.0)], None, None) is None
 
 
+def test_arrowhead_end_ignores_dark_owner_node_ink():
+    gray = np.full((120, 200), 255, dtype=np.uint8)
+    gray[59:62, 70:131] = 0
+    gray[40:81, 130:181] = 0  # dark target node, not an arrowhead
+    start_box = AnnotationBBox(20, 40, 70, 80)
+    end_box = AnnotationBBox(130, 40, 180, 80)
+
+    assert _arrowhead_end(gray, [(70.0, 60.0), (130.0, 60.0)], start_box, end_box) is None
+
+
 def test_orthogonalize_snaps_near_axis_and_keeps_diagonal():
     # near-horizontal wobble -> flat
     snapped = _orthogonalize([(0.0, 10.0), (100.0, 12.0)])

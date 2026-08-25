@@ -132,6 +132,23 @@ class _ClassifierSample:
     label: int
 
 
+class FamilyClassifierDataset(Dataset):
+    """Pickle-safe dataset so Windows DataLoader workers can spawn."""
+
+    def __init__(self, samples: tuple[_ClassifierSample, ...]) -> None:
+        self.samples = samples
+
+    def __len__(self) -> int:
+        return len(self.samples)
+
+    def __getitem__(self, index: int):
+        sample = self.samples[index]
+        with Image.open(sample.image_path) as image:
+            pil = image.convert("RGB").resize((INPUT_SIZE, INPUT_SIZE))
+        tensor = torch.from_numpy(np.asarray(pil, dtype=np.float32) / 255.0).permute(2, 0, 1)
+        return tensor, sample.label
+
+
 def _build_torch_dataset(dataset_dir: Path, *, split: str) -> Dataset:
     manifest = json.loads((dataset_dir / "dataset_manifest.json").read_text(encoding="utf-8"))
     samples = tuple(
@@ -143,18 +160,7 @@ def _build_torch_dataset(dataset_dir: Path, *, split: str) -> Dataset:
         if item["split"] == split and DiagramFamily(item["family"]) in FAMILY_TO_INDEX
     )
 
-    class FamilyClassifierDataset(Dataset):
-        def __len__(self) -> int:
-            return len(samples)
-
-        def __getitem__(self, index: int):
-            sample = samples[index]
-            with Image.open(sample.image_path) as image:
-                pil = image.convert("RGB").resize((INPUT_SIZE, INPUT_SIZE))
-            tensor = torch.from_numpy(np.asarray(pil, dtype=np.float32) / 255.0).permute(2, 0, 1)
-            return tensor, sample.label
-
-    return FamilyClassifierDataset()
+    return FamilyClassifierDataset(samples)
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -178,14 +184,31 @@ def train_family_classifier(args: argparse.Namespace) -> dict[str, object]:
     L.seed_everything(args.seed)
     train_dataset = _build_torch_dataset(args.dataset_dir, split="train")
     val_dataset = _build_torch_dataset(args.dataset_dir, split="val")
+    persistent_workers = args.num_workers > 0
     train_loader = DataLoader(
-        train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers
+        train_dataset,
+        batch_size=args.batch_size,
+        shuffle=True,
+        num_workers=args.num_workers,
+        persistent_workers=persistent_workers,
     )
-    val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=args.num_workers)
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        persistent_workers=persistent_workers,
+    )
 
     module = FamilyClassifierModule(learning_rate=args.learning_rate)
     checkpoint_dir = args.output_dir / "checkpoints"
-    checkpoint_cb = ModelCheckpoint(dirpath=checkpoint_dir, filename="family_classifier-{epoch}", save_last=True)
+    checkpoint_cb = ModelCheckpoint(
+        dirpath=checkpoint_dir,
+        filename="family_classifier-{epoch}-{val_acc:.4f}",
+        monitor="val_acc",
+        mode="max",
+        save_top_k=1,
+        save_last=True,
+    )
     trainer_kwargs: dict[str, object] = {
         "max_epochs": args.max_epochs,
         "accelerator": args.accelerator,

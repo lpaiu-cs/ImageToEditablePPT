@@ -82,6 +82,7 @@ class OrthogonalFlowParser:
     ) -> tuple[DiagramInstance, ...]:
         del raster_layer, config
         instances: list[DiagramInstance] = []
+        accepted_nodes: list[DiagramNode] = []
 
         for proposal in proposals:
             if proposal.focus_bbox is None:
@@ -94,6 +95,10 @@ class OrthogonalFlowParser:
             )
             node_boxes = _find_node_boxes(canvas.image, proposal.focus_bbox)
             nodes = _build_nodes(instance_id=instance_id, proposal=proposal, node_boxes=node_boxes, member_regions=member_regions)
+            if not nodes:
+                continue
+            if all(any(node.bbox.iou(existing.bbox) >= 0.85 for existing in accepted_nodes) for node in nodes):
+                continue
             containers = _build_containers(instance_id=instance_id, proposal=proposal, nodes=tuple(nodes))
             instance_bbox = _merge_bboxes(
                 [*(container.bbox for container in containers), *(node.bbox for node in nodes)]
@@ -111,6 +116,7 @@ class OrthogonalFlowParser:
                     provenance=("family:orthogonal_flow", "parser:node_container_split"),
                 )
             )
+            accepted_nodes.extend(nodes)
         return tuple(instances)
 
 
@@ -176,13 +182,14 @@ def _build_nodes(
     node_boxes: tuple[BBox, ...],
     member_regions: tuple[TextRegion, ...],
 ) -> list[DiagramNode]:
+    del proposal
     nodes: list[DiagramNode] = []
     if node_boxes:
         for node_index, node_bbox in enumerate(sorted(node_boxes, key=lambda item: (item.y0, item.x0)), start=1):
             attached_regions = tuple(
                 region
                 for region in member_regions
-                if node_bbox.contains_point(region.bbox.center) or node_bbox.overlaps(region.bbox)
+                if node_bbox.contains_point(region.bbox.center)
             )
             label = "\n".join(region.text for region in attached_regions if region.text) or None
             nodes.append(
@@ -197,31 +204,8 @@ def _build_nodes(
                     provenance=("family:orthogonal_flow", "signal:rectangular_contour"),
                 )
             )
-    elif member_regions:
-        for node_index, region in enumerate(sorted(member_regions, key=lambda item: (item.bbox.y0, item.bbox.x0)), start=1):
-            nodes.append(
-                DiagramNode(
-                    id=f"{instance_id}:node:{node_index}",
-                    kind=NodeKind.BOX,
-                    bbox=region.bbox.expand(10.0),
-                    confidence=0.62,
-                    label=region.text,
-                    text_region_ids=(region.id,),
-                    source="phase4_parser:text_anchor_fallback",
-                    provenance=("family:orthogonal_flow", "signal:text_anchor"),
-                )
-            )
-    else:
-        nodes.append(
-            DiagramNode(
-                id=f"{instance_id}:node:1",
-                kind=NodeKind.BOX,
-                bbox=proposal.focus_bbox.inset(min(6.0, min(proposal.focus_bbox.width, proposal.focus_bbox.height) / 10.0)),
-                confidence=0.34,
-                source="phase4_parser:proposal_fallback",
-                provenance=("family:orthogonal_flow", "fallback:proposal_bbox"),
-            )
-        )
+    # Text alone is not geometric evidence for a box. Returning no node is the
+    # conservative result; the text branch may still preserve a trusted title.
     return nodes
 
 
@@ -233,9 +217,7 @@ def _build_containers(
 ) -> list[DiagramContainer]:
     if not nodes:
         return []
-    node_union = _merge_bboxes([node.bbox for node in nodes])
-    need_container = len(nodes) >= 2 or proposal.focus_bbox.area > node_union.area * 1.12
-    if not need_container:
+    if len(nodes) < 2:
         return []
     return [
         DiagramContainer(
@@ -284,7 +266,27 @@ def _dedupe_bboxes(boxes: list[BBox]) -> tuple[BBox, ...]:
             for other in deduped
             if other is not candidate and candidate.contains_point(other.center) and candidate.area > other.area * 1.4
         ]
-        if len(contained_children) >= 2:
+        intersecting_children = [
+            other
+            for other in deduped
+            if other is not candidate
+            and candidate.area > other.area * 1.4
+            and _intersection_fraction(other, candidate) >= 0.18
+        ]
+        # Connector strokes can close a large rectangular contour across four
+        # neighbouring boxes without containing any box centre. It is not a new
+        # node; keeping it makes text ownership and connector attachment collapse.
+        if len(contained_children) >= 2 or len(intersecting_children) >= 3:
             continue
         filtered.append(candidate)
     return tuple(sorted(filtered, key=lambda item: (item.y0, item.x0)))
+
+
+def _intersection_fraction(subject: BBox, other: BBox) -> float:
+    x0 = max(subject.x0, other.x0)
+    y0 = max(subject.y0, other.y0)
+    x1 = min(subject.x1, other.x1)
+    y1 = min(subject.y1, other.y1)
+    if x1 <= x0 or y1 <= y0 or subject.area <= 0.0:
+        return 0.0
+    return ((x1 - x0) * (y1 - y0)) / subject.area

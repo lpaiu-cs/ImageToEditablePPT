@@ -8,8 +8,8 @@ extracts the heuristic text layer (plus optional OCR) and merges it here:
 - a region whose centre falls inside exactly one smallest node is *owned* by
   that node (``owner_ids``), and its recognized text is promoted to the node
   label so downstream emit can put it inside the shape;
-- regions outside any node stay standalone (emit renders them as text boxes
-  only when they carry recognized text).
+- regions outside any node stay standalone; emit currently preserves only a
+  trusted title and omits floating labels that could be OCR clutter.
 """
 from __future__ import annotations
 

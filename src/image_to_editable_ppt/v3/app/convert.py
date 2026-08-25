@@ -74,6 +74,9 @@ def convert_image(input_image: str | Path | Image.Image, *, config: V3Config | N
     validate_residual_canvas_result(residual_canvas)
     family_proposals = _detect_families(residual_canvas, text_layer, raster_layer, active_config)
     instances = _parse_families(residual_canvas, family_proposals, text_layer, raster_layer, active_config)
+    if active_config.recover_text:
+        text_layer = _recover_missing_node_text(multiview, text_layer, tuple(node for item in instances for node in item.nodes), active_config)
+        validate_text_layer_result(text_layer)
     connector_evidence = _extract_connector_evidence(residual_canvas, instances, active_config)
     ports = _generate_ports(instances, active_config)
     connector_candidates, unattached_connector_evidence = _attach_connector_evidence(
@@ -238,6 +241,8 @@ def _convert_via_provider(
     if config.recover_text and has_structure:
         text_layer = extract_text_layer(multiview, config=config)
         text_layer = _annotate_text_layer_with_ocr(multiview, text_layer, config)
+        assert scene is not None
+        text_layer = _recover_missing_node_text(multiview, text_layer, scene.nodes, config)
         slide_ir = merge_text_layer_into_slide_ir(slide_ir, text_layer)
     validate_slide_ir(slide_ir)
     scene = slide_ir.primitive_scene
@@ -319,6 +324,23 @@ def _annotate_text_layer_with_ocr(
         min_confidence=config.ocr_min_confidence,
     )
     return text_layer
+
+
+def _recover_missing_node_text(
+    multiview: MultiViewBundle,
+    text_layer: TextLayerResult,
+    nodes,
+    config: V3Config,
+) -> TextLayerResult:
+    from image_to_editable_ppt.v3.core.enums import BranchKind
+    from image_to_editable_ppt.v3.text.ocr import recover_node_text_regions
+
+    return recover_node_text_regions(
+        multiview.branch(BranchKind.RGB).image,
+        text_layer,
+        nodes,
+        min_confidence=config.ocr_min_confidence,
+    )
 
 
 def _extract_raster_layer(

@@ -17,7 +17,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Mapping
 
-from image_to_editable_ppt.v3.core.enums import NodeKind, PortOwnerKind
+from image_to_editable_ppt.v3.core.enums import NodeKind, PortOwnerKind, TextRegionRole
 from image_to_editable_ppt.v3.emit.models import (
     EmitConnectorPrimitive,
     EmitScene,
@@ -66,15 +66,17 @@ def write_pptx(
         (shape for shape in scene.shapes if shape.owner_kind is PortOwnerKind.NODE),
         key=lambda shape: -shape.bbox.area,
     )
+    shapes_by_id: dict[str, tuple[object, EmitShapePrimitive]] = {}
     for shape in (*containers, *nodes):
         style = (styles or {}).get(shape.id, _DEFAULT_STYLE)
-        _add_shape(slide, shape, style=style, owned_texts=texts_by_owner.get(shape.id, ()))
+        pptx_shape = _add_shape(slide, shape, style=style, owned_texts=texts_by_owner.get(shape.id, ()))
+        shapes_by_id[shape.id] = (pptx_shape, shape)
 
     for connector in scene.connectors:
-        _add_connector(slide, connector)
+        _add_connector(slide, connector, shapes_by_id=shapes_by_id)
 
     for text in scene.texts:
-        if text.id in owned_text_ids or not text.text:
+        if text.id in owned_text_ids or not text.text or text.role is not TextRegionRole.TITLE:
             continue
         _add_textbox(slide, text)
 
@@ -99,7 +101,7 @@ def _add_shape(
     *,
     style: ShapeVisualStyle,
     owned_texts: tuple[EmitTextPrimitive, ...] | list[EmitTextPrimitive],
-) -> None:
+):
     from pptx.dml.color import RGBColor
     from pptx.enum.shapes import MSO_SHAPE
 
@@ -113,7 +115,7 @@ def _add_shape(
         box.line.fill.background()
         if label_text:
             _fill_text_frame(box.text_frame, label_text, extent=text_extent or (shape.bbox.width, shape.bbox.height), wrap=False)
-        return
+        return box
 
     mso_shape = MSO_SHAPE.ROUNDED_RECTANGLE if shape.shape_kind is NodeKind.ROUNDED_BOX else MSO_SHAPE.RECTANGLE
     autoshape = slide.shapes.add_shape(mso_shape, *_emu_box(shape.bbox))
@@ -137,7 +139,9 @@ def _add_shape(
             label_text,
             extent=text_extent or (shape.bbox.width * 0.8, shape.bbox.height * 0.4),
             wrap=True,
+            color=_text_color_for_fill(style.fill),
         )
+    return autoshape
 
 
 def _merge_owned_texts(
@@ -171,7 +175,21 @@ def _font_size_pt(text: str, *, extent: tuple[float, float]) -> int:
     return max(6, min(24, round(min(height_bound, width_bound))))
 
 
-def _fill_text_frame(text_frame, text: str, *, extent: tuple[float, float], wrap: bool) -> None:
+def _text_color_for_fill(fill: tuple[int, int, int] | None) -> tuple[int, int, int]:
+    if fill is None:
+        return _TEXT_COLOR
+    luminance = 0.2126 * fill[0] + 0.7152 * fill[1] + 0.0722 * fill[2]
+    return (248, 250, 252) if luminance < 145 else _TEXT_COLOR
+
+
+def _fill_text_frame(
+    text_frame,
+    text: str,
+    *,
+    extent: tuple[float, float],
+    wrap: bool,
+    color: tuple[int, int, int] = _TEXT_COLOR,
+) -> None:
     from pptx.dml.color import RGBColor
     from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
     from pptx.util import Emu, Pt
@@ -190,10 +208,32 @@ def _fill_text_frame(text_frame, text: str, *, extent: tuple[float, float], wrap
         paragraph.alignment = PP_ALIGN.CENTER
         for run in paragraph.runs:
             run.font.size = font_size
-            run.font.color.rgb = RGBColor(*_TEXT_COLOR)
+            run.font.color.rgb = RGBColor(*color)
 
 
-def _add_connector(slide, connector: EmitConnectorPrimitive) -> None:
+def _connection_site_index(shape: EmitShapePrimitive, point) -> int:
+    """Return the rectangular connection site nearest an observed endpoint.
+
+    ``python-pptx`` numbers rectangle sites top/left/bottom/right as 0/1/2/3.
+    The observed path point is already on or near the owner boundary, so the
+    nearest side preserves its attachment semantics without inventing a route.
+    """
+    bbox = shape.bbox
+    distances = (
+        (abs(point.y - bbox.y0), 0),
+        (abs(point.x - bbox.x0), 1),
+        (abs(point.y - bbox.y1), 2),
+        (abs(point.x - bbox.x1), 3),
+    )
+    return min(distances)[1]
+
+
+def _add_connector(
+    slide,
+    connector: EmitConnectorPrimitive,
+    *,
+    shapes_by_id: Mapping[str, tuple[object, EmitShapePrimitive]],
+) -> None:
     from pptx.dml.color import RGBColor
     from pptx.enum.shapes import MSO_CONNECTOR
     from pptx.oxml.ns import qn
@@ -202,22 +242,76 @@ def _add_connector(slide, connector: EmitConnectorPrimitive) -> None:
     points = connector.path_points
     if len(points) < 2:
         return  # no geometry, nothing honest to draw
-    for start, end in zip(points, points[1:]):
-        segment = slide.shapes.add_connector(
-            MSO_CONNECTOR.STRAIGHT,
-            Emu(int(start.x * EMU_PER_PIXEL)),
-            Emu(int(start.y * EMU_PER_PIXEL)),
-            Emu(int(end.x * EMU_PER_PIXEL)),
-            Emu(int(end.y * EMU_PER_PIXEL)),
-        )
-        segment.name = connector.id
-        segment.line.color.rgb = RGBColor(*_CONNECTOR_COLOR)
-        segment.line.width = Pt(1.25)
-        line_element = segment.line._get_or_add_ln()
-        if connector.arrowhead_end and end is points[-1]:
-            line_element.append(line_element.makeelement(qn("a:tailEnd"), {"type": "triangle"}))
-        if connector.arrowhead_start and start is points[0]:
-            line_element.append(line_element.makeelement(qn("a:headEnd"), {"type": "triangle"}))
+    start, end = points[0], points[-1]
+    connector_type = MSO_CONNECTOR.ELBOW if _needs_elbow(points) else MSO_CONNECTOR.STRAIGHT
+    line = slide.shapes.add_connector(
+        connector_type,
+        Emu(int(start.x * EMU_PER_PIXEL)),
+        Emu(int(start.y * EMU_PER_PIXEL)),
+        Emu(int(end.x * EMU_PER_PIXEL)),
+        Emu(int(end.y * EMU_PER_PIXEL)),
+    )
+    line.name = connector.id
+    line.line.color.rgb = RGBColor(*_CONNECTOR_COLOR)
+    line.line.width = Pt(1.25)
+    bound_start = start
+    bound_end = end
+    if connector.source_owner_id in shapes_by_id:
+        owner, primitive = shapes_by_id[connector.source_owner_id]
+        site = _connection_site_index(primitive, start)
+        line.begin_connect(owner, site)
+        bound_start = _connection_site_point(primitive, site)
+    if connector.target_owner_id in shapes_by_id:
+        owner, primitive = shapes_by_id[connector.target_owner_id]
+        site = _connection_site_index(primitive, end)
+        line.end_connect(owner, site)
+        bound_end = _connection_site_point(primitive, site)
+    _normalize_connector_flips(line, start=bound_start, end=bound_end)
+    line_element = line.line._get_or_add_ln()
+    if connector.arrowhead_end:
+        line_element.append(line_element.makeelement(qn("a:tailEnd"), {"type": "triangle"}))
+    if connector.arrowhead_start:
+        line_element.append(line_element.makeelement(qn("a:headEnd"), {"type": "triangle"}))
+
+
+def _needs_elbow(points) -> bool:
+    """Use one reroutable PowerPoint elbow for a genuinely bent orthogonal path."""
+    if len(points) < 3:
+        return False
+    nonzero_segments = [
+        (end.x - start.x, end.y - start.y)
+        for start, end in zip(points, points[1:])
+        if end.x != start.x or end.y != start.y
+    ]
+    if len(nonzero_segments) < 2:
+        return False
+    if not all(abs(dx) <= 1e-6 or abs(dy) <= 1e-6 for dx, dy in nonzero_segments):
+        return False
+    orientations = ["vertical" if abs(dx) <= 1e-6 else "horizontal" for dx, dy in nonzero_segments]
+    return len(set(orientations)) > 1
+
+
+def _connection_site_point(shape: EmitShapePrimitive, site: int):
+    from image_to_editable_ppt.v3.core.types import Point
+
+    bbox = shape.bbox
+    if site == 0:
+        return Point(bbox.center.x, bbox.y0)
+    if site == 1:
+        return Point(bbox.x0, bbox.center.y)
+    if site == 2:
+        return Point(bbox.center.x, bbox.y1)
+    return Point(bbox.x1, bbox.center.y)
+
+
+def _normalize_connector_flips(line, *, start, end) -> None:
+    """Remove flips introduced solely by noisy near-axis source coordinates."""
+    xfrm = line._element.spPr.xfrm
+    for attribute, needed in (("flipH", start.x > end.x), ("flipV", start.y > end.y)):
+        if needed:
+            xfrm.set(attribute, "1")
+        else:
+            xfrm.attrib.pop(attribute, None)
 
 
 def _add_textbox(slide, text: EmitTextPrimitive) -> None:

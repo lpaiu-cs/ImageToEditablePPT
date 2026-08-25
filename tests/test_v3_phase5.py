@@ -18,7 +18,9 @@ def test_primitive_scene_contains_ports_and_connector_candidates() -> None:
     scene = result.slide_ir.primitive_scene
     assert scene is not None
     assert scene.nodes
-    assert scene.containers
+    # No enclosing contour exists in this fixture, so a container would be an
+    # invented proposal envelope rather than an editable observed structure.
+    assert not scene.containers
     assert scene.ports
     assert scene.connector_candidates
     assert all(candidate.start_attachment is not None for candidate in scene.connector_candidates)
@@ -118,4 +120,3 @@ def make_connected_flow_image() -> Image.Image:
     draw.text((38, 58), "Source", fill="black")
     draw.text((182, 58), "Sink", fill="black")
     return image
-

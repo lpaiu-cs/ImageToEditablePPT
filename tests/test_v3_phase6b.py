@@ -27,13 +27,13 @@ def test_eval_adapter_builds_manifest_and_stage_artifacts_for_synthetic_orthogon
     )
 
     assert tuple(adapter.stage_artifacts) == ("03_objects", "05_selection", "07_emit")
-    assert len(adapter.stage_artifacts["03_objects"]) == 8
-    assert len(adapter.stage_artifacts["05_selection"]) == 8
-    assert len(adapter.stage_artifacts["07_emit"]) == 8
+    assert len(adapter.stage_artifacts["03_objects"]) == 7
+    assert len(adapter.stage_artifacts["05_selection"]) == 7
+    assert len(adapter.stage_artifacts["07_emit"]) == 7
     assert adapter.manifest["adapter_scope"]["coordinate_space"] == "image_space"
-    assert adapter.manifest["emit_accounting"]["native_object_count"] == 8
+    assert adapter.manifest["emit_accounting"]["native_object_count"] == 7
     assert adapter.manifest["emit_accounting"]["raster_region_count"] == 0
-    assert adapter.manifest["source_attribution"]["07_emit"]["native_count_by_source_bucket"]["geometry_only"] == 8
+    assert adapter.manifest["source_attribution"]["07_emit"]["native_count_by_source_bucket"]["geometry_only"] == 7
     assert adapter.manifest["source_attribution"]["07_emit"]["matched_gt_by_source_bucket"]["geometry_only"] == 0
 
 

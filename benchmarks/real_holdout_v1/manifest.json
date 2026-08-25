@@ -1,0 +1,131 @@
+{
+  "schema_version": "real_figure_benchmark_v1",
+  "created_at": "2026-08-25",
+  "purpose": "Untuned confirmatory holdout frozen before final detector selection.",
+  "redistribution": "External images are materialized locally and are not committed; only source revisions and hashes are tracked.",
+  "acceptance": {
+    "diagram_min_primitive_fraction": 0.5,
+    "diagram_min_connector_fraction": 0.5,
+    "required_diagram_pass_rate": 0.8,
+    "required_non_diagram_reject_rate": 1.0
+  },
+  "samples": [
+    {
+      "id": "holdout-word-graph",
+      "kind": "diagram",
+      "path": "data/real_holdout_v1/holdout-word-graph.png",
+      "caption": "Word graph and relation mapping.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_7584.parquet", "row": 0, "sha256": "5d06c562db667fe4411485fc9dde33af830202f29f62c3b9bf038281b8f67685"},
+      "sha256": "f1f70ea8e5dded67430af3dc7361685a6d57101c2e8ce92ea752c2f39e8f1511",
+      "ground_truth": {"verified_min_primitives": 8, "verified_max_primitives": 15, "verified_min_connectors": 8, "verified_max_connectors": 18}
+    },
+    {
+      "id": "holdout-transformer-encoder",
+      "kind": "diagram",
+      "path": "data/real_holdout_v1/holdout-transformer-encoder.png",
+      "caption": "Transformer encoder.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_8306.parquet", "row": 0, "sha256": "c98db138697d2417e2cd6b333f0011b0a14eb339438e9f3f5e5a437e2f46c6ef"},
+      "sha256": "6d989f4eb99d7f24e59e0698df8689e0febe02631d638378e8349aaa1da49540",
+      "ground_truth": {"verified_min_primitives": 4, "verified_max_primitives": 8, "verified_min_connectors": 3, "verified_max_connectors": 8}
+    },
+    {
+      "id": "holdout-worker-model",
+      "kind": "diagram",
+      "path": "data/real_holdout_v1/holdout-worker-model.png",
+      "caption": "Worker selection and quality-estimation model.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_276.parquet", "row": 0, "sha256": "56a9c9f512dfdcb78f64c41c811841591c9d6ecef84d703db1c7b4d0499e2de5"},
+      "sha256": "75557f3840ff8d242ae081b35bd25c4d9b0d65c546ec554a2bc5f68501f332e7",
+      "ground_truth": {"verified_min_primitives": 4, "verified_max_primitives": 8, "verified_min_connectors": 3, "verified_max_connectors": 8}
+    },
+    {
+      "id": "holdout-gcn-receptive-fields",
+      "kind": "diagram",
+      "path": "data/real_holdout_v1/holdout-gcn-receptive-fields.png",
+      "caption": "GCN receptive-field graph diagrams.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_2444.parquet", "row": 0, "sha256": "d7ca3c101bdca8bbc88bfe596d07b5cae422816969ab1fed5a26a78cc18623e7"},
+      "sha256": "0602f477750bc91dbec8238b99060a343a83043ab3692c4cc0aff92ce693ec93",
+      "ground_truth": {"verified_min_primitives": 12, "verified_max_primitives": 30, "verified_min_connectors": 10, "verified_max_connectors": 40}
+    },
+    {
+      "id": "holdout-convnet-topology",
+      "kind": "diagram",
+      "path": "data/real_holdout_v1/holdout-convnet-topology.png",
+      "caption": "Network topology for onset detection and drum transcription.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_2477.parquet", "row": 0, "sha256": "0e8a8e55809258983f296ea69b5f969e4bcd04c64fadbd03de098816888b1f47"},
+      "sha256": "2d5aa0c8f9d873b5f9ab1dbc42af51ebf25a8ad2fd83b64fb557da79a4c1c9b6",
+      "ground_truth": {"verified_min_primitives": 5, "verified_max_primitives": 15, "verified_min_connectors": 4, "verified_max_connectors": 12}
+    },
+    {
+      "id": "holdout-density-heatmap",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-density-heatmap.png",
+      "caption": "Density heatmap.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_783.parquet", "row": 0, "sha256": "6110ce571b6baae476a3a890247d5e824fe7aeb173d33d086fb4aabe845b52ae"},
+      "sha256": "f99c7935593d01cfad3f851a5d2f222c6e52448d7c8bfbacd98d03a9f4ff90b5"
+    },
+    {
+      "id": "holdout-application-screenshot",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-application-screenshot.png",
+      "caption": "Screenshots of example applications.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_8119.parquet", "row": 0, "sha256": "86fc2eb007afaf0e4d6418db1dc2d3db2deada9bbf07fdf76cc2c41499172ae8"},
+      "sha256": "e70a7bd5f7e5d598242b0bf525a3329841d9ae7dabc38a3ed66524a8df007d42"
+    },
+    {
+      "id": "holdout-virtual-patient-ui",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-virtual-patient-ui.png",
+      "caption": "Virtual patient interface screenshot.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_8384.parquet", "row": 0, "sha256": "28933364b0f38434a550019ea068efd9fc84829402fd1e86c94b9ea9638a43eb"},
+      "sha256": "8b952939c6fd0b1ab698be5de6248a616cd3622b76e4bb9b677eba9d10a9ae5b"
+    },
+    {
+      "id": "holdout-support-change-chart",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-support-change-chart.png",
+      "caption": "Support-change chart.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_631.parquet", "row": 0, "sha256": "6df4119f1cc87e2cdcf20edbe6f3d67ba2d39af03d4ca6bfdab9e798ecbe2122"},
+      "sha256": "b7fa5884a7147ab108af47cb04af25638a15ef2d41072875d47d542ecb5daead"
+    },
+    {
+      "id": "holdout-framework-table",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-framework-table.png",
+      "caption": "Framework comparison table.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_2373.parquet", "row": 0, "sha256": "de2bc75c5d3c1c70d8814a1d2c61f1385a74a5051b89f921e0717716375a851f"},
+      "sha256": "a9ced6a69d30da4dec39a5adf25e605d358afff907cf16bfc506da5236c5ae94"
+    },
+    {
+      "id": "holdout-perturbation-distributions",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-perturbation-distributions.png",
+      "caption": "Adversarial perturbation distributions.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_6996.parquet", "row": 0, "sha256": "c47b8b6b94e20decb4231067a68a13a421e76d69df79bc8fb58852075a5d9e04"},
+      "sha256": "6fc5d544b78e8e8edd84cf560b610fa726600645fbc90c13847790eb075cd004"
+    },
+    {
+      "id": "holdout-holonomy-illustration",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-holonomy-illustration.png",
+      "caption": "Holonomy illustration on a sphere.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_22856.parquet", "row": 0, "sha256": "4e4bc724ac35e0524329f8696948796304d391508b28975668256afcd2487c59"},
+      "sha256": "bb78536cddbd112baee2917d7cc26a48e23f8260bdf4b5585d20d92f761a74b6"
+    },
+    {
+      "id": "holdout-astronomy-panels",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-astronomy-panels.png",
+      "caption": "Astronomy image and plot panels.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_24506.parquet", "row": 0, "sha256": "89a548bdd9e5967fc63c84b13ab3dd27ba7087cddcfdf9b04907b44451b9a364"},
+      "sha256": "775626cbc7bc2baa99c4b548e3a19688612f116d7eb0af3e6db2e7325db0b566"
+    },
+    {
+      "id": "holdout-interview-theme-table",
+      "kind": "non_diagram",
+      "path": "data/real_holdout_v1/holdout-interview-theme-table.png",
+      "caption": "Interview theme comparison table.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_20560.parquet", "row": 0, "sha256": "4ffdad58f45904f40446405845c034b052243b03996395f2e61153a95901870e"},
+      "sha256": "9eff784cd937b0b651a45277ff2b2b67d1b56059cb9246bde5a0164c4c94ecdb"
+    }
+  ]
+}

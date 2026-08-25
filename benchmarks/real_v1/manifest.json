@@ -1,0 +1,107 @@
+{
+  "schema_version": "real_figure_benchmark_v1",
+  "created_at": "2026-08-25",
+  "purpose": "Fixed diagram/non-diagram acceptance set for editable PPTX conversion.",
+  "redistribution": "External images are materialized locally and are not committed; only source revisions and hashes are tracked.",
+  "acceptance": {
+    "diagram_min_primitive_fraction": 0.5,
+    "diagram_min_connector_fraction": 0.5,
+    "required_diagram_pass_rate": 0.8,
+    "required_non_diagram_reject_rate": 1.0
+  },
+  "samples": [
+    {
+      "id": "local-cogbot-pipeline",
+      "kind": "diagram",
+      "path": "input.png",
+      "source": {"type": "repository", "path": "input.png"},
+      "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf",
+      "ground_truth": {"object_annotations": "workbench/input-alignment/input.gt.json", "verified_min_primitives": 18, "verified_max_primitives": 22, "verified_min_connectors": 12, "verified_max_connectors": 18}
+    },
+    {
+      "id": "public-chat-plugin",
+      "kind": "diagram",
+      "path": "data/real_benchmark_v1/public-chat-plugin.png",
+      "caption": "Overview of The Chat Plugin",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_20061.parquet", "row": 0, "sha256": "dda4dc8668a205eaca3cb0dba33ac632fc1b1d88e3971b31977bef64a198ba83"},
+      "sha256": "d72608dbc3cbbc966a9ccd247f3248f6d8e951df71309ce66a035554f9b5934a",
+      "ground_truth": {"verified_min_primitives": 8, "verified_max_primitives": 12, "verified_min_connectors": 5, "verified_max_connectors": 9}
+    },
+    {
+      "id": "public-ddsp-overview",
+      "kind": "diagram",
+      "path": "data/real_benchmark_v1/public-ddsp-overview.png",
+      "caption": "A high level overview of the general structure of a typical DDSP synthesis system.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_21516.parquet", "row": 0, "sha256": "60aee237a6e69114ff909120fd66cfb3a2f70f77dc351b7aceffce2e0a9ef89d"},
+      "sha256": "5498670dfdaf3970229aefe1270678e759ae2b46209176316c274c9434eb6f57",
+      "ground_truth": {"verified_min_primitives": 10, "verified_max_primitives": 28, "verified_min_connectors": 5, "verified_max_connectors": 22}
+    },
+    {
+      "id": "public-three-phase-training",
+      "kind": "diagram",
+      "path": "data/real_benchmark_v1/public-three-phase-training.png",
+      "caption": "3-phase alternate training strategy.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_3950.parquet", "row": 0, "sha256": "c38e4ad30e2e22e1cf155efa3fc69536cd771edb3ac414a1e5a56b8e7893b324"},
+      "sha256": "0facf34c3eeff892f36a5c0ff45f6a687cc3759462d85950b055eaec86859bef",
+      "ground_truth": {"verified_min_primitives": 3, "verified_max_primitives": 5, "verified_min_connectors": 2, "verified_max_connectors": 5}
+    },
+    {
+      "id": "public-har-block-diagram",
+      "kind": "diagram",
+      "path": "data/real_benchmark_v1/public-har-block-diagram.png",
+      "caption": "Block diagram of the HAR system considered.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_21322.parquet", "row": 0, "sha256": "b738fd5ee102899df9e08dd59fc23f31e625caeba8aa90f6814c592a8a26a72e"},
+      "sha256": "9052fa28ed484ca04ab71c7b273f48e6b25709689b65686fdbeec07b04ebdd81",
+      "ground_truth": {"verified_min_primitives": 8, "verified_max_primitives": 25, "verified_min_connectors": 6, "verified_max_connectors": 22}
+    },
+    {
+      "id": "public-cti-pipeline",
+      "kind": "diagram",
+      "path": "data/real_benchmark_v1/public-cti-pipeline.png",
+      "caption": "CTI extraction pipeline",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_6372.parquet", "row": 0, "sha256": "06d07504ef25a1e91fe1e4e1bef4978e5f5da1805b8f526422a8c94f348efa09"},
+      "sha256": "247d90433ded3188029e152ee85e05d09ec131b0ec51972e3085361f8cd0ae39",
+      "ground_truth": {"verified_min_primitives": 12, "verified_max_primitives": 32, "verified_min_connectors": 8, "verified_max_connectors": 25}
+    },
+    {
+      "id": "public-identification-rate-plot",
+      "kind": "non_diagram",
+      "path": "data/real_benchmark_v1/public-identification-rate-plot.png",
+      "caption": "Best-arm identification rate plot.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_24859.parquet", "row": 0, "sha256": "d5f342e73d8575042df9971ced94c8652cd571baad79faae07f8d5d18ba2f94b"},
+      "sha256": "db73f2d104f4fb78d1e6433b5e37dd291b68ea05d3dfb0bf44a0f184ec88d168"
+    },
+    {
+      "id": "public-tsne-scatter",
+      "kind": "non_diagram",
+      "path": "data/real_benchmark_v1/public-tsne-scatter.png",
+      "caption": "t-SNE projection.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_3081.parquet", "row": 0, "sha256": "8855b2af0b8e099550ce7a6cc77e8332a28ba106c0cfd1ed4e74ec3c979fd493"},
+      "sha256": "4e860be580e84edd0955b7e8d015e600ca9d5f63381035409280e9f43f6ba64d"
+    },
+    {
+      "id": "public-energy-plot",
+      "kind": "non_diagram",
+      "path": "data/real_benchmark_v1/public-energy-plot.png",
+      "caption": "Fitted energy distribution plot.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_92.parquet", "row": 0, "sha256": "ae67dbfe04eeff833d9b62bc9a0ea0774281827450edfbe194b593a82440a0be"},
+      "sha256": "50ad3bda9f2c688878cd66452b37ed80628806b3442f1a3540f9a721fdd65205"
+    },
+    {
+      "id": "public-generated-pan",
+      "kind": "non_diagram",
+      "path": "data/real_benchmark_v1/public-generated-pan.png",
+      "caption": "Generated panchromatic image.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "subdir/blob_data_24141.parquet", "row": 0, "sha256": "a1145bd5e3baac1149824a127d03c2b85547d1e76a10ef7fb85092db0fcedd21"},
+      "sha256": "8376bb6be86b4fda2eca58f25e4e77a5f904452030377a6f595d6e490cd0a336"
+    },
+    {
+      "id": "public-cell-images",
+      "kind": "non_diagram",
+      "path": "data/real_benchmark_v1/public-cell-images.png",
+      "caption": "Cell images from cancer and normal classes.",
+      "source": {"type": "huggingface_parquet", "dataset": "yousefg-codes/research-paper-figures", "revision": "3e8a1a190f814b48a358e5be60e69de28e886110", "shard": "blob_data_3977.parquet", "row": 0, "sha256": "31639e64f874de9daefe049572c9baa0b6efb58bbcb15f62676b1ba1399a3e1d"},
+      "sha256": "592e6ec850504152216f0bd04b55a03a78130aaae76997643c76d426fdf53a52"
+    }
+  ]
+}

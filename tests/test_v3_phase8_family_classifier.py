@@ -6,6 +6,7 @@ pytest.importorskip("torch")
 pytest.importorskip("lightning")
 
 import json
+import pickle
 from pathlib import Path
 
 import numpy as np
@@ -33,6 +34,18 @@ def test_preprocess_produces_three_channel_square_tensor() -> None:
     tensor = family_classifier._preprocess(gray)
     assert tuple(tensor.shape) == (3, family_classifier.INPUT_SIZE, family_classifier.INPUT_SIZE)
     assert 0.0 <= float(tensor.min()) and float(tensor.max()) <= 1.0
+
+
+def test_family_dataset_is_pickle_safe_for_spawn_workers(tmp_path: Path) -> None:
+    image_path = tmp_path / "sample.png"
+    Image.new("RGB", (20, 20), "white").save(image_path)
+    dataset = family_classifier.FamilyClassifierDataset(
+        (family_classifier._ClassifierSample(image_path=image_path, label=0),)
+    )
+    restored = pickle.loads(pickle.dumps(dataset))
+    tensor, label = restored[0]
+    assert tuple(tensor.shape) == (3, family_classifier.INPUT_SIZE, family_classifier.INPUT_SIZE)
+    assert label == 0
 
 
 def test_train_and_classify_smoke(tmp_path: Path) -> None:
@@ -63,6 +76,8 @@ def test_train_and_classify_smoke(tmp_path: Path) -> None:
 
     manifest = json.loads((run_dir / "train_family_classifier_run.json").read_text(encoding="utf-8"))
     assert manifest["status"] == "trained"
+    assert manifest["checkpoint"]["best"] is not None
+    assert Path(manifest["checkpoint"]["best"]).exists()
     checkpoint = manifest["checkpoint"]["last"]
     assert checkpoint is not None and Path(checkpoint).exists()
 

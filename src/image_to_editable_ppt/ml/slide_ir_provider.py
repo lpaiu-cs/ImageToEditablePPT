@@ -50,6 +50,8 @@ def _load_detector(checkpoint: str) -> object:
 class MLSlideIRProvider:
     detector_checkpoint: str
     score_threshold: float = 0.5
+    cross_class_nms_iou: float = 0.7
+    node_containment_threshold: float = 0.85
     family_classifier_checkpoint: str | None = None
     connector_checkpoint: str | None = None
     # Connector recovery strategy (real-figure measurement 2026-07-04):
@@ -87,6 +89,7 @@ class MLSlideIRProvider:
         import torch
 
         from image_to_editable_ppt.ml.dataset import label_to_kind, to_rgb_chw_tensor
+        from image_to_editable_ppt.ml.detection_postprocess import select_detection_indices
 
         rgb = np.asarray(image.convert("RGB"), dtype=np.uint8)
         height, width = rgb.shape[:2]
@@ -113,13 +116,15 @@ class MLSlideIRProvider:
 
         nodes: list[AnnotationNode] = []
         containers: list[AnnotationContainer] = []
-        for index in range(len(prediction["scores"])):
+        selected_indices = select_detection_indices(
+            prediction,
+            score_threshold=self.score_threshold,
+            cross_class_nms_iou=self.cross_class_nms_iou,
+            node_containment_threshold=self.node_containment_threshold,
+        )
+        for index in selected_indices:
             score = float(prediction["scores"][index])
-            if score < self.score_threshold:
-                continue
             x0, y0, x1, y1 = (float(value) for value in prediction["boxes"][index])
-            if x1 <= x0 or y1 <= y0:
-                continue
             kind = label_to_kind(int(prediction["labels"][index]))
             bbox = AnnotationBBox(x0=x0, y0=y0, x1=x1, y1=y1)
             if isinstance(kind, NodeKind):

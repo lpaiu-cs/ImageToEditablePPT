@@ -71,6 +71,7 @@ class MLFamilyDetector:
         import torch
 
         from image_to_editable_ppt.ml.dataset import to_rgb_chw_tensor
+        from image_to_editable_ppt.ml.detection_postprocess import select_detection_indices
 
         module = _load_module(self.checkpoint)
         image_tensor = to_rgb_chw_tensor(canvas.image)
@@ -79,13 +80,9 @@ class MLFamilyDetector:
 
         kept_boxes: list[tuple[float, float, float, float]] = []
         kept_scores: list[float] = []
-        for index in range(len(prediction["scores"])):
+        for index in select_detection_indices(prediction, score_threshold=self.score_threshold):
             score = float(prediction["scores"][index])
-            if score < self.score_threshold:
-                continue
             x0, y0, x1, y1 = (float(value) for value in prediction["boxes"][index])
-            if x1 <= x0 or y1 <= y0:
-                continue
             kept_boxes.append((x0, y0, x1, y1))
             kept_scores.append(score)
 

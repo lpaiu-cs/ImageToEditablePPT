@@ -128,7 +128,7 @@ def _text_owner_ids(region_id: str, bbox, *, instances: tuple[DiagramInstance, .
     owners: list[str] = []
     for instance in instances:
         for node in instance.nodes:
-            if region_id in node.text_region_ids or node.bbox.overlaps(bbox) or node.bbox.contains_point(bbox.center):
+            if region_id in node.text_region_ids or node.bbox.contains_point(bbox.center):
                 owners.append(node.id)
         if owners:
             continue

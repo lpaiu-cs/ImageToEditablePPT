@@ -1,6 +1,7 @@
 """Phase 10: editable pptx writer + text merge + OCR annotation contracts."""
 from __future__ import annotations
 
+import json
 import numpy as np
 import pytest
 from PIL import Image, ImageDraw
@@ -23,6 +24,7 @@ from image_to_editable_ppt.v3.emit.models import (
 from image_to_editable_ppt.v3.emit.pptx_writer import EMU_PER_PIXEL, write_pptx
 from image_to_editable_ppt.v3.emit.style import ShapeVisualStyle, sample_shape_styles
 from image_to_editable_ppt.v3.ir.models import (
+    DiagramNode,
     PrimitiveNode,
     PrimitiveScene,
     SlideIR,
@@ -122,6 +124,7 @@ def _scene() -> EmitScene:
 def test_write_pptx_writes_native_editable_primitives(tmp_path):
     from pptx import Presentation
     from pptx.enum.shapes import MSO_SHAPE_TYPE
+    from zipfile import ZipFile
 
     output = tmp_path / "scene.pptx"
     styles = {"node:1": ShapeVisualStyle(fill=(59, 130, 246), stroke=(30, 64, 175))}
@@ -137,6 +140,7 @@ def test_write_pptx_writes_native_editable_primitives(tmp_path):
     assert shapes["node:1"].shape_type == MSO_SHAPE_TYPE.AUTO_SHAPE
     assert shapes["node:1"].text_frame.text == "Encoder"
     assert str(shapes["node:1"].fill.fore_color.rgb) == "3B82F6"
+    assert str(shapes["node:1"].text_frame.paragraphs[0].runs[0].font.color.rgb) == "F8FAFC"
     assert shapes["node:2"].shape_type == MSO_SHAPE_TYPE.TEXT_BOX
     assert shapes["node:2"].text_frame.text == "NP"
     assert shapes["text:3"].text_frame.text == "Figure title"
@@ -151,9 +155,37 @@ def test_write_pptx_writes_native_editable_primitives(tmp_path):
     connector = shapes["connector:1"]
     assert connector.shape_type == MSO_SHAPE_TYPE.LINE
     assert "tailEnd" in connector._element.xml
+    slide_xml = ZipFile(output).read("ppt/slides/slide1.xml").decode("utf-8")
+    assert slide_xml.count("<a:stCxn") == 1
+    assert slide_xml.count("<a:endCxn") == 1
     # geometry matches the path in EMU
     assert connector.begin_x == 160 * EMU_PER_PIXEL
     assert connector.end_x == 200 * EMU_PER_PIXEL
+    assert connector._element.spPr.xfrm.get("flipV") is None
+
+
+def test_write_pptx_uses_one_bound_connector_for_multi_segment_route(tmp_path):
+    from dataclasses import replace
+    from pptx import Presentation
+    from pptx.enum.shapes import MSO_SHAPE_TYPE
+    from zipfile import ZipFile
+
+    scene = _scene()
+    bent = replace(
+        scene.connectors[0],
+        path_points=(Point(160, 70), Point(180, 70), Point(180, 72), Point(200, 72)),
+    )
+    output = tmp_path / "elbow.pptx"
+
+    write_pptx(replace(scene, connectors=(bent,)), output)
+
+    presentation = Presentation(str(output))
+    lines = [shape for shape in presentation.slides[0].shapes if shape.shape_type == MSO_SHAPE_TYPE.LINE]
+    assert len(lines) == 1
+    slide_xml = ZipFile(output).read("ppt/slides/slide1.xml").decode("utf-8")
+    assert slide_xml.count("<a:stCxn") == 1
+    assert slide_xml.count("<a:endCxn") == 1
+    assert "bentConnector" in slide_xml
 
 
 def test_write_pptx_positions_match_image_space(tmp_path):
@@ -167,6 +199,27 @@ def test_write_pptx_positions_match_image_space(tmp_path):
     assert node.top == 40 * EMU_PER_PIXEL
     assert node.width == 120 * EMU_PER_PIXEL
     assert node.height == 60 * EMU_PER_PIXEL
+
+
+def test_write_pptx_omits_unowned_non_title_text(tmp_path):
+    from dataclasses import replace
+    from pptx import Presentation
+
+    scene = _scene()
+    floating_label = EmitTextPrimitive(
+        id="text:floating",
+        role=TextRegionRole.LABEL,
+        bbox=BBox(170, 150, 240, 170),
+        confidence=0.95,
+        text="edge label",
+    )
+    output = tmp_path / "conservative-text.pptx"
+
+    write_pptx(replace(scene, texts=(*scene.texts, floating_label)), output)
+
+    names = {shape.name for shape in Presentation(str(output)).slides[0].shapes}
+    assert floating_label.id not in names
+    assert "text:3" in names  # trusted title remains
 
 
 def test_sample_shape_styles_is_conservative():
@@ -239,6 +292,35 @@ def test_ocr_annotate_fills_confident_text():
     assert any(item.startswith("ocr:") for item in annotated[0].provenance)
 
 
+def test_node_bounded_ocr_recovers_inverted_label_without_inventing_geometry(monkeypatch):
+    import image_to_editable_ppt.v3.text.ocr as ocr
+
+    class FakeEngine:
+        def __call__(self, crop):
+            assert crop.shape[:2] == (60, 120)
+            return (
+                [
+                    [[[52, 2], [68, 2], [68, 12], [52, 12]], "0C", 0.41],
+                    [[[10, 15], [110, 15], [110, 28], [10, 28]], "Bot Orchestrator", 0.98],
+                    [[[8, 34], [112, 34], [112, 48], [8, 48]], "(Main Loop Controller)", 0.94],
+                ],
+                None,
+            )
+
+    monkeypatch.setattr(ocr, "_load_engine", lambda: FakeEngine())
+    rgb = np.zeros((120, 200, 3), dtype=np.uint8)
+    layer = TextLayerResult(image_size=ImageSize(width=200, height=120))
+    nodes = (DiagramNode(id="node:dark", kind=NodeKind.BOX, bbox=BBox(40, 30, 160, 90)),)
+
+    recovered = ocr.recover_node_text_regions(rgb, layer, nodes)
+
+    assert len(recovered.regions) == 1
+    region = recovered.regions[0]
+    assert region.bbox == nodes[0].bbox
+    assert region.text == "Bot Orchestrator\n(Main Loop Controller)"
+    assert region.source == "phase13_node_bounded_ocr"
+
+
 def test_convert_cli_heuristic_smoke(tmp_path):
     from pptx import Presentation
 
@@ -258,3 +340,110 @@ def test_convert_cli_heuristic_smoke(tmp_path):
     assert output_path.exists()
     presentation = Presentation(str(output_path))
     assert presentation.slide_width == 320 * EMU_PER_PIXEL
+
+
+def test_convert_cli_rejects_batch_output_collisions(tmp_path, capsys):
+    from image_to_editable_ppt.ml.convert_to_pptx import main
+
+    first = tmp_path / "paper-a" / "fig1.png"
+    second = tmp_path / "paper-b" / "fig1.png"
+    first.parent.mkdir()
+    second.parent.mkdir()
+    Image.new("RGB", (20, 20), "white").save(first)
+    Image.new("RGB", (20, 20), "white").save(second)
+    output_dir = tmp_path / "out"
+
+    code = main(
+        [str(first), str(second), "-o", str(output_dir), "--no-ml", "--no-ocr", "--no-style", "--width", "0"]
+    )
+
+    assert code == 2
+    assert "same output path" in capsys.readouterr().err
+    assert not output_dir.exists()
+
+
+def test_convert_cli_requires_gate_checkpoint_unless_explicitly_disabled(tmp_path):
+    from image_to_editable_ppt.ml.convert_to_pptx import _build_provider, build_parser
+
+    detector = tmp_path / "run-v8" / "checkpoints" / "last.ckpt"
+    detector.parent.mkdir(parents=True)
+    detector.touch()
+    parser = build_parser()
+    args = parser.parse_args(["figure.png", "--models-dir", str(tmp_path)])
+
+    with pytest.raises(SystemExit, match="diagram-gate checkpoint not found"):
+        _build_provider(args)
+
+    no_gate_args = parser.parse_args(["figure.png", "--models-dir", str(tmp_path), "--no-gate"])
+    provider = _build_provider(no_gate_args)
+    assert provider.diagram_gate_checkpoint is None
+
+
+def test_convert_cli_reports_empty_from_primitives_not_default_family(tmp_path, monkeypatch, capsys):
+    import image_to_editable_ppt.ml.convert_to_pptx as cli
+
+    input_path = tmp_path / "figure.png"
+    Image.new("RGB", (20, 20), "white").save(input_path)
+
+    def fake_convert_one(*args, **kwargs):
+        return {
+            "family": "orthogonal_flow",
+            "nodes": 0,
+            "containers": 0,
+            "connectors": 0,
+            "texts": 0,
+            "recognized_texts": 0,
+            "output": str(tmp_path / "figure.pptx"),
+        }
+
+    monkeypatch.setattr(cli, "convert_one", fake_convert_one)
+    code = cli.main([str(input_path), "--no-ml", "--no-ocr"])
+
+    assert code == 0
+    output = capsys.readouterr().out
+    assert output.startswith("[EMPTY]")
+    assert "--no-gate" not in output
+
+
+def test_editability_report_measures_native_structure_and_gt(tmp_path):
+    from tools.evaluate_pptx_editability import evaluate
+
+    output = tmp_path / "scene.pptx"
+    annotation_path = tmp_path / "scene.json"
+    write_pptx(_scene(), output)
+    annotation_path.write_text(
+        json.dumps(
+            {
+                "image_size": {"width": 400, "height": 300},
+                "primitive_scene": {
+                    "nodes": [
+                        {"id": "gt-node-1", "bbox": {"x0": 40, "y0": 40, "x1": 160, "y1": 100}, "label": "Encoder"},
+                        {"id": "gt-node-2", "bbox": {"x0": 200, "y0": 60, "x1": 280, "y1": 84}, "label": "NP"},
+                    ],
+                    "containers": [
+                        {"id": "gt-container-1", "bbox": {"x0": 10, "y0": 10, "x1": 380, "y1": 280}}
+                    ],
+                    "connector_candidates": [
+                        {
+                            "start_endpoint": {"owner_id": "gt-node-1"},
+                            "end_endpoint": {"owner_id": "gt-node-2"},
+                            "arrowhead_start": False,
+                            "arrowhead_end": True,
+                        }
+                    ],
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = evaluate(output, annotation_path)
+
+    assert report["endpoint_bindings"]["fully_attached"] == 1
+    assert report["ground_truth"]["nodes"]["f1"] == 1.0
+    assert report["ground_truth"]["containers"]["f1"] == 1.0
+    assert report["ground_truth"]["connector_topology"]["f1"] == 1.0
+    assert report["ground_truth"]["connector_semantics"]["f1"] == 1.0
+    assert report["ground_truth"]["connector_direction_corrections"] == 0
+    assert report["ground_truth"]["labels"]["exact_on_matched_node"] == 2
+    assert report["ground_truth"]["edit_operations_lower_bound"] == 0

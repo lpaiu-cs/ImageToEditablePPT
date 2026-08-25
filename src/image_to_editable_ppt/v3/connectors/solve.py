@@ -16,6 +16,8 @@ class ConnectorCandidateSolver:
     ) -> tuple[ConnectorSpec, ...]:
         del config
         solved: list[ConnectorSpec] = []
+        best_by_port_pair: dict[tuple[str, str], PrimitiveConnectorCandidate] = {}
+        pair_counts: dict[tuple[str, str], int] = {}
 
         for candidate in connector_candidates:
             if candidate.start_attachment is None or candidate.end_attachment is None:
@@ -23,6 +25,25 @@ class ConnectorCandidateSolver:
             if candidate.start_attachment.owner_id == candidate.end_attachment.owner_id:
                 continue
 
+            # A shared owner pair is not enough evidence to merge: two shapes may
+            # legitimately have multiple connectors on different sides. Exact
+            # attachment ports are the conservative duplicate boundary for Hough
+            # fragments of one visible line.
+            port_pair = tuple(
+                sorted((candidate.start_attachment.port_id, candidate.end_attachment.port_id))
+            )
+            pair_counts[port_pair] = pair_counts.get(port_pair, 0) + 1
+            current = best_by_port_pair.get(port_pair)
+            candidate_rank = (bool(candidate.arrowhead_start or candidate.arrowhead_end), candidate.confidence)
+            current_rank = (
+                (bool(current.arrowhead_start or current.arrowhead_end), current.confidence)
+                if current is not None
+                else None
+            )
+            if current is None or candidate_rank > current_rank:
+                best_by_port_pair[port_pair] = candidate
+
+        for port_pair, candidate in best_by_port_pair.items():
             solved.append(
                 ConnectorSpec(
                     id=_solved_connector_id(candidate.id),
@@ -45,6 +66,11 @@ class ConnectorCandidateSolver:
                     provenance=(
                         *candidate.provenance,
                         "connector_resolve:attached_candidate",
+                        *(
+                            ("connector_resolve:port_pair_deduplicated",)
+                            if pair_counts[port_pair] > 1
+                            else ()
+                        ),
                     ),
                 )
             )

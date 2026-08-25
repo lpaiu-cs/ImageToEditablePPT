@@ -45,7 +45,7 @@ class ConnectorAttachmentBridge:
                 orientation=evidence.orientation,
                 nearby_node_ids=evidence.start_nearby_node_ids,
                 nearby_container_ids=evidence.nearby_container_ids,
-                max_distance=self.max_attachment_distance,
+                max_distance=self.max_attachment_distance + (8.0 if evidence.arrowhead_start else 0.0),
             )
             end_candidates = _rank_port_candidates(
                 end_point,
@@ -53,7 +53,7 @@ class ConnectorAttachmentBridge:
                 orientation=evidence.orientation,
                 nearby_node_ids=evidence.end_nearby_node_ids,
                 nearby_container_ids=evidence.nearby_container_ids,
-                max_distance=self.max_attachment_distance,
+                max_distance=self.max_attachment_distance + (8.0 if evidence.arrowhead_end else 0.0),
             )
             attachment_pair = _choose_attachment_pair(start_candidates, end_candidates)
             if attachment_pair is None:

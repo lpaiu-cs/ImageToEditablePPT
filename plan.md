@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
-최종 업데이트: 2026-07-04  
-상태: `Phase 11 (라이브 커넥터 품질) 완료 — 형태학적 추출기를 provider 기본 커넥터 경로로, 고전 화살촉 방향 + 직교 정리. 다음 후보: 화살촉 정밀도(박스 보더 잉크와 분리), style 샘플러 과채움 보정, 스캔 figure 검출 강건성, edit-cost 평가축`
+최종 업데이트: 2026-08-25
+상태: `Phase 14 (canonical acceptance) 완료 — checksum-bound candidate와 고정 real benchmark/holdout을 검증했으나, holdout 1/5 diagram·6/9 non-diagram 및 PowerPoint 육안 품질이 실사용 기준에 큰 폭으로 미달했다. near-miss가 아니며 canonical 승격은 NO-GO다.`
 
 ---
 
@@ -870,9 +870,9 @@ connector evidence -> attachment-aware connector candidate의 목적:
 - split/버전 관리는 generator seed와 family coverage 기준으로 manifest에 고정한다.
 
 ### Phase 8. family 확장 및 benchmarking
-- [ ] MVP family 순차 구현
-- [ ] per-family benchmark 비교
-- [ ] GT-backed coverage 확장 검토
+- [x] MVP family 순차 구현
+- [x] per-family benchmark 비교
+- [x] GT-backed coverage 확장 검토
 - [ ] residual/fallback 정책 정리
 
 **완료 조건**
@@ -922,7 +922,7 @@ Phase 9는 ML 트랙에서 진행되었고 상세 기록은 `docs/phase9_real_tr
 
 emit writer 원칙:
 
-- 확실한 것만 쓴다: path_points가 없는 connector, text가 없는 standalone 텍스트 region은 쓰지 않는다(공백은 실패가 아니다).
+- 확실한 것만 쓴다: path_points가 없는 connector, text가 없는 region, 소유자가 없는 비-title OCR 텍스트는 쓰지 않는다(공백은 실패가 아니다).
 - 노드에 귀속된 텍스트는 별도 텍스트박스가 아니라 **도형 내부 text_frame**으로 넣는다(도형과 함께 움직여야 편집 가능성이 산다).
 - 샘플링 fill이 배경과 구분되지 않으면 채우지 않는다(원칙 5의 보수성).
 
@@ -935,7 +935,7 @@ emit writer 원칙:
 
 실제 완료 결과 (2026-07-03):
 
-- `v3/emit/pptx_writer.py`: EmitScene → native pptx (1px=9525EMU). 컨테이너→노드→커넥터→텍스트 z-order, 노드 귀속 텍스트는 도형 text_frame으로 흡수, path 없는 커넥터·미인식 standalone 텍스트는 쓰지 않음. 폰트 크기는 관측 bbox의 높이·폭·줄수에서 산정(겹침 방지).
+- `v3/emit/pptx_writer.py`: EmitScene → native pptx (1px=9525EMU). 컨테이너→노드→커넥터→텍스트 z-order, 노드 귀속 텍스트는 도형 text_frame으로 흡수, path 없는 커넥터·미인식 텍스트는 쓰지 않음. 현재 소유자 없는 텍스트는 title만 보존한다. 폰트 크기는 관측 bbox의 높이·폭·줄수에서 산정(겹침 방지).
 - `v3/emit/style.py`: 노드 내부/보더 median 색 샘플링. 배경과 구분 안 되면 채우지 않음(보수성), 단 검출된 도형은 중립 외곽선으로 항상 보이게 유지.
 - `v3/text/ocr.py`: rapidocr(onnxruntime) 백엔드, 줄 구조 보존(수직 겹침 기반 라인 그룹핑), 신뢰도<임계 → text=None. 백엔드 없으면 그대로 통과.
 - `v3/compose/merge_text.py`: provider SlideIR에 text layer 병합. 최소 포함 노드가 텍스트를 소유하고 label로 승격.
@@ -988,6 +988,80 @@ emit writer 원칙:
 
 ---
 
+### Phase 12. 편집 비용 기준선과 acceptance hardening
+
+상세 기록은 `docs/phase12_edit_cost_experiment.md`에 있다.
+
+원점 재검토 결론:
+
+- 성공 기준은 픽셀 유사도나 단순 object count가 아니라 사용자가 고쳐야 하는 작업량이다.
+- GT 구조를 실제 adapter → text merge → connector resolve → writer에 통과시킨 oracle은 node/container/topology F1 1.0, label 8/8, connector 결속 7/7, 편집 작업 하한 0을 달성했다.
+- 같은 표본의 휴리스틱 경로는 node F1 0.9412였지만 topology F1 0.3810, 방향 포함 F1 0.0952, 편집 작업 하한 18이었다. exact port-pair connector 중복 제거 후 topology F1 0.5714, 방향 포함 F1 0.1429, 작업 하한 11로 개선됐다.
+- 복잡한 실제형 입력의 휴리스틱 PPTX는 native object이지만 시각·구조 품질이 실사용 기준에 미달했다.
+- canonical ML checkpoint가 로컬에 없어 정식 ML provider의 현재 실전 품질은 검증하지 못했다.
+
+acceptance hardening:
+
+- connector를 도형 connection site에 결속하고 다중 선분을 하나의 straight/elbow connector로 내보내 PowerPoint에서 도형 이동을 따라가게 했다.
+- batch output 충돌, 누락된 gate checkpoint, primitive 0개의 거짓 성공 보고를 fail-closed로 바꿨다.
+- 화살촉 잉크 판정에서 owner box를 제외하고 동일 connection port pair의 중복 connector를 제거했다.
+- `tools/evaluate_pptx_editability.py`로 PPTX native object, 결속, GT 구조와 편집 작업 하한을 측정한다.
+- CI가 `ml`, `ocr`, `test` extra를 설치하도록 해 ML 경로도 기본 회귀 범위에 넣었다.
+
+완료 조건과 결과:
+
+- 실제 PowerPoint COM 검증에서 node를 36pt 이동했을 때 연결선 시작점도 36pt 이동하고 반대쪽 끝점은 고정됐다.
+- controlled GT 표본에서 oracle-composed 편집 작업 하한 0을 확인했다.
+- 전체 테스트 `146 passed`.
+
+---
+
+### Phase 13. 육안 품질 hardening
+
+Phase 12의 정량 결과를 PowerPoint 렌더와 중간 IR에서 원점 재검토했다. 기존 controlled 휴리스틱 출력은 숫자뿐 아니라 육안으로도 컨테이너 테두리의 거짓 connector, 여러 노드를 덮는 거짓 박스, 누락 label, 반대 방향 화살표가 있었다. 복잡 실제 입력은 텍스트를 박스로 승격하면서 29개 거짓 node와 3개 거짓 container를 만들었다.
+
+수정:
+
+- 여러 작은 노드와 겹치는 큰 윤곽을 connector가 닫아 만든 거짓 node로 판정해 제외하고, 텍스트나 proposal envelope만으로 box/container를 만들지 않는다.
+- 컨테이너 변과 거의 일치하는 긴 선을 connector evidence에서 제외하고 짧은 노드 간 선분의 Hough 회수율은 높였다.
+- 화살촉 판정 전에 owner node 잉크를 마스킹하고, 끝점의 횡방향 퍼짐이 있는 삼각형만 방향 증거로 사용한다.
+- 텍스트 소유권은 중심점 포함으로 제한하고, 소유자 없는 비-title OCR 텍스트는 emit하지 않는다.
+- 흰 글자처럼 전역 text pass가 놓친 라벨은 이미 검출된 노드 내부에서만 OCR을 재시도한다. 낮은 신뢰도의 아이콘성 조각은 버리고, 어두운 채움에는 흰 editable text를 사용한다.
+- PowerPoint가 잡음성 path 좌표만으로 connector에 잘못된 flip을 넣지 않도록 실제 connection site 순서로 정규화한다.
+
+완료 결과:
+
+- held-out controlled 표본: node/container/topology/방향 포함 F1 모두 `1.0`, label `8/8`, connector 결속 `7/7`, 편집 작업 하한 `0`.
+- PowerPoint 렌더 육안 확인: 8개 박스와 7개 화살표의 위치·방향·라벨이 자연스럽고, 거짓 외곽선이나 중복 객체가 없다.
+- 복잡 실제 입력: 29 node/3 container/6 connector의 혼잡한 출력 대신, 근거가 강한 중앙 node 1개와 title만 남겼다. 중앙 node는 `BotOrchestrator / (Main Loop Controller)`를 흰 editable text로 보존한다.
+- 복잡 입력은 깨끗해졌지만 대부분을 생략하므로 전체 복원 기준으로는 여전히 미달이다. title과 일부 합성어의 OCR 띄어쓰기 손실도 남아 있다.
+- 전체 테스트 `152 passed`, `9 warnings`; `git diff --check` 통과.
+
+---
+
+### Phase 14. Canonical 모델 acceptance
+
+합성 성능을 실제 품질로 오인하지 않도록 모델 artifact, 실제 figure 입력, PPTX 출력과 평가 결과를 SHA-256으로 결속하고 개발 benchmark와 독립 holdout을 분리했다. 세부 실험 기록은 `docs/phase14_canonical_acceptance_experiment.md`에 있다.
+
+구현:
+
+- detector/family/gate checkpoint와 training/evidence artifact를 검증하는 versioned model bundle을 추가했다. candidate는 명시적 opt-in 없이는 실행되지 않는다.
+- PIL/LibreOffice 합성 데이터를 혼합하고 Windows dataloader worker와 best-checkpoint 저장 결함을 수정했다.
+- class별 NMS 뒤에 남던 cross-kind 중복 node를 제거하고, node끼리의 높은 containment 중복을 억제하는 공용 production postprocess를 추가했다.
+- 6 diagram + 5 non-diagram 개발 benchmark와, 설정 동결 전 따로 고정한 5 diagram + 9 non-diagram holdout을 추가했다.
+- benchmark runner는 primitive 최소 coverage뿐 아니라 과검출 상한, native connector 결속, 입력/model/output hash를 기록한다.
+
+결과:
+
+- detector 합성 test, threshold 0.6: node F1 `0.9805`, container F1 `0.9565`.
+- family classifier 합성 test: `97/112 = 0.8661`; `orthogonal_flow`는 `8/16 = 0.5`.
+- 개발 real benchmark: diagram `5/6`, non-diagram empty `5/5`로 정량 관문 통과.
+- confirmatory holdout: diagram `1/5`, non-diagram empty `6/9`로 관문 실패.
+- Microsoft PowerPoint 렌더: editable object와 endpoint 결속은 유지되지만 핵심 구조 누락, 일부 겹침, 잘못된 topology와 비도식 거짓 양성이 남아 육안 기준에 큰 폭으로 미달했다.
+- 결론: 일부 수정으로 승인 가능한 near-miss가 아니다. bundle은 연구용 `candidate`로만 유지하며 실제 사용자용 품질로 추천하거나 canonical로 승격하지 않는다.
+
+---
+
 ## 11. legacy 보존 / 삭제 정책
 
 ### 11.1 현재 정책
@@ -1028,25 +1102,28 @@ Phase 4 재검토 결과:
 
 ### 열린 문제
 
-- v3 MVP family 범위를 어디까지로 둘 것인가
-- 어떤 low-level utility가 v2 가정 없이 재사용 가능한가
-- text soft-mask를 detector-friendly하게 어떤 형식으로 넘길 것인가
-- family parsing 이후 residual handoff format을 어떻게 정의할 것인가
-- v3 diagnostics를 기존 benchmark manifest와 어떻게 맞출 것인가
+- checksum-bound candidate bundle은 만들어졌지만 모델 artifact가 ignored local workbench에 있어 clean checkout 재현은 아직 불가능하다.
+- 합성 detector 지표는 높았지만 real holdout 품질을 예측하지 못했다. 실제 domain 학습 데이터와 의미적 구조 annotation이 부족하다.
+- family classifier의 `orthogonal_flow` test accuracy가 0.5이며 실제 connector topology recall도 낮다.
+- gate가 application UI, table, distribution plot을 구조적 diagram으로 오인한다.
+- 기존 confirmatory holdout은 결과를 본 뒤이므로 다음 라운드의 개발/튜닝에 재사용할 수 없다.
+- residual/fallback의 제품 계약(빈 결과, 부분 결과, 휴리스틱 fallback 허용 범위)이 아직 완전히 고정되지 않았다.
 
 ### 리스크
 
-- family 범위를 초기에 너무 넓히면 다시 generic reconstruction처럼 흐를 수 있다.
-- v2 로직을 부분 재사용하려는 유혹이 v3 설계를 오염시킬 수 있다.
-- benchmark GT coverage가 좁으면 초기 결론을 과신할 수 있다.
-- emit를 너무 빨리 붙이면 parser/IR 설계가 불안정한 상태로 굳을 수 있다.
+- native PPTX라는 이유만으로 잘못된 객체가 많은 결과를 성공으로 오인할 수 있다.
+- 모델 artifact 없이 checkpoint 이름만 문서화하면 과거 성능 주장을 현재 재현 가능 상태로 오해하게 된다.
+- 하나의 합성 표본 개선을 전체 품질 향상으로 일반화할 수 있다.
+- family/style 기능을 먼저 넓히면 핵심 편집 비용인 검출·topology 오류가 가려질 수 있다.
 
 ---
 
-## 13. 현재 상태
+## 13. 구현 이력
+
+아래는 v3 구축 과정을 보존한 이력이다. 현재 상태와 다음 관문은 문서 상단, Phase 12, 14절을 기준으로 한다.
 
 - `plan.md`가 v3 migration의 source of truth로 설정되었다.
-- 현재 활성 단계는 `Phase 7: ML experiment bootstrap (parallel track)`이다.
+- 당시 활성 단계였던 `Phase 7: ML experiment bootstrap (parallel track)`에서 다음 기반을 구축했다.
   - annotation schema / adapter / metrics / 실험 진입점 골격이 `src/image_to_editable_ppt/ml/`에 추가되었다.
   - `tests/test_v3_phase7.py`가 schema roundtrip, adapter -> `validate_slide_ir`, annotation ↔ v3 IR 필드 drift, metrics, CLI smoke를 고정한다.
   - dataset 확보 전략은 합성 PPT 생성 + 이미지 렌더링으로 확정되었다 (Phase 7 섹션 참조).
@@ -1159,31 +1236,45 @@ Phase 4 재검토 결과:
     - `EmitSceneDiff`가 primitive scene + solved connector와 emit scene의 손실 여부를 비교한다.
     - debug runner가 `emit_diff.json`과 `overlay_emit_diff.png`를 저장한다.
     - `debug_summary.json`에 `eval_adapter`, `emit_diff` 요약이 추가되었다.
-- broad emit writer와 old validation runtime은 여전히 복구하지 않았다.
-  - 현재 adapter는 emit/eval bootstrap 경계 정의용이며, writer 자체를 다시 열지는 않는다.
-  - shim phase는 아직 열지 않았다.
-    - 이유: 현재는 v3 IR과 family flow를 먼저 자라게 하는 편이 더 안전하기 때문이다.
+- 이후 Phase 10에서 최소 native PPTX writer를 새 v3 경계 위에 구현했다. old validation runtime은 복구하지 않았다.
 
 ---
 
 ## 14. 다음 단계
 
-`Phase 7: ML experiment bootstrap`의 6개 task가 모두 완료되었다. 다음 작업 후보는 다음과 같다.
+다음 작업은 Phase 14 NO-GO의 원인을 줄이고 새 acceptance chain을 여는 순서로 진행한다.
 
-1. 본 학습 run — 수백~수천 샘플 dataset으로 detector가 실제로 수렴하는지 확인하고, eval CLI의 structural metrics로 학습 곡선을 추적한다.
-2. detector 추론 결과를 v3 `FAMILY_DETECT` stage에 주입하는 경로를 설계한다 (현재 adapter는 IR 변환까지만 한다).
-3. synthetic generator의 family coverage 확장 — 새 family generator는 Phase 8 family parser 구현과 같은 boundary를 따른다.
+1. 실제 논문 diagram/non-diagram의 다양성을 늘린 학습·검증 데이터로 detector와 gate의 domain gap을 줄인다.
+2. `orthogonal_flow` family 분류와 connector topology recall을 우선 개선한다.
+3. 개수 기반 screening에 의미적 node/topology annotation 또는 실제 PowerPoint 편집 시간을 추가한다.
+4. 기존 holdout은 튜닝에 쓰지 않고, 새 모델과 설정을 동결한 뒤 별도의 새 confirmatory holdout을 한 번만 평가한다.
+5. 새 holdout과 PowerPoint 육안 관문을 모두 통과할 때만 canonical bundle을 만들고 배포 위치를 정한다.
 
-Phase 7 이후에는 `Phase 8: family expansion and benchmarking`으로 진행한다.
+명시적 보류:
 
-1. 현재 `orthogonal_flow` 바깥의 MVP family를 순차적으로 추가한다.
-2. 새 family도 `PrimitiveScene -> EmitScene -> eval adapter` 경계를 그대로 따르도록 유지한다.
-3. GT-backed coverage와 benchmark 비교 범위를 넓힌다.
-4. generic route optimization은 실제 family 확장 압력이 생길 때까지 계속 미룬다.
+- 새 family 추가
+- relation/generic route optimization
+- 장식적 style 고도화
+- 휴리스틱 결과를 정식 ML 품질의 대리로 사용하는 일
 
 ---
 
 ## 15. 검증 스냅샷
+
+2026-08-25 현재:
+
+- Python 3.12 `.venv`, `.[ml,ocr,test]` 환경
+- 전체 테스트: `171 passed`, `9 warnings`
+- controlled held-out 표본: visual hardening 전/후 topology F1 `0.5714 -> 1.0`, 방향 포함 F1 `0.1429 -> 1.0`, label `7/8 -> 8/8`, 편집 작업 하한 `11 -> 0`
+- oracle-composed 표본: node/container/topology/방향 포함 F1 `1.0`, label `8/8`, 결속 `7/7`, 편집 작업 하한 `0`
+- PowerPoint 동작 검증: node `+36pt` 이동 시 결속 connector 시작점도 `+36pt` 이동, 반대쪽 끝점 고정
+- detector 합성 test(threshold 0.6): node F1 `0.9805`, container F1 `0.9565`
+- 개발 real benchmark: diagram `5/6`, non-diagram empty `5/5`
+- confirmatory holdout: diagram `1/5`, non-diagram empty `6/9`
+- PowerPoint 렌더 육안 검증: controlled 표본 통과; Phase 14 real benchmark/holdout은 구조 누락·겹침·거짓 양성으로 실패
+- checksum-bound bundle은 candidate로 검증됐으며 canonical 승격은 NO-GO
+
+아래는 이전 단계별 회귀 이력이다.
 
 예시 검증 명령:
 

@@ -38,6 +38,16 @@ def build_parser() -> argparse.ArgumentParser:
         default=os.environ.get("IEP_MODELS_DIR", "workbench-ml"),
         help="directory containing the run-*/checkpoints/last.ckpt trees (default: workbench-ml)",
     )
+    parser.add_argument(
+        "--bundle",
+        default=os.environ.get("IEP_MODEL_BUNDLE"),
+        help="checksum-bound model_bundle.json; defaults to <models-dir>/model_bundle.json when present",
+    )
+    parser.add_argument(
+        "--allow-candidate-bundle",
+        action="store_true",
+        help="permit an unpromoted candidate bundle for explicit experiments",
+    )
     parser.add_argument("--detector-run", default=CANONICAL_RUNS["detector"])
     parser.add_argument("--family-run", default=CANONICAL_RUNS["family"])
     parser.add_argument("--segmenter-run", default=CANONICAL_RUNS["segmenter"])
@@ -51,6 +61,13 @@ def build_parser() -> argparse.ArgumentParser:
         "learned segmenter, or the relation model (experimental)",
     )
     parser.add_argument("--threshold", type=float, default=0.5, help="detector score threshold")
+    parser.add_argument("--nms-iou", type=float, default=0.7, help="cross-kind node/container NMS IoU")
+    parser.add_argument(
+        "--node-containment-threshold",
+        type=float,
+        default=0.85,
+        help="suppress lower-score node predictions when this fraction of the smaller box is contained",
+    )
     parser.add_argument("--gate-threshold", type=float, default=0.6, help="OOD diagram-gate threshold")
     parser.add_argument("--width", type=int, default=DEFAULT_TARGET_WIDTH, help="resize input to this width (0 = keep)")
     parser.add_argument("--no-ml", action="store_true", help="use the heuristic v3 path instead of the ML provider")
@@ -68,27 +85,58 @@ def _build_provider(args: argparse.Namespace):
     from image_to_editable_ppt.ml.slide_ir_provider import MLSlideIRProvider
 
     models_dir = Path(args.models_dir)
-    detector = _checkpoint(models_dir, args.detector_run)
+    bundle_path = Path(args.bundle) if args.bundle else models_dir / "model_bundle.json"
+    bundle = None
+    if bundle_path.exists() or args.bundle:
+        from image_to_editable_ppt.ml.model_bundle import ModelBundleError, load_model_bundle
+
+        try:
+            bundle = load_model_bundle(bundle_path)
+        except ModelBundleError as error:
+            raise SystemExit(f"model bundle validation failed: {error}") from error
+        if bundle.status != "canonical" and not args.allow_candidate_bundle:
+            raise SystemExit(
+                f"model bundle is {bundle.status}, not canonical: {bundle.path}\n"
+                "pass --allow-candidate-bundle only for an explicit experiment"
+            )
+    detector = bundle.checkpoints["detector"] if bundle else _checkpoint(models_dir, args.detector_run)
+    assert detector is not None
     if not detector.exists():
         raise SystemExit(
             f"detector checkpoint not found: {detector}\n"
             "pass --models-dir (or set IEP_MODELS_DIR) to the directory holding the canonical runs, "
             "or use --no-ml for the heuristic path"
         )
-    family = _checkpoint(models_dir, args.family_run)
-    segmenter = _checkpoint(models_dir, args.segmenter_run)
-    gate = _checkpoint(models_dir, args.gate_run)
-    relation = _checkpoint(models_dir, args.relation_run)
+    family = bundle.checkpoints["family"] if bundle else _checkpoint(models_dir, args.family_run)
+    segmenter = bundle.checkpoints["segmenter"] if bundle else _checkpoint(models_dir, args.segmenter_run)
+    gate = bundle.checkpoints["gate"] if bundle else _checkpoint(models_dir, args.gate_run)
+    relation = bundle.checkpoints["relation"] if bundle else _checkpoint(models_dir, args.relation_run)
+    connector_strategy = str(bundle.settings.get("connector_strategy", args.connectors)) if bundle else args.connectors
+    detector_threshold = float(bundle.settings.get("detector_threshold", args.threshold)) if bundle else args.threshold
+    detector_nms_iou = float(bundle.settings.get("detector_nms_iou", args.nms_iou)) if bundle else args.nms_iou
+    node_containment_threshold = (
+        float(bundle.settings.get("node_containment_threshold", args.node_containment_threshold))
+        if bundle
+        else args.node_containment_threshold
+    )
+    gate_threshold = float(bundle.settings.get("gate_threshold", args.gate_threshold)) if bundle else args.gate_threshold
+    if not args.no_gate and (gate is None or not gate.exists()):
+        raise SystemExit(
+            f"diagram-gate checkpoint not found: {gate}\n"
+            "provide the canonical OOD gate checkpoint, or pass --no-gate to explicitly disable rejection"
+        )
     return MLSlideIRProvider(
         detector_checkpoint=str(detector),
-        score_threshold=args.threshold,
-        family_classifier_checkpoint=str(family) if family.exists() else None,
-        connector_checkpoint=str(segmenter) if segmenter.exists() else None,
-        connector_strategy=args.connectors,
-        relation_checkpoint=str(relation) if relation.exists() else None,
-        relation_threshold=args.threshold,
-        diagram_gate_checkpoint=str(gate) if gate.exists() and not args.no_gate else None,
-        diagram_gate_threshold=args.gate_threshold,
+        score_threshold=detector_threshold,
+        cross_class_nms_iou=detector_nms_iou,
+        node_containment_threshold=node_containment_threshold,
+        family_classifier_checkpoint=str(family) if family is not None and family.exists() else None,
+        connector_checkpoint=str(segmenter) if segmenter is not None and segmenter.exists() else None,
+        connector_strategy=connector_strategy,
+        relation_checkpoint=str(relation) if relation is not None and relation.exists() else None,
+        relation_threshold=detector_threshold,
+        diagram_gate_checkpoint=str(gate) if gate is not None and gate.exists() and not args.no_gate else None,
+        diagram_gate_threshold=gate_threshold,
     )
 
 
@@ -116,6 +164,20 @@ def _output_path(input_path: Path, output: str | None, *, multiple: bool) -> Pat
     if multiple or output_path.suffix.lower() != ".pptx":
         return output_path / f"{input_path.stem}.pptx"
     return output_path
+
+
+def _plan_output_paths(inputs: list[Path], output: str | None) -> list[Path]:
+    """Resolve every output before conversion and reject batch collisions."""
+    planned = [_output_path(path, output, multiple=len(inputs) > 1) for path in inputs]
+    by_identity: dict[str, list[Path]] = {}
+    for path in planned:
+        identity = os.path.normcase(os.path.abspath(path))
+        by_identity.setdefault(identity, []).append(path)
+    collisions = [paths for paths in by_identity.values() if len(paths) > 1]
+    if collisions:
+        rendered = "; ".join(str(paths[0]) for paths in collisions)
+        raise ValueError(f"multiple inputs map to the same output path: {rendered}")
+    return planned
 
 
 def convert_one(input_path: Path, output_path: Path, *, args: argparse.Namespace, provider) -> dict[str, object]:
@@ -156,6 +218,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"no images found for {args.inputs}", file=sys.stderr)
         return 2
 
+    try:
+        output_paths = _plan_output_paths(inputs, args.output)
+    except ValueError as error:
+        print(f"output planning failed: {error}", file=sys.stderr)
+        return 2
+
     provider = None if args.no_ml else _build_provider(args)
     if not args.no_ocr:
         from image_to_editable_ppt.v3.text.ocr import ocr_available
@@ -164,18 +232,22 @@ def main(argv: list[str] | None = None) -> int:
             print("note: no OCR backend (pip install rapidocr-onnxruntime); text will be left blank", file=sys.stderr)
 
     exit_code = 0
-    for input_path in inputs:
-        output_path = _output_path(input_path, args.output, multiple=len(inputs) > 1)
+    for input_path, output_path in zip(inputs, output_paths):
         try:
             summary = convert_one(input_path, output_path, args=args, provider=provider)
         except Exception as error:  # keep batch conversions alive
             print(f"[FAIL] {input_path}: {error}", file=sys.stderr)
             exit_code = 1
             continue
-        if summary["family"] is None and summary["nodes"] == 0:
+        if summary["nodes"] == 0 and summary["containers"] == 0:
+            detail = (
+                "no structure was detected"
+                if args.no_ml
+                else "OOD gate rejected it as not-a-diagram, or no structure was detected; use --no-gate to force"
+            )
             print(
                 f"[EMPTY] {input_path} -> {summary['output']} "
-                "(OOD gate rejected it as not-a-diagram, or no structure was detected; use --no-gate to force)"
+                f"({detail})"
             )
         else:
             print(
