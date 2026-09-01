@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
-최종 업데이트: 2026-08-25
-상태: `Phase 14 (canonical acceptance) 완료 — checksum-bound candidate와 고정 real benchmark/holdout을 검증했으나, holdout 1/5 diagram·6/9 non-diagram 및 PowerPoint 육안 품질이 실사용 기준에 큰 폭으로 미달했다. near-miss가 아니며 canonical 승격은 NO-GO다.`
+최종 업데이트: 2026-09-02
+상태: `Phase 15 (visual-first geometry confirmation)는 코드·육안 관측·한계와 함께 동결됐다. 공개 단순/중간 복잡도 표본과 알려진 비도식 오탐은 크게 개선됐지만 복잡한 실제 input.png는 여전히 육안 실사용 기준에 미달하며 새 독립 holdout도 없다. candidate/NO-GO를 유지한다.`
 
 ---
 
@@ -1062,6 +1062,60 @@ Phase 12의 정량 결과를 PowerPoint 렌더와 중간 IR에서 원점 재검�
 
 ---
 
+### Phase 15. Visual-first geometry confirmation
+
+Phase 14의 높은 합성 F1과 개발 benchmark 개수 기준이 실제 렌더 품질을 대표하지 못했으므로, 이번 단계에서는 정량 지표를 방향 결정에 선행시키지 않는다. 원본, 중간 geometry overlay, 실제 PowerPoint 렌더를 표본마다 직접 비교하고 한 종류의 오류만 줄인 뒤 다시 눈으로 확인한다.
+
+초기 관찰:
+
+- `three-phase`: ML은 가운데 실제 박스를 둘로 쪼개고 잘못된 대각선 connector를 만들었다. 원본의 닫힌 윤곽은 실제 박스 3개를 정확히 분리한다.
+- `chat`: ML은 위쪽 4개 node만 잡고 아래쪽 3개를 놓쳤다. 균일한 회색 채움을 얇은 화살표와 분리하면 실제 node 7개와 외곽 container 2개가 정확히 남는다.
+- DDSP/HAR/CTI/복잡 로컬 표본에서도 닫힌 윤곽·균일 채움 probe는 큰 구조를 보수적으로 회수했다.
+- 작은 닫힌 사각형을 모두 허용하면 CTI의 문서 아이콘을 node로 오인했다. 최소 면적을 slide의 0.6%로 올리자 아이콘은 사라지고 큰 구조만 남았다.
+
+현재 방향:
+
+1. ML detector의 bbox를 곧바로 emit하지 않는다.
+2. 원본 픽셀에서 네 변이 실제로 지지되는 닫힌 outline과, 얇은 connector를 morphology로 제거한 뒤 남는 균일 fill만 고신뢰 geometry로 인정한다.
+3. geometry 후보가 둘 이상이면 그것으로 ML 중복을 snap/dedupe하고, 근거 없는 ML-only box는 생략한다.
+4. 실제 outline이 여러 node를 포함할 때만 container로 인정하며 proposal envelope만으로 container를 만들지 않는다.
+5. 각 변경 뒤 `three-phase`와 `chat`을 먼저 PowerPoint로 렌더하고, 이후 DDSP/HAR/CTI/복잡 로컬과 non-diagram을 확대한다.
+
+구현 및 육안 반복 결과 (2026-09-01):
+
+- `visual_geometry`는 전역 0.6% 면적 바닥 위에서 네 변이 연속 지지되는 rectangle, 큰 fitted ellipse, 균일 fill, title divider가 관측되는 panel만 복구한다. 확인된 titled panel 내부에서는 같은 높이의 넓은 닫힌 박스가 3개 이상 반복될 때만 0.25%까지 낮춰 DDSP 내부 블록을 회수한다.
+- `visual_connectors`는 마주 보는 두 객체 사이의 열린 간격을 실제 획 하나가 가로지르는 수평/수직 경로만 채택한다. 곡선·점선·자유 경로는 생략하며, 중간 node/container를 관통하는 축약선은 거절한다.
+- PowerPoint 중앙 connection site에 강제 결속하면 여러 panel edge 접점이 중앙에 몰리는 문제가 실제 렌더에서 확인됐다. source-pixel-confirmed panel connector 중 중앙에서 4px 이상 벗어난 끝점만 관측 좌표를 유지하는 비결속 native connector로 내보낸다.
+- ellipse native shape, titled-panel header text, 작은 node 우선 text ownership, OCR 중복/오염 확장 제거, 같은 줄 OCR의 좌우 정렬, 안전한 글꼴 extent를 추가했다. 의미 사전으로 `parameters DSP`, `Data collection 2` 같은 단일 OCR 문자열을 임의 교정하지 않는다.
+- 학습 gate를 통과해도 `connector / (node + container) < 0.20`이면 기권한다. 이 조건은 PowerPoint 렌더에서 재작도량을 줄이지 못한 고립 객체 집합을 비우며, `--no-gate` 진단 경로에서는 적용하지 않는다.
+
+PowerPoint 육안 판정:
+
+- `three-phase`: 실제 박스 3개와 직접 하향 화살표 2개가 정확히 남고 곡선 회귀선은 생략됐다. 유용한 보수적 부분복원이다.
+- `chat`: node 7개, container 1개, 직접 connector 6개가 안정적으로 복원됐다. 복잡한 return loop는 생략됐지만 재작도량을 명확히 줄인다.
+- `DDSP`: 이전의 빈 titled panel 6개에서 panel 6개 + 내부 block 5개 + 직접 connector 5개로 개선됐다. 패널 중앙 connector 겹침과 `D SVF` OCR 잡음은 재렌더 반복으로 제거했다. 곡선/점선 graph와 icon은 의도적으로 비웠다.
+- `HAR`: node 18개, container 4개, connector 12개가 원본의 핵심 두 흐름을 보존한다. 한 반복에서 `Window` node를 관통하는 거짓 container connector 2개를 육안으로 발견해 차단했다.
+- `CTI`: 큰 rectangle/ellipse node 16개와 직접 connector 6개를 복원했다. 아이콘·brace·작은 NLP 항목은 비웠고 작은 ellipse OCR은 여전히 거칠다.
+- 저장소 실제 `input.png`: node 16개, container 3개, connector 6개를 복원하지만 RETRIEVE/Memory 구조 누락, 일부 큰 잘못된 영역, 심한 OCR 손상 때문에 육안 실사용 기준은 여전히 **NO-GO**다. 부분 구조가 있다는 이유만으로 성공으로 세지 않는다.
+- 개발 non-diagram 5종은 모두 empty다. 항공사진은 한때 17개 구조/3개 connector로 오탐됐으나 최종 구조 유용성 관문에서 empty가 됐고 실제 blank PowerPoint 렌더를 확인했다.
+- 이미 결과를 본 과거 holdout은 이제 개발 증거일 뿐 독립 검증이 아니다. 그 9개 non-diagram은 현재 모두 empty이고, 5개 diagram 중 육안으로 유용한 3개는 유지되며 무용한 고립 객체만 남던 2개는 empty다.
+
+현재 결론:
+
+- Phase 14의 큰 구조 누락·거짓 양성은 일부 표본에서 실질적으로 줄었지만 복잡 입력과 OCR은 해결되지 않았다.
+- 기존 holdout을 본 뒤 경계를 정했으므로 canonical 승인 증거로 사용할 수 없다.
+- candidate bundle과 NO-GO를 유지한다. 다음 단계는 현 경계를 동결한 뒤 **새 독립 시각 holdout**에서 PowerPoint 재작도량을 확인하는 것이다.
+- 2026-09-02에 현재 코드와 육안 판정, 알려진 한계, 추가 튜닝 금지 경계를 [Phase 15 동결 기록](docs/phase15_visual_first_freeze.md)으로 고정했다.
+
+완료 조건:
+
+- 단순 표본에서 실제 박스·컨테이너가 중복 없이 원본 경계에 맞는다.
+- connector가 거짓 대각선 없이 실제 node 사이의 관측 가능한 경로를 보존한다.
+- 아이콘/표/스크린샷을 새 node로 승격하지 않는다.
+- 개발 표본뿐 아니라 새 시각 holdout에서도 PowerPoint 렌더가 사용자의 재작도량을 명확히 줄인다.
+
+---
+
 ## 11. legacy 보존 / 삭제 정책
 
 ### 11.1 현재 정책
@@ -1105,7 +1159,9 @@ Phase 4 재검토 결과:
 - checksum-bound candidate bundle은 만들어졌지만 모델 artifact가 ignored local workbench에 있어 clean checkout 재현은 아직 불가능하다.
 - 합성 detector 지표는 높았지만 real holdout 품질을 예측하지 못했다. 실제 domain 학습 데이터와 의미적 구조 annotation이 부족하다.
 - family classifier의 `orthogonal_flow` test accuracy가 0.5이며 실제 connector topology recall도 낮다.
-- gate가 application UI, table, distribution plot을 구조적 diagram으로 오인한다.
+- 학습 gate 단독으로는 application UI, table, distribution plot, aerial image를 구조적 diagram으로 오인한다. 현재 구조 유용성 관문이 알려진 표본을 차단하지만 새 독립 holdout 검증은 아직 없다.
+- source-pixel geometry는 rectangle/ellipse/titled panel과 직접 축 connector에 한정된다. 곡선·점선·복잡 routing 및 가려진 대형 panel 복원은 여전히 약하다.
+- 복잡한 `input.png`는 일부 editable primitive를 회수해도 전체 재작도량을 충분히 줄이지 못하며 OCR 손상이 크다.
 - 기존 confirmatory holdout은 결과를 본 뒤이므로 다음 라운드의 개발/튜닝에 재사용할 수 없다.
 - residual/fallback의 제품 계약(빈 결과, 부분 결과, 휴리스틱 fallback 허용 범위)이 아직 완전히 고정되지 않았다.
 
@@ -1261,10 +1317,10 @@ Phase 4 재검토 결과:
 
 ## 15. 검증 스냅샷
 
-2026-08-25 현재:
+2026-09-02 현재:
 
 - Python 3.12 `.venv`, `.[ml,ocr,test]` 환경
-- 전체 테스트: `171 passed`, `9 warnings`
+- 전체 테스트: `195 passed`, `9 warnings`
 - controlled held-out 표본: visual hardening 전/후 topology F1 `0.5714 -> 1.0`, 방향 포함 F1 `0.1429 -> 1.0`, label `7/8 -> 8/8`, 편집 작업 하한 `11 -> 0`
 - oracle-composed 표본: node/container/topology/방향 포함 F1 `1.0`, label `8/8`, 결속 `7/7`, 편집 작업 하한 `0`
 - PowerPoint 동작 검증: node `+36pt` 이동 시 결속 connector 시작점도 `+36pt` 이동, 반대쪽 끝점 고정
@@ -1273,6 +1329,8 @@ Phase 4 재검토 결과:
 - confirmatory holdout: diagram `1/5`, non-diagram empty `6/9`
 - PowerPoint 렌더 육안 검증: controlled 표본 통과; Phase 14 real benchmark/holdout은 구조 누락·겹침·거짓 양성으로 실패
 - checksum-bound bundle은 candidate로 검증됐으며 canonical 승격은 NO-GO
+- Phase 15 PowerPoint 육안 검증: 공개 diagram 5종은 유용한 보수적 부분복원, 복잡 로컬 `input.png`는 NO-GO
+- Phase 15 개발/과거 holdout 비도식 검증: 개발 `5/5` empty, 과거 holdout `9/9` empty. 과거 holdout은 이미 소비됐으므로 승인 증거가 아니다.
 
 아래는 이전 단계별 회귀 이력이다.
 

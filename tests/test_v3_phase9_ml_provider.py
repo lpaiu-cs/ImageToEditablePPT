@@ -93,6 +93,15 @@ def test_ml_provider_abstains_on_ood_figure(monkeypatch) -> None:
     assert slide_ir.family_proposals == ()
 
 
+def test_structural_connector_ratio_separates_useful_partial_from_isolated_markers() -> None:
+    from image_to_editable_ppt.ml.slide_ir_provider import _structural_connector_ratio
+
+    assert _structural_connector_ratio(structures=4, connectors=1) == 0.25
+    assert _structural_connector_ratio(structures=7, connectors=2) > 0.20
+    assert _structural_connector_ratio(structures=36, connectors=1) < 0.20
+    assert _structural_connector_ratio(structures=3, connectors=0) == 0.0
+
+
 def test_convert_image_provider_resolves_connector_candidates() -> None:
     """Provider emits connector *candidates*; convert must resolve them into
     ConnectorSpecs (emit reads slide_ir.connectors, not candidates)."""

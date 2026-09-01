@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import replace
 
 from image_to_editable_ppt.v3.ir.models import (
+    PrimitiveContainer,
     PrimitiveNode,
     PrimitiveText,
     SlideIR,
@@ -30,9 +31,15 @@ def merge_text_layer_into_slide_ir(slide_ir: SlideIR, text_layer: TextLayerResul
         return replace(slide_ir, text_layer=text_layer, text_regions=text_layer.regions)
 
     nodes_by_area = sorted(scene.nodes, key=lambda node: node.bbox.area)
+    titled_containers_by_area = sorted(
+        (container for container in scene.containers if container.source == "visual_geometry:titled_panel"),
+        key=lambda container: container.bbox.area,
+    )
     owner_by_region: dict[str, str] = {}
     for region in text_layer.regions:
         owner = _owning_node_id(region, nodes_by_area)
+        if owner is None:
+            owner = _owning_titled_container_id(region, titled_containers_by_area)
         if owner is not None:
             owner_by_region[region.id] = owner
 
@@ -77,6 +84,30 @@ def _owning_node_id(region: TextRegion, nodes_by_area: list[PrimitiveNode]) -> s
         if node.bbox.contains_point(center):
             return node.id
     return None
+
+
+def _owning_titled_container_id(
+    region: TextRegion,
+    containers_by_area: list[PrimitiveContainer],
+) -> str | None:
+    """Own only text visibly located in a source-confirmed panel header."""
+    center = region.bbox.center
+    for container in containers_by_area:
+        header_bottom = _header_bottom_from_provenance(container)
+        if container.bbox.contains_point(center) and center.y <= header_bottom:
+            return container.id
+    return None
+
+
+def _header_bottom_from_provenance(container: PrimitiveContainer) -> float:
+    prefix = "visual_geometry:header_bottom="
+    for item in container.provenance:
+        if item.startswith(prefix):
+            try:
+                return float(item.removeprefix(prefix))
+            except ValueError:
+                break
+    return container.bbox.y0 + 0.25 * container.bbox.height
 
 
 def _labelled_node(node: PrimitiveNode, regions: list[TextRegion] | None) -> PrimitiveNode:

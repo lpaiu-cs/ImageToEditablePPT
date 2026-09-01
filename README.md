@@ -12,6 +12,7 @@
   - 고정 직교 흐름도 표본은 node/container/topology/direction F1 1.0, label 8/8, 편집 작업 하한 0까지 회복했고 PowerPoint 렌더도 육안 확인했다.
   - 휴리스틱 경로는 복잡한 실제형 입력에서 거짓 양성을 버리고 확실한 일부만 내보내지만, 아직 전체 구조를 복원하는 제품 품질은 아니다.
   - Phase 14에서 checksum-bound ML bundle과 고정 real benchmark/holdout을 실제로 끝까지 검증했다. 개발셋의 느슨한 개수 기준은 통과했지만 독립 holdout과 PowerPoint 육안 품질은 실사용 기준에 큰 폭으로 미달했다. 현재 모델은 연구용 `candidate`이며 실제 사용자용으로 추천하지 않는다. canonical 모델은 아직 없다.
+  - Phase 15에서는 실제 원본/중간 overlay/PowerPoint 렌더를 반복 확인해, source-pixel-confirmed rectangle·ellipse·titled panel과 직접 축 connector만 보수적으로 복원하도록 바꿨다. 공개 diagram 5종과 알려진 비도식 오탐은 크게 개선됐지만 복잡한 `input.png`와 OCR은 여전히 육안 기준 미달이고 새 독립 holdout도 없으므로 candidate/NO-GO 상태는 변하지 않았다.
 - old v2 runtime과 old CLI 동작은 의도적으로 제거되었다.
 - 휴리스틱 경로의 지원 family는 아직 좁다(`orthogonal_flow`). ML 경로는 7 family를 다룬다.
 - benchmark / eval / GT sidecar / workbench 자산은 보존되어 있다. old validation runtime은 복구하지 않았다.
@@ -33,6 +34,7 @@ py -3.12 tools/convert_to_pptx.py figure.png --bundle workbench-ml/model_bundle.
 - bundle/model 파일과 외부 benchmark 이미지는 저장소에 포함되지 않으므로 clean checkout만으로 Phase 14 결과를 재현할 수는 없다.
 - gate checkpoint가 없으면 자동으로 gate를 끄지 않고 실패한다. 의도적으로 gate 없이 실행할 때만 `--no-gate`를 사용한다.
 - OOD 게이트가 비다이어그램(차트/스크린샷/사진)을 거절하거나 결과에 primitive가 없으면 빈 pptx와 함께 `[EMPTY]`를 알린다.
+- 학습 게이트를 통과했더라도 connector 대비 구조 객체가 지나치게 희박해 재작도량을 줄이지 못하는 결과는 빈 pptx로 기권한다. `--no-gate`는 이 유용성 관문도 끄는 명시적 진단 경로다.
 - OCR 백엔드(rapidocr)가 없으면 텍스트만 비운 채 구조는 그대로 변환된다.
 - 일반 OCR에서 놓친 흰색 라벨은 이미 검출된 닫힌 노드 내부에서만 다시 읽는다. 떠 있는 비-title OCR 텍스트는 출력하지 않는다.
 - 배치 변환에서 서로 다른 입력이 같은 출력 파일명으로 정규화되면 덮어쓰지 않고 시작 전에 오류로 종료한다.
@@ -44,7 +46,7 @@ py -3.12 tools/evaluate_pptx_editability.py output.pptx
 py -3.12 tools/evaluate_pptx_editability.py output.pptx --annotation figure.json --output editability.json
 ```
 
-평가기와 기준선은 [docs/phase12_edit_cost_experiment.md](docs/phase12_edit_cost_experiment.md), canonical 승격 실험과 NO-GO 근거는 [docs/phase14_canonical_acceptance_experiment.md](docs/phase14_canonical_acceptance_experiment.md)에 기록되어 있다.
+평가기와 기준선은 [docs/phase12_edit_cost_experiment.md](docs/phase12_edit_cost_experiment.md), canonical 승격 실험과 NO-GO 근거는 [docs/phase14_canonical_acceptance_experiment.md](docs/phase14_canonical_acceptance_experiment.md), visual-first 구현의 최종 육안 판정과 동결 경계는 [docs/phase15_visual_first_freeze.md](docs/phase15_visual_first_freeze.md)에 기록되어 있다.
 
 개발용 inspection 경로 (v3 debug/inspection path):
 

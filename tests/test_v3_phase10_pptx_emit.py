@@ -25,6 +25,7 @@ from image_to_editable_ppt.v3.emit.pptx_writer import EMU_PER_PIXEL, write_pptx
 from image_to_editable_ppt.v3.emit.style import ShapeVisualStyle, sample_shape_styles
 from image_to_editable_ppt.v3.ir.models import (
     DiagramNode,
+    PrimitiveContainer,
     PrimitiveNode,
     PrimitiveScene,
     SlideIR,
@@ -188,6 +189,73 @@ def test_write_pptx_uses_one_bound_connector_for_multi_segment_route(tmp_path):
     assert "bentConnector" in slide_xml
 
 
+def test_write_pptx_keeps_offset_axial_binding_orthogonal(tmp_path):
+    from dataclasses import replace
+    from zipfile import ZipFile
+
+    scene = _scene()
+    shifted_target = replace(scene.shapes[2], bbox=BBox(200, 150, 280, 210))
+    vertical = replace(
+        scene.connectors[0],
+        path_points=(Point(150, 100), Point(150, 150)),
+    )
+    output = tmp_path / "offset-vertical.pptx"
+
+    write_pptx(replace(scene, shapes=(*scene.shapes[:2], shifted_target), connectors=(vertical,)), output)
+
+    slide_xml = ZipFile(output).read("ppt/slides/slide1.xml").decode("utf-8")
+    assert slide_xml.count("<a:stCxn") == 1
+    assert slide_xml.count("<a:endCxn") == 1
+    assert "bentConnector" in slide_xml
+
+
+def test_write_pptx_preserves_distinct_visual_container_edge_coordinate(tmp_path):
+    from pptx import Presentation
+    from zipfile import ZipFile
+
+    source = EmitShapePrimitive(
+        id="container:source",
+        owner_kind=PortOwnerKind.CONTAINER,
+        shape_kind=ContainerKind.PANEL,
+        bbox=BBox(20, 20, 180, 80),
+        confidence=1.0,
+    )
+    target = EmitShapePrimitive(
+        id="container:target",
+        owner_kind=PortOwnerKind.CONTAINER,
+        shape_kind=ContainerKind.PANEL,
+        bbox=BBox(20, 220, 380, 280),
+        confidence=1.0,
+    )
+    connector = EmitConnectorPrimitive(
+        id="connector:visual-container",
+        kind=ConnectorKind.ARROW,
+        confidence=1.0,
+        source_owner_id=source.id,
+        source_owner_kind=PortOwnerKind.CONTAINER,
+        target_owner_id=target.id,
+        target_owner_kind=PortOwnerKind.CONTAINER,
+        source_port_id="port:source",
+        target_port_id="port:target",
+        path_points=(Point(40, 80), Point(40, 220)),
+        arrowhead_end=True,
+        provenance=("visual_connector:source_pixels",),
+    )
+    scene = EmitScene(image_size=ImageSize(width=400, height=300), shapes=(source, target), connectors=(connector,))
+    output = tmp_path / "visual-container-coordinate.pptx"
+
+    write_pptx(scene, output)
+
+    presentation = Presentation(str(output))
+    line = next(shape for shape in presentation.slides[0].shapes if shape.name == connector.id)
+    slide_xml = ZipFile(output).read("ppt/slides/slide1.xml").decode("utf-8")
+    assert slide_xml.count("<a:stCxn") == 0
+    assert slide_xml.count("<a:endCxn") == 0
+    assert "bentConnector" not in slide_xml
+    assert line.begin_x == 40 * EMU_PER_PIXEL
+    assert line.end_x == 40 * EMU_PER_PIXEL
+
+
 def test_write_pptx_positions_match_image_space(tmp_path):
     from pptx import Presentation
 
@@ -274,6 +342,114 @@ def test_merge_text_layer_promotes_labels_and_keeps_standalone():
     assert texts["text:3"].owner_ids == ("node:1",)  # owned but unrecognized: no label impact
     assert merged.text_regions == text_layer.regions
     assert merged.text_layer is text_layer
+
+
+def test_merge_text_layer_owns_only_source_confirmed_panel_header() -> None:
+    image_size = ImageSize(width=400, height=300)
+    container = PrimitiveContainer(
+        id="container:titled",
+        kind=ContainerKind.PANEL,
+        bbox=BBox(20, 20, 380, 220),
+        confidence=0.9,
+        source="visual_geometry:titled_panel",
+    )
+    scene = PrimitiveScene(image_size=image_size, containers=(container,))
+    slide_ir = SlideIR(image_size=image_size, primitive_scene=scene)
+    text_layer = TextLayerResult(
+        image_size=image_size,
+        regions=(
+            TextRegion(id="text:header", bbox=BBox(140, 28, 260, 52), confidence=0.9, text="Inputs"),
+            TextRegion(id="text:body", bbox=BBox(140, 120, 260, 144), confidence=0.9, text="icon label"),
+        ),
+    )
+
+    merged = merge_text_layer_into_slide_ir(slide_ir, text_layer)
+    texts = {text.id: text for text in merged.primitive_scene.texts}
+
+    assert texts["text:header"].owner_ids == (container.id,)
+    assert texts["text:body"].owner_ids == ()
+
+
+def test_write_pptx_emits_source_confirmed_panel_header_label(tmp_path) -> None:
+    from dataclasses import replace
+    from pptx import Presentation
+
+    scene = _scene()
+    titled_container = replace(scene.shapes[0], source="visual_geometry:titled_panel")
+    header = EmitTextPrimitive(
+        id="text:panel-header",
+        role=TextRegionRole.LABEL,
+        bbox=BBox(140, 16, 250, 34),
+        confidence=0.95,
+        text="Inputs",
+        owner_ids=(titled_container.id,),
+    )
+    output = tmp_path / "panel-header.pptx"
+
+    write_pptx(replace(scene, shapes=(titled_container, *scene.shapes[1:]), texts=(*scene.texts, header)), output)
+
+    names = {shape.name for shape in Presentation(str(output)).slides[0].shapes}
+    assert header.id in names
+
+
+def test_write_pptx_selects_complete_ocr_region_over_overlapping_fragments(tmp_path) -> None:
+    from dataclasses import replace
+    from pptx import Presentation
+
+    scene = _scene()
+    complete = replace(scene.texts[0], text="Samples", bbox=BBox(65, 55, 135, 82))
+    left_fragment = replace(scene.texts[0], id="text:left", text="Sam", bbox=BBox(35, 45, 105, 96))
+    right_fragment = replace(scene.texts[0], id="text:right", text="ples", bbox=BBox(100, 45, 170, 96))
+    output = tmp_path / "deduped-ocr.pptx"
+
+    write_pptx(replace(scene, texts=(complete, left_fragment, right_fragment, *scene.texts[1:])), output)
+
+    shapes = {shape.name: shape for shape in Presentation(str(output)).slides[0].shapes}
+    assert shapes["node:1"].text == "Samples"
+
+
+def test_write_pptx_reads_same_line_ocr_fragments_left_to_right(tmp_path) -> None:
+    from dataclasses import replace
+    from pptx import Presentation
+
+    scene = _scene()
+    number = replace(scene.texts[0], text="2.", bbox=BBox(50, 58, 68, 78))
+    label = replace(scene.texts[0], id="text:label", text="Data collection", bbox=BBox(72, 56, 150, 80))
+    output = tmp_path / "ocr-line-order.pptx"
+
+    write_pptx(replace(scene, texts=(number, label, *scene.texts[1:])), output)
+
+    shapes = {shape.name: shape for shape in Presentation(str(output)).slides[0].shapes}
+    assert shapes["node:1"].text == "2. Data collection"
+
+
+def test_write_pptx_prefers_tight_label_over_large_contaminated_extension(tmp_path) -> None:
+    from dataclasses import replace
+    from pptx import Presentation
+
+    scene = _scene()
+    contaminated = replace(scene.texts[0], text="D SVF", bbox=BBox(35, 35, 165, 98))
+    tight = replace(scene.texts[0], id="text:tight", text="SVF", bbox=BBox(82, 58, 120, 80))
+    output = tmp_path / "tight-ocr-label.pptx"
+
+    write_pptx(replace(scene, texts=(contaminated, tight, *scene.texts[1:])), output)
+
+    shapes = {shape.name: shape for shape in Presentation(str(output)).slides[0].shapes}
+    assert shapes["node:1"].text == "SVF"
+
+
+def test_write_pptx_omits_explicit_legend_node(tmp_path) -> None:
+    from dataclasses import replace
+    from pptx import Presentation
+
+    scene = _scene()
+    legend = replace(scene.texts[0], text="Legend:")
+    output = tmp_path / "no-legend-node.pptx"
+
+    write_pptx(replace(scene, texts=(legend, *scene.texts[1:])), output)
+
+    names = {shape.name for shape in Presentation(str(output)).slides[0].shapes}
+    assert "node:1" not in names
 
 
 def test_ocr_annotate_fills_confident_text():

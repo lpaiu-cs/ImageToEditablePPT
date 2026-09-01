@@ -26,6 +26,7 @@ class BranchKind(StrEnum):
 class NodeKind(StrEnum):
     BOX = "box"
     ROUNDED_BOX = "rounded_box"
+    ELLIPSE = "ellipse"
     SECTION = "section"
     LABEL_ANCHOR = "label_anchor"
 

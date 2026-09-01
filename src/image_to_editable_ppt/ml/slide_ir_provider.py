@@ -34,6 +34,11 @@ if TYPE_CHECKING:
 _DETECTOR_CACHE: dict[str, object] = {}
 
 
+def _structural_connector_ratio(*, structures: int, connectors: int) -> float:
+    """Observed topology per emitted node/container, or zero for no scene."""
+    return connectors / structures if structures > 0 else 0.0
+
+
 def _load_detector(checkpoint: str) -> object:
     from image_to_editable_ppt.ml.dataset import get_or_load
     from image_to_editable_ppt.ml.lightning_module import DetectorLightningModule
@@ -80,6 +85,11 @@ class MLSlideIRProvider:
     # reject ~0.90 on held-out figures; 0.6-0.75 all keep both sides ~0.94.
     diagram_gate_checkpoint: str | None = None
     diagram_gate_threshold: float = 0.6
+    # A few disconnected boxes do not reduce redraw work enough to justify a
+    # diagram claim.  This also rejects plot markers/table cells that survive
+    # the learned gate.  Applied only when the OOD gate is enabled; --no-gate
+    # remains the explicit force path for diagnostics.
+    minimum_structural_connector_ratio: float | None = 0.20
     image_id: str = "slide"
 
     def build(self, image: "Image.Image", *, config: "V3Config") -> "SlideIR":
@@ -106,7 +116,11 @@ class MLSlideIRProvider:
                     family_predictions=(),
                     node_predictions=(),
                     container_predictions=(),
-                    metadata={"stage": "ml_slide_ir_provider", "ood_rejected": True, "diagram_probability": p_diagram},
+                    metadata={
+                        "stage": "ml_slide_ir_provider",
+                        "ood_rejected": True,
+                        "diagram_probability": p_diagram,
+                    },
                 )
                 return adapter.to_slide_ir(adapter.from_model_output(rejected))
 
@@ -142,9 +156,63 @@ class MLSlideIRProvider:
                     )
                 )
 
+        # Real-figure geometry must be confirmed in the source pixels before it
+        # becomes editable structure.  When two or more closed/fill-supported
+        # objects form a coherent scene, replace approximate ML-only boxes with
+        # those observed bounds.  This also collapses cross-kind/split-box
+        # duplicates and may recover repeated nodes the synthetic detector
+        # missed.  Sparse scenes retain the detector result.
+        from image_to_editable_ppt.ml.visual_geometry import reconcile_with_visual_geometry
+
+        nodes, containers, visual_geometry_used = reconcile_with_visual_geometry(
+            rgb,
+            nodes,
+            containers,
+            image_id=self.image_id,
+        )
+
         # Connectors first: the structure-based family classifier needs the
         # recovered topology, so connector recovery must run before family selection.
-        connectors, ports = self._recover_connectors(rgb, nodes, containers)
+        if visual_geometry_used and self.connector_strategy == "morphological":
+            from image_to_editable_ppt.ml.visual_connectors import visual_connectors
+
+            connectors, ports = visual_connectors(
+                rgb,
+                nodes,
+                containers=containers,
+                image_id=self.image_id,
+            )
+        else:
+            connectors, ports = self._recover_connectors(rgb, nodes, containers)
+
+        structure_count = len(nodes) + len(containers)
+        connector_ratio = _structural_connector_ratio(
+            structures=structure_count,
+            connectors=len(connectors),
+        )
+        coherence_keep = (
+            self.diagram_gate_checkpoint is None
+            or self.minimum_structural_connector_ratio is None
+            or connector_ratio >= self.minimum_structural_connector_ratio
+        )
+        if not coherence_keep:
+            adapter = AnnotationMLAdapter()
+            rejected = DetectorModelOutput(
+                image_id=self.image_id,
+                image_size=AnnotationImageSize(width=int(width), height=int(height)),
+                family_predictions=(),
+                node_predictions=(),
+                container_predictions=(),
+                metadata={
+                    "stage": "ml_slide_ir_provider",
+                    "ood_rejected": True,
+                    "structural_coherence_rejected": True,
+                    "recovered_structure_count": structure_count,
+                    "recovered_connector_count": len(connectors),
+                    "structural_connector_ratio": connector_ratio,
+                },
+            )
+            return adapter.to_slide_ir(adapter.from_model_output(rejected))
 
         family, family_confidence = DiagramFamily.ORTHOGONAL_FLOW, self.score_threshold
         if self.family_classifier_checkpoint is not None:
@@ -186,7 +254,11 @@ class MLSlideIRProvider:
             container_predictions=tuple(containers),
             port_predictions=ports,
             connector_predictions=connectors,
-            metadata={"stage": "ml_slide_ir_provider", "detector_checkpoint": self.detector_checkpoint},
+            metadata={
+                "stage": "ml_slide_ir_provider",
+                "detector_checkpoint": self.detector_checkpoint,
+                "visual_geometry_used": visual_geometry_used,
+            },
         )
         adapter = AnnotationMLAdapter()
         return adapter.to_slide_ir(adapter.from_model_output(output))
