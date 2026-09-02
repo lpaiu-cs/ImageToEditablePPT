@@ -1,0 +1,428 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-holdout-p068",
+  "image": {
+    "path": "data/phase16_holdout_v1/phase16-holdout-p068.png",
+    "sha256": "76676d1003d94e601fde4632aa458bb57f05990667ee76053577e9d52e29c218",
+    "width": 2667,
+    "height": 1500
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:manual:target-top",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 650,
+        "y0": 415,
+        "x1": 1677,
+        "y1": 686
+      },
+      "importance": "core",
+      "label": {
+        "text": "Target network",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:online",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 650,
+        "y0": 700,
+        "x1": 2184,
+        "y1": 971
+      },
+      "importance": "core",
+      "label": {
+        "text": "Online network",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:target-bottom",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 650,
+        "y0": 983,
+        "x1": 1673,
+        "y1": 1255
+      },
+      "importance": "core",
+      "label": {
+        "text": "Target network",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:x",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 139,
+        "y0": 777,
+        "x1": 262,
+        "y1": 896
+      },
+      "importance": "core",
+      "label": {
+        "text": "X",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:v2",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 479,
+        "y0": 487,
+        "x1": 603,
+        "y1": 603
+      },
+      "importance": "core",
+      "label": {
+        "text": "V2",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:v1",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 477,
+        "y0": 780,
+        "x1": 599,
+        "y1": 896
+      },
+      "importance": "core",
+      "label": {
+        "text": "V1",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:v3",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 475,
+        "y0": 1056,
+        "x1": 600,
+        "y1": 1172
+      },
+      "importance": "core",
+      "label": {
+        "text": "V3",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:y2",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 983,
+        "y0": 489,
+        "x1": 1105,
+        "y1": 603
+      },
+      "parent_id": "object:manual:target-top",
+      "importance": "secondary",
+      "label": {
+        "text": "Y2",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:z2",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1482,
+        "y0": 489,
+        "x1": 1606,
+        "y1": 603
+      },
+      "parent_id": "object:manual:target-top",
+      "importance": "secondary",
+      "label": {
+        "text": "Z2",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:y1",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 979,
+        "y0": 781,
+        "x1": 1103,
+        "y1": 896
+      },
+      "parent_id": "object:manual:online",
+      "importance": "secondary",
+      "label": {
+        "text": "Y1",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:z1",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1482,
+        "y0": 781,
+        "x1": 1606,
+        "y1": 896
+      },
+      "parent_id": "object:manual:online",
+      "importance": "secondary",
+      "label": {
+        "text": "Z1",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:q1",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1978,
+        "y0": 781,
+        "x1": 2103,
+        "y1": 896
+      },
+      "parent_id": "object:manual:online",
+      "importance": "secondary",
+      "label": {
+        "text": "Q1",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:y3",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 979,
+        "y0": 1057,
+        "x1": 1103,
+        "y1": 1172
+      },
+      "parent_id": "object:manual:target-bottom",
+      "importance": "secondary",
+      "label": {
+        "text": "Y3",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:z3",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1482,
+        "y0": 1057,
+        "x1": 1606,
+        "y1": 1172
+      },
+      "parent_id": "object:manual:target-bottom",
+      "importance": "secondary",
+      "label": {
+        "text": "Z3",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [
+    {
+      "id": "connector:manual:x-v2",
+      "source_id": "object:manual:x",
+      "target_id": "object:manual:v2",
+      "path_points": [
+        {
+          "x": 262,
+          "y": 820
+        },
+        {
+          "x": 479,
+          "y": 545
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:x-v1",
+      "source_id": "object:manual:x",
+      "target_id": "object:manual:v1",
+      "path_points": [
+        {
+          "x": 262,
+          "y": 836
+        },
+        {
+          "x": 477,
+          "y": 836
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:x-v3",
+      "source_id": "object:manual:x",
+      "target_id": "object:manual:v3",
+      "path_points": [
+        {
+          "x": 262,
+          "y": 850
+        },
+        {
+          "x": 475,
+          "y": 1114
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:y1-z1",
+      "source_id": "object:manual:y1",
+      "target_id": "object:manual:z1",
+      "path_points": [
+        {
+          "x": 1103,
+          "y": 838
+        },
+        {
+          "x": 1482,
+          "y": 838
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:z1-q1",
+      "source_id": "object:manual:z1",
+      "target_id": "object:manual:q1",
+      "path_points": [
+        {
+          "x": 1606,
+          "y": 838
+        },
+        {
+          "x": 1978,
+          "y": 838
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    }
+  ],
+  "excluded_regions": [],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines.",
+    "Trapezoidal encoders, narrow MLP blocks, EMA arrows, and dashed loss paths remain outside the conservative primitive subset."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:59.693387+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

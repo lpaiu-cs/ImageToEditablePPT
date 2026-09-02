@@ -1,0 +1,316 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-dev-p152",
+  "image": {
+    "path": "data/phase16_dev_v1/phase16-dev-p152.png",
+    "sha256": "8a9632f8ea7b50ae028b6d268737b22103dfddaa775c69f8cecb38b7abe1ce17",
+    "width": 2339,
+    "height": 1156
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:002",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1092.98,
+        "y0": 74.92,
+        "x1": 1407.05,
+        "y1": 210.14
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:003",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 166.75,
+        "y0": 254.69,
+        "x1": 891.74,
+        "y1": 330.06
+      },
+      "parent_id": null,
+      "importance": "secondary",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:004",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 166.75,
+        "y0": 362.04,
+        "x1": 895.4,
+        "y1": 441.99
+      },
+      "parent_id": null,
+      "importance": "secondary",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:007",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1092.75,
+        "y0": 464.15,
+        "x1": 1408.2,
+        "y1": 599.6
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:010",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 166.75,
+        "y0": 621.3,
+        "x1": 895.4,
+        "y1": 751.5
+      },
+      "parent_id": null,
+      "importance": "secondary",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:013",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 334.63,
+        "y0": 933.77,
+        "x1": 1030.62,
+        "y1": 1126.86
+      },
+      "parent_id": null,
+      "importance": "secondary",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:014",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1471.01,
+        "y0": 933.77,
+        "x1": 2169.06,
+        "y1": 1126.86
+      },
+      "parent_id": null,
+      "importance": "secondary",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:manual:prompt-3",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 167,
+        "y0": 499,
+        "x1": 893,
+        "y1": 590
+      },
+      "importance": "secondary",
+      "label": {
+        "text": "classification instruction",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:multitask",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 145,
+        "y0": 685,
+        "x1": 2044,
+        "y1": 1138
+      },
+      "importance": "core",
+      "label": {
+        "text": "Multi-task Instruction Finetuning",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [
+    {
+      "id": "connector:auto:001",
+      "source_id": "object:auto:002",
+      "target_id": "object:auto:007",
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "path_points": [
+        {
+          "x": 1250.0,
+          "y": 210.14
+        },
+        {
+          "x": 1250.0,
+          "y": 464.15
+        }
+      ],
+      "ambiguity_note": "Endpoint and direction accepted during visual topology review."
+    },
+    {
+      "id": "connector:manual:prompt1-decoder",
+      "source_id": "object:auto:003",
+      "target_id": "object:auto:007",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 892,
+          "y": 290
+        },
+        {
+          "x": 1093,
+          "y": 510
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:prompt2-decoder",
+      "source_id": "object:auto:004",
+      "target_id": "object:auto:007",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 895,
+          "y": 405
+        },
+        {
+          "x": 1093,
+          "y": 510
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:prompt3-decoder",
+      "source_id": "object:manual:prompt-3",
+      "target_id": "object:auto:007",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 893,
+          "y": 545
+        },
+        {
+          "x": 1093,
+          "y": 545
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:prompt4-decoder",
+      "source_id": "object:auto:010",
+      "target_id": "object:auto:007",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 895,
+          "y": 685
+        },
+        {
+          "x": 1093,
+          "y": 560
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    }
+  ],
+  "excluded_regions": [
+    {
+      "id": "excluded:spectrogram",
+      "kind": "plot",
+      "bbox": {
+        "x0": 150,
+        "y0": 66,
+        "x1": 906,
+        "y1": 216
+      },
+      "note": "Log-Mel spectrogram is raster evidence, not an editable structural node."
+    }
+  ],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:55.917756+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

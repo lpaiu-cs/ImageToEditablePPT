@@ -1,0 +1,27 @@
+{
+  "schema_version": "phase16_operation_time_calibration_visual_review_v1",
+  "status": "visually_accepted_before_measurement",
+  "reviewed_at": "2026-09-02",
+  "reviewer": "gpt-5.6-sol",
+  "method": "Every task slide was exported by Microsoft PowerPoint 16.0 and directly inspected at rendered resolution.",
+  "deck": {
+    "path": "artifacts/phase16-operation-calibration/operation_time_calibration.pptx",
+    "sha256": "13c5dba8008df0b45d4a25e4dbbfa7b1cebac4ed199742775c5c6469f04eb411",
+    "semantic_sha256": "6de6bec3163a1dcfa799c89cadf674892fad48a1baa5c06c2a85bb617f219afe",
+    "slides": 9
+  },
+  "powerpoint_version": "16.0",
+  "render_size": [1200, 675],
+  "decision": "All task instructions, edit targets, and intended before-states are visible and unambiguous. The deck is suitable for timing; no operation duration was inferred from automation.",
+  "renders": [
+    {"slide": 1, "operation_id": "object_create", "path": "artifacts/phase16-operation-calibration/renders/slide-01.png", "sha256": "2b59059f2f8f4e74335c49e082525c6b818ab2354656f0f6c286a09487d0b09c"},
+    {"slide": 2, "operation_id": "object_delete", "path": "artifacts/phase16-operation-calibration/renders/slide-02.png", "sha256": "0e6a2920372c97661cb2203cc20737b8dc1da17dfaebef4b714c7b4bdca25cb4"},
+    {"slide": 3, "operation_id": "geometry_correct", "path": "artifacts/phase16-operation-calibration/renders/slide-03.png", "sha256": "aeacc7ea399ad869f869e704d9cf38d6de38829a520c4a862782ae1cd4e84feb"},
+    {"slide": 4, "operation_id": "connector_create", "path": "artifacts/phase16-operation-calibration/renders/slide-04.png", "sha256": "f6d83e9eff73d3d98554da56d9ad383e11ae0c83743efa6caf675fbf7222bf38"},
+    {"slide": 5, "operation_id": "connector_delete", "path": "artifacts/phase16-operation-calibration/renders/slide-05.png", "sha256": "782f6cd8547a4c79d9ea5a5a9c5344a502be8c0f13d211ca9f5a1776f29c93df"},
+    {"slide": 6, "operation_id": "connector_reroute_direction", "path": "artifacts/phase16-operation-calibration/renders/slide-06.png", "sha256": "11ec85d690b121a6cba4331c6b7cf0524610794f115587d1bc60c314b5f0404e"},
+    {"slide": 7, "operation_id": "endpoint_rebind", "path": "artifacts/phase16-operation-calibration/renders/slide-07.png", "sha256": "9967c973521adbbb37d1c65bddb2f8811a680c8fd9bb1f2e335943facc52987b"},
+    {"slide": 8, "operation_id": "label_retype_delete", "path": "artifacts/phase16-operation-calibration/renders/slide-08.png", "sha256": "fcfa74df0a8c838d04b19b3d2e3772ba8c49816cdc98a7353ae4db518fd9963b"},
+    {"slide": 9, "operation_id": "redundant_text_delete", "path": "artifacts/phase16-operation-calibration/renders/slide-09.png", "sha256": "f51e5d8acdd13f5081b6aa472060e02d889b00e47d651453d47d26206a72e6a6"}
+  ]
+}

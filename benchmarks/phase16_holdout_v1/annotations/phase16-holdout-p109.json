@@ -1,0 +1,293 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-holdout-p109",
+  "image": {
+    "path": "data/phase16_holdout_v1/phase16-holdout-p109.png",
+    "sha256": "539aa3125ca84bf00ef094fa77b17324aa8a6efb9203235e8790f342eb4fafa5",
+    "width": 842,
+    "height": 175
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:001",
+      "role": "node",
+      "shape_kind": "ellipse",
+      "bbox": {
+        "x0": 3.14,
+        "y0": 3.14,
+        "x1": 81.07,
+        "y1": 81.07
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:002",
+      "role": "node",
+      "shape_kind": "ellipse",
+      "bbox": {
+        "x0": 258.87,
+        "y0": 42.88,
+        "x1": 335.74,
+        "y1": 120.3
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:003",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 122.9,
+        "y0": 53.36,
+        "x1": 220.18,
+        "y1": 110.37
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:004",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 736.88,
+        "y0": 54.91,
+        "x1": 838.36,
+        "y1": 120.3
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:005",
+      "role": "node",
+      "shape_kind": "ellipse",
+      "bbox": {
+        "x0": 3.14,
+        "y0": 93.1,
+        "x1": 81.07,
+        "y1": 170.52
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:manual:edge-features",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 381,
+        "y0": 55,
+        "x1": 582,
+        "y1": 156
+      },
+      "importance": "core",
+      "label": {
+        "text": "Edge features convolution layer",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:aout",
+      "role": "node",
+      "shape_kind": "ellipse",
+      "bbox": {
+        "x0": 625,
+        "y0": 64,
+        "x1": 714,
+        "y1": 153
+      },
+      "importance": "core",
+      "label": {
+        "text": "Aout",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [
+    {
+      "id": "connector:auto:001",
+      "source_id": "object:auto:003",
+      "target_id": "object:auto:002",
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "path_points": [
+        {
+          "x": 220.18,
+          "y": 81.0
+        },
+        {
+          "x": 258.87,
+          "y": 81.0
+        }
+      ],
+      "ambiguity_note": "Endpoint and direction accepted during visual topology review."
+    },
+    {
+      "id": "connector:manual:v-filter",
+      "source_id": "object:auto:001",
+      "target_id": "object:auto:003",
+      "path_points": [
+        {
+          "x": 81,
+          "y": 54
+        },
+        {
+          "x": 123,
+          "y": 81
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:a-convolution",
+      "source_id": "object:auto:005",
+      "target_id": "object:manual:edge-features",
+      "path_points": [
+        {
+          "x": 81,
+          "y": 132
+        },
+        {
+          "x": 381,
+          "y": 132
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:vout-convolution",
+      "source_id": "object:auto:002",
+      "target_id": "object:manual:edge-features",
+      "path_points": [
+        {
+          "x": 336,
+          "y": 81
+        },
+        {
+          "x": 381,
+          "y": 81
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:convolution-aout",
+      "source_id": "object:manual:edge-features",
+      "target_id": "object:manual:aout",
+      "path_points": [
+        {
+          "x": 582,
+          "y": 105
+        },
+        {
+          "x": 625,
+          "y": 105
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:aout-fc",
+      "source_id": "object:manual:aout",
+      "target_id": "object:auto:004",
+      "path_points": [
+        {
+          "x": 714,
+          "y": 105
+        },
+        {
+          "x": 737,
+          "y": 88
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    }
+  ],
+  "excluded_regions": [],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:57.716715+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

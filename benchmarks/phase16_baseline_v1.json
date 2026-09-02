@@ -1,0 +1,2420 @@
+{
+  "schema_version": "phase16_baseline_manifest_v1",
+  "frozen_at": "2026-09-02",
+  "baseline": {
+    "phase": 15,
+    "git_commit": "3ae7caf2c6160bd84e4bc851212b22c536cb3348",
+    "candidate_bundle": {
+      "path": "workbench-ml/model_bundle.candidate.json",
+      "sha256": "d9d232c44eed893e7c63baa30059f1728da9946077467d2d2e6a664f740023ac",
+      "status": "candidate",
+      "settings": {
+        "connector_strategy": "morphological",
+        "detector_threshold": 0.6,
+        "detector_nms_iou": 0.7,
+        "node_containment_threshold": 0.85,
+        "gate_threshold": 0.6
+      },
+      "checkpoints": {
+        "detector": {
+          "path": "run-v13-detector/checkpoints/detector-epoch=14.ckpt",
+          "sha256": "e6a6926ef4e65e11288d61d3b12723b19322ee0d44e6e94b9075cba11a1a6f58",
+          "bytes": 228132201
+        },
+        "family": {
+          "path": "run-v13-family-extended-best/checkpoints/family_classifier-epoch=33-val_acc=0.8929.ckpt",
+          "sha256": "8cfc3652957f22dd4e23cef80b7b3a0200d55ae89a50c702f68c67e311566a1f",
+          "bytes": 309816
+        },
+        "gate": {
+          "path": "run-v13-gate/checkpoints/epoch=7-step=40.ckpt",
+          "sha256": "d7b2291c3fd732445ca216dde5127c806cb371d4ad5a86d40518fbfdb15d9eba",
+          "bytes": 18488193
+        }
+      }
+    },
+    "powerpoint_version": "16.0",
+    "normalized_width": 768
+  },
+  "input_probe_reproduction": {
+    "source": {
+      "path": "input.png",
+      "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf"
+    },
+    "regenerated_pptx": {
+      "path": "artifacts/phase16-baseline-v1/input.pptx",
+      "sha256": "ddfb2cf78c59a30e9b7b7cf41135ca9fc2d40805536099704b8e34076a973deb",
+      "semantic_sha256": "549fe6d48e0c10963511f1e206af327f2f7828dc2e223450e24f758ab9145ae8"
+    },
+    "frozen_pptx": {
+      "path": "artifacts/visual-first/boundary-v3/input.pptx",
+      "sha256": "d96936dc9ef00b36ff9403361a493ac10c012b94cd67633c5cba4aee80d27616",
+      "semantic_sha256": "549fe6d48e0c10963511f1e206af327f2f7828dc2e223450e24f758ab9145ae8"
+    },
+    "semantic_match": true,
+    "regenerated_powerpoint_render": {
+      "path": "artifacts/phase16-baseline-v1/input.powerpoint.png",
+      "sha256": "b046a1751513a236d3d5e08dd664c00f1d3ace40cc0876086922eaaeac5bf5eb"
+    },
+    "frozen_powerpoint_render": {
+      "path": "artifacts/visual-first/boundary-v3/input.png",
+      "sha256": "b046a1751513a236d3d5e08dd664c00f1d3ace40cc0876086922eaaeac5bf5eb"
+    },
+    "powerpoint_pixel_match": true
+  },
+  "dataset_bindings": {
+    "dev_manifest": {
+      "path": "benchmarks/phase16_dev_v1/manifest.json",
+      "sha256": "9912d6c75525eeac6843bd16b4bc18d093b1bd95f1d761f4470d4ffc7821494c"
+    },
+    "holdout_manifest": {
+      "path": "benchmarks/phase16_holdout_v1/manifest.json",
+      "sha256": "e2cc118ea4b7f439b1feb616f23adfd89e386061726a49bde440a9a97ee7d656"
+    },
+    "annotation_set_sha256": "fc75d587a9b8c0b8a623e7094fcea82571624435635a659fc15435d2a7c2d16a",
+    "powerpoint_render_manifest": {
+      "path": "artifacts/phase16-baseline-v1/official-renders/powerpoint_render_manifest.json",
+      "sha256": "ef8d8b027a13c175cffa031be88b49c82fb1ecda67540a4a5b0d4a4df71cf30d"
+    }
+  },
+  "summary": {
+    "dev": {
+      "diagram": {
+        "samples": 20,
+        "blank": 9,
+        "nonblank": 11,
+        "native_objects": 139,
+        "semantic_connectors": 36
+      },
+      "non_diagram": {
+        "samples": 20,
+        "blank": 19,
+        "nonblank": 1,
+        "native_objects": 14,
+        "semantic_connectors": 3
+      }
+    },
+    "holdout": {
+      "diagram": {
+        "samples": 12,
+        "blank": 5,
+        "nonblank": 7,
+        "native_objects": 95,
+        "semantic_connectors": 29
+      },
+      "non_diagram": {
+        "samples": 12,
+        "blank": 12,
+        "nonblank": 0,
+        "native_objects": 0,
+        "semantic_connectors": 0
+      }
+    }
+  },
+  "records": [
+    {
+      "id": "phase16-dev-p001",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p001.png",
+        "sha256": "cdbf162b3d1bd21c5e7a83d2aecef1424155cc18b8a04d18f6b6c8f43abd6a3d"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p001.json",
+        "sha256": "1de782d8c8b5f93cf3017507e0957a732b65c65b925fa52fb4bc1f25d7e23b53"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p001.pptx",
+        "sha256": "4c4319c0f70ded932a135342ee183543e34091a7c3395ad73f6d3e9205786ad5",
+        "semantic_sha256": "caf934c3114b0f2a7ef090512dea00051349d7b1edbd4a01c1b145bcd156af62"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p001.png",
+        "sha256": "8031f4a4e0b82d94c5efbf4249df345e9a3d45318ee0702b4b67d3c6944e479c",
+        "width": 1200,
+        "height": 992
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p002",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p002.png",
+        "sha256": "9eff2196d51f5ecea908c7aca2cb99b66c1038b1e5516dac5ee5e22033a0e06c"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p002.json",
+        "sha256": "ef49c3bbf239d0ef41a27989b8d45110cc809d6b79f3f068689ba2b4f90e32e7"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p002.pptx",
+        "sha256": "e26981ebab43be35db71efe4da6862446e527cadc690d6b8af60b6577780ba49",
+        "semantic_sha256": "d68105c7d702c6596ea0bbf754644665714d984e3afb1056c7cdbff83b6b5e32"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p002.png",
+        "sha256": "b6a4a0e75aab03b5bf5236aa109f10bc6e23b1f3c7d2b04e7c2ece44c61d8bcf",
+        "width": 1200,
+        "height": 303
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p004",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p004.png",
+        "sha256": "fa757e50920526144ef0577f45eb669179c1b525e240c4a86e4515ab5bded5e9"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p004.json",
+        "sha256": "59be9c2268b860705b9521f01cf5fbcc12a888d4f5ba094168e5c98cad4857ad"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p004.pptx",
+        "sha256": "4c4319c0f70ded932a135342ee183543e34091a7c3395ad73f6d3e9205786ad5",
+        "semantic_sha256": "caf934c3114b0f2a7ef090512dea00051349d7b1edbd4a01c1b145bcd156af62"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p004.png",
+        "sha256": "8031f4a4e0b82d94c5efbf4249df345e9a3d45318ee0702b4b67d3c6944e479c",
+        "width": 1200,
+        "height": 992
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p006",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p006.png",
+        "sha256": "d71d09cbf617777cd4f2b996e12ef19b2053516282778967af48475f061e858c"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p006.json",
+        "sha256": "a9caa146ef3040f1dde56e5ec57c68284c3b6da7e17fee15e8cc175fc124209b"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p006.pptx",
+        "sha256": "8a203cb827b044f07e2ba3b848a134a16172f06a1dd0e2d6c16cddb3cc505913",
+        "semantic_sha256": "e66c270095fc33a32f82d251107ca8228cdeee15b1e5823f65da54793f88118c"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p006.png",
+        "sha256": "d887fef65cdbc4e13cc9b070237e291e01e42f19eed6822cb66a01383e25a1cd",
+        "width": 1200,
+        "height": 1273
+      },
+      "shape_counts": {
+        "total": 8,
+        "nodes": 4,
+        "containers": 0,
+        "connector_segments": 3,
+        "semantic_connectors": 3,
+        "textboxes": 1,
+        "objects_with_text": 5,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p007",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p007.png",
+        "sha256": "b91f66007578afcea6ab785eab2c79a224145e1ac086692caabd968c9af8c834"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p007.json",
+        "sha256": "0c41958750035fec579de992f8f71b4ff7307697b5758fa127dfb9206eb02c19"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p007.pptx",
+        "sha256": "f08f6428ec85a64eb360c48579d15091bb888c567481a05e6595b30d6b726023",
+        "semantic_sha256": "70186fa22961577b4439ae9fc08b9ed31961256225a35293fcc7dabeea22efc9"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p007.png",
+        "sha256": "50c630c56fc1e28a217307987391fee9d8dcdef80c49d814f369a21ea6c045a9",
+        "width": 1200,
+        "height": 591
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p008",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p008.png",
+        "sha256": "6db93a3495386dc8eb104d414729bad54c995d83f088d2715b6765fc5dd9e9aa"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p008.json",
+        "sha256": "0ef96c7d44da68149b29307e20142bd2f7d3a0e1fd752eab1c4e3c9dae9e1494"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p008.pptx",
+        "sha256": "7f72c688422482e5c6bf9d5a9d2c4c5642950e84cc1b198f720f80d4c3898d3d",
+        "semantic_sha256": "3e54b58592eb6c89567ba11aeb11c1a389b97f8a0ff6ad4e29dee631f987a90d"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p008.png",
+        "sha256": "06cb0ae9265031b8cfa9262d71089c7d112d599b3164d0e6a23d7d043ca8f805",
+        "width": 1200,
+        "height": 1552
+      },
+      "shape_counts": {
+        "total": 9,
+        "nodes": 6,
+        "containers": 0,
+        "connector_segments": 3,
+        "semantic_connectors": 3,
+        "textboxes": 0,
+        "objects_with_text": 6,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p011",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": true,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p011.png",
+        "sha256": "bfae744ed2bdf9bbe2e4eec842b4d83af36c4d70c61a530199ca693a3f139074"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p011.json",
+        "sha256": "4bf671177b85fc3b90ee3b739abddba1921ab2c3959738a596054a3b2809856e"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p011.pptx",
+        "sha256": "e85661731259d8159dc75004fc25ca9813ef304b600e937a4b0fad6943c7a738",
+        "semantic_sha256": "611c39ee416e8c242dd330a92d37443f07ee073a348384b2fd89579f76228b5e"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p011.png",
+        "sha256": "3ac16d549b70ea25330ee7e996837fdcc5247a549e503c138293fd26e0be027e",
+        "width": 1200,
+        "height": 1011
+      },
+      "shape_counts": {
+        "total": 14,
+        "nodes": 11,
+        "containers": 0,
+        "connector_segments": 3,
+        "semantic_connectors": 3,
+        "textboxes": 0,
+        "objects_with_text": 7,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p013",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "photo",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p013.png",
+        "sha256": "d4e9b41669f538951ab806650b75c6449dcfe8f15dd7ecbb5bca4769e0e88ba0"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p013.json",
+        "sha256": "f8f94da7f8427fc145d6066cf7a95693f0aec3a3794e196f85853f84ca27de7f"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p013.pptx",
+        "sha256": "d90e4ef6212aa0489cce1796c203ef9375cde9b5e613889ee66b2d5e3131d49e",
+        "semantic_sha256": "ecdf57cc9c73674cacd374d2777baea03c3690d88822d6c88000a5207fbaca9c"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p013.png",
+        "sha256": "8bad8a82c993adfd26f8ae98076c3f7ecfc3549ce458347a244ca8c9119ebf3a",
+        "width": 1200,
+        "height": 675
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p014",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p014.png",
+        "sha256": "8bf8ada107dd6465a8898d0b41e04ff81d56cde301cd722e003dcc2a86b4c742"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p014.json",
+        "sha256": "3b47dd7d2ec6d2be4dcded8dc84b3c03c25763e7269bfd0c402883d110d7ecc1"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p014.pptx",
+        "sha256": "9fc0dd66598633e5587c7a6e483e11645a1f8d06542d0d52c1bfbcac49825c47",
+        "semantic_sha256": "533ae8aecc4b13df6b764356a73086a6751ef54e40cc0ba4fd505f0751d7be31"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p014.png",
+        "sha256": "2abd8497b3fb58cac1b55d6bbac81996e5e84f190fb46865ff94521a59179168",
+        "width": 1200,
+        "height": 770
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p015",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": true,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p015.png",
+        "sha256": "bd40495311ad06f63b20bb28643b86a067ab0dc3c861e3933aebbd7f171e9104"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p015.json",
+        "sha256": "3cb30d7c48399f12a28b0d158249a4e5ac88516c3105239c1554a550bc42d2ad"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p015.pptx",
+        "sha256": "eaacbe0e998ac99c8991dec12d96b961fff5cc1623aebaca066ff994c8951c92",
+        "semantic_sha256": "568fa6efba0abced1ac5a9b84ee34d5620adb575bc7152055f933a7befaf9526"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p015.png",
+        "sha256": "7000f0f42768aaebe9309e1832169db960e02fd5cb7a01ce247e832eaceb4862",
+        "width": 1200,
+        "height": 714
+      },
+      "shape_counts": {
+        "total": 7,
+        "nodes": 5,
+        "containers": 0,
+        "connector_segments": 2,
+        "semantic_connectors": 2,
+        "textboxes": 0,
+        "objects_with_text": 5,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p017",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p017.png",
+        "sha256": "aaeb2b02dd9cf38361d65d6cd8bd4cbf7016acd00c446604a5fd85b31f076c0a"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p017.json",
+        "sha256": "b5e9b1dca5da61a1469da5e5c0d73ac20e4670f2887a372ab6ac1f024343765d"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p017.pptx",
+        "sha256": "11243bd3c030f311a7ef8e2f70d6cb1263ed483a05adaf5bb2ad9887d3df66a1",
+        "semantic_sha256": "7758d814b3927565d22546cbb6421c49ef36fb511281eb909ab00ad7ddf9c916"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p017.png",
+        "sha256": "a78cf282de730ecd6760f701166a72a787d204d13517bb89128d11114d9f2304",
+        "width": 1200,
+        "height": 345
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p020",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p020.png",
+        "sha256": "53662c905b80c12cc09f4c6ca3e4ff062fbf5445a95c1a0bff6285e6291ef017"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p020.json",
+        "sha256": "ecd5d8f8621972dd0482adf88eb09743aef3cbac0ccabbee74e87cecbde7642e"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p020.pptx",
+        "sha256": "c5351ff064a427200e9e2ed2a5c9362a711631245fdd169e0f366c1488f6d3cc",
+        "semantic_sha256": "c2788e3275df607d2fcc0e31687b6592bc561488d0282dc6be130dfcb1ce7c2c"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p020.png",
+        "sha256": "9bd1254fe05d2d5e06c56a0ab39a3d2c904bba49302693d1158f556c3aaf8ee9",
+        "width": 1200,
+        "height": 1697
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p022",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "photo",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p022.png",
+        "sha256": "e28465eec8f98ebc9c57f7f755f906b0ca905fb77467d84aff0fb476bec55452"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p022.json",
+        "sha256": "4ccafdd0c20b635ee5b4c6fd2dcd562af1d4fabd6d08946f257879a577d79ec9"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p022.pptx",
+        "sha256": "ab916123e222801be0a6a9c7abcc2c953535c9ddb14053d03a3d809ad69c7b7d",
+        "semantic_sha256": "dfbc76c9fd48b26649301661d9ac3056533bbdab3f92dc10e1d6d7bd8cd4dcca"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p022.png",
+        "sha256": "7fd346a85efbdf1c1ebc02a37ae215583ee495ad33d285d8ac65b47f28aa720c",
+        "width": 1200,
+        "height": 1169
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p033",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p033.png",
+        "sha256": "7046886796276e88015a1c57f513a3a4e05fa0a9247c3b0eae664e4199f565c4"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p033.json",
+        "sha256": "b6340cbdd2884419a1950b42010bc745e3a5eae0b38719e58dec168e8f30770a"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p033.pptx",
+        "sha256": "efa91f750cc0b7afe2811ec52f1b6afb80ba46dde7c8c2ac00efe3a004fbf36d",
+        "semantic_sha256": "efb029a2b14e5ba535b6e72024c16deda17e73a5966e8139eda1032a3b21a857"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p033.png",
+        "sha256": "3c71cfda236fd0e6b128bdc5b0fc1106eeaa5fca6c1a14fab7f79347c6a97865",
+        "width": 1200,
+        "height": 491
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p034",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p034.png",
+        "sha256": "506d71a1d4f65f38d98a71865528b1f787e3bb02dab92f580a5c3cf5d9d7aec3"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p034.json",
+        "sha256": "befc04a87341165ba2d145a55a0b21ee51388fabf703b83e752cb2873eda8d50"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p034.pptx",
+        "sha256": "71cddb561cd07c5d714186687faca88d3e2affdec9eaf22a34d533191481cfd9",
+        "semantic_sha256": "f884930e7913dbd4bfa9fd8f1893a2260da3f6a1904eb27948c6fce777ffeff2"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p034.png",
+        "sha256": "fe6770af903193b55c9fa71c5d84e14bbd84733d4ca3a534dfa9c58f4802bd9d",
+        "width": 1200,
+        "height": 492
+      },
+      "shape_counts": {
+        "total": 35,
+        "nodes": 26,
+        "containers": 1,
+        "connector_segments": 8,
+        "semantic_connectors": 8,
+        "textboxes": 0,
+        "objects_with_text": 21,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p037",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p037.png",
+        "sha256": "2a050faaa6bba25fda1d0ecebf5b404e1ffb140ebd986e034b836d00d33943b0"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p037.json",
+        "sha256": "adbf2319803ec72f2e495f7ead851a841fe613d4f117da3dd23b1fcf310a9356"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p037.pptx",
+        "sha256": "d331517f3246b7d242f20b9ef0f6820a46413d2bc233e38e976d3cfbd4019156",
+        "semantic_sha256": "f7ce11209b15d6261926483de4c07b865ee27f31d49de02419de78824c2be0f4"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p037.png",
+        "sha256": "5a2f352240837f81121cadfdd77e52a37735d7dba43c00a499133d6957d4146d",
+        "width": 1200,
+        "height": 900
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p040",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "multi_panel_illustration",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p040.png",
+        "sha256": "9a9b6eaf4e2070f6a62fe888b161f4df2a645b2bca54407de138d80ea76665a1"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p040.json",
+        "sha256": "13eb6154d35cf4c913654ed314a32a9298cd4c71cef28398e4ede43167d96cb0"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p040.pptx",
+        "sha256": "f1987e7359ee837255540c53cd030be56a53d139ca8052588075b64e5b01aea2",
+        "semantic_sha256": "cf36c3d985bc0a3d426176bd34469bd0cc73438a42adbde1235f2866436263db"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p040.png",
+        "sha256": "758dcd0ec34e39c85ad536342550b7c21977fdc66a9cc8e59a126f2ac4cc869d",
+        "width": 1200,
+        "height": 262
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p042",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p042.png",
+        "sha256": "92c0d27074b59490e42ea71fc3161f199228ffade46c9cbb65aabd69579e6507"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p042.json",
+        "sha256": "6f57c097c3532d63e5dbfcdf211762a716a32ea576f1a74630413a288b226b31"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p042.pptx",
+        "sha256": "ab7d32655eadc48ce31a225d67c7e22cb0d890da2f72b697eb730f0fef42e0b1",
+        "semantic_sha256": "093aaf3b6105f1b6f601e1588cbd4e276de010508d92339bc5a0a46a0ef07e99"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p042.png",
+        "sha256": "3c46d072b17511eff128efb731f853b9da3fb36e453d04fc637748ac8241f8b9",
+        "width": 1200,
+        "height": 591
+      },
+      "shape_counts": {
+        "total": 12,
+        "nodes": 7,
+        "containers": 0,
+        "connector_segments": 4,
+        "semantic_connectors": 4,
+        "textboxes": 1,
+        "objects_with_text": 8,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p043",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p043.png",
+        "sha256": "a4cfc7d181506e118e097b6bff848258dfc19e13c2913c03935e0a4b686f6348"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p043.json",
+        "sha256": "35fc9ddede05cec0af044a8bdfeab4782f9d97f298ff2569e448e56e3fa07004"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p043.pptx",
+        "sha256": "07fd6eb58a17256179b4c5308da6bc7dde2c5ed73bae755eb6a3e329be87f6a6",
+        "semantic_sha256": "51aa2f2fa21cf77e5d2d55f23d743c2218d20437a880f314208771fe2d15e749"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p043.png",
+        "sha256": "661b285fefd5bc884f19d182539ff5302bbc447b70753fcdf706bbfbb6ec2c2c",
+        "width": 1200,
+        "height": 662
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p047",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p047.png",
+        "sha256": "4abbecbd18715038cfaf08560caba6e17fd2511a8166a3d6449359229e7c017d"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p047.json",
+        "sha256": "37ff7b8e0b5847032f97c7245551488375970ec6a98f21bcbe3616eb538daa2f"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p047.pptx",
+        "sha256": "d331517f3246b7d242f20b9ef0f6820a46413d2bc233e38e976d3cfbd4019156",
+        "semantic_sha256": "f7ce11209b15d6261926483de4c07b865ee27f31d49de02419de78824c2be0f4"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p047.png",
+        "sha256": "5a2f352240837f81121cadfdd77e52a37735d7dba43c00a499133d6957d4146d",
+        "width": 1200,
+        "height": 900
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p050",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p050.png",
+        "sha256": "55bd0d004529e3fa2cd92728026f5b1a6cf102b9c135ad22f34836f6317f5a2a"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p050.json",
+        "sha256": "5ab76723d0dfa1100535baedfc02713e93f1a32851faeffc06be086031cb4f68"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p050.pptx",
+        "sha256": "aea3e942009614b23de24e96d4dc2d7150648c7ea69393a1936f730fcee33cc3",
+        "semantic_sha256": "9101a5ec826943eac0276e889311d8e06c741b81eff0009706677bbd482050b0"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p050.png",
+        "sha256": "8194a4fc39af8cfe6cb5c1f3da4a50436463644b2a87dd6c34f932e342ee50ed",
+        "width": 1200,
+        "height": 1027
+      },
+      "shape_counts": {
+        "total": 7,
+        "nodes": 4,
+        "containers": 0,
+        "connector_segments": 2,
+        "semantic_connectors": 2,
+        "textboxes": 1,
+        "objects_with_text": 5,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p054",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "table",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p054.png",
+        "sha256": "7523fbf642d6f247eb33c60cd8892a4916e2549d8a313e52235cdee718b49946"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p054.json",
+        "sha256": "e24afe991f15285c954f7baf8c1e96534806142ebaf62b22da0e9a4aea544da1"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p054.pptx",
+        "sha256": "d331517f3246b7d242f20b9ef0f6820a46413d2bc233e38e976d3cfbd4019156",
+        "semantic_sha256": "f7ce11209b15d6261926483de4c07b865ee27f31d49de02419de78824c2be0f4"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p054.png",
+        "sha256": "5a2f352240837f81121cadfdd77e52a37735d7dba43c00a499133d6957d4146d",
+        "width": 1200,
+        "height": 900
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p058",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p058.png",
+        "sha256": "7fe4595a79760df391e9a2d472739ceb4bec615a57c83fbafd2e015611654c8e"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p058.json",
+        "sha256": "c46d15c922399dc4a3641db78c936e33c1da431e944c9c3cafb7f98b9246baf2"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p058.pptx",
+        "sha256": "1e3ef8a2184b3725c1944904a0f15380cbe4003a91d47520420057886d82ddee",
+        "semantic_sha256": "04f688937557c3e3d9ab1395484691dbeea9e68c88fb9b2ab24076c9962d7e9f"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p058.png",
+        "sha256": "7afb6211c55b8e6afc297568130043933789c42d00ee896279e15323787b2221",
+        "width": 1200,
+        "height": 823
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p059",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p059.png",
+        "sha256": "fb60b5136dea0cc05c4f2f347ceb4fd3dfe8455f619c4188427587ab06ec775f"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p059.json",
+        "sha256": "616e22b1b28a04334178a671baa105b0543844fe853ef65f486a968478bc15d6"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p059.pptx",
+        "sha256": "b907a26b150e8312602e88854b3ab2a6f430b0fa124b3defb4cf35c5793f05b3",
+        "semantic_sha256": "ed32205da630ec853c30aa4323577e47e348dfcdb4a3b2b9ed2738f233c3d21a"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p059.png",
+        "sha256": "f989b06e0c8fcf82eb9687ceffb1ac0162061343a0d11d87c795ca36879343f0",
+        "width": 1200,
+        "height": 578
+      },
+      "shape_counts": {
+        "total": 4,
+        "nodes": 3,
+        "containers": 0,
+        "connector_segments": 1,
+        "semantic_connectors": 1,
+        "textboxes": 0,
+        "objects_with_text": 3,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p063",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "multi_panel_illustration",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p063.png",
+        "sha256": "b33879476bd2f722cb1f09f562653c597a590ac4fa5a80848656b55f443af9ef"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p063.json",
+        "sha256": "f6e298af1173f60ad3adb242349b296a98e8609abc192538e71b037139715f1c"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p063.pptx",
+        "sha256": "6c947dc29f4b2cf814fb128a0584a150e0b8a5892f6d044d5408f2e636ac04d5",
+        "semantic_sha256": "4b95a634eedda2cd635767ee4760008e55d4f42d345b0f745aa081e79de684a9"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p063.png",
+        "sha256": "a1ce3e98c5b68d000eb3e82d4329b03fd0dba24f5e1c2361338bfe037290a5ba",
+        "width": 1200,
+        "height": 700
+      },
+      "shape_counts": {
+        "total": 14,
+        "nodes": 6,
+        "containers": 5,
+        "connector_segments": 3,
+        "semantic_connectors": 3,
+        "textboxes": 0,
+        "objects_with_text": 5,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p065",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "table",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p065.png",
+        "sha256": "bc36293f5cd25569b96284fd8fc1a40bda7953ab9efabac9e4b84bbcf48a7c1b"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p065.json",
+        "sha256": "80c8248798212da313afc0f6129620cff5d3e17c83b6897d85b14dfa9cc2f1fc"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p065.pptx",
+        "sha256": "0a52a36195369815b6de92281f94433c860be98acaacd4b5472944eba77b8d4c",
+        "semantic_sha256": "8e4a9e61b06d6d1dca307366cf2920e1f76c160980d60faad0b78a0fc9a2a4ff"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p065.png",
+        "sha256": "879b4cffcdb676cb8b1cd00c37c65eecbf2a786cbbffad22239666dd7239a3d5",
+        "width": 1200,
+        "height": 867
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p067",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p067.png",
+        "sha256": "ffdb834b999bb2029e639afd64039915b1451d2d64125bdf63d0870e87b309d0"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p067.json",
+        "sha256": "513af137b9fb3df922676ca463d76897536b3cb527b634d63ab8d230fc27d303"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p067.pptx",
+        "sha256": "e87eb7e2fda12bd80d7acd908e5c0ebc7398380b242933b9c58b7b45b80fdc8c",
+        "semantic_sha256": "e92ef719dced5c8acc3fc947fc1adfc4b2b2b2e0b5abc1785012feb82208a95e"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p067.png",
+        "sha256": "879dc075caa1c6366304dbc0018c4ee3d06ba88b5263fac0414ea018c2def340",
+        "width": 1200,
+        "height": 695
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p072",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "photo",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p072.png",
+        "sha256": "b10f7cc47f95fb264b38199578f67ad5958712d82c959b230a508d4eaac55a1c"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p072.json",
+        "sha256": "7e22fb45d182f311dbf23d5b26799fafccf676d1b6794ced906865242bf40a36"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p072.pptx",
+        "sha256": "a12e6a5265edc7ce26aab599f62eb892463727097f2c93fc7d909bb9294ce6fc",
+        "semantic_sha256": "1def62a6b34e753ad3a6f8591928f76646b4578d5035b26b32b79c1f386e7718"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p072.png",
+        "sha256": "5f5fdf871f968dfa8e5ba933d342bad53e0837ebb779040084c35e5cacaaada2",
+        "width": 1200,
+        "height": 1200
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p073",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": true,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p073.png",
+        "sha256": "11c02cb9aeaf64c6590135ae812e4f6b31568767854b862eff10ea0500c39a64"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p073.json",
+        "sha256": "27011c52ac53b5a8a62c2664ef997b0b10efcc510cba77a06520d345238c04b4"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p073.pptx",
+        "sha256": "2bfc947269bd61413e8c64f5e75f74dc33d1c8ec37c973f6a323d9d71a9f6b80",
+        "semantic_sha256": "186d2616ea40afc8335d79fb018f4db4f04309ff1eac0c724102a77ca4075e59"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p073.png",
+        "sha256": "de2f2a77e07492cfdb351995f416c0b5c019fad876c1b04e51e6ecbe3ec84e7f",
+        "width": 1200,
+        "height": 425
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p077",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p077.png",
+        "sha256": "bbc8254d8fc9ff96ecf6f38f6f83a5893a754afc208397ba1c35f1fb9a70898a"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p077.json",
+        "sha256": "62ed997fc0f69331f861de81d00c47e9ff9bea8b1bd23c4b08032c42624bb51c"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p077.pptx",
+        "sha256": "8e06a59a81762209879945301217e3d07a1ec474f4dce42915d807977f63aebc",
+        "semantic_sha256": "37efd993c33692c086a5e71e79e178bf2334cbc5a7919a769dc789fcb36c06d6"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p077.png",
+        "sha256": "1f246017c4341e785b8947d279faad0d98e7ef4a0b60fa8d2ba86623b70c56eb",
+        "width": 1200,
+        "height": 648
+      },
+      "shape_counts": {
+        "total": 11,
+        "nodes": 9,
+        "containers": 0,
+        "connector_segments": 2,
+        "semantic_connectors": 2,
+        "textboxes": 0,
+        "objects_with_text": 9,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p086",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p086.png",
+        "sha256": "f06e9c4b22c03a70b662dd11b1e5c83ffd5b8451635a6a4918a02552018239e4"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p086.json",
+        "sha256": "86d37cc189071728effd0026c0c732967ed8ee511b1bbb2f2e9c2b7e2b849d7c"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p086.pptx",
+        "sha256": "a1dd88077ca15d709b28b51b332892674d5cd1447a606fd517cb478c95ab325d",
+        "semantic_sha256": "bbfa200f6bd228405384f8adc13ad13c368ce5cf655545f53b4c10fcb8fac35e"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p086.png",
+        "sha256": "c85b92b8c9a620a5f1b1917e25a6dadcda114c370d748cf304c03c37cf987773",
+        "width": 1200,
+        "height": 1083
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p089",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p089.png",
+        "sha256": "dc296522326a267748f8cfcc41092267c3a1384161181d1272f1393d1b4edf43"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p089.json",
+        "sha256": "d20c881fbfa3ed2497481a71414e94685e066cccca9864ea8ba1e7de89ace248"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p089.pptx",
+        "sha256": "4d9548c0f02687bd01bf954e5ce44aeeacc310f315036d9a5e609db7f9fe29c8",
+        "semantic_sha256": "a984ee428cb71a90a6bb85b77c6489e7742754a1645475ac89a9b0fed7411bac"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p089.png",
+        "sha256": "ae0a5100cd231ccbfd7f4f78815e2e9a4303374ea6b8b4073c5d7756fca532a6",
+        "width": 1200,
+        "height": 350
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p091",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "application_screenshot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p091.png",
+        "sha256": "b68de0171a8f83ac32b4339a9ed0f4c679d103ad4f1a38541b8f59823bdbcf93"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p091.json",
+        "sha256": "202f6c8915468a51297adc1e14a81f39e2174de9d6757903d0f7a98b8b66867c"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p091.pptx",
+        "sha256": "81d5561c4ae150d3637fe274a8a44e822e7e01de48308f1bd0f08191aef6071c",
+        "semantic_sha256": "6180e007cd1e7455d546b1f8bd6e9d1aca60cbaafb5a184a12867d17e98bfc3d"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p091.png",
+        "sha256": "22da39c8f56984c54dfdc0618593e1492d6c7359b3a23970b622aea1278a1a3a",
+        "width": 1200,
+        "height": 461
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p092",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p092.png",
+        "sha256": "2a07664014207bab324a66182b224f915a414b19ec82ac477425fde0511c520a"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p092.json",
+        "sha256": "dfa9b435543b768845471f192c6a73b5823211d501962002fbc8e26b4d071f27"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p092.pptx",
+        "sha256": "92cc7b9025522497ddcee21b74e05642e47b89ff6b1cde99f2f8e2900592fd32",
+        "semantic_sha256": "ecdf57cc9c73674cacd374d2777baea03c3690d88822d6c88000a5207fbaca9c"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p092.png",
+        "sha256": "8bad8a82c993adfd26f8ae98076c3f7ecfc3549ce458347a244ca8c9119ebf3a",
+        "width": 1200,
+        "height": 675
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p100",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "application_screenshot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p100.png",
+        "sha256": "6449c2098d8c856623be93c9d3596c68c1cc4ef2e2c84fa247b18987e9b3a0e9"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p100.json",
+        "sha256": "64597aa941850122fdab4d6706f539fb923473ba48da8a3624f119459c6e871a"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p100.pptx",
+        "sha256": "c619a8a03a50c9a2be8c63c5ecd6606a6b02b7bd6134f56e009d1f305648d36d",
+        "semantic_sha256": "6442c8e47e96724a84e68e62708e6e5cef09a53a4e7068c27e3120a2499e6522"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p100.png",
+        "sha256": "3b41d43274177d3b5a640867940c90f2c617fae5cb7df0dcea74d7cf29cdc971",
+        "width": 1200,
+        "height": 1442
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p119",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": true,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p119.png",
+        "sha256": "90c00b7c20019fa4aa981180c3b86592660cfaa5f61aafa3280fdd4d5e9e62ef"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p119.json",
+        "sha256": "20958f1a8a70e6adb91814818013be6abb9bcd3c59763886a93b5e4ba1295415"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p119.pptx",
+        "sha256": "b70b81bc26c6d4b626fc5a42035bc3a7f446c6c0f30774d28cefc34dbe432bd6",
+        "semantic_sha256": "c04506d12b058ed21f99550c6d6894e5d12c5ad7480595c0d554e45fb1109d22"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p119.png",
+        "sha256": "4b6531271b38e576aeaef42cf8634f42d0d3c2b247a09b5b8a6c6a7dc3c12d21",
+        "width": 1200,
+        "height": 553
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p124",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p124.png",
+        "sha256": "23d221a0f0a2f0d2beca79698beed3575f3542d23e62ed26d2e5e571e78bcb48"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p124.json",
+        "sha256": "c6f943de9a1781ce313c9a34b4a2441a81bb915b4d04b830e5a267c96a874f26"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p124.pptx",
+        "sha256": "cece9379a71bc956ab54432b49d38a94b39170c3acca409c9dc458f69e35eedf",
+        "semantic_sha256": "2df1e1a32a65150c7f735ebf38682a387628a97777853e2fb111b9c2568536aa"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p124.png",
+        "sha256": "1ec30c4a5f09078444c90f92f9fd39082873dc254ff6dcf3d667f28d253b38c4",
+        "width": 1200,
+        "height": 330
+      },
+      "shape_counts": {
+        "total": 16,
+        "nodes": 9,
+        "containers": 2,
+        "connector_segments": 5,
+        "semantic_connectors": 5,
+        "textboxes": 0,
+        "objects_with_text": 6,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p128",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "application_screenshot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p128.png",
+        "sha256": "a0ac146959b5c3ab6cbc5e653e3b2d68630ec171119325a7664741c82cfbaab1"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p128.json",
+        "sha256": "90aef06004077698c431142712b6ccff4c15c7e4880d48a9880af7af267a4d26"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p128.pptx",
+        "sha256": "fea452996d573e80db310d408e4f6374a00d5deba0abb87ae35f2606a201fc48",
+        "semantic_sha256": "9f41d53999cfbd825cb027838fa366b5ba19aee0d6f8561041a542696cb6a329"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p128.png",
+        "sha256": "1d6d9862ea660dc501696f490ae4573d65012823fb688e522339228729c99a8a",
+        "width": 1200,
+        "height": 725
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-dev-p152",
+      "split": "dev",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p152.png",
+        "sha256": "8a9632f8ea7b50ae028b6d268737b22103dfddaa775c69f8cecb38b7abe1ce17"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p152.json",
+        "sha256": "a7146fe646b80ea20ff4d17f04ce19b4a01e1a866792512a0c39b44118cab35b"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p152.pptx",
+        "sha256": "2ebc720a6f432b2eeade292590e196e392e23f95edfa0e93f5600d3e29ecd175",
+        "semantic_sha256": "99f945678b47ef062b2451319e4f306ae4d815773437202d2284ed9b93b55a1c"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p152.png",
+        "sha256": "ca1f82e4984dbe46a712eafc59d8a10a1869f0e569f2b26ddad4fbc70a8c4193",
+        "width": 1200,
+        "height": 594
+      },
+      "shape_counts": {
+        "total": 16,
+        "nodes": 12,
+        "containers": 1,
+        "connector_segments": 3,
+        "semantic_connectors": 3,
+        "textboxes": 0,
+        "objects_with_text": 12,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-dev-p158",
+      "split": "dev",
+      "kind": "non_diagram",
+      "stratum": "application_screenshot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_dev_v1/phase16-dev-p158.png",
+        "sha256": "7521d74acdd25981ae1bcee66b16ef8fbaadcd58e8569988feebf3f757f7ae82"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_dev_v1/annotations/phase16-dev-p158.json",
+        "sha256": "9934384fdc2ad3170d03cde2aad37e41fc1e2fc90cfc3e4e9b506c05bb21062a"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-dev-p158.pptx",
+        "sha256": "4325ce5b823845888cc4816d771ca4956be95c3b3970a46ff9f4439fd70b0eb7",
+        "semantic_sha256": "3184b624b1fb0c43ba08c3907e7cd8f11a21ffc83439ac6ec895a0ad8658dbe7"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-dev-p158.png",
+        "sha256": "709980d6d2124b9b6742ecc41bd6dd27a97ab0de00e27a7143a33dabc63afb15",
+        "width": 1200,
+        "height": 1547
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p003",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p003.png",
+        "sha256": "b39a499842ba246fdf4bae0b62817eedff2b2da57ff61a2dcde93b2765cd2be7"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p003.json",
+        "sha256": "eb40c1466af110ba1a22948346ec1c284ec8d6730ab80f33d60ab77b2f2aca40"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p003.pptx",
+        "sha256": "663094381d4be91e8390b300b167a56804c0578dece84eb0bebccd05b28e0d09",
+        "semantic_sha256": "e52bb1935854ca75dfdb863307bffc10cd3b3ca772ff07681ff9d3992c7bc6a9"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p003.png",
+        "sha256": "3594962ad1edc20f918ae118a0812604d22e0c7e4c05dcd5649eb1d37dcdf4d3",
+        "width": 1200,
+        "height": 786
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p005",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p005.png",
+        "sha256": "a71f5afa4737728c6c5704aa9bc7040bd9ac1732bde4764c3f5e8fe9af40cdb8"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p005.json",
+        "sha256": "c81446567a03a43faa604fcc35903c689618b17cfb97d61fd90993a8670efec8"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p005.pptx",
+        "sha256": "7de72e62e73909c083ad7bf069cae9d0da7b0760ae470f9336c7c90f280e5a1b",
+        "semantic_sha256": "3f2fcfed3f8304abfda5738d796e4aca3f97bd9198b52cb7dca7b52e7382ad05"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p005.png",
+        "sha256": "5f746a612ec4c8adaa3434dcd3e7adbcc0911c01ab07de607c592f7e718999c0",
+        "width": 1200,
+        "height": 1552
+      },
+      "shape_counts": {
+        "total": 37,
+        "nodes": 25,
+        "containers": 0,
+        "connector_segments": 12,
+        "semantic_connectors": 12,
+        "textboxes": 0,
+        "objects_with_text": 22,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-holdout-p016",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": true,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p016.png",
+        "sha256": "9a95bb2d3ba51254775e10e0e789efacfb4189ceb70eab8d95e20b7e67588766"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p016.json",
+        "sha256": "67a7e3b58d4bd884d329df1f54dcf5d626aa6b694a4fdc34efd2be108a79b824"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p016.pptx",
+        "sha256": "d84e725460f7ec119375ad8bfb93f9faa61928f578d2144b4cf83e32efdd2b55",
+        "semantic_sha256": "70be307e9ed38d9d82a5e58ecf9800b87615fd90e7ffda1dd1e93b72ef4a1726"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p016.png",
+        "sha256": "bada5fe5feeafe316ec0777f62afca6d4f25b2ef53f2b214507160358997aa40",
+        "width": 1200,
+        "height": 238
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p025",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p025.png",
+        "sha256": "e583f3590a0daad4fd725c9e409b97b8a12c9f021bfd32fbb5161d4df2c84cd7"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p025.json",
+        "sha256": "ed9e13020d67024ef4cae976fa31e2e86d4d8e41246abc497898554571766707"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p025.pptx",
+        "sha256": "953dd78387e8cb934c3be3569603cd66a251f2aee937310739d625a165fd2af5",
+        "semantic_sha256": "09edcfb493167a1e836f8e8f3d798d695fc41e3e1d68047ff4d983dfd4a4a29f"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p025.png",
+        "sha256": "dbe9f2e238306cdc46a469ed65fabfd293a493f09d56b86c0d36fdcb25029540",
+        "width": 1200,
+        "height": 541
+      },
+      "shape_counts": {
+        "total": 13,
+        "nodes": 8,
+        "containers": 0,
+        "connector_segments": 4,
+        "semantic_connectors": 4,
+        "textboxes": 1,
+        "objects_with_text": 5,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-holdout-p056",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p056.png",
+        "sha256": "bf7eacdbcb513d2705ec3b06fb692e85e08418806d6f3dcda0b14ae73c02b942"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p056.json",
+        "sha256": "413a7b32dea1570e3aeab126bb924fa7d643f086c3f42e32e0c118db77c80e3d"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p056.pptx",
+        "sha256": "fa9e650d1e7e330baa026f63dab810a9fe4d03cb0cae28ba58ec49d4076ab439",
+        "semantic_sha256": "537b71e00d5543a00c643baf551c5dd65e89afcb49f9c04b1e1d536681e4b2b1"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p056.png",
+        "sha256": "8146f5d1912b70544c6c73e8a2cf388d741542af4c7b4207ff35400b0b1b6d47",
+        "width": 1200,
+        "height": 486
+      },
+      "shape_counts": {
+        "total": 10,
+        "nodes": 7,
+        "containers": 0,
+        "connector_segments": 3,
+        "semantic_connectors": 3,
+        "textboxes": 0,
+        "objects_with_text": 7,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-holdout-p061",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p061.png",
+        "sha256": "d3cf329f9281ea73c0b6d35090acf04b63392570d70aa9e07486c8895a17e94d"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p061.json",
+        "sha256": "90e20945ea6ff8e71d3a7e3a537c1d07ecb049b1db07fc98249a0cd9caf62dc8"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p061.pptx",
+        "sha256": "01dbd9378a43a7f816e2dd3186352b5e61a8c61f691639425f047abc71d60cd8",
+        "semantic_sha256": "197e9041e0704fa7ad5825a442266af160fcd2871cb97e5e0ae160c68f2f4982"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p061.png",
+        "sha256": "ca744e7dffe3710961031ba6b0a3e6036bdf9d198a3c9c72c23c2cfc65f043de",
+        "width": 1200,
+        "height": 805
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p068",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p068.png",
+        "sha256": "76676d1003d94e601fde4632aa458bb57f05990667ee76053577e9d52e29c218"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p068.json",
+        "sha256": "84806ce48a0c1655add01e1dd49146073367bc4687649ef480e3c2890394f51d"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p068.pptx",
+        "sha256": "07543416c46966257a2125650cfb2c8ca56ade2cb7f0a12a32a1a0c1712694bf",
+        "semantic_sha256": "2fe6e5ceb128d2814e615f0a461622fc4061e492c711c00f5ca432a7679e10d6"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p068.png",
+        "sha256": "ae940756d6546ec38eb353ac9ac38aec8d3451bceb1db9b6dc5501947c7c9f41",
+        "width": 1200,
+        "height": 675
+      },
+      "shape_counts": {
+        "total": 21,
+        "nodes": 14,
+        "containers": 0,
+        "connector_segments": 7,
+        "semantic_connectors": 7,
+        "textboxes": 0,
+        "objects_with_text": 7,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-holdout-p076",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p076.png",
+        "sha256": "b613847031274cb2d09eb23e618ee092ba3c2823a5d2427037b056c79de2cd16"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p076.json",
+        "sha256": "0d66d3e5c72d376b333a25cb0b40aefe14330e3482db2f8135aba68fd87ff0aa"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p076.pptx",
+        "sha256": "2ee4b11cd939ae9d6962674e5bc4fb82523763a42fe3af87ac09abcfad307599",
+        "semantic_sha256": "f3acc166b65531ad40b525f2ba1ab84fc96e325cbab073810f22e466ed9f043a"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p076.png",
+        "sha256": "859ba98301122cdddc1d23fa020893ad66343dc7e43f86662fbc46fa155a17e2",
+        "width": 1200,
+        "height": 723
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p079",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p079.png",
+        "sha256": "dd41f903b70edae1ab743d228bfa975d872a14d2ca2a32dc4f2d815866540421"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p079.json",
+        "sha256": "c37ab8a2e287025b4774f8e8dd3a47e62877d93deadecfa7cf35f919a85dc99e"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p079.pptx",
+        "sha256": "51f5970e05eaea24a9e02cb98adf6aa89c27d14725ff781a2bd32bc5432fbc2f",
+        "semantic_sha256": "059bbcba9a0b8389f4d50041a59aef618f8f465bbfa80a13daa58e7e1b839126"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p079.png",
+        "sha256": "4d4628899ee8ef8e25adcf79314ba8f4b475a91758cccd7afb976011b1cef7ca",
+        "width": 1200,
+        "height": 700
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p083",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p083.png",
+        "sha256": "53990d98f5ecb0ec5465770908e5331eedd3b17907b4c9140e0e992b4fb46811"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p083.json",
+        "sha256": "cde01ae61d33807e021c16991b4918d5a94fb625b8de24b24e5bc7d1416b4d62"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p083.pptx",
+        "sha256": "596511f8bd659b2d599ec4873230dcf751d9dea61fd4bc2293478854cb0c570b",
+        "semantic_sha256": "3a0556b1db0c77dc6720f3b49f44571c00d851e928f60d240509b18c5cad6611"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p083.png",
+        "sha256": "12abde5275ceff956a166d61f8285a25c46dd04a88fe923f41198c7206c30ea6",
+        "width": 1200,
+        "height": 817
+      },
+      "shape_counts": {
+        "total": 4,
+        "nodes": 2,
+        "containers": 1,
+        "connector_segments": 1,
+        "semantic_connectors": 1,
+        "textboxes": 0,
+        "objects_with_text": 1,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-holdout-p095",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p095.png",
+        "sha256": "1cd549e4c2d3b83080aa9a205ddd7dc54ba35bba8b11b98f6c361a4b96f22e77"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p095.json",
+        "sha256": "0fbeb1accba2abe57e12c81944a7d5679b548e2fa1d31577de8922470fa36ffd"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p095.pptx",
+        "sha256": "69f66eb3e42297f8d7be4de0b2e057fbc5245464ad0e4ddb8c3a92d2681b473a",
+        "semantic_sha256": "f7ce11209b15d6261926483de4c07b865ee27f31d49de02419de78824c2be0f4"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p095.png",
+        "sha256": "5a2f352240837f81121cadfdd77e52a37735d7dba43c00a499133d6957d4146d",
+        "width": 1200,
+        "height": 900
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p097",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p097.png",
+        "sha256": "72835468d2850d0489dca041a79fc6afc584785b243ef201600a69b1b9b729a6"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p097.json",
+        "sha256": "ed1d232577d8b3681cb7ca87cbbfafb2e82cfbea5de33fbd5014fe4a49e12f1e"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p097.pptx",
+        "sha256": "3e73da001219e95aeb425cf48648065f86bbe890e3c646ace33d66c47d8759af",
+        "semantic_sha256": "f3acc166b65531ad40b525f2ba1ab84fc96e325cbab073810f22e466ed9f043a"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p097.png",
+        "sha256": "859ba98301122cdddc1d23fa020893ad66343dc7e43f86662fbc46fa155a17e2",
+        "width": 1200,
+        "height": 723
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p107",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p107.png",
+        "sha256": "0fd9f394c0ce82f1fefc27b209cdf87ac352ed25bcbdb2d15e5d2e1c003b21ba"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p107.json",
+        "sha256": "469c946473431d365b16a77152c29951ab227119a3ad883d0d89244b5f2e115c"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p107.pptx",
+        "sha256": "39863d3eb54909463e4acc5f52068f8a3b4029aed9930a2ca7bd8359466f0f84",
+        "semantic_sha256": "faf52951c843c5c3b8944f5a998cda5cc33a12651c39405313707cdecf51b6b7"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p107.png",
+        "sha256": "aef83469c8240a0325dc53c713ef39872acbe4549a51be442e038e54c986a1f9",
+        "width": 1200,
+        "height": 359
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p108",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "multi_panel_illustration",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p108.png",
+        "sha256": "41d9a5912b140d7787b7b88ef9e38b9573d2a0934094f2d72889bdcb155ac909"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p108.json",
+        "sha256": "677a4b9b93386a6d8e196ec8c64f2632732ec654059a6d811ce5b8b3da57e6d5"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p108.pptx",
+        "sha256": "394c4b6898d583eae23699a514ba35aad439d124b3c3936efb3916aa352d0cd3",
+        "semantic_sha256": "5ecfdb34a67caaf223624af4043c0663b2ce5a54fddf4d35981ef9acde8b3417"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p108.png",
+        "sha256": "5d32231881ac7ceb833613e3de153c4ca1d3c1b3092192f96b13a10702f4e7e7",
+        "width": 1200,
+        "height": 614
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p109",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": true,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p109.png",
+        "sha256": "539aa3125ca84bf00ef094fa77b17324aa8a6efb9203235e8790f342eb4fafa5"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p109.json",
+        "sha256": "d6e1ee730072675fa0078d44d0654cea853a2f80f19775c28618844179a57cad"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p109.pptx",
+        "sha256": "9472f22a8fc76f8881eca1cc3f4468f7df6113436dbe243b2dc48e278853044c",
+        "semantic_sha256": "04d2cf06fab2bbc0ea95dfb76ddf6e84085d98e748e960701758b3a937b42ea5"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p109.png",
+        "sha256": "dec475abcffcda14a5c07e648b594fbd838119cd80c2b7f9ccd34dc95a6bdc39",
+        "width": 1200,
+        "height": 250
+      },
+      "shape_counts": {
+        "total": 6,
+        "nodes": 5,
+        "containers": 0,
+        "connector_segments": 1,
+        "semantic_connectors": 1,
+        "textboxes": 0,
+        "objects_with_text": 5,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-holdout-p112",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p112.png",
+        "sha256": "fab40bbb7fbefd8160bfc45a72df44e65eb071390d15e2cf0ad1fdbf93420b92"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p112.json",
+        "sha256": "8d7ce26cb9c3bd0b86092252c8034240cbdb8ef041345a7ff698a383960c8cf4"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p112.pptx",
+        "sha256": "8999d69fdaad9be184559e21b2079e5c0633f356e91688553bc17423bcc21ab9",
+        "semantic_sha256": "9ea6cd802222ac5ce6ba5b5562f36d841bc3a7fb1aac407d6500cbc3647e3daf"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p112.png",
+        "sha256": "3ca51809dd0f1d3f4c805092497ad7d83dbe3460b114444a6a8f761114ad8cc5",
+        "width": 1200,
+        "height": 925
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p120",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "plot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p120.png",
+        "sha256": "39d47fe591f91bd03137fd3046c0bf83856f952b63211c8d7050a64cc3a37cd2"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p120.json",
+        "sha256": "0c71bf398c36d18937f1d4102f37ac910f59d3dc34bfd3e9979c6ec7ed472b8f"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p120.pptx",
+        "sha256": "96b8a1edab0f517b7a4d9f419b248c041f8b527a1a03de4728f5b91c560a7279",
+        "semantic_sha256": "7b04defe63016dea6cafa9978a5680cb806f76b450a4c03c2804aae1d1d28cdb"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p120.png",
+        "sha256": "d0e34bd5dbe18253177409baedc3db84a92651c94ec8a991a273cc5c4c0ebe40",
+        "width": 1200,
+        "height": 742
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p121",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p121.png",
+        "sha256": "c176cae4c5965e236954a7d9ee2aef8a862b380cf5de479aed5c9eee0a7e10bd"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p121.json",
+        "sha256": "afe999d31c2b2082fea32c24cb4e9528134eb1b877eace527ffe93a3a0a37c5f"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p121.pptx",
+        "sha256": "ca8473af83f3b618453d35a875b52d57d6394652a8c9326db7621da381f3d42c",
+        "semantic_sha256": "b394e20483e585ab3538c63bc315a4b3627955bab3ce84ec0ea1238a1f62b1a4"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p121.png",
+        "sha256": "e6edfd0e6419117879750160b7383d737416a4f6ee16812216aff4e1ca5ae8ed",
+        "width": 1200,
+        "height": 489
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p123",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "simple_direct_orthogonal",
+      "low_connectivity": true,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p123.png",
+        "sha256": "e756e7b410c765d3a71816884c8ae73ca4edbee0ec48fd40f28114abbeb9c66b"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p123.json",
+        "sha256": "3c9fb734e13304288063deeca7efe7c32b1a0db2e03583f682422949de48736a"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p123.pptx",
+        "sha256": "24ab1ae13cfe2d2cef304697eaa9145b5d4fa90e3be6ce598ac9dd91837f45c3",
+        "semantic_sha256": "8e470c4716795512ff7dc271393055e4fa44a1803fd09c492fe12e1efea22505"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p123.png",
+        "sha256": "d5f2772c244ae5b7b39c5491decce16b95621a6ef5bf780212dd2527cfdcfc8a",
+        "width": 1200,
+        "height": 806
+      },
+      "shape_counts": {
+        "total": 4,
+        "nodes": 3,
+        "containers": 0,
+        "connector_segments": 1,
+        "semantic_connectors": 1,
+        "textboxes": 0,
+        "objects_with_text": 3,
+        "blank": false
+      }
+    },
+    {
+      "id": "phase16-holdout-p125",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "application_screenshot",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p125.png",
+        "sha256": "a32739c5f4f51c3ec40a2e559cf853a768db99d4c491b644d3fb676ac8261171"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p125.json",
+        "sha256": "4ce3f01db3744353ad3cdd31e1a7882155d36d53c14f0ef457c3efa2049d1355"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p125.pptx",
+        "sha256": "e4c8e013a52ceabbf3a07ae8a1100f902b6351a2093fdc15c0a42a20f90bc608",
+        "semantic_sha256": "16c46f0d367cd39ca56c2dbe2c4583a4eae015607488739325c782ab17209ee5"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p125.png",
+        "sha256": "2bf9776d0a8e41229345c02b9378c15a449e19fa3973f46731c21a656bdfb4a7",
+        "width": 1200,
+        "height": 848
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p129",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "photo",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p129.png",
+        "sha256": "ee77b009ceaa15c45ea75dedf3d2f8ca192ada37d15ea1b64c90f0f2490e34e0"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p129.json",
+        "sha256": "a7f139db7d554d59cb8553156a3c0bb7e26ab3cf007f6ccb40186c4acdacb5eb"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p129.pptx",
+        "sha256": "0b3dc0df921d7cc7e3e9500c8aa79295dd8bafdb3ebd31ccce68987848ed8b9a",
+        "semantic_sha256": "efe8a0ba73b417cfd5a2a6835d118701b4820bd9390f0ad073dd4bcec47e1ddc"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p129.png",
+        "sha256": "d3bd497b399cbe4ec07c3cdd54429edfc98bd8619eee296485904887f3386580",
+        "width": 1200,
+        "height": 509
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p130",
+      "split": "holdout",
+      "kind": "non_diagram",
+      "stratum": "table",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p130.png",
+        "sha256": "a3ce16cd3812d58c6c54a1bc8d2aeb747a15fd5346711dd1a1154a6e0d2bea18"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p130.json",
+        "sha256": "687ec366d2b7957cb5a90e5a74dd6af80ec7dd651ec534b70f27e4252192de81"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p130.pptx",
+        "sha256": "d52d293ed29459b31ed9464d571dc77c42f990ea0dde7cc5bf9e6e9269c16598",
+        "semantic_sha256": "be85d7310ccaaef14f0ff74ada25089f4ed5cbd539774db08d97f7bf1c710361"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p130.png",
+        "sha256": "cc95fe551bea0483fd031b64dd6da66e72bed6905d7e8636799c467106335b17",
+        "width": 1200,
+        "height": 673
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p131",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "nested_gradient_shadow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p131.png",
+        "sha256": "952f090028c9777586e0bf229dbc8c7bd6ffbad495c3707e740f6c801c4e5ca5"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p131.json",
+        "sha256": "d960c5d8b95ad959e3c11a439998f88a5eb2870b795969a4e3f9d05b9a458788"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p131.pptx",
+        "sha256": "8fb79c11900a5bc9f014152be4eaf26c8e689e0ebf3a6639ae66f251f91980b7",
+        "semantic_sha256": "fe488678bda81c5f049f4183266d81f900777aeaa355f06286f36305d44a8748"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p131.png",
+        "sha256": "e438240514b791ff1f04452f570fe0c45d8b701ae012b0d171ae7ba6fe84f651",
+        "width": 1200,
+        "height": 955
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    },
+    {
+      "id": "phase16-holdout-p135",
+      "split": "holdout",
+      "kind": "diagram",
+      "stratum": "connector_dense_orthogonal_elbow",
+      "low_connectivity": false,
+      "source": {
+        "path": "data/phase16_holdout_v1/phase16-holdout-p135.png",
+        "sha256": "8db7cf5774793e61984a81ddce84e09947f2793f8235b4ea63a05dd0c8bed3af"
+      },
+      "annotation": {
+        "path": "benchmarks/phase16_holdout_v1/annotations/phase16-holdout-p135.json",
+        "sha256": "c7db7b33ffef9baa3d48383b63310ccf7fea304780c240f0bc03ab3a9d5b2be4"
+      },
+      "pptx": {
+        "path": "artifacts/phase16-baseline-v1/official/phase16-holdout-p135.pptx",
+        "sha256": "00e90576930628f8696c2207dc67483f63d50e577fa3ffb0ee4535f816420200",
+        "semantic_sha256": "508627ae989dc4572d6663684eeafb958e918c1c1b20d52d97522c9e3961b6fc"
+      },
+      "powerpoint_render": {
+        "path": "artifacts/phase16-baseline-v1/official-renders/phase16-holdout-p135.png",
+        "sha256": "6fd023fd4577eca06e12a1c6c037c067837156e5672476806324831d2d10f772",
+        "width": 1200,
+        "height": 1189
+      },
+      "shape_counts": {
+        "total": 0,
+        "nodes": 0,
+        "containers": 0,
+        "connector_segments": 0,
+        "semantic_connectors": 0,
+        "textboxes": 0,
+        "objects_with_text": 0,
+        "blank": true
+      }
+    }
+  ]
+}

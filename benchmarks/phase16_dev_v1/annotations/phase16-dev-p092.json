@@ -1,0 +1,342 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-dev-p092",
+  "image": {
+    "path": "data/phase16_dev_v1/phase16-dev-p092.png",
+    "sha256": "2a07664014207bab324a66182b224f915a414b19ec82ac477425fde0511c520a",
+    "width": 2000,
+    "height": 1125
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:001",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 473.0,
+        "y0": 294.0,
+        "x1": 805.0,
+        "y1": 707.0
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:002",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1255.21,
+        "y0": 294.0,
+        "x1": 1587.0,
+        "y1": 707.0
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:004",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 489.06,
+        "y0": 406.25,
+        "x1": 617.19,
+        "y1": 560.94
+      },
+      "parent_id": "object:auto:001",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:005",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 658.85,
+        "y0": 406.25,
+        "x1": 787.5,
+        "y1": 560.94
+      },
+      "parent_id": "object:auto:001",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:006",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 890.62,
+        "y0": 406.25,
+        "x1": 1170.31,
+        "y1": 560.94
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:007",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1289.06,
+        "y0": 406.25,
+        "x1": 1568.75,
+        "y1": 560.94
+      },
+      "parent_id": "object:auto:002",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:008",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 606.12,
+        "y0": 867.09,
+        "x1": 1456.12,
+        "y1": 929.84
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:manual:fusion",
+      "role": "node",
+      "shape_kind": "ellipse",
+      "bbox": {
+        "x0": 990,
+        "y0": 155,
+        "x1": 1060,
+        "y1": 215
+      },
+      "importance": "core",
+      "label": {
+        "text": "Fusion",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:softmax",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 893,
+        "y0": 50,
+        "x1": 1158,
+        "y1": 88
+      },
+      "importance": "core",
+      "label": {
+        "text": "Softmax Output",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [
+    {
+      "id": "connector:manual:input-to-le",
+      "source_id": "object:auto:008",
+      "target_id": "object:auto:001",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 900,
+          "y": 867
+        },
+        {
+          "x": 640,
+          "y": 707
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:input-to-roberta",
+      "source_id": "object:auto:008",
+      "target_id": "object:auto:006",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 1031,
+          "y": 867
+        },
+        {
+          "x": 1031,
+          "y": 561
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:input-to-hwa",
+      "source_id": "object:auto:008",
+      "target_id": "object:auto:002",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 1150,
+          "y": 867
+        },
+        {
+          "x": 1420,
+          "y": 707
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:le-to-fusion",
+      "source_id": "object:auto:001",
+      "target_id": "object:manual:fusion",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 640,
+          "y": 294
+        },
+        {
+          "x": 1025,
+          "y": 185
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:roberta-to-fusion",
+      "source_id": "object:auto:006",
+      "target_id": "object:manual:fusion",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 1031,
+          "y": 406
+        },
+        {
+          "x": 1025,
+          "y": 215
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:hwa-to-fusion",
+      "source_id": "object:auto:002",
+      "target_id": "object:manual:fusion",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 1420,
+          "y": 294
+        },
+        {
+          "x": 1025,
+          "y": 185
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:fusion-to-softmax",
+      "source_id": "object:manual:fusion",
+      "target_id": "object:manual:softmax",
+      "direction": "undirected",
+      "path_points": [
+        {
+          "x": 1025,
+          "y": 155
+        },
+        {
+          "x": 1025,
+          "y": 88
+        }
+      ],
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    }
+  ],
+  "excluded_regions": [],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:55.595030+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

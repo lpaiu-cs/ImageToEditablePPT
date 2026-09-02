@@ -1,0 +1,67 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-dev-p040",
+  "image": {
+    "path": "data/phase16_dev_v1/phase16-dev-p040.png",
+    "sha256": "9a9b6eaf4e2070f6a62fe888b161f4df2a645b2bca54407de138d80ea76665a1",
+    "width": 1760,
+    "height": 386
+  },
+  "kind": "non_diagram",
+  "objects": [],
+  "connectors": [],
+  "excluded_regions": [
+    {
+      "id": "excluded:scene",
+      "kind": "illustration",
+      "bbox": {
+        "x0": 0,
+        "y0": 0,
+        "x1": 1760,
+        "y1": 386
+      },
+      "note": "Whole scene was visually classified as non-diagram hard negative: multi_panel_illustration."
+    }
+  ],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

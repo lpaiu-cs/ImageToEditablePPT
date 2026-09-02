@@ -1,0 +1,59 @@
+{
+  "schema_version": "phase16_visual_audit_rubric_v1",
+  "status": "frozen_before_phase16_output",
+  "display_order_seed": 16001642,
+  "blinding": {
+    "labels": ["A", "B"],
+    "assignment": "sha256(display_order_seed + ':' + sample_id) least-significant bit",
+    "reveal_after_all_rows_complete": true,
+    "same_render_width": 1200,
+    "columns": ["source", "candidate_A", "candidate_B"]
+  },
+  "questions": [
+    {
+      "id": "misleading_structure",
+      "prompt": "Was any structure introduced that is not supported by the source image?",
+      "type": "boolean",
+      "gate": "must_be_false"
+    },
+    {
+      "id": "core_structure_survival",
+      "prompt": "How much of the structure needed to understand or redraw the diagram remains?",
+      "type": "enum",
+      "choices": ["none", "fragmentary", "usable_partial", "sufficient"]
+    },
+    {
+      "id": "topology_redraw",
+      "prompt": "How much connector topology must be redrawn?",
+      "type": "enum",
+      "choices": ["all", "most", "some", "little_or_none"]
+    },
+    {
+      "id": "label_reentry",
+      "prompt": "How much label text must be retyped or deleted?",
+      "type": "enum",
+      "choices": ["all", "most", "some", "little_or_none"]
+    },
+    {
+      "id": "better_than_blank",
+      "prompt": "Is this result a better editing starting point than a blank slide?",
+      "type": "boolean"
+    },
+    {
+      "id": "starting_point_choice",
+      "prompt": "Which starting point would you actually choose for correction?",
+      "type": "enum",
+      "choices": ["A", "B", "blank", "tie"]
+    },
+    {
+      "id": "failure_notes",
+      "prompt": "Record the concrete redraw, deletion, reroute, or retyping burden that determined the choice.",
+      "type": "text"
+    }
+  ],
+  "confirmatory_gates": {
+    "misleading_structure_count": 0,
+    "usable_partial_or_better_fraction_min": 0.75,
+    "rescue_tuning_after_reveal": false
+  }
+}

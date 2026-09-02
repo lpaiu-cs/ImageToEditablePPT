@@ -1,0 +1,27 @@
+{
+  "schema_version": "phase16_operation_time_calibration_protocol_v1",
+  "status": "measurement_required",
+  "minimum_repetitions_per_operation": 10,
+  "timer": "wall_clock_monotonic_seconds",
+  "aggregation": "median_seconds",
+  "instructions": [
+    "Use Microsoft PowerPoint desktop with the supplied calibration deck.",
+    "Start from a fresh duplicate of the indicated task slide for every repetition.",
+    "Begin timing immediately before the first edit action and stop when the requested state is visibly complete.",
+    "Do not include deck opening, reading the instruction, or saving the file.",
+    "Record interruptions as invalid trials and repeat them; never replace slow valid trials after seeing the median."
+  ],
+  "operations": [
+    {"id": "object_create", "task": "Create one rectangle matching the ghost target's approximate position and size."},
+    {"id": "object_delete", "task": "Delete the single red wrong object."},
+    {"id": "geometry_correct", "task": "Move and resize the blue object to cover the ghost target."},
+    {"id": "connector_create", "task": "Create one connector between the two indicated objects."},
+    {"id": "connector_delete", "task": "Delete the single red wrong connector."},
+    {"id": "connector_reroute_direction", "task": "Reroute the connector orthogonally and set the arrowhead toward the target."},
+    {"id": "endpoint_rebind", "task": "Reattach the loose connector endpoint to the indicated target object."},
+    {"id": "label_retype_delete", "task": "Replace the wrong label with the target text shown above the object."},
+    {"id": "redundant_text_delete", "task": "Delete the single redundant standalone text box while preserving the shape label."}
+  ],
+  "output_schema": "phase16_operation_time_calibration_v1",
+  "weighted_edit_cost_allowed_only_when_status": "completed"
+}

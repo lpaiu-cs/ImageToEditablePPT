@@ -1,0 +1,98 @@
+{
+  "schema_version": "phase16_visual_selection_v1",
+  "created_at": "2026-09-02",
+  "pool": {
+    "path": "artifacts/phase16-sample-pool-v1/pool_manifest.json",
+    "sha256": "629c0db9326f72b25043df9f6043c241e1c32a85819e55c8ba86e7f01a128f0c",
+    "dataset": "yousefg-codes/research-paper-figures",
+    "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+    "selection_seed": 160016
+  },
+  "review": {
+    "reviewer": "gpt-5.6-sol",
+    "basis": "Direct visual review of all ten numbered contact sheets; caption suggestions were treated only as hints.",
+    "exclusions": [
+      "Previously consumed benchmark and probe shards",
+      "Images too small or corrupt for structural annotation",
+      "Diagram-family samples dominated by unsupported free curves or non-structural icons"
+    ]
+  },
+  "splits": {
+    "dev": {
+      "diagram": [
+        {"pool_id": "P006", "stratum": "simple_direct_orthogonal", "low_connectivity": false},
+        {"pool_id": "P008", "stratum": "simple_direct_orthogonal", "low_connectivity": false},
+        {"pool_id": "P015", "stratum": "simple_direct_orthogonal", "low_connectivity": true},
+        {"pool_id": "P050", "stratum": "simple_direct_orthogonal", "low_connectivity": false},
+        {"pool_id": "P059", "stratum": "simple_direct_orthogonal", "low_connectivity": false},
+        {"pool_id": "P124", "stratum": "simple_direct_orthogonal", "low_connectivity": false},
+        {"pool_id": "P011", "stratum": "nested_gradient_shadow", "low_connectivity": true},
+        {"pool_id": "P020", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P058", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P073", "stratum": "nested_gradient_shadow", "low_connectivity": true},
+        {"pool_id": "P077", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P092", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P119", "stratum": "nested_gradient_shadow", "low_connectivity": true},
+        {"pool_id": "P152", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P034", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P042", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P043", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P067", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P086", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P089", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false}
+      ],
+      "non_diagram": [
+        {"pool_id": "P001", "stratum": "plot"},
+        {"pool_id": "P002", "stratum": "plot"},
+        {"pool_id": "P004", "stratum": "plot"},
+        {"pool_id": "P007", "stratum": "plot"},
+        {"pool_id": "P014", "stratum": "plot"},
+        {"pool_id": "P017", "stratum": "plot"},
+        {"pool_id": "P033", "stratum": "plot"},
+        {"pool_id": "P037", "stratum": "plot"},
+        {"pool_id": "P047", "stratum": "plot"},
+        {"pool_id": "P054", "stratum": "table"},
+        {"pool_id": "P065", "stratum": "table"},
+        {"pool_id": "P091", "stratum": "application_screenshot"},
+        {"pool_id": "P100", "stratum": "application_screenshot"},
+        {"pool_id": "P128", "stratum": "application_screenshot"},
+        {"pool_id": "P158", "stratum": "application_screenshot"},
+        {"pool_id": "P013", "stratum": "photo"},
+        {"pool_id": "P022", "stratum": "photo"},
+        {"pool_id": "P072", "stratum": "photo"},
+        {"pool_id": "P040", "stratum": "multi_panel_illustration"},
+        {"pool_id": "P063", "stratum": "multi_panel_illustration"}
+      ]
+    },
+    "holdout": {
+      "diagram": [
+        {"pool_id": "P016", "stratum": "simple_direct_orthogonal", "low_connectivity": true},
+        {"pool_id": "P109", "stratum": "simple_direct_orthogonal", "low_connectivity": true},
+        {"pool_id": "P123", "stratum": "simple_direct_orthogonal", "low_connectivity": true},
+        {"pool_id": "P025", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P076", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P121", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P131", "stratum": "nested_gradient_shadow", "low_connectivity": false},
+        {"pool_id": "P005", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P056", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P068", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P083", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false},
+        {"pool_id": "P135", "stratum": "connector_dense_orthogonal_elbow", "low_connectivity": false}
+      ],
+      "non_diagram": [
+        {"pool_id": "P003", "stratum": "plot"},
+        {"pool_id": "P061", "stratum": "plot"},
+        {"pool_id": "P079", "stratum": "plot"},
+        {"pool_id": "P095", "stratum": "plot"},
+        {"pool_id": "P097", "stratum": "plot"},
+        {"pool_id": "P107", "stratum": "plot"},
+        {"pool_id": "P112", "stratum": "plot"},
+        {"pool_id": "P120", "stratum": "plot"},
+        {"pool_id": "P130", "stratum": "table"},
+        {"pool_id": "P125", "stratum": "application_screenshot"},
+        {"pool_id": "P129", "stratum": "photo"},
+        {"pool_id": "P108", "stratum": "multi_panel_illustration"}
+      ]
+    }
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-holdout-p076",
+  "image": {
+    "path": "data/phase16_holdout_v1/phase16-holdout-p076.png",
+    "sha256": "b613847031274cb2d09eb23e618ee092ba3c2823a5d2427037b056c79de2cd16",
+    "width": 3701,
+    "height": 2229
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:001",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 83.49,
+        "y0": 52.23,
+        "x1": 728.45,
+        "y1": 156.14
+      },
+      "parent_id": "object:manual:sentence-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:002",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 81.32,
+        "y0": 1078.49,
+        "x1": 725.74,
+        "y1": 1183.67
+      },
+      "parent_id": "object:manual:retrieval-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:003",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 2968.39,
+        "y0": 1081.02,
+        "x1": 3611.91,
+        "y1": 1186.38
+      },
+      "parent_id": "object:manual:retrieval-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:manual:sentence-container",
+      "role": "container",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 18,
+        "y0": 10,
+        "x1": 3630,
+        "y1": 850
+      },
+      "importance": "core",
+      "parent_id": null,
+      "label": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:retrieval-container",
+      "role": "container",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 18,
+        "y0": 1042,
+        "x1": 3670,
+        "y1": 2200
+      },
+      "importance": "core",
+      "parent_id": null,
+      "label": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [],
+  "excluded_regions": [
+    {
+      "id": "excluded:llm-top",
+      "kind": "illustration",
+      "bbox": {
+        "x0": 1120,
+        "y0": 390,
+        "x1": 1460,
+        "y1": 720
+      },
+      "note": "LLM logo montage."
+    },
+    {
+      "id": "excluded:llm-bottom",
+      "kind": "illustration",
+      "bbox": {
+        "x0": 1120,
+        "y0": 1540,
+        "x1": 1420,
+        "y1": 1880
+      },
+      "note": "LLM logo montage."
+    }
+  ],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines.",
+    "Open three-sided relation lists and graph/logo illustrations are outside the closed-shape core."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:58.643066+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

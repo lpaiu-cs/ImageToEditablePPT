@@ -1,0 +1,130 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-holdout-p135",
+  "image": {
+    "path": "data/phase16_holdout_v1/phase16-holdout-p135.png",
+    "sha256": "8db7cf5774793e61984a81ddce84e09947f2793f8235b4ea63a05dd0c8bed3af",
+    "width": 941,
+    "height": 933
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:004",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 395.88,
+        "y0": 170.16,
+        "x1": 594.13,
+        "y1": 224.11
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Make match patterns",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    }
+  ],
+  "connectors": [],
+  "excluded_regions": [
+    {
+      "id": "excluded:document-column",
+      "kind": "illustration",
+      "bbox": {
+        "x0": 35,
+        "y0": 18,
+        "x1": 250,
+        "y1": 635
+      },
+      "note": "Stacked and wavy-bottom document glyphs."
+    },
+    {
+      "id": "excluded:annotation-column",
+      "kind": "illustration",
+      "bbox": {
+        "x0": 390,
+        "y0": 18,
+        "x1": 540,
+        "y1": 792
+      },
+      "note": "Cylinder annotation stores."
+    },
+    {
+      "id": "excluded:label-column",
+      "kind": "illustration",
+      "bbox": {
+        "x0": 585,
+        "y0": 42,
+        "x1": 930,
+        "y1": 718
+      },
+      "note": "Parallelogram label-set glyphs."
+    },
+    {
+      "id": "excluded:model-column",
+      "kind": "illustration",
+      "bbox": {
+        "x0": 640,
+        "y0": 142,
+        "x1": 850,
+        "y1": 908
+      },
+      "note": "Horizontal model cylinders."
+    }
+  ],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines.",
+    "Only the unambiguous editable rectangle is retained; the remaining workflow uses unsupported document, cylinder, and parallelogram shapes."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:21:00.144722+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

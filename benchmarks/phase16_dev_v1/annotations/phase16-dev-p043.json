@@ -1,0 +1,237 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-dev-p043",
+  "image": {
+    "path": "data/phase16_dev_v1/phase16-dev-p043.png",
+    "sha256": "a4cfc7d181506e118e097b6bff848258dfc19e13c2913c03935e0a4b686f6348",
+    "width": 1826,
+    "height": 1009
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:001",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 8.0,
+        "y0": 436.0,
+        "x1": 458.88,
+        "y1": 505.0
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Momentum Decoder",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:002",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 708.0,
+        "y0": 436.0,
+        "x1": 1158.37,
+        "y1": 505.0
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Decoder",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:003",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 8.0,
+        "y0": 726.0,
+        "x1": 458.88,
+        "y1": 794.6
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Momentum Encoder",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:004",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 708.0,
+        "y0": 726.0,
+        "x1": 1158.37,
+        "y1": 794.6
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Encoder",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:005",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1297.0,
+        "y0": 726.0,
+        "x1": 1748.97,
+        "y1": 794.6
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Momentum Encoder",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:manual:mlp-decoder-left",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 286,
+        "y0": 167,
+        "x1": 419,
+        "y1": 230
+      },
+      "importance": "secondary",
+      "label": {
+        "text": "MLP",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:mlp-decoder-right",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 586,
+        "y0": 167,
+        "x1": 719,
+        "y1": 230
+      },
+      "importance": "secondary",
+      "label": {
+        "text": "MLP",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:mlp-encoder-left",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1208,
+        "y0": 447,
+        "x1": 1342,
+        "y1": 510
+      },
+      "importance": "secondary",
+      "label": {
+        "text": "MLP",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:mlp-encoder-right",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1506,
+        "y0": 447,
+        "x1": 1641,
+        "y1": 510
+      },
+      "importance": "secondary",
+      "label": {
+        "text": "MLP",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [],
+  "excluded_regions": [],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines.",
+    "Token-level rounded cells and curved contrastive-loss paths remain outside the conservative core."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:56.453574+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

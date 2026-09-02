@@ -1,0 +1,142 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-dev-p119",
+  "image": {
+    "path": "data/phase16_dev_v1/phase16-dev-p119.png",
+    "sha256": "90c00b7c20019fa4aa981180c3b86592660cfaa5f61aafa3280fdd4d5e9e62ef",
+    "width": 808,
+    "height": 372
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:001",
+      "role": "container",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 164.56,
+        "y0": 6.66,
+        "x1": 791.08,
+        "y1": 158.43
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "LLM decoder",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:002",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 543.5,
+        "y0": 46.65,
+        "x1": 774.17,
+        "y1": 115.36
+      },
+      "parent_id": "object:auto:001",
+      "importance": "core",
+      "label": {
+        "text": "Text-text attention",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:003",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 659.83,
+        "y0": 61.01,
+        "x1": 765.96,
+        "y1": 101.0
+      },
+      "parent_id": "object:auto:001",
+      "importance": "core",
+      "label": {
+        "text": "adapters",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:008",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 4.1,
+        "y0": 292.24,
+        "x1": 137.91,
+        "y1": 366.06
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Audio encoder",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    }
+  ],
+  "connectors": [],
+  "excluded_regions": [],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines.",
+    "Token strips and empty black-background panels were not accepted without a stable closed outline and legible role."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:55.622036+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

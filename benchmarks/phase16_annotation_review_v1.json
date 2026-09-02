@@ -1,0 +1,493 @@
+{
+  "schema_version": "phase16_annotation_review_v1",
+  "reviewer": "gpt-5.6-sol",
+  "method": "Direct source-image inspection followed by a separate curated-overlay topology and exclusion pass.",
+  "samples": {
+    "phase16-dev-p006": {
+      "objects": {
+        "keep": ["001", "002", "003", "004"],
+        "core": ["001", "002", "003", "004"],
+        "labels": {"001": "Softmax", "002": "Language model", "003": "Embedding Layer", "004": "Input"},
+        "add": [
+          {"id": "object:manual:loss-adv", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 10, "y0": 7, "x1": 434, "y1": 160}, "importance": "secondary", "label_text": "L_adv(s', theta)"},
+          {"id": "object:manual:loss-main", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 565, "y0": 7, "x1": 932, "y1": 160}, "importance": "secondary", "label_text": "L(s, theta)"},
+          {"id": "object:manual:loss-cont", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 1000, "y0": 225, "x1": 1530, "y1": 370}, "importance": "secondary", "label_text": "L_cont(s, s'; theta)"}
+        ]
+      },
+      "connectors": {
+        "keep": ["001", "002"],
+        "core": ["001", "002"],
+        "add": [
+          {"id": "connector:manual:language-to-softmax", "source_id": "object:auto:002", "target_id": "object:auto:001", "path_points": [{"x": 542, "y": 806}, {"x": 542, "y": 450}, {"x": 442, "y": 450}, {"x": 442, "y": 394}], "path_class": "elbow_orthogonal", "importance": "core"}
+        ]
+      },
+      "allowed_omissions": ["Mathematical state labels and dotted loss-assignment paths are outside the editable-object core."]
+    },
+    "phase16-dev-p008": {
+      "objects": {"keep": ["001", "002", "003", "004", "005", "006"], "core": ["001", "002", "003", "004", "005", "006"]},
+      "connectors": {"keep": ["001", "002", "003"], "core": ["001", "002", "003"]},
+      "allowed_omissions": ["The unsupported decision diamond and its incident branch connectors are omitted."]
+    },
+    "phase16-dev-p015": {
+      "objects": {"keep": ["001", "002", "003", "004", "005"], "core": ["001", "002", "003", "004", "005"], "labels": {"001": "Output", "002": "Majority Voting Ensemble", "003": "Fine-tuned SBERT, PCA, ElasticNet", "004": "xlm-roberta-base", "005": "Set-Fit model"}},
+      "connectors": {
+        "keep": ["001", "002"], "core": ["001", "002"],
+        "add": [
+          {"id": "connector:manual:left-to-ensemble", "source_id": "object:auto:003", "target_id": "object:auto:002", "path_points": [{"x": 231, "y": 442}, {"x": 281, "y": 442}, {"x": 281, "y": 270}, {"x": 316, "y": 270}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:right-to-ensemble", "source_id": "object:auto:004", "target_id": "object:auto:002", "path_points": [{"x": 610, "y": 442}, {"x": 565, "y": 442}, {"x": 565, "y": 270}, {"x": 530, "y": 270}], "path_class": "elbow_orthogonal"}
+        ]
+      }
+    },
+    "phase16-dev-p050": {
+      "objects": {"keep": ["001", "002", "003", "004"], "core": ["001", "003", "004"], "labels": {"001": "Input-label pairs / Test sample", "002": "Answer", "003": "Decoder-only LLM", "004": "Input-label pairs / Test sample"}},
+      "connectors": {"keep": ["001", "002"], "core": ["001", "002"]}
+    },
+    "phase16-dev-p059": {
+      "objects": {"keep": ["001", "002", "003"], "core": ["001", "002", "003"], "labels": {"001": "Word-wise preprocessing", "002": "Word-level adversarial text generation", "003": "Watermark extraction"}},
+      "connectors": {"keep": ["001"], "core": ["001"]},
+      "allowed_omissions": ["Unboxed external input and output labels are not promoted to structural nodes."]
+    },
+    "phase16-dev-p124": {
+      "objects": {
+        "keep": ["001", "003", "004", "005", "006", "007", "008", "009"],
+        "core": ["001", "003", "004", "005", "006", "007", "008", "009"],
+        "overrides": {"003": {"parent_id": "object:auto:001"}, "004": {"parent_id": "object:auto:001"}, "005": {"parent_id": "object:auto:001"}, "006": {"parent_id": "object:auto:001"}},
+        "labels": {"003": "NER", "004": "REL", "005": "Formulate", "006": "Translate", "007": "Problem description", "008": "Refine Model", "009": "Compile and run"}
+      },
+      "connectors": {
+        "keep": ["002", "003", "004", "005"], "core": ["002", "003", "004", "005"],
+        "add": [
+          {"id": "connector:manual:problem-to-ner", "source_id": "object:auto:007", "target_id": "object:auto:003", "path_points": [{"x": 84, "y": 74}, {"x": 162, "y": 55}], "path_class": "direct_orthogonal"},
+          {"id": "connector:manual:refine-to-problem", "source_id": "object:auto:008", "target_id": "object:auto:007", "direction": "directed", "path_class": "dotted_orthogonal", "path_points": [{"x": 222, "y": 155}, {"x": 40, "y": 155}, {"x": 40, "y": 96}]},
+          {"id": "connector:manual:compile-to-translate", "source_id": "object:auto:009", "target_id": "object:auto:006", "path_class": "dotted_orthogonal", "path_points": [{"x": 506, "y": 131}, {"x": 669, "y": 131}, {"x": 669, "y": 80}]}
+        ]
+      }
+    },
+    "phase16-dev-p011": {
+      "objects": {
+        "keep": ["002", "003", "004", "005", "010", "011", "012"],
+        "core": ["002", "003", "004", "005", "010", "011", "012"],
+        "overrides": {"002": {"parent_id": "object:manual:decoder-block"}, "004": {"parent_id": "object:manual:decoder-block"}, "005": {"parent_id": "object:manual:decoder-block"}, "010": {"parent_id": "object:manual:decoder-block"}},
+        "labels": {"002": "Add & Norm", "003": "Attention", "004": "Feed Forward", "005": "Add & Norm", "010": "Self-attention", "011": "Input Embedding", "012": "Output Embedding"},
+        "add": [{"id": "object:manual:decoder-block", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 130, "y0": 20, "x1": 428, "y1": 480}, "importance": "core"}]
+      },
+      "connectors": {
+        "add": [
+          {"id": "connector:manual:input-to-self", "source_id": "object:auto:011", "target_id": "object:auto:010", "path_points": [{"x": 292, "y": 538}, {"x": 292, "y": 433}]},
+          {"id": "connector:manual:self-to-norm", "source_id": "object:auto:010", "target_id": "object:auto:005", "path_points": [{"x": 292, "y": 322}, {"x": 292, "y": 296}]},
+          {"id": "connector:manual:norm-to-feed", "source_id": "object:auto:005", "target_id": "object:auto:004", "path_points": [{"x": 292, "y": 252}, {"x": 292, "y": 227}]},
+          {"id": "connector:manual:feed-to-norm", "source_id": "object:auto:004", "target_id": "object:auto:002", "path_points": [{"x": 292, "y": 121}, {"x": 292, "y": 96}]}
+        ]
+      },
+      "allowed_omissions": ["Residual bypass paths and unlabeled vertical token bars are omitted from the core component."]
+    },
+    "phase16-dev-p020": {
+      "objects": {
+        "keep": ["001"], "core": ["001"], "labels": {"001": "Fuzzy Similarity Function"},
+        "add": [
+          {"id": "object:manual:fingerprint-library", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 926, "y0": 96, "x1": 1515, "y1": 441}, "importance": "core", "label_text": "Fingerprint Library"},
+          {"id": "object:manual:class-a", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 980, "y0": 170, "x1": 1052, "y1": 365}, "parent_id": "object:manual:fingerprint-library", "importance": "secondary", "label_text": "Class A"},
+          {"id": "object:manual:class-b", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 1147, "y0": 170, "x1": 1215, "y1": 365}, "parent_id": "object:manual:fingerprint-library", "importance": "secondary", "label_text": "Class B"},
+          {"id": "object:manual:class-c", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 1303, "y0": 170, "x1": 1368, "y1": 365}, "parent_id": "object:manual:fingerprint-library", "importance": "secondary", "label_text": "Class C"},
+          {"id": "object:manual:roberta", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 87, "y0": 645, "x1": 1566, "y1": 1522}, "importance": "core", "label_text": "RoBERTa"}
+        ]
+      },
+      "connectors": {
+        "add": [
+          {"id": "connector:manual:library-to-fuzzy", "source_id": "object:manual:fingerprint-library", "target_id": "object:auto:001", "direction": "directed", "path_class": "dotted_orthogonal", "path_points": [{"x": 926, "y": 270}, {"x": 849, "y": 270}]},
+          {"id": "connector:manual:roberta-to-fuzzy", "source_id": "object:manual:roberta", "target_id": "object:auto:001", "path_class": "dotted_orthogonal", "path_points": [{"x": 180, "y": 645}, {"x": 180, "y": 570}, {"x": 377, "y": 300}]}
+        ]
+      },
+      "allowed_omissions": ["Repeated token cells and vertical activation arrows inside RoBERTa remain a single editable container."]
+    },
+    "phase16-dev-p058": {
+      "objects": {
+        "keep": ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020", "021", "022", "023", "024", "025", "026", "027", "028", "029"],
+        "core": ["001", "002", "003", "007", "011", "013", "017"],
+        "overrides": {
+          "001": {"role": "container"}, "002": {"role": "container"}, "003": {"role": "container"}, "013": {"role": "container"},
+          "004": {"parent_id": "object:auto:001"}, "009": {"parent_id": "object:auto:001"}, "010": {"parent_id": "object:auto:001"},
+          "005": {"parent_id": "object:auto:002"}, "006": {"parent_id": "object:auto:002"},
+          "008": {"parent_id": "object:auto:007"}, "012": {"parent_id": "object:auto:007"},
+          "014": {"parent_id": "object:auto:011"}, "016": {"parent_id": "object:auto:011"}, "019": {"parent_id": "object:auto:011"}, "024": {"parent_id": "object:auto:011"}, "029": {"parent_id": "object:auto:011"},
+          "015": {"parent_id": "object:auto:013"}, "018": {"parent_id": "object:auto:013"}, "023": {"parent_id": "object:auto:013"}, "028": {"parent_id": "object:auto:013"},
+          "020": {"parent_id": "object:auto:017"}, "021": {"parent_id": "object:auto:017"}, "022": {"parent_id": "object:auto:017"}, "025": {"parent_id": "object:auto:017"}, "026": {"parent_id": "object:auto:017"}, "027": {"parent_id": "object:auto:017"}
+        },
+        "labels": {"001": "Causal Reasoning", "002": "Content Summary", "003": "History Recorder", "007": "LLMs", "011": "Risk Management", "013": "Price Prediction", "017": "Input Parser", "025": "Audio", "026": "Text", "027": "PDF"}
+      },
+      "connectors": {},
+      "excluded_regions": [
+        {"id": "excluded:audio-icon", "kind": "icon", "bbox": {"x0": 535, "y0": 848, "x1": 597, "y1": 913}, "note": "Speaker icon inside an otherwise editable tile."},
+        {"id": "excluded:text-icon", "kind": "icon", "bbox": {"x0": 706, "y0": 848, "x1": 774, "y1": 913}, "note": "Document icon inside an otherwise editable tile."},
+        {"id": "excluded:pdf-icon", "kind": "icon", "bbox": {"x0": 879, "y0": 846, "x1": 953, "y1": 919}, "note": "PDF icon inside an otherwise editable tile."}
+      ]
+    },
+    "phase16-dev-p073": {
+      "objects": {
+        "keep": ["001", "002", "003", "004", "005", "006", "007", "008", "010", "013", "014", "015", "016", "017"],
+        "core": ["001", "002", "003", "004", "005", "007", "013", "014", "015", "016", "017"],
+        "overrides": {
+          "005": {"role": "container", "parent_id": "object:auto:003"}, "007": {"role": "container", "parent_id": "object:auto:001"},
+          "006": {"parent_id": "object:auto:004"}, "008": {"parent_id": "object:auto:004"}, "010": {"parent_id": "object:auto:004"},
+          "013": {"parent_id": "object:auto:007"}, "015": {"parent_id": "object:auto:007"}, "016": {"parent_id": "object:auto:005"},
+          "014": {"parent_id": "object:auto:002"}, "017": {"parent_id": "object:auto:002"}
+        }
+      },
+      "connectors": {
+        "keep": ["002", "003", "004"], "core": ["002", "003", "004"],
+        "add": [{"id": "connector:manual:questionnaire-to-result", "source_id": "object:auto:004", "target_id": "object:auto:014", "path_points": [{"x": 6920, "y": 1346}, {"x": 6920, "y": 1535}], "path_class": "direct_orthogonal"}]
+      },
+      "allowed_omissions": ["Folded-corner decoration and duplicate inner outlines were collapsed into their reviewed parent objects."]
+    },
+    "phase16-dev-p077": {
+      "objects": {"keep": ["001", "002", "003", "004", "005", "006", "007", "008"], "core": ["001", "002", "003", "004", "005", "006", "007", "008"]},
+      "connectors": {
+        "keep": ["001"], "core": ["001"],
+        "add": [
+          {"id": "connector:manual:decoder-to-left-output", "source_id": "object:auto:005", "target_id": "object:auto:007", "path_points": [{"x": 315, "y": 250}, {"x": 315, "y": 280}, {"x": 170, "y": 280}, {"x": 170, "y": 300}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:decoder-to-right-output", "source_id": "object:auto:005", "target_id": "object:auto:008", "path_points": [{"x": 315, "y": 250}, {"x": 315, "y": 280}, {"x": 475, "y": 280}, {"x": 475, "y": 300}], "path_class": "elbow_orthogonal"}
+        ]
+      }
+    },
+    "phase16-dev-p092": {
+      "objects": {
+        "keep": ["001", "002", "004", "005", "006", "007", "008"],
+        "core": ["001", "002", "004", "005", "006", "007", "008"],
+        "overrides": {"001": {"role": "container"}, "002": {"role": "container"}, "004": {"parent_id": "object:auto:001"}, "005": {"parent_id": "object:auto:001"}, "007": {"parent_id": "object:auto:002"}},
+        "add": [
+          {"id": "object:manual:fusion", "role": "node", "shape_kind": "ellipse", "bbox": {"x0": 990, "y0": 155, "x1": 1060, "y1": 215}, "importance": "core", "label_text": "Fusion"},
+          {"id": "object:manual:softmax", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 893, "y0": 50, "x1": 1158, "y1": 88}, "importance": "core", "label_text": "Softmax Output"}
+        ]
+      },
+      "connectors": {
+        "add": [
+          {"id": "connector:manual:input-to-le", "source_id": "object:auto:008", "target_id": "object:auto:001", "direction": "undirected", "path_points": [{"x": 900, "y": 867}, {"x": 640, "y": 707}]},
+          {"id": "connector:manual:input-to-roberta", "source_id": "object:auto:008", "target_id": "object:auto:006", "direction": "undirected", "path_points": [{"x": 1031, "y": 867}, {"x": 1031, "y": 561}]},
+          {"id": "connector:manual:input-to-hwa", "source_id": "object:auto:008", "target_id": "object:auto:002", "direction": "undirected", "path_points": [{"x": 1150, "y": 867}, {"x": 1420, "y": 707}]},
+          {"id": "connector:manual:le-to-fusion", "source_id": "object:auto:001", "target_id": "object:manual:fusion", "direction": "undirected", "path_points": [{"x": 640, "y": 294}, {"x": 1025, "y": 185}]},
+          {"id": "connector:manual:roberta-to-fusion", "source_id": "object:auto:006", "target_id": "object:manual:fusion", "direction": "undirected", "path_points": [{"x": 1031, "y": 406}, {"x": 1025, "y": 215}]},
+          {"id": "connector:manual:hwa-to-fusion", "source_id": "object:auto:002", "target_id": "object:manual:fusion", "direction": "undirected", "path_points": [{"x": 1420, "y": 294}, {"x": 1025, "y": 185}]},
+          {"id": "connector:manual:fusion-to-softmax", "source_id": "object:manual:fusion", "target_id": "object:manual:softmax", "direction": "undirected", "path_points": [{"x": 1025, "y": 155}, {"x": 1025, "y": 88}]}
+        ]
+      }
+    },
+    "phase16-dev-p034": {
+      "objects": {
+        "keep": ["003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "018", "021", "022", "023", "024"],
+        "core": ["003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "018", "021", "022", "023", "024"],
+        "overrides": {"021": {"parent_id": "object:manual:analogical"}, "022": {"parent_id": "object:manual:analogical"}, "023": {"parent_id": "object:manual:analogical"}},
+        "add": [
+          {"id": "object:manual:logical", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 614, "y0": 0, "x1": 1708, "y1": 391}, "importance": "core", "label_text": "Logical Reasoning"},
+          {"id": "object:manual:analogical", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 614, "y0": 360, "x1": 1708, "y1": 783}, "importance": "core", "label_text": "Analogical Reasoning"},
+          {"id": "object:manual:input", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 15, "y0": 72, "x1": 82, "y1": 628}, "importance": "core", "label_text": "Input"},
+          {"id": "object:manual:text-embedding", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 398, "y0": 72, "x1": 464, "y1": 628}, "importance": "core", "label_text": "Text Embedding"},
+          {"id": "object:manual:neural-1", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 1138, "y0": 382, "x1": 1332, "y1": 448}, "parent_id": "object:manual:analogical", "importance": "core", "label_text": "Neural Prediction 1"},
+          {"id": "object:manual:neural-2", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 1138, "y0": 473, "x1": 1332, "y1": 539}, "parent_id": "object:manual:analogical", "importance": "core", "label_text": "Neural Prediction 2"},
+          {"id": "object:manual:neural-3", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 1138, "y0": 563, "x1": 1332, "y1": 628}, "parent_id": "object:manual:analogical", "importance": "core", "label_text": "Neural Prediction 3"}
+        ]
+      },
+      "connectors": {
+        "keep": ["001", "002", "003", "004", "005"], "core": ["001", "002", "003", "004", "005"],
+        "add": [
+          {"id": "connector:manual:decoder1-program1", "source_id": "object:auto:007", "target_id": "object:auto:004", "path_points": [{"x": 863, "y": 116}, {"x": 919, "y": 116}]},
+          {"id": "connector:manual:executor1-prediction1", "source_id": "object:auto:005", "target_id": "object:auto:003", "path_points": [{"x": 1409, "y": 116}, {"x": 1462, "y": 116}]},
+          {"id": "connector:manual:decoder3-program3", "source_id": "object:auto:015", "target_id": "object:auto:013", "path_points": [{"x": 863, "y": 318}, {"x": 920, "y": 318}]},
+          {"id": "connector:manual:program3-executor3", "source_id": "object:auto:013", "target_id": "object:auto:016", "path_points": [{"x": 1137, "y": 318}, {"x": 1196, "y": 318}]},
+          {"id": "connector:manual:executor3-prediction3", "source_id": "object:auto:016", "target_id": "object:auto:014", "path_points": [{"x": 1409, "y": 318}, {"x": 1465, "y": 318}]},
+          {"id": "connector:manual:predictor1-neural1", "source_id": "object:auto:021", "target_id": "object:manual:neural-1", "path_points": [{"x": 1043, "y": 415}, {"x": 1138, "y": 415}]},
+          {"id": "connector:manual:predictor2-neural2", "source_id": "object:auto:022", "target_id": "object:manual:neural-2", "path_points": [{"x": 1043, "y": 506}, {"x": 1138, "y": 506}]},
+          {"id": "connector:manual:predictor3-neural3", "source_id": "object:auto:023", "target_id": "object:manual:neural-3", "path_points": [{"x": 1043, "y": 596}, {"x": 1138, "y": 596}]}
+        ]
+      }
+    },
+    "phase16-dev-p042": {
+      "objects": {"keep": ["001", "002", "003", "004", "005", "006", "007"], "core": ["001", "002", "003", "004", "005", "006", "007"]},
+      "connectors": {
+        "keep": ["001", "002", "003", "004"], "core": ["001", "002", "003", "004"],
+        "add": [
+          {"id": "connector:manual:pruned-to-optimization", "source_id": "object:auto:004", "target_id": "object:auto:005", "path_points": [{"x": 421, "y": 380}, {"x": 730, "y": 380}, {"x": 730, "y": 444}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:indicator-to-optimization", "source_id": "object:auto:007", "target_id": "object:auto:005", "path_points": [{"x": 420, "y": 695}, {"x": 730, "y": 695}, {"x": 730, "y": 620}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:large-to-compact", "source_id": "object:auto:003", "target_id": "object:auto:002", "path_points": [{"x": 740, "y": 195}, {"x": 740, "y": 85}, {"x": 1405, "y": 85}, {"x": 1405, "y": 194}], "path_class": "elbow_orthogonal"}
+        ]
+      }
+    },
+    "phase16-dev-p043": {
+      "objects": {
+        "keep": ["001", "002", "003", "004", "005"], "core": ["001", "002", "003", "004", "005"],
+        "labels": {"001": "Momentum Decoder", "002": "Decoder", "003": "Momentum Encoder", "004": "Encoder", "005": "Momentum Encoder"},
+        "add": [
+          {"id": "object:manual:mlp-decoder-left", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 286, "y0": 167, "x1": 419, "y1": 230}, "importance": "secondary", "label_text": "MLP"},
+          {"id": "object:manual:mlp-decoder-right", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 586, "y0": 167, "x1": 719, "y1": 230}, "importance": "secondary", "label_text": "MLP"},
+          {"id": "object:manual:mlp-encoder-left", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 1208, "y0": 447, "x1": 1342, "y1": 510}, "importance": "secondary", "label_text": "MLP"},
+          {"id": "object:manual:mlp-encoder-right", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 1506, "y0": 447, "x1": 1641, "y1": 510}, "importance": "secondary", "label_text": "MLP"}
+        ]
+      },
+      "connectors": {},
+      "allowed_omissions": ["Token-level rounded cells and curved contrastive-loss paths remain outside the conservative core."]
+    },
+    "phase16-dev-p067": {
+      "objects": {
+        "keep": ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "014", "015"],
+        "core": ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "014", "015"],
+        "overrides": {"001": {"bbox": {"x0": 0, "y0": 0, "x1": 180.85, "y1": 481}}, "002": {"bbox": {"x0": 179.81, "y0": 0, "x1": 531.14, "y1": 481}}, "003": {"bbox": {"x0": 530.1, "y0": 0, "x1": 831, "y1": 481}}, "004": {"role": "container", "shape_kind": "rectangle", "parent_id": "object:auto:003"}, "005": {"parent_id": "object:auto:001"}, "006": {"parent_id": "object:auto:001"}, "015": {"parent_id": "object:auto:001"}, "007": {"parent_id": "object:auto:002"}, "008": {"parent_id": "object:auto:002"}, "009": {"parent_id": "object:auto:002"}, "010": {"parent_id": "object:auto:002"}, "011": {"parent_id": "object:auto:004"}, "014": {"parent_id": "object:auto:004"}}
+      },
+      "connectors": {},
+      "allowed_omissions": ["Cylinder-like perturbation glyphs, small loss cells, and dense internal arrows are not represented as editable core primitives."]
+    },
+    "phase16-dev-p086": {
+      "objects": {"keep": ["008", "009"], "core": ["008", "009"], "overrides": {"008": {"parent_id": null}, "009": {"parent_id": null}}, "labels": {"008": "majority DNS", "009": "Chronos"}},
+      "connectors": {"keep": ["001"], "core": ["001"], "overrides": {"001": {"source_id": "object:auto:008", "target_id": "object:auto:009", "path_points": [{"x": 852, "y": 1095}, {"x": 1044, "y": 1095}]}}},
+      "excluded_regions": [
+        {"id": "excluded:server-1", "kind": "icon", "bbox": {"x0": 575, "y0": 5, "x1": 665, "y1": 160}, "note": "Server icon."},
+        {"id": "excluded:server-2", "kind": "icon", "bbox": {"x0": 165, "y0": 205, "x1": 250, "y1": 360}, "note": "Server icon."},
+        {"id": "excluded:server-3", "kind": "icon", "bbox": {"x0": 1065, "y0": 120, "x1": 1155, "y1": 280}, "note": "Server icon."},
+        {"id": "excluded:server-4", "kind": "icon", "bbox": {"x0": 1075, "y0": 405, "x1": 1165, "y1": 565}, "note": "Server icon."},
+        {"id": "excluded:server-5", "kind": "icon", "bbox": {"x0": 245, "y0": 515, "x1": 335, "y1": 675}, "note": "Server icon."},
+        {"id": "excluded:server-6", "kind": "icon", "bbox": {"x0": 975, "y0": 740, "x1": 1065, "y1": 900}, "note": "Server icon."}
+      ],
+      "allowed_omissions": ["Unboxed server labels and curved recursive-query paths are intentionally omitted."]
+    },
+    "phase16-dev-p089": {
+      "objects": {"keep": ["001", "002", "004", "005", "006", "007", "008"], "core": ["001", "002", "005", "006", "007", "008"], "overrides": {"005": {"role": "container"}, "008": {"role": "container"}}},
+      "connectors": {},
+      "allowed_omissions": ["Dense small predictor cells and arrows are preserved only through their enclosing reviewed panels."]
+    },
+    "phase16-dev-p119": {
+      "objects": {"keep": ["001", "002", "003", "008"], "core": ["001", "002", "003", "008"], "overrides": {"001": {"role": "container"}, "002": {"parent_id": "object:auto:001"}, "003": {"parent_id": "object:auto:001"}}, "labels": {"001": "LLM decoder", "002": "Text-text attention", "003": "adapters", "008": "Audio encoder"}},
+      "connectors": {},
+      "allowed_omissions": ["Token strips and empty black-background panels were not accepted without a stable closed outline and legible role."]
+    },
+    "phase16-dev-p152": {
+      "objects": {
+        "keep": ["002", "003", "004", "007", "010", "013", "014"],
+        "core": ["002", "007"],
+        "overrides": {"004": {"role": "node"}, "010": {"role": "node"}},
+        "add": [
+          {"id": "object:manual:prompt-3", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 167, "y0": 499, "x1": 893, "y1": 590}, "importance": "secondary", "label_text": "classification instruction"},
+          {"id": "object:manual:multitask", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 145, "y0": 685, "x1": 2044, "y1": 1138}, "importance": "core", "label_text": "Multi-task Instruction Finetuning"}
+        ]
+      },
+      "connectors": {
+        "keep": ["001"], "core": ["001"],
+        "add": [
+          {"id": "connector:manual:prompt1-decoder", "source_id": "object:auto:003", "target_id": "object:auto:007", "direction": "undirected", "path_points": [{"x": 892, "y": 290}, {"x": 1093, "y": 510}]},
+          {"id": "connector:manual:prompt2-decoder", "source_id": "object:auto:004", "target_id": "object:auto:007", "direction": "undirected", "path_points": [{"x": 895, "y": 405}, {"x": 1093, "y": 510}]},
+          {"id": "connector:manual:prompt3-decoder", "source_id": "object:manual:prompt-3", "target_id": "object:auto:007", "direction": "undirected", "path_points": [{"x": 893, "y": 545}, {"x": 1093, "y": 545}]},
+          {"id": "connector:manual:prompt4-decoder", "source_id": "object:auto:010", "target_id": "object:auto:007", "direction": "undirected", "path_points": [{"x": 895, "y": 685}, {"x": 1093, "y": 560}]}
+        ]
+      },
+      "excluded_regions": [{"id": "excluded:spectrogram", "kind": "plot", "bbox": {"x0": 150, "y0": 66, "x1": 906, "y1": 216}, "note": "Log-Mel spectrogram is raster evidence, not an editable structural node."}]
+    },
+    "phase16-holdout-p016": {
+      "objects": {"keep": ["001", "003", "004", "006", "007", "008"], "core": ["001", "003", "004", "006", "007", "008"]},
+      "connectors": {},
+      "excluded_regions": [
+        {"id": "excluded:history-database", "kind": "illustration", "bbox": {"x0": 495, "y0": 88, "x1": 742, "y1": 325}, "note": "Cylinder-shaped database glyph is unsupported."},
+        {"id": "excluded:bug-icon", "kind": "icon", "bbox": {"x0": 2375, "y0": 140, "x1": 2518, "y1": 272}, "note": "Bug triage icon."}
+      ],
+      "allowed_omissions": ["This low-connectivity diagram has no source-supported connector among the retained rectangular nodes."]
+    },
+    "phase16-holdout-p109": {
+      "objects": {
+        "keep": ["001", "002", "003", "004", "005"], "core": ["001", "002", "003", "004", "005"],
+        "add": [
+          {"id": "object:manual:edge-features", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 381, "y0": 55, "x1": 582, "y1": 156}, "importance": "core", "label_text": "Edge features convolution layer"},
+          {"id": "object:manual:aout", "role": "node", "shape_kind": "ellipse", "bbox": {"x0": 625, "y0": 64, "x1": 714, "y1": 153}, "importance": "core", "label_text": "Aout"}
+        ]
+      },
+      "connectors": {
+        "keep": ["001"], "core": ["001"],
+        "add": [
+          {"id": "connector:manual:v-filter", "source_id": "object:auto:001", "target_id": "object:auto:003", "path_points": [{"x": 81, "y": 54}, {"x": 123, "y": 81}]},
+          {"id": "connector:manual:a-convolution", "source_id": "object:auto:005", "target_id": "object:manual:edge-features", "path_points": [{"x": 81, "y": 132}, {"x": 381, "y": 132}]},
+          {"id": "connector:manual:vout-convolution", "source_id": "object:auto:002", "target_id": "object:manual:edge-features", "path_points": [{"x": 336, "y": 81}, {"x": 381, "y": 81}]},
+          {"id": "connector:manual:convolution-aout", "source_id": "object:manual:edge-features", "target_id": "object:manual:aout", "path_points": [{"x": 582, "y": 105}, {"x": 625, "y": 105}]},
+          {"id": "connector:manual:aout-fc", "source_id": "object:manual:aout", "target_id": "object:auto:004", "path_points": [{"x": 714, "y": 105}, {"x": 737, "y": 88}]}
+        ]
+      }
+    },
+    "phase16-holdout-p123": {
+      "objects": {
+        "keep": ["001", "002", "003"], "core": ["001", "002", "003"],
+        "overrides": {"001": {"parent_id": "object:manual:span-container"}, "002": {"parent_id": "object:manual:span-container"}},
+        "add": [
+          {"id": "object:manual:span-container", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 334, "y0": 18, "x1": 688, "y1": 226}, "importance": "core"},
+          {"id": "object:manual:inference", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 354, "y0": 380, "x1": 670, "y1": 448}, "importance": "core", "label_text": "Inference Module"}
+        ]
+      },
+      "connectors": {
+        "add": [
+          {"id": "connector:manual:roberta-span", "source_id": "object:auto:003", "target_id": "object:manual:span-container", "path_points": [{"x": 195, "y": 190}, {"x": 334, "y": 190}]},
+          {"id": "connector:manual:span-inference", "source_id": "object:manual:span-container", "target_id": "object:manual:inference", "path_points": [{"x": 512, "y": 226}, {"x": 512, "y": 380}]}
+        ]
+      },
+      "excluded_regions": [{"id": "excluded:differential-kg", "kind": "illustration", "bbox": {"x0": 18, "y0": 295, "x1": 337, "y1": 482}, "note": "Graph illustration and curved cycle."}]
+    },
+    "phase16-holdout-p025": {
+      "objects": {
+        "keep": ["001", "002", "007", "008"], "core": ["001", "002", "007", "008"],
+        "overrides": {"002": {"parent_id": "object:manual:collect-container"}, "001": {"parent_id": "object:manual:prompt-container"}, "007": {"parent_id": "object:manual:prompt-container"}, "008": {"parent_id": "object:manual:prompt-container"}},
+        "add": [
+          {"id": "object:manual:collect-container", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 2, "y0": 2, "x1": 1390, "y1": 2170}, "importance": "core", "label_text": "Collect Data from Existing Controller"},
+          {"id": "object:manual:prompt-container", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 1560, "y0": 2, "x1": 4828, "y1": 2170}, "importance": "core", "label_text": "Prompt a Robot to Walk with Large Language Models"}
+        ]
+      },
+      "connectors": {"keep": ["001", "004"], "core": ["001", "004"]},
+      "excluded_regions": [
+        {"id": "excluded:observation-pairs", "kind": "photo", "bbox": {"x0": 230, "y0": 1260, "x1": 1150, "y1": 1865}, "note": "Stacked robot observation photos."},
+        {"id": "excluded:robot-control", "kind": "photo", "bbox": {"x0": 3180, "y0": 425, "x1": 4275, "y1": 1175}, "note": "Robot rendering and PD-control illustration."}
+      ]
+    },
+    "phase16-holdout-p076": {
+      "objects": {
+        "keep": ["001", "002", "003"], "core": ["001", "002", "003"],
+        "overrides": {"001": {"parent_id": "object:manual:sentence-container"}, "002": {"parent_id": "object:manual:retrieval-container"}, "003": {"parent_id": "object:manual:retrieval-container"}},
+        "add": [
+          {"id": "object:manual:sentence-container", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 18, "y0": 10, "x1": 3630, "y1": 850}, "importance": "core"},
+          {"id": "object:manual:retrieval-container", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 18, "y0": 1042, "x1": 3670, "y1": 2200}, "importance": "core"}
+        ]
+      },
+      "connectors": {},
+      "excluded_regions": [
+        {"id": "excluded:llm-top", "kind": "illustration", "bbox": {"x0": 1120, "y0": 390, "x1": 1460, "y1": 720}, "note": "LLM logo montage."},
+        {"id": "excluded:llm-bottom", "kind": "illustration", "bbox": {"x0": 1120, "y0": 1540, "x1": 1420, "y1": 1880}, "note": "LLM logo montage."}
+      ],
+      "allowed_omissions": ["Open three-sided relation lists and graph/logo illustrations are outside the closed-shape core."]
+    },
+    "phase16-holdout-p121": {
+      "objects": {"keep": ["003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016"], "core": ["003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016"]},
+      "connectors": {
+        "keep": ["001", "002", "003", "004"], "core": ["001", "002", "003", "004"],
+        "overrides": {"003": {"direction": "directed"}, "004": {"direction": "directed"}},
+        "add": [
+          {"id": "connector:manual:left-encoder-linear", "source_id": "object:auto:015", "target_id": "object:auto:012", "path_points": [{"x": 230, "y": 954}, {"x": 408, "y": 927}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:left-softmax-ctc", "source_id": "object:auto:011", "target_id": "object:auto:003", "path_points": [{"x": 1190, "y": 878}, {"x": 1190, "y": 602}]},
+          {"id": "connector:manual:left-interaug-encoder", "source_id": "object:auto:007", "target_id": "object:auto:005", "path_points": [{"x": 540, "y": 669}, {"x": 300, "y": 600}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:right-encoder-linear", "source_id": "object:auto:016", "target_id": "object:auto:014", "path_points": [{"x": 1700, "y": 1020}, {"x": 1905, "y": 939}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:right-softmax-ctc", "source_id": "object:auto:013", "target_id": "object:auto:004", "path_points": [{"x": 2715, "y": 887}, {"x": 2715, "y": 602}]},
+          {"id": "connector:manual:right-interaug-encoder", "source_id": "object:auto:009", "target_id": "object:auto:006", "path_points": [{"x": 2295, "y": 722}, {"x": 1700, "y": 612}], "path_class": "elbow_orthogonal"}
+        ]
+      },
+      "excluded_regions": [
+        {"id": "excluded:time-mask-callout", "kind": "illustration", "bbox": {"x0": 300, "y0": 0, "x1": 1340, "y1": 470}, "note": "Speech-bubble callout with embedded mask grids."},
+        {"id": "excluded:token-mask-callout", "kind": "illustration", "bbox": {"x0": 1800, "y0": 0, "x1": 3410, "y1": 470}, "note": "Speech-bubble callout with token-edit examples."}
+      ]
+    },
+    "phase16-holdout-p131": {
+      "objects": {
+        "keep": ["001", "002", "003", "004", "005", "006", "013", "014", "015"], "core": ["001", "002", "003", "004", "005", "006", "013", "014", "015"],
+        "add": [
+          {"id": "object:manual:applications", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 210, "y0": 454, "x1": 680, "y1": 656}, "importance": "core", "label_text": "Applications"},
+          {"id": "object:manual:authoring", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 695, "y0": 453, "x1": 1150, "y1": 689}, "importance": "core", "label_text": "Authoring"},
+          {"id": "object:manual:contributor", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 236, "y0": 688, "x1": 455, "y1": 839}, "importance": "core", "label_text": "Contributor"}
+        ]
+      },
+      "connectors": {
+        "keep": ["002"], "core": ["002"], "overrides": {"002": {"direction": "undirected"}},
+        "add": [
+          {"id": "connector:manual:metadata-license", "source_id": "object:auto:001", "target_id": "object:auto:002", "direction": "undirected", "path_points": [{"x": 711, "y": 100}, {"x": 877, "y": 100}]},
+          {"id": "connector:manual:metadata-distribution", "source_id": "object:auto:001", "target_id": "object:auto:004", "direction": "undirected", "path_points": [{"x": 711, "y": 190}, {"x": 840, "y": 190}, {"x": 840, "y": 262}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:metadata-category", "source_id": "object:auto:001", "target_id": "object:auto:005", "direction": "undirected", "path_points": [{"x": 470, "y": 272}, {"x": 470, "y": 364}, {"x": 157, "y": 364}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:metadata-tag", "source_id": "object:auto:001", "target_id": "object:auto:006", "direction": "undirected", "path_points": [{"x": 520, "y": 272}, {"x": 520, "y": 434}, {"x": 156, "y": 434}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:metadata-applications", "source_id": "object:auto:001", "target_id": "object:manual:applications", "direction": "undirected", "path_points": [{"x": 630, "y": 272}, {"x": 630, "y": 454}]},
+          {"id": "connector:manual:metadata-authoring", "source_id": "object:auto:001", "target_id": "object:manual:authoring", "direction": "undirected", "path_points": [{"x": 711, "y": 252}, {"x": 790, "y": 252}, {"x": 790, "y": 453}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:authoring-author", "source_id": "object:manual:authoring", "target_id": "object:auto:013", "direction": "undirected", "path_points": [{"x": 742, "y": 689}, {"x": 742, "y": 773}]},
+          {"id": "connector:manual:authoring-maintainer", "source_id": "object:manual:authoring", "target_id": "object:auto:014", "direction": "undirected", "path_points": [{"x": 923, "y": 689}, {"x": 923, "y": 773}]},
+          {"id": "connector:manual:authoring-funder", "source_id": "object:manual:authoring", "target_id": "object:auto:015", "direction": "undirected", "path_points": [{"x": 1060, "y": 689}, {"x": 1060, "y": 773}]}
+        ]
+      }
+    },
+    "phase16-holdout-p005": {
+      "objects": {"keep": ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "018", "019", "021", "022", "024", "025"], "core": ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "018", "019", "021", "022", "024", "025"]},
+      "connectors": {
+        "keep": ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "013"],
+        "core": ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "013"],
+        "overrides": {"002": {"direction": "directed"}, "011": {"direction": "directed"}},
+        "add": [
+          {"id": "connector:manual:full-to-finetune", "source_id": "object:auto:004", "target_id": "object:auto:006", "path_points": [{"x": 976, "y": 445}, {"x": 976, "y": 511}]},
+          {"id": "connector:manual:finetune-rubert", "source_id": "object:auto:006", "target_id": "object:auto:007", "path_points": [{"x": 976, "y": 687}, {"x": 976, "y": 746}]},
+          {"id": "connector:manual:rubert-classification", "source_id": "object:auto:007", "target_id": "object:auto:009", "path_points": [{"x": 976, "y": 1006}, {"x": 976, "y": 1065}]},
+          {"id": "connector:manual:classification-auto", "source_id": "object:auto:009", "target_id": "object:auto:011", "path_points": [{"x": 976, "y": 1242}, {"x": 976, "y": 1302}]},
+          {"id": "connector:manual:auto-top", "source_id": "object:auto:011", "target_id": "object:auto:012", "path_points": [{"x": 976, "y": 1478}, {"x": 976, "y": 1538}]},
+          {"id": "connector:manual:top-finetune", "source_id": "object:auto:012", "target_id": "object:auto:014", "path_points": [{"x": 976, "y": 1715}, {"x": 976, "y": 1773}]},
+          {"id": "connector:manual:finetune-model", "source_id": "object:auto:014", "target_id": "object:auto:015", "path_points": [{"x": 976, "y": 1950}, {"x": 976, "y": 2010}]},
+          {"id": "connector:manual:gen-pre-manual", "source_id": "object:auto:021", "target_id": "object:auto:024", "path_points": [{"x": 300, "y": 2774}, {"x": 600, "y": 2841}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:gen-fine-manual", "source_id": "object:auto:022", "target_id": "object:auto:024", "path_points": [{"x": 976, "y": 2774}, {"x": 800, "y": 2841}], "path_class": "elbow_orthogonal"}
+        ]
+      }
+    },
+    "phase16-holdout-p056": {
+      "objects": {
+        "keep": ["001", "002", "003", "004", "005", "006", "007"], "core": ["001", "002", "003", "004", "005", "006", "007"],
+        "add": [
+          {"id": "object:manual:event-1", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 1307, "y0": 443, "x1": 1441, "y1": 478}, "importance": "core", "label_text": "Event 1 result"},
+          {"id": "object:manual:event-2", "role": "node", "shape_kind": "rectangle", "bbox": {"x0": 1307, "y0": 531, "x1": 1441, "y1": 568}, "importance": "core", "label_text": "Event 2 result"}
+        ]
+      },
+      "connectors": {
+        "keep": ["001", "002", "003", "004"], "core": ["001", "002", "003", "004"],
+        "add": [
+          {"id": "connector:manual:path4-path6", "source_id": "object:auto:004", "target_id": "object:auto:006", "path_points": [{"x": 1122, "y": 460}, {"x": 1122, "y": 535}], "path_class": "elbow_orthogonal"},
+          {"id": "connector:manual:path5-event1", "source_id": "object:auto:005", "target_id": "object:manual:event-1", "path_points": [{"x": 1278, "y": 460}, {"x": 1307, "y": 460}]},
+          {"id": "connector:manual:path7-event2", "source_id": "object:auto:007", "target_id": "object:manual:event-2", "path_points": [{"x": 1278, "y": 548}, {"x": 1307, "y": 548}]}
+        ]
+      },
+      "allowed_omissions": ["The dense left-side encoder and embedding illustration is outside the retained coherent Path Expanding component."]
+    },
+    "phase16-holdout-p068": {
+      "objects": {
+        "keep": [], "core": [],
+        "add": [
+          {"id": "object:manual:target-top", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 650, "y0": 415, "x1": 1677, "y1": 686}, "importance": "core", "label_text": "Target network"},
+          {"id": "object:manual:online", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 650, "y0": 700, "x1": 2184, "y1": 971}, "importance": "core", "label_text": "Online network"},
+          {"id": "object:manual:target-bottom", "role": "container", "shape_kind": "rounded_rectangle", "bbox": {"x0": 650, "y0": 983, "x1": 1673, "y1": 1255}, "importance": "core", "label_text": "Target network"},
+          {"id": "object:manual:x", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 139, "y0": 777, "x1": 262, "y1": 896}, "importance": "core", "label_text": "X"},
+          {"id": "object:manual:v2", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 479, "y0": 487, "x1": 603, "y1": 603}, "importance": "core", "label_text": "V2"},
+          {"id": "object:manual:v1", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 477, "y0": 780, "x1": 599, "y1": 896}, "importance": "core", "label_text": "V1"},
+          {"id": "object:manual:v3", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 475, "y0": 1056, "x1": 600, "y1": 1172}, "importance": "core", "label_text": "V3"},
+          {"id": "object:manual:y2", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 983, "y0": 489, "x1": 1105, "y1": 603}, "parent_id": "object:manual:target-top", "importance": "secondary", "label_text": "Y2"},
+          {"id": "object:manual:z2", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 1482, "y0": 489, "x1": 1606, "y1": 603}, "parent_id": "object:manual:target-top", "importance": "secondary", "label_text": "Z2"},
+          {"id": "object:manual:y1", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 979, "y0": 781, "x1": 1103, "y1": 896}, "parent_id": "object:manual:online", "importance": "secondary", "label_text": "Y1"},
+          {"id": "object:manual:z1", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 1482, "y0": 781, "x1": 1606, "y1": 896}, "parent_id": "object:manual:online", "importance": "secondary", "label_text": "Z1"},
+          {"id": "object:manual:q1", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 1978, "y0": 781, "x1": 2103, "y1": 896}, "parent_id": "object:manual:online", "importance": "secondary", "label_text": "Q1"},
+          {"id": "object:manual:y3", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 979, "y0": 1057, "x1": 1103, "y1": 1172}, "parent_id": "object:manual:target-bottom", "importance": "secondary", "label_text": "Y3"},
+          {"id": "object:manual:z3", "role": "node", "shape_kind": "rounded_rectangle", "bbox": {"x0": 1482, "y0": 1057, "x1": 1606, "y1": 1172}, "parent_id": "object:manual:target-bottom", "importance": "secondary", "label_text": "Z3"}
+        ]
+      },
+      "connectors": {
+        "add": [
+          {"id": "connector:manual:x-v2", "source_id": "object:manual:x", "target_id": "object:manual:v2", "path_points": [{"x": 262, "y": 820}, {"x": 479, "y": 545}]},
+          {"id": "connector:manual:x-v1", "source_id": "object:manual:x", "target_id": "object:manual:v1", "path_points": [{"x": 262, "y": 836}, {"x": 477, "y": 836}]},
+          {"id": "connector:manual:x-v3", "source_id": "object:manual:x", "target_id": "object:manual:v3", "path_points": [{"x": 262, "y": 850}, {"x": 475, "y": 1114}]},
+          {"id": "connector:manual:y1-z1", "source_id": "object:manual:y1", "target_id": "object:manual:z1", "path_points": [{"x": 1103, "y": 838}, {"x": 1482, "y": 838}]},
+          {"id": "connector:manual:z1-q1", "source_id": "object:manual:z1", "target_id": "object:manual:q1", "path_points": [{"x": 1606, "y": 838}, {"x": 1978, "y": 838}]}
+        ]
+      },
+      "allowed_omissions": ["Trapezoidal encoders, narrow MLP blocks, EMA arrows, and dashed loss paths remain outside the conservative primitive subset."]
+    },
+    "phase16-holdout-p083": {
+      "objects": {
+        "keep": ["001"], "core": ["001"], "overrides": {"001": {"parent_id": "object:manual:decoder"}},
+        "add": [
+          {"id": "object:manual:decoder", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 1, "y0": 1, "x1": 2465, "y1": 657}, "importance": "core", "label_text": "Sequence Labeling Decoder"},
+          {"id": "object:manual:legend", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 2680, "y0": 1, "x1": 3370, "y1": 657}, "importance": "secondary"},
+          {"id": "object:manual:encoder", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 1, "y0": 725, "x1": 1610, "y1": 2230}, "importance": "core", "label_text": "Sequence Labeling Encoder"},
+          {"id": "object:manual:global-encoder", "role": "container", "shape_kind": "rectangle", "bbox": {"x0": 1810, "y0": 1010, "x1": 3370, "y1": 2230}, "importance": "core", "label_text": "Global Contextual Encoder"}
+        ]
+      },
+      "connectors": {},
+      "allowed_omissions": ["Repeated 3D recurrent cells, word/character tokens, and curved recurrence paths are illustration-like substructure."]
+    },
+    "phase16-holdout-p135": {
+      "objects": {"keep": ["004"], "core": ["004"], "labels": {"004": "Make match patterns"}},
+      "connectors": {},
+      "excluded_regions": [
+        {"id": "excluded:document-column", "kind": "illustration", "bbox": {"x0": 35, "y0": 18, "x1": 250, "y1": 635}, "note": "Stacked and wavy-bottom document glyphs."},
+        {"id": "excluded:annotation-column", "kind": "illustration", "bbox": {"x0": 390, "y0": 18, "x1": 540, "y1": 792}, "note": "Cylinder annotation stores."},
+        {"id": "excluded:label-column", "kind": "illustration", "bbox": {"x0": 585, "y0": 42, "x1": 930, "y1": 718}, "note": "Parallelogram label-set glyphs."},
+        {"id": "excluded:model-column", "kind": "illustration", "bbox": {"x0": 640, "y0": 142, "x1": 850, "y1": 908}, "note": "Horizontal model cylinders."}
+      ],
+      "allowed_omissions": ["Only the unambiguous editable rectangle is retained; the remaining workflow uses unsupported document, cylinder, and parallelogram shapes."]
+    }
+  }
+}

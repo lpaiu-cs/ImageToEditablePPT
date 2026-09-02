@@ -1,0 +1,195 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-holdout-p123",
+  "image": {
+    "path": "data/phase16_holdout_v1/phase16-holdout-p123.png",
+    "sha256": "e756e7b410c765d3a71816884c8ae73ca4edbee0ec48fd40f28114abbeb9c66b",
+    "width": 792,
+    "height": 532
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:001",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 353.72,
+        "y0": 43.31,
+        "x1": 667.22,
+        "y1": 112.41
+      },
+      "parent_id": "object:manual:span-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:002",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 353.72,
+        "y0": 134.06,
+        "x1": 667.22,
+        "y1": 205.0
+      },
+      "parent_id": "object:manual:span-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:003",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 22.34,
+        "y0": 155.36,
+        "x1": 194.95,
+        "y1": 225.92
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:manual:span-container",
+      "role": "container",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 334,
+        "y0": 18,
+        "x1": 688,
+        "y1": 226
+      },
+      "importance": "core",
+      "parent_id": null,
+      "label": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:inference",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 354,
+        "y0": 380,
+        "x1": 670,
+        "y1": 448
+      },
+      "importance": "core",
+      "label": {
+        "text": "Inference Module",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [
+    {
+      "id": "connector:manual:roberta-span",
+      "source_id": "object:auto:003",
+      "target_id": "object:manual:span-container",
+      "path_points": [
+        {
+          "x": 195,
+          "y": 190
+        },
+        {
+          "x": 334,
+          "y": 190
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:span-inference",
+      "source_id": "object:manual:span-container",
+      "target_id": "object:manual:inference",
+      "path_points": [
+        {
+          "x": 512,
+          "y": 226
+        },
+        {
+          "x": 512,
+          "y": 380
+        }
+      ],
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    }
+  ],
+  "excluded_regions": [
+    {
+      "id": "excluded:differential-kg",
+      "kind": "illustration",
+      "bbox": {
+        "x0": 18,
+        "y0": 295,
+        "x1": 337,
+        "y1": 482
+      },
+      "note": "Graph illustration and curved cycle."
+    }
+  ],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:57.766673+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

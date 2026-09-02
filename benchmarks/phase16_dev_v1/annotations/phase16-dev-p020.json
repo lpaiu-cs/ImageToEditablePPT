@@ -1,0 +1,223 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-dev-p020",
+  "image": {
+    "path": "data/phase16_dev_v1/phase16-dev-p020.png",
+    "sha256": "53662c905b80c12cc09f4c6ca3e4ff062fbf5445a95c1a0bff6285e6291ef017",
+    "width": 1654,
+    "height": 2339
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:001",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 376.81,
+        "y0": 245.73,
+        "x1": 849.15,
+        "y1": 334.89
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Fuzzy Similarity Function",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:manual:fingerprint-library",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 926,
+        "y0": 96,
+        "x1": 1515,
+        "y1": 441
+      },
+      "importance": "core",
+      "label": {
+        "text": "Fingerprint Library",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:class-a",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 980,
+        "y0": 170,
+        "x1": 1052,
+        "y1": 365
+      },
+      "parent_id": "object:manual:fingerprint-library",
+      "importance": "secondary",
+      "label": {
+        "text": "Class A",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:class-b",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 1147,
+        "y0": 170,
+        "x1": 1215,
+        "y1": 365
+      },
+      "parent_id": "object:manual:fingerprint-library",
+      "importance": "secondary",
+      "label": {
+        "text": "Class B",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:class-c",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 1303,
+        "y0": 170,
+        "x1": 1368,
+        "y1": 365
+      },
+      "parent_id": "object:manual:fingerprint-library",
+      "importance": "secondary",
+      "label": {
+        "text": "Class C",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:roberta",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 87,
+        "y0": 645,
+        "x1": 1566,
+        "y1": 1522
+      },
+      "importance": "core",
+      "label": {
+        "text": "RoBERTa",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [
+    {
+      "id": "connector:manual:library-to-fuzzy",
+      "source_id": "object:manual:fingerprint-library",
+      "target_id": "object:auto:001",
+      "direction": "directed",
+      "path_class": "dotted_orthogonal",
+      "path_points": [
+        {
+          "x": 926,
+          "y": 270
+        },
+        {
+          "x": 849,
+          "y": 270
+        }
+      ],
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    },
+    {
+      "id": "connector:manual:roberta-to-fuzzy",
+      "source_id": "object:manual:roberta",
+      "target_id": "object:auto:001",
+      "path_class": "dotted_orthogonal",
+      "path_points": [
+        {
+          "x": 180,
+          "y": 645
+        },
+        {
+          "x": 180,
+          "y": 570
+        },
+        {
+          "x": 377,
+          "y": 300
+        }
+      ],
+      "direction": "directed",
+      "importance": "core",
+      "ambiguity_note": "Added after direct visual topology inspection."
+    }
+  ],
+  "excluded_regions": [],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines.",
+    "Repeated token cells and vertical activation arrows inside RoBERTa remain a single editable container."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:54.120356+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-09-02
-상태: `Phase 15 (visual-first geometry confirmation)는 코드·육안 관측·한계와 함께 동결됐다. Phase 16 Multi-scale Evidence Graph의 독립 spec만 작성됐으며 구현·튜닝·승인 실험은 시작하지 않았다. candidate/NO-GO를 유지한다.`
+상태: `Phase 15는 동결됐다. Phase 16.0은 새 dev/holdout·수동 annotation v2·정확 재생성한 Phase 15 baseline·육안 A/B rubric·PowerPoint 보정 deck까지 고정했으나, 사람의 실제 편집시간 측정이 없어 experiment lock은 blocked다. MEG algorithm tuning과 holdout candidate run은 시작하지 않았으며 candidate/NO-GO를 유지한다.`
 
 ---
 
@@ -1106,7 +1106,18 @@ PowerPoint 육안 판정:
 - 기존 holdout을 본 뒤 경계를 정했으므로 canonical 승인 증거로 사용할 수 없다.
 - candidate bundle과 NO-GO를 유지한다. 다음 단계는 현 경계를 동결한 뒤 **새 독립 시각 holdout**에서 PowerPoint 재작도량을 확인하는 것이다.
 - 2026-09-02에 현재 코드와 육안 판정, 알려진 한계, 추가 튜닝 금지 경계를 [Phase 15 동결 기록](docs/phase15_visual_first_freeze.md)으로 고정했다.
-- 후속 접근은 단일 threshold/해상도 변경이 아니라 다중-scale source evidence, containment hierarchy, 실제 stroke graph, shape-conditioned OCR을 분리 검증하는 [Phase 16 MEG spec](docs/phase16_multiscale_evidence_graph_spec.md)으로 정의했다. 구현은 아직 시작하지 않았다.
+- 후속 접근은 단일 threshold/해상도 변경이 아니라 다중-scale source evidence, containment hierarchy, 실제 stroke graph, shape-conditioned OCR을 분리 검증하는 [Phase 16 MEG spec](docs/phase16_multiscale_evidence_graph_spec.md)으로 정의했다.
+
+Phase 16.0 실행 상태 (2026-09-02):
+
+- 고정 revision의 공개 연구 figure pool에서 160개를 추출하고 전수 접촉시트 검토 후 dev `20 diagram + 20 non-diagram`, holdout `12 diagram + 12 non-diagram`을 분리했다. source group/content SHA/perceptual near-duplicate 격리를 validator로 강제한다.
+- 64개 전부를 annotation v2로 수동 재검토했다. 최종 계약은 object `290`, core object `239`, connector `129`, excluded region `55`이며 두 번째 topology/exclusion pass와 source hash 검증을 통과했다.
+- 정확한 Phase 15 commit `3ae7caf2c6160bd84e4bc851212b22c536cb3348`과 candidate bundle을 detached worktree에서 재실행했다. 기존 `input.png` PPTX의 canonical semantics와 실제 PowerPoint 렌더 픽셀이 동결본과 각각 완전히 일치했다.
+- 공식 64개 baseline은 [manifest](benchmarks/phase16_baseline_v1.json)에 source/annotation/PPTX/PowerPoint-render SHA와 native shape semantics로 고정했다. dev diagram `9/20`, holdout diagram `5/12`가 blank였고 dev non-diagram `p063` 한 건은 14개 객체를 잘못 emit했다.
+- 전체 baseline 접촉시트를 직접 확인했다. 단순 직렬 흐름 일부는 유용한 부분복원이지만, 많은 nonblank 결과도 connector topology와 hierarchy를 크게 잃었다. `p034`는 잘못된 대형 영역으로 구조를 오도하고 `p063`은 병리 이미지 tile을 구조 도형으로 오인한다. 세부는 [baseline 재현 보고서](docs/phase16_baseline_reproduction_report.md)에 기록한다.
+- visual A/B rubric은 candidate 결과 전에 고정했다. 실제 PowerPoint 작업 9종의 보정 deck과 90회 입력 sheet를 만들고 모든 task slide의 PowerPoint 16.0 렌더를 육안 승인했다.
+- 자동화 시간은 사람의 편집시간을 대신하지 않는다. 최소 10회/작업의 실제 측정치가 없으므로 `operation_time_calibration.json`은 생성하지 않았고, pending experiment lock은 이를 명시적으로 거절한다.
+- 따라서 Phase 16.1 proposal ceiling 구현·튜닝과 Phase 16 candidate holdout 실행은 아직 시작하지 않는다.
 
 완료 조건:
 
@@ -1321,7 +1332,7 @@ Phase 4 재검토 결과:
 2026-09-02 현재:
 
 - Python 3.12 `.venv`, `.[ml,ocr,test]` 환경
-- 전체 테스트: `195 passed`, `9 warnings`
+- 전체 테스트: `211 passed`, `9 warnings`
 - controlled held-out 표본: visual hardening 전/후 topology F1 `0.5714 -> 1.0`, 방향 포함 F1 `0.1429 -> 1.0`, label `7/8 -> 8/8`, 편집 작업 하한 `11 -> 0`
 - oracle-composed 표본: node/container/topology/방향 포함 F1 `1.0`, label `8/8`, 결속 `7/7`, 편집 작업 하한 `0`
 - PowerPoint 동작 검증: node `+36pt` 이동 시 결속 connector 시작점도 `+36pt` 이동, 반대쪽 끝점 고정
@@ -1332,6 +1343,9 @@ Phase 4 재검토 결과:
 - checksum-bound bundle은 candidate로 검증됐으며 canonical 승격은 NO-GO
 - Phase 15 PowerPoint 육안 검증: 공개 diagram 5종은 유용한 보수적 부분복원, 복잡 로컬 `input.png`는 NO-GO
 - Phase 15 개발/과거 holdout 비도식 검증: 개발 `5/5` empty, 과거 holdout `9/9` empty. 과거 holdout은 이미 소비됐으므로 승인 증거가 아니다.
+- Phase 16.0 frozen annotation validator: dev `40`, holdout `24`, object `290`, core object `239`, connector `129`, excluded region `55`; source/content/perceptual split isolation 통과
+- Phase 16 Phase 15-baseline 재현: 기존 `input.png` canonical PPTX semantics 및 PowerPoint 렌더 exact match; 새 32 diagram 중 `14` blank, dev non-diagram `p063` 1건 오탐
+- Phase 16 experiment lock: 사람 PowerPoint operation timing 미측정과 미커밋 worktree 때문에 의도적으로 `blocked`; algorithm tuning 미시작
 
 아래는 이전 단계별 회귀 이력이다.
 

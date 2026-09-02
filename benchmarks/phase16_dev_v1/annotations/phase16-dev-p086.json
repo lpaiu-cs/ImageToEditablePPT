@@ -1,0 +1,191 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-dev-p086",
+  "image": {
+    "path": "data/phase16_dev_v1/phase16-dev-p086.png",
+    "sha256": "f06e9c4b22c03a70b662dd11b1e5c83ffd5b8451635a6a4918a02552018239e4",
+    "width": 1339,
+    "height": 1209
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:008",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 660.0,
+        "y0": 1044.0,
+        "x1": 852.0,
+        "y1": 1152.0
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "majority DNS",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:009",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 1044.0,
+        "y0": 1057.0,
+        "x1": 1214.0,
+        "y1": 1137.0
+      },
+      "parent_id": null,
+      "importance": "core",
+      "label": {
+        "text": "Chronos",
+        "legible": true,
+        "editable_required": true
+      },
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    }
+  ],
+  "connectors": [
+    {
+      "id": "connector:auto:001",
+      "source_id": "object:auto:008",
+      "target_id": "object:auto:009",
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "path_points": [
+        {
+          "x": 852,
+          "y": 1095
+        },
+        {
+          "x": 1044,
+          "y": 1095
+        }
+      ],
+      "ambiguity_note": "Endpoint and direction accepted during visual topology review."
+    }
+  ],
+  "excluded_regions": [
+    {
+      "id": "excluded:server-1",
+      "kind": "icon",
+      "bbox": {
+        "x0": 575,
+        "y0": 5,
+        "x1": 665,
+        "y1": 160
+      },
+      "note": "Server icon."
+    },
+    {
+      "id": "excluded:server-2",
+      "kind": "icon",
+      "bbox": {
+        "x0": 165,
+        "y0": 205,
+        "x1": 250,
+        "y1": 360
+      },
+      "note": "Server icon."
+    },
+    {
+      "id": "excluded:server-3",
+      "kind": "icon",
+      "bbox": {
+        "x0": 1065,
+        "y0": 120,
+        "x1": 1155,
+        "y1": 280
+      },
+      "note": "Server icon."
+    },
+    {
+      "id": "excluded:server-4",
+      "kind": "icon",
+      "bbox": {
+        "x0": 1075,
+        "y0": 405,
+        "x1": 1165,
+        "y1": 565
+      },
+      "note": "Server icon."
+    },
+    {
+      "id": "excluded:server-5",
+      "kind": "icon",
+      "bbox": {
+        "x0": 245,
+        "y0": 515,
+        "x1": 335,
+        "y1": 675
+      },
+      "note": "Server icon."
+    },
+    {
+      "id": "excluded:server-6",
+      "kind": "icon",
+      "bbox": {
+        "x0": 975,
+        "y0": 740,
+        "x1": 1065,
+        "y1": 900
+      },
+      "note": "Server icon."
+    }
+  ],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines.",
+    "Unboxed server labels and curved recursive-query paths are intentionally omitted."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:56.743527+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}

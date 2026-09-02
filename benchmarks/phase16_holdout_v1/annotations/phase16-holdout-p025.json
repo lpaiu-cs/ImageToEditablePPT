@@ -1,0 +1,225 @@
+{
+  "schema_version": "phase16_annotation_v2",
+  "sample_id": "phase16-holdout-p025",
+  "image": {
+    "path": "data/phase16_holdout_v1/phase16-holdout-p025.png",
+    "sha256": "e583f3590a0daad4fd725c9e409b97b8a12c9f021bfd32fbb5161d4df2c84cd7",
+    "width": 4839,
+    "height": 2178
+  },
+  "kind": "diagram",
+  "objects": [
+    {
+      "id": "object:auto:001",
+      "role": "node",
+      "shape_kind": "rectangle",
+      "bbox": {
+        "x0": 1799.5,
+        "y0": 449.88,
+        "x1": 2910.96,
+        "y1": 1247.55
+      },
+      "parent_id": "object:manual:prompt-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:002",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 283.54,
+        "y0": 465.47,
+        "x1": 1084.99,
+        "y1": 1058.53
+      },
+      "parent_id": "object:manual:collect-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:007",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 3036.98,
+        "y0": 1339.7,
+        "x1": 4397.16,
+        "y1": 1824.08
+      },
+      "parent_id": "object:manual:prompt-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:auto:008",
+      "role": "node",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 2060.36,
+        "y0": 1432.8,
+        "x1": 2570.72,
+        "y1": 1727.67
+      },
+      "parent_id": "object:manual:prompt-container",
+      "importance": "core",
+      "label": null,
+      "ambiguity_note": "Accepted during the Phase 16 visual geometry review."
+    },
+    {
+      "id": "object:manual:collect-container",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 2,
+        "y0": 2,
+        "x1": 1390,
+        "y1": 2170
+      },
+      "importance": "core",
+      "label": {
+        "text": "Collect Data from Existing Controller",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    },
+    {
+      "id": "object:manual:prompt-container",
+      "role": "container",
+      "shape_kind": "rounded_rectangle",
+      "bbox": {
+        "x0": 1560,
+        "y0": 2,
+        "x1": 4828,
+        "y1": 2170
+      },
+      "importance": "core",
+      "label": {
+        "text": "Prompt a Robot to Walk with Large Language Models",
+        "legible": true,
+        "editable_required": true
+      },
+      "parent_id": null,
+      "ambiguity_note": "Added after direct visual inspection of the source image."
+    }
+  ],
+  "connectors": [
+    {
+      "id": "connector:auto:001",
+      "source_id": "object:auto:001",
+      "target_id": "object:auto:008",
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "path_points": [
+        {
+          "x": 2315.5,
+          "y": 1247.55
+        },
+        {
+          "x": 2315.5,
+          "y": 1432.8
+        }
+      ],
+      "ambiguity_note": "Endpoint and direction accepted during visual topology review."
+    },
+    {
+      "id": "connector:auto:004",
+      "source_id": "object:auto:008",
+      "target_id": "object:auto:007",
+      "direction": "directed",
+      "path_class": "direct_orthogonal",
+      "importance": "core",
+      "path_points": [
+        {
+          "x": 2570.72,
+          "y": 1581.0
+        },
+        {
+          "x": 3036.98,
+          "y": 1581.0
+        }
+      ],
+      "ambiguity_note": "Endpoint and direction accepted during visual topology review."
+    }
+  ],
+  "excluded_regions": [
+    {
+      "id": "excluded:observation-pairs",
+      "kind": "photo",
+      "bbox": {
+        "x0": 230,
+        "y0": 1260,
+        "x1": 1150,
+        "y1": 1865
+      },
+      "note": "Stacked robot observation photos."
+    },
+    {
+      "id": "excluded:robot-control",
+      "kind": "photo",
+      "bbox": {
+        "x0": 3180,
+        "y0": 425,
+        "x1": 4275,
+        "y1": 1175
+      },
+      "note": "Robot rendering and PD-control illustration."
+    }
+  ],
+  "allowed_omissions": [
+    "Icons, logos, photos, illustrations, decoration, unsupported polygons/free curves, and open outlines."
+  ],
+  "ambiguity_notes": [
+    "Visual review decisions are bound to phase16_annotation_review_v1 SHA-256 3d011a2713bab666483874c221524a2044980f2e28ce4a5888709d83c992c97b."
+  ],
+  "review": {
+    "status": "resolved",
+    "passes": [
+      {
+        "pass_id": "visual-selection",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T00:00:00+09:00",
+        "focus": [
+          "scene_kind",
+          "split_stratum"
+        ]
+      },
+      {
+        "pass_id": "phase15-annotation-assist",
+        "reviewer": "deterministic-tool",
+        "completed_at": "2026-09-02T07:20:58.230890+00:00",
+        "focus": [
+          "draft_geometry",
+          "draft_direct_connectors"
+        ]
+      },
+      {
+        "pass_id": "phase16-visual-geometry",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T09:00:00+09:00",
+        "focus": [
+          "source_image",
+          "object_geometry",
+          "object_roles",
+          "missing_structure"
+        ]
+      },
+      {
+        "pass_id": "phase16-topology-exclusion",
+        "reviewer": "gpt-5.6-sol",
+        "completed_at": "2026-09-02T10:00:00+09:00",
+        "focus": [
+          "object_roles",
+          "connector_endpoints",
+          "excluded_regions"
+        ]
+      }
+    ]
+  }
+}
