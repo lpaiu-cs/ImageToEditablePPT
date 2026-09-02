@@ -1,7 +1,7 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
 최종 업데이트: 2026-09-02
-상태: `Phase 15 (visual-first geometry confirmation)는 코드·육안 관측·한계와 함께 동결됐다. 공개 단순/중간 복잡도 표본과 알려진 비도식 오탐은 크게 개선됐지만 복잡한 실제 input.png는 여전히 육안 실사용 기준에 미달하며 새 독립 holdout도 없다. candidate/NO-GO를 유지한다.`
+상태: `Phase 15 (visual-first geometry confirmation)는 코드·육안 관측·한계와 함께 동결됐다. Phase 16 Multi-scale Evidence Graph의 독립 spec만 작성됐으며 구현·튜닝·승인 실험은 시작하지 않았다. candidate/NO-GO를 유지한다.`
 
 ---
 
@@ -1106,6 +1106,7 @@ PowerPoint 육안 판정:
 - 기존 holdout을 본 뒤 경계를 정했으므로 canonical 승인 증거로 사용할 수 없다.
 - candidate bundle과 NO-GO를 유지한다. 다음 단계는 현 경계를 동결한 뒤 **새 독립 시각 holdout**에서 PowerPoint 재작도량을 확인하는 것이다.
 - 2026-09-02에 현재 코드와 육안 판정, 알려진 한계, 추가 튜닝 금지 경계를 [Phase 15 동결 기록](docs/phase15_visual_first_freeze.md)으로 고정했다.
+- 후속 접근은 단일 threshold/해상도 변경이 아니라 다중-scale source evidence, containment hierarchy, 실제 stroke graph, shape-conditioned OCR을 분리 검증하는 [Phase 16 MEG spec](docs/phase16_multiscale_evidence_graph_spec.md)으로 정의했다. 구현은 아직 시작하지 않았다.
 
 완료 조건:
 
