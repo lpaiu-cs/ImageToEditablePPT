@@ -1,0 +1,12 @@
+{
+ "reviewer":"primary assistant direct inspection",
+ "scope":"Six source/four-arm native PowerPoint sheets; source route overlays for BLIP, Attention, PERCEIVE and foreground masks for the latter two",
+ "verdict":"Source-topology improvement confirmed on consumed samples; native output still distorts routes",
+ "observations":[
+  "Attention transparent-gap source overlay follows four distinct upward shafts to the correct target. Strict masking leaves wrong gap-owner contacts. Native writer collapses four target sites to a side-center and produces overlapping elbow heads.",
+  "PERCEIVE source overlay follows both observed cornered paths. Native output replaces them with straight oblique chords and snaps attachments. Pair correctness alone is insufficient.",
+  "BLIP, HEVC and Reasoning retain three correct routes each. Oracle arm carries different original OCR/style, not a fair OCR improvement comparison.",
+  "Negative stays empty; its selected/oracle shape inputs were already empty.",
+  "Oracle Attention recovers only red-to-attention. Approximate manual boxes plus mask/attachment tolerance are not a strict upper bound; missing routes have fewer than two retained owner contacts. No oracle geometry rescue was performed."
+ ]
+}

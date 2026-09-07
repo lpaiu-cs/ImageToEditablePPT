@@ -1,0 +1,3229 @@
+{
+  "status": "reviewed_development_gain_not_product_acceptance",
+  "results": {
+    "status": "R3_trace_diagnostic_not_product_acceptance",
+    "manifest_sha256": "3cab1423cd3dac1f4b0fd84be87098a4a2b47dbb4ea20c03d8ea75fab80c7945",
+    "git_commit": "ac7e5846e4145d139637ff972cc88dd2353ae282",
+    "git_status": "",
+    "code_sha256": {
+      "src/image_to_editable_ppt/research/stroke_trace.py": "cad6dced4cfa15241f4e846872bf9b80582677cb3f997382636d38a841591f8f",
+      "src/image_to_editable_ppt/research/candidate_select.py": "21db771560c18f9bc49771a14a80a32b06032965bcd682515dce9c5796eb5f5a",
+      "src/image_to_editable_ppt/research/region_first.py": "3918e7663d86b99bd9f8fa6f58a83c9bd4f2c5cb5b7605388dbbc2254cfc9098",
+      "src/image_to_editable_ppt/research/native_emit.py": "ae48317520480e55985a78c12d1fe756a621aa76487d2e70dd805a70388df792",
+      "src/image_to_editable_ppt/v3/emit/pptx_writer.py": "2638040b48f14cd9c6c95493cf2b8c008a51da1a95edbb9477aefa53e391008c",
+      "src/image_to_editable_ppt/v3/emit/style.py": "500fb23f7e3c1efad5e186a1074e02eafaa930b188669e69477dff86d7a5e5c0",
+      "tools/run_stroke_trace.py": "73dec08719049e61f46c1ded700fc961e80b060b2e9bcaa6add876cd43837d44",
+      "docs/region_first_r3_plan.md": "b99827e64ad1603767812ea244d1f05f1c607e1a884b5e898dd0083b01239637"
+    },
+    "records": [
+      {
+        "sample": "mixed-blip",
+        "arm": "baseline",
+        "input_scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "scene_path": "artifacts\\region-first-r3\\run1\\mixed-blip--baseline.json",
+        "scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\mixed-blip--baseline.pptx",
+        "pptx_sha256": "0e912f26e06740250c68725e258377470a3897abee861846e44889706b5d50d5",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\mixed-blip--baseline-paths.png",
+        "overlay_sha256": "c6ed215c43f4cfd7250d8e78bdb614f1c4eb962247bc517bb0742645afbd205a",
+        "mask_path": null,
+        "mask_sha256": null,
+        "audit": {},
+        "metrics": {
+          "target_objects": 5,
+          "matched_objects": 5,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "question",
+            "node:r0:1": "answer",
+            "node:r0:2": "decoder",
+            "node:r0:3": "v-image",
+            "node:r0:4": "c-image"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "question",
+            "answer",
+            "v-image",
+            "c-image"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "decoder",
+              "predicted": "Image-\ngrounded\ntextdecoder",
+              "expected": "Image-grounded text decoder"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        }
+      },
+      {
+        "sample": "mixed-blip",
+        "arm": "strict_trace",
+        "input_scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "scene_path": "artifacts\\region-first-r3\\run1\\mixed-blip--strict_trace.json",
+        "scene_sha256": "5ffe7354b33fea57ecbb5f40f276844b07d12d58c79874d47ef2ef689868be24",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\mixed-blip--strict_trace.pptx",
+        "pptx_sha256": "9221be790d10b5785bbc5d095e28316526a3c2864986e0a6b9a9a331e4e0da6f",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\mixed-blip--strict_trace-paths.png",
+        "overlay_sha256": "885884a9955b0051bcfc44431756837aed28a15df3003cb7ccdb434017781bad",
+        "mask_path": "artifacts\\region-first-r3\\run1\\mixed-blip--strict_trace-mask.png",
+        "mask_sha256": "c71ca44afa1c1b6726ca5e10b89057a29bca2b3f7d41fcdf3d843613b0de1027",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 5,
+              "owners": [
+                "node:r0:0",
+                "node:r0:1"
+              ],
+              "pixel_area": 272,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 4.0,
+                "end_max_width": 11.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  445,
+                  488.0
+                ],
+                [
+                  501,
+                  489.0
+                ]
+              ],
+              "raw_path_length": 53
+            },
+            {
+              "component": 6,
+              "owners": [
+                "node:r0:0",
+                "node:r0:3"
+              ],
+              "pixel_area": 272,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 11.0,
+                "end_max_width": 4.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  177,
+                  490.0
+                ],
+                [
+                  233,
+                  491.0
+                ]
+              ],
+              "raw_path_length": 53
+            },
+            {
+              "component": 7,
+              "owners": [
+                "node:r0:2",
+                "node:r0:4"
+              ],
+              "pixel_area": 272,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 11.0,
+                "end_max_width": 4.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  899,
+                  498.0
+                ],
+                [
+                  956,
+                  499.0
+                ]
+              ],
+              "raw_path_length": 53
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 5,
+          "matched_objects": 5,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "question",
+            "node:r0:1": "answer",
+            "node:r0:2": "decoder",
+            "node:r0:3": "v-image",
+            "node:r0:4": "c-image"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "question",
+            "answer",
+            "v-image",
+            "c-image"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "decoder",
+              "predicted": "Image-\ngrounded\ntextdecoder",
+              "expected": "Image-grounded text decoder"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        }
+      },
+      {
+        "sample": "mixed-blip",
+        "arm": "transparent_gap_trace",
+        "input_scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "scene_path": "artifacts\\region-first-r3\\run1\\mixed-blip--transparent_gap_trace.json",
+        "scene_sha256": "5ffe7354b33fea57ecbb5f40f276844b07d12d58c79874d47ef2ef689868be24",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\mixed-blip--transparent_gap_trace.pptx",
+        "pptx_sha256": "9221be790d10b5785bbc5d095e28316526a3c2864986e0a6b9a9a331e4e0da6f",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\mixed-blip--transparent_gap_trace-paths.png",
+        "overlay_sha256": "885884a9955b0051bcfc44431756837aed28a15df3003cb7ccdb434017781bad",
+        "mask_path": "artifacts\\region-first-r3\\run1\\mixed-blip--transparent_gap_trace-mask.png",
+        "mask_sha256": "c71ca44afa1c1b6726ca5e10b89057a29bca2b3f7d41fcdf3d843613b0de1027",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 5,
+              "owners": [
+                "node:r0:0",
+                "node:r0:1"
+              ],
+              "pixel_area": 272,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 4.0,
+                "end_max_width": 11.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  445,
+                  488.0
+                ],
+                [
+                  501,
+                  489.0
+                ]
+              ],
+              "raw_path_length": 53
+            },
+            {
+              "component": 6,
+              "owners": [
+                "node:r0:0",
+                "node:r0:3"
+              ],
+              "pixel_area": 272,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 11.0,
+                "end_max_width": 4.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  177,
+                  490.0
+                ],
+                [
+                  233,
+                  491.0
+                ]
+              ],
+              "raw_path_length": 53
+            },
+            {
+              "component": 7,
+              "owners": [
+                "node:r0:2",
+                "node:r0:4"
+              ],
+              "pixel_area": 272,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 11.0,
+                "end_max_width": 4.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  899,
+                  498.0
+                ],
+                [
+                  956,
+                  499.0
+                ]
+              ],
+              "raw_path_length": 53
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 5,
+          "matched_objects": 5,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "question",
+            "node:r0:1": "answer",
+            "node:r0:2": "decoder",
+            "node:r0:3": "v-image",
+            "node:r0:4": "c-image"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "question",
+            "answer",
+            "v-image",
+            "c-image"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "decoder",
+              "predicted": "Image-\ngrounded\ntextdecoder",
+              "expected": "Image-grounded text decoder"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        }
+      },
+      {
+        "sample": "mixed-blip",
+        "arm": "oracle_trace",
+        "input_scene_sha256": "8a589ec3cbaeff31a389bf3da8183e3cd97a54b8af6597f8a57751ef09df9d81",
+        "scene_path": "artifacts\\region-first-r3\\run1\\mixed-blip--oracle_trace.json",
+        "scene_sha256": "31e78296a6540ad13b65ba4ed33738bb4c43560e4e58d31d3bb3ddb5a042aa6e",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\mixed-blip--oracle_trace.pptx",
+        "pptx_sha256": "03249ba76e3fe80cce500d2d82e14d78db822fbe6e92d71c5db2e742a7bbab68",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\mixed-blip--oracle_trace-paths.png",
+        "overlay_sha256": "d8ec2c371682fba384e8a5ea8e15085b3d5484cc7f9b23f8f83904c55b64ef21",
+        "mask_path": "artifacts\\region-first-r3\\run1\\mixed-blip--oracle_trace-mask.png",
+        "mask_sha256": "4677f67a10ba2120e372b9a833ad632a2f0e8241b521e8c495f332aa1986a70b",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 5,
+              "owners": [
+                "question",
+                "answer"
+              ],
+              "pixel_area": 256,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 4.0,
+                "end_max_width": 11.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  447,
+                  488.0
+                ],
+                [
+                  499,
+                  489.0
+                ]
+              ],
+              "raw_path_length": 49
+            },
+            {
+              "component": 6,
+              "owners": [
+                "v-image",
+                "question"
+              ],
+              "pixel_area": 256,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 4.0,
+                "end_max_width": 11.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  179,
+                  490.0
+                ],
+                [
+                  231,
+                  491.0
+                ]
+              ],
+              "raw_path_length": 49
+            },
+            {
+              "component": 7,
+              "owners": [
+                "c-image",
+                "decoder"
+              ],
+              "pixel_area": 264,
+              "arrow": {
+                "shaft_width": 4.0,
+                "start_max_width": 4.0,
+                "end_max_width": 11.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  901,
+                  498.0
+                ],
+                [
+                  955,
+                  499.0
+                ]
+              ],
+              "raw_path_length": 51
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 5,
+          "matched_objects": 5,
+          "missing_objects": [],
+          "object_matches": {
+            "v-image": "v-image",
+            "question": "question",
+            "answer": "answer",
+            "c-image": "c-image",
+            "decoder": "decoder"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "v-image",
+            "question",
+            "answer",
+            "c-image"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "decoder",
+              "predicted": "Image-\ngrounded\ntextdecoder",
+              "expected": "Image-grounded text decoder"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "baseline",
+        "input_scene_sha256": "ac2e4ebcef69102929dc7bef069932c30b337ff63fd3417a637fe0ca64e902ff",
+        "scene_path": "artifacts\\region-first-r3\\run1\\mixed-attention--baseline.json",
+        "scene_sha256": "ac2e4ebcef69102929dc7bef069932c30b337ff63fd3417a637fe0ca64e902ff",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\mixed-attention--baseline.pptx",
+        "pptx_sha256": "3826fe32c2992e572d5f24844167e8b99458b2ae680def17a85ebe58b401655c",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\mixed-attention--baseline-paths.png",
+        "overlay_sha256": "42456453c49da78476afa6c681c243fcb23c6a502cddc59227e4f91aa69abd80",
+        "mask_path": null,
+        "mask_sha256": null,
+        "audit": {},
+        "metrics": {
+          "target_objects": 6,
+          "matched_objects": 6,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "attention",
+            "node:r0:4": "yellow",
+            "node:r0:5": "green",
+            "node:r0:6": "red",
+            "node:r0:7": "purple",
+            "container:r0:1": "queries"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:1",
+            "node:r0:2"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 4,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "green",
+              "attention"
+            ],
+            [
+              "purple",
+              "attention"
+            ],
+            [
+              "red",
+              "attention"
+            ],
+            [
+              "yellow",
+              "attention"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [
+            {
+              "id": "connector:r0:visual:0",
+              "mapped_pair": [
+                null,
+                "yellow"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:1",
+              "mapped_pair": [
+                null,
+                "green"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:2",
+              "mapped_pair": [
+                null,
+                "green"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:3",
+              "mapped_pair": [
+                null,
+                "red"
+              ],
+              "directed": false
+            }
+          ],
+          "raw_emitted_edges": 4,
+          "correct_labels": [
+            "attention"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 8,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 12,
+          "raster_images": 0,
+          "connectors": 4,
+          "bound_endpoints": 8,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "strict_trace",
+        "input_scene_sha256": "ac2e4ebcef69102929dc7bef069932c30b337ff63fd3417a637fe0ca64e902ff",
+        "scene_path": "artifacts\\region-first-r3\\run1\\mixed-attention--strict_trace.json",
+        "scene_sha256": "df08075e771f5ad9312e502cc88e2b738dad588f098e03e2768dcfe3078141b8",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\mixed-attention--strict_trace.pptx",
+        "pptx_sha256": "b6a838cf82adf10bf6fa5debf037ab1f889b29327270cbddb22dbcb808781f45",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\mixed-attention--strict_trace-paths.png",
+        "overlay_sha256": "9ad78af7ca0830972f1f9fa6e4aff46e0aded8a7485908055719741c168dcf18",
+        "mask_path": "artifacts\\region-first-r3\\run1\\mixed-attention--strict_trace-mask.png",
+        "mask_sha256": "e0ac72389b3f59c874540f800dcfd7a6f5fb8f6b6fdab251f11a61b38d1b1e3e",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 1,
+              "owners": [
+                "node:r0:0",
+                "node:r0:1"
+              ],
+              "pixel_area": 64,
+              "arrow": {
+                "shaft_width": 3.25,
+                "start_max_width": 3.0,
+                "end_max_width": 5.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": false,
+              "path_points": [
+                [
+                  834.0,
+                  204
+                ],
+                [
+                  837,
+                  211.0
+                ]
+              ],
+              "raw_path_length": 6
+            },
+            {
+              "component": 2,
+              "owners": [
+                "node:r0:0",
+                "node:r0:7"
+              ],
+              "pixel_area": 284,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 17.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  1158.0,
+                  262
+                ],
+                [
+                  1158.0,
+                  204
+                ]
+              ],
+              "raw_path_length": 52
+            },
+            {
+              "component": 5,
+              "owners": [
+                "node:r0:1",
+                "node:r0:4"
+              ],
+              "pixel_area": 27,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 3.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": false,
+              "path_points": [
+                [
+                  837,
+                  246
+                ],
+                [
+                  837.0,
+                  262
+                ]
+              ],
+              "raw_path_length": 9
+            },
+            {
+              "component": 6,
+              "owners": [
+                "node:r0:1",
+                "node:r0:2",
+                "node:r0:5"
+              ],
+              "pixel_area": 24,
+              "rejected": "ambiguous_multi_owner"
+            },
+            {
+              "component": 7,
+              "owners": [
+                "node:r0:2",
+                "node:r0:6"
+              ],
+              "pixel_area": 36,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 3.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:3",
+              "directed": false,
+              "path_points": [
+                [
+                  982,
+                  246
+                ],
+                [
+                  981.0,
+                  262
+                ]
+              ],
+              "raw_path_length": 12
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 6,
+          "matched_objects": 6,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "attention",
+            "node:r0:4": "yellow",
+            "node:r0:5": "green",
+            "node:r0:6": "red",
+            "node:r0:7": "purple",
+            "container:r0:1": "queries"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:1",
+            "node:r0:2"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 4,
+          "matched_directed_edges": 1,
+          "missing_edges": [
+            [
+              "green",
+              "attention"
+            ],
+            [
+              "red",
+              "attention"
+            ],
+            [
+              "yellow",
+              "attention"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [
+            {
+              "id": "connector:r3:0",
+              "mapped_pair": [
+                "attention",
+                null
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r3:2",
+              "mapped_pair": [
+                null,
+                "yellow"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r3:3",
+              "mapped_pair": [
+                null,
+                "red"
+              ],
+              "directed": false
+            }
+          ],
+          "raw_emitted_edges": 4,
+          "correct_labels": [
+            "attention"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 8,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 12,
+          "raster_images": 0,
+          "connectors": 4,
+          "bound_endpoints": 8,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "transparent_gap_trace",
+        "input_scene_sha256": "ac2e4ebcef69102929dc7bef069932c30b337ff63fd3417a637fe0ca64e902ff",
+        "scene_path": "artifacts\\region-first-r3\\run1\\mixed-attention--transparent_gap_trace.json",
+        "scene_sha256": "616cf4b11b092d77c1f13de69748eff278179daf8b374fcec22f1fb7f24ce1ec",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\mixed-attention--transparent_gap_trace.pptx",
+        "pptx_sha256": "f8f5979123e940c838841d24771a178919b35088584087a0162ff9eef046d35f",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\mixed-attention--transparent_gap_trace-paths.png",
+        "overlay_sha256": "a110f769a1b36925a4e08789395b0f00def60add3716e74b7052a93dd1dc83e4",
+        "mask_path": "artifacts\\region-first-r3\\run1\\mixed-attention--transparent_gap_trace-mask.png",
+        "mask_sha256": "acf585df01c858855f4fd239b50fe09e5e2d36f888e6a73e3e9669612b7cef66",
+        "audit": {
+          "transparent_owners": [
+            "node:r0:1",
+            "node:r0:2"
+          ],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 1,
+              "owners": [
+                "node:r0:0",
+                "node:r0:4"
+              ],
+              "pixel_area": 284,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 17.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  837.0,
+                  262
+                ],
+                [
+                  837.0,
+                  204
+                ]
+              ],
+              "raw_path_length": 52
+            },
+            {
+              "component": 2,
+              "owners": [
+                "node:r0:0",
+                "node:r0:5"
+              ],
+              "pixel_area": 293,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 17.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  907.0,
+                  262
+                ],
+                [
+                  907.0,
+                  204
+                ]
+              ],
+              "raw_path_length": 51
+            },
+            {
+              "component": 3,
+              "owners": [
+                "node:r0:0",
+                "node:r0:6"
+              ],
+              "pixel_area": 305,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 17.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  981.0,
+                  262
+                ],
+                [
+                  981.0,
+                  204
+                ]
+              ],
+              "raw_path_length": 55
+            },
+            {
+              "component": 4,
+              "owners": [
+                "node:r0:0",
+                "node:r0:7"
+              ],
+              "pixel_area": 284,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 17.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:3",
+              "directed": true,
+              "path_points": [
+                [
+                  1158.0,
+                  262
+                ],
+                [
+                  1158.0,
+                  204
+                ]
+              ],
+              "raw_path_length": 52
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 6,
+          "matched_objects": 6,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "attention",
+            "node:r0:4": "yellow",
+            "node:r0:5": "green",
+            "node:r0:6": "red",
+            "node:r0:7": "purple",
+            "container:r0:1": "queries"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:1",
+            "node:r0:2"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 4,
+          "matched_directed_edges": 4,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 4,
+          "correct_labels": [
+            "attention"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 8,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 12,
+          "raster_images": 0,
+          "connectors": 4,
+          "bound_endpoints": 8,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "oracle_trace",
+        "input_scene_sha256": "f70bddecd97fc9f5447f61f422ab9482ca15f442114031bd04638ed14776bb8e",
+        "scene_path": "artifacts\\region-first-r3\\run1\\mixed-attention--oracle_trace.json",
+        "scene_sha256": "b1ded71a068511ad6a7c2f81a2775316d3e103464f95608a552f559c9d58decc",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\mixed-attention--oracle_trace.pptx",
+        "pptx_sha256": "3b26ad9317795579f560ba978e5bb1a208725a9fd17f956ecc73ff9a621d5c97",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\mixed-attention--oracle_trace-paths.png",
+        "overlay_sha256": "7cf921419d6612de754dbbb5aa4d72686ef1275d8b8f18779ded302138c64136",
+        "mask_path": "artifacts\\region-first-r3\\run1\\mixed-attention--oracle_trace-mask.png",
+        "mask_sha256": "9c28df7c383495bbc6847f3d22e2c98d6abbf3aa805007fdbbff76d4a3f069ce",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 3,
+              "owners": [
+                "attention",
+                "red"
+              ],
+              "pixel_area": 298,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 17.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  981.0,
+                  264
+                ],
+                [
+                  981.0,
+                  206
+                ]
+              ],
+              "raw_path_length": 54
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 6,
+          "matched_objects": 6,
+          "missing_objects": [],
+          "object_matches": {
+            "attention": "attention",
+            "yellow": "yellow",
+            "green": "green",
+            "red": "red",
+            "purple": "purple",
+            "queries": "queries"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 4,
+          "matched_directed_edges": 1,
+          "missing_edges": [
+            [
+              "green",
+              "attention"
+            ],
+            [
+              "purple",
+              "attention"
+            ],
+            [
+              "yellow",
+              "attention"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 1,
+          "correct_labels": [
+            "attention"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 6,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 1,
+          "bound_endpoints": 2,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "baseline",
+        "input_scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "scene_path": "artifacts\\region-first-r3\\run1\\serial-hevc--baseline.json",
+        "scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\serial-hevc--baseline.pptx",
+        "pptx_sha256": "975691a80854ad70c4a6dab1c0cd40de824678fd6ec7f7f8367c91a629ba2fa6",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\serial-hevc--baseline-paths.png",
+        "overlay_sha256": "116f409a7fdb8b261e7cb8b10eb49fa0a6442a0c19da999f14ba1eff77f2ba70",
+        "mask_path": null,
+        "mask_sha256": null,
+        "audit": {},
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "stream",
+            "node:r0:1": "params",
+            "node:r0:2": "units",
+            "node:r0:3": "compute"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "stream",
+            "params",
+            "compute"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "units",
+              "predicted": "all PU Obtain units\nencoded AMVP in",
+              "expected": "Obtain all PU units encoded in AMVP"
+            }
+          ],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "strict_trace",
+        "input_scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "scene_path": "artifacts\\region-first-r3\\run1\\serial-hevc--strict_trace.json",
+        "scene_sha256": "1a7dd2a97f8559c1e3eb3c383a2990d051fe74036503c433009798fa14153f5b",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\serial-hevc--strict_trace.pptx",
+        "pptx_sha256": "1381e56fe76c6f019d5f4d9a4bcad3ae2556a4c537d138a99265b8339ec6534b",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\serial-hevc--strict_trace-paths.png",
+        "overlay_sha256": "8dac7e30f0d5dde15048888713d20f98e9fb7e57d1b0c8311570c6e4d6e0b8e9",
+        "mask_path": "artifacts\\region-first-r3\\run1\\serial-hevc--strict_trace-mask.png",
+        "mask_sha256": "76727493123ec6494478e59da2c3094303d4a6b51994ead73b9acd7e4ddfc9f4",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 6,
+          "attachment_tolerance": 18,
+          "components": [
+            {
+              "component": 2,
+              "owners": [
+                "node:r0:0",
+                "node:r0:1"
+              ],
+              "pixel_area": 3118,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  400
+                ],
+                [
+                  1168.0,
+                  590
+                ]
+              ],
+              "raw_path_length": 179
+            },
+            {
+              "component": 10,
+              "owners": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "pixel_area": 2740,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  868
+                ],
+                [
+                  1169.0,
+                  1016
+                ]
+              ],
+              "raw_path_length": 137
+            },
+            {
+              "component": 13,
+              "owners": [
+                "node:r0:2",
+                "node:r0:3"
+              ],
+              "pixel_area": 5934,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  1392
+                ],
+                [
+                  1169.0,
+                  1540
+                ]
+              ],
+              "raw_path_length": 137
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "stream",
+            "node:r0:1": "params",
+            "node:r0:2": "units",
+            "node:r0:3": "compute"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "stream",
+            "params",
+            "compute"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "units",
+              "predicted": "all PU Obtain units\nencoded AMVP in",
+              "expected": "Obtain all PU units encoded in AMVP"
+            }
+          ],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "transparent_gap_trace",
+        "input_scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "scene_path": "artifacts\\region-first-r3\\run1\\serial-hevc--transparent_gap_trace.json",
+        "scene_sha256": "1a7dd2a97f8559c1e3eb3c383a2990d051fe74036503c433009798fa14153f5b",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\serial-hevc--transparent_gap_trace.pptx",
+        "pptx_sha256": "1381e56fe76c6f019d5f4d9a4bcad3ae2556a4c537d138a99265b8339ec6534b",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\serial-hevc--transparent_gap_trace-paths.png",
+        "overlay_sha256": "8dac7e30f0d5dde15048888713d20f98e9fb7e57d1b0c8311570c6e4d6e0b8e9",
+        "mask_path": "artifacts\\region-first-r3\\run1\\serial-hevc--transparent_gap_trace-mask.png",
+        "mask_sha256": "76727493123ec6494478e59da2c3094303d4a6b51994ead73b9acd7e4ddfc9f4",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 6,
+          "attachment_tolerance": 18,
+          "components": [
+            {
+              "component": 2,
+              "owners": [
+                "node:r0:0",
+                "node:r0:1"
+              ],
+              "pixel_area": 3118,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  400
+                ],
+                [
+                  1168.0,
+                  590
+                ]
+              ],
+              "raw_path_length": 179
+            },
+            {
+              "component": 10,
+              "owners": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "pixel_area": 2740,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  868
+                ],
+                [
+                  1169.0,
+                  1016
+                ]
+              ],
+              "raw_path_length": 137
+            },
+            {
+              "component": 13,
+              "owners": [
+                "node:r0:2",
+                "node:r0:3"
+              ],
+              "pixel_area": 5934,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  1392
+                ],
+                [
+                  1169.0,
+                  1540
+                ]
+              ],
+              "raw_path_length": 137
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "stream",
+            "node:r0:1": "params",
+            "node:r0:2": "units",
+            "node:r0:3": "compute"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "stream",
+            "params",
+            "compute"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "units",
+              "predicted": "all PU Obtain units\nencoded AMVP in",
+              "expected": "Obtain all PU units encoded in AMVP"
+            }
+          ],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "oracle_trace",
+        "input_scene_sha256": "08348918194a692b6afb39d2aafa0c503f6c4ed1168188b8c898d3fd24f6a611",
+        "scene_path": "artifacts\\region-first-r3\\run1\\serial-hevc--oracle_trace.json",
+        "scene_sha256": "fa7aaa0340d620ab21756922cb629e8dccc1c05069c703e799ee00d3e275632a",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\serial-hevc--oracle_trace.pptx",
+        "pptx_sha256": "30cfe47e20377ab75d592954977bc1ccec4e8fb37a5cc5ccb8f944f61305abeb",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\serial-hevc--oracle_trace-paths.png",
+        "overlay_sha256": "850eb1c0b5749654689f81e18be6112bc5770c618d731348f901fc25be8e98df",
+        "mask_path": "artifacts\\region-first-r3\\run1\\serial-hevc--oracle_trace-mask.png",
+        "mask_sha256": "46300c8557ca724bdb1c6cb82947e0d9c00fdcd2ca7d192b7263ec69c516a49f",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 6,
+          "attachment_tolerance": 18,
+          "components": [
+            {
+              "component": 1,
+              "owners": [
+                "stream",
+                "params"
+              ],
+              "pixel_area": 3052,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  404
+                ],
+                [
+                  1168.0,
+                  586
+                ]
+              ],
+              "raw_path_length": 171
+            },
+            {
+              "component": 8,
+              "owners": [
+                "params",
+                "units"
+              ],
+              "pixel_area": 2656,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  873
+                ],
+                [
+                  1168.0,
+                  1011
+                ]
+              ],
+              "raw_path_length": 127
+            },
+            {
+              "component": 9,
+              "owners": [
+                "units",
+                "compute"
+              ],
+              "pixel_area": 2656,
+              "arrow": {
+                "shaft_width": 9.0,
+                "start_max_width": 9.0,
+                "end_max_width": 41.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  1169.0,
+                  1397
+                ],
+                [
+                  1168.0,
+                  1535
+                ]
+              ],
+              "raw_path_length": 127
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "stream": "stream",
+            "params": "params",
+            "units": "units",
+            "compute": "compute"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "params",
+            "compute"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "stream",
+              "predicted": "HEVC\nVideo S Stream",
+              "expected": "HEVC Video Stream"
+            },
+            {
+              "id": "units",
+              "predicted": "all PU Obtain units\nencoded AMVP in",
+              "expected": "Obtain all PU units encoded in AMVP"
+            }
+          ],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "baseline",
+        "input_scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "scene_path": "artifacts\\region-first-r3\\run1\\reasoning-row--baseline.json",
+        "scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\reasoning-row--baseline.pptx",
+        "pptx_sha256": "cbf4778f0bfc8d7e8ab43632e7253507e3d263dae1218932ba0347e1726f501b",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\reasoning-row--baseline-paths.png",
+        "overlay_sha256": "4c12247ee1576cc90e4930e7527cac3596e5490bfa237c7d193dce6b2568e27e",
+        "mask_path": null,
+        "mask_sha256": null,
+        "audit": {},
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "program",
+            "node:r0:1": "prediction",
+            "node:r0:2": "executor",
+            "node:r0:3": "decoder"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "program",
+            "prediction",
+            "executor",
+            "decoder"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "strict_trace",
+        "input_scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "scene_path": "artifacts\\region-first-r3\\run1\\reasoning-row--strict_trace.json",
+        "scene_sha256": "8b8cd7be34f03644b5e4e8cd119979d758e2efeeaf9560aa27e2c57afb5ffcc3",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\reasoning-row--strict_trace.pptx",
+        "pptx_sha256": "ad7b4ac34d0fa86f6099184b01ce5293d1b6427f33070711ca7acb4be9083ea9",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\reasoning-row--strict_trace-paths.png",
+        "overlay_sha256": "50ec612c77a35f3abc5a4f457f8fa225ee8a83b944743aad2f76324eb809d6f0",
+        "mask_path": "artifacts\\region-first-r3\\run1\\reasoning-row--strict_trace-mask.png",
+        "mask_sha256": "9c14f3fcf017df2e9a2bd6c6917a0b62d80de060ebcb0e5da48a42f044916faf",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 1,
+              "owners": [
+                "node:r0:0",
+                "node:r0:2"
+              ],
+              "pixel_area": 333,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 3.0,
+                "end_max_width": 18.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  1136,
+                  116.0
+                ],
+                [
+                  1195,
+                  116.0
+                ]
+              ],
+              "raw_path_length": 56
+            },
+            {
+              "component": 2,
+              "owners": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "pixel_area": 306,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 18.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  1409,
+                  116.0
+                ],
+                [
+                  1464,
+                  115.0
+                ]
+              ],
+              "raw_path_length": 52
+            },
+            {
+              "component": 3,
+              "owners": [
+                "node:r0:0",
+                "node:r0:3"
+              ],
+              "pixel_area": 319,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 18.0,
+                "end_max_width": 4.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  864,
+                  119.0
+                ],
+                [
+                  870.0,
+                  117.0
+                ],
+                [
+                  919,
+                  117.0
+                ]
+              ],
+              "raw_path_length": 52
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "program",
+            "node:r0:1": "prediction",
+            "node:r0:2": "executor",
+            "node:r0:3": "decoder"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "program",
+            "prediction",
+            "executor",
+            "decoder"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "transparent_gap_trace",
+        "input_scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "scene_path": "artifacts\\region-first-r3\\run1\\reasoning-row--transparent_gap_trace.json",
+        "scene_sha256": "8b8cd7be34f03644b5e4e8cd119979d758e2efeeaf9560aa27e2c57afb5ffcc3",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\reasoning-row--transparent_gap_trace.pptx",
+        "pptx_sha256": "ad7b4ac34d0fa86f6099184b01ce5293d1b6427f33070711ca7acb4be9083ea9",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\reasoning-row--transparent_gap_trace-paths.png",
+        "overlay_sha256": "50ec612c77a35f3abc5a4f457f8fa225ee8a83b944743aad2f76324eb809d6f0",
+        "mask_path": "artifacts\\region-first-r3\\run1\\reasoning-row--transparent_gap_trace-mask.png",
+        "mask_sha256": "9c14f3fcf017df2e9a2bd6c6917a0b62d80de060ebcb0e5da48a42f044916faf",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 1,
+              "owners": [
+                "node:r0:0",
+                "node:r0:2"
+              ],
+              "pixel_area": 333,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 3.0,
+                "end_max_width": 18.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  1136,
+                  116.0
+                ],
+                [
+                  1195,
+                  116.0
+                ]
+              ],
+              "raw_path_length": 56
+            },
+            {
+              "component": 2,
+              "owners": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "pixel_area": 306,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 18.0,
+                "end_max_width": 3.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  1409,
+                  116.0
+                ],
+                [
+                  1464,
+                  115.0
+                ]
+              ],
+              "raw_path_length": 52
+            },
+            {
+              "component": 3,
+              "owners": [
+                "node:r0:0",
+                "node:r0:3"
+              ],
+              "pixel_area": 319,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 18.0,
+                "end_max_width": 4.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  864,
+                  119.0
+                ],
+                [
+                  870.0,
+                  117.0
+                ],
+                [
+                  919,
+                  117.0
+                ]
+              ],
+              "raw_path_length": 52
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "program",
+            "node:r0:1": "prediction",
+            "node:r0:2": "executor",
+            "node:r0:3": "decoder"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "program",
+            "prediction",
+            "executor",
+            "decoder"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "oracle_trace",
+        "input_scene_sha256": "00ecf033815472f46f43cc7f4b7a1c746c04908666f0ec2a03a58110c8f97164",
+        "scene_path": "artifacts\\region-first-r3\\run1\\reasoning-row--oracle_trace.json",
+        "scene_sha256": "153a98e5d5fe17188f1beb0886be3efe342f46188f6cdd502b4bcf1fd3730630",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\reasoning-row--oracle_trace.pptx",
+        "pptx_sha256": "f7d1a347fe537824563e43357df998ffabd3ecea4568bd95b881f4cc633563bf",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\reasoning-row--oracle_trace-paths.png",
+        "overlay_sha256": "6261b59dcfbf565e642f17f56e84bbe3c51983724c7092bf7dc5fe35d2a6c73a",
+        "mask_path": "artifacts\\region-first-r3\\run1\\reasoning-row--oracle_trace-mask.png",
+        "mask_sha256": "fcef6cd6dc0089c61780afe1c164be1f553f1346acf3d76ccc53cfe36249cd63",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 1,
+              "owners": [
+                "program",
+                "executor"
+              ],
+              "pixel_area": 318,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 3.0,
+                "end_max_width": 18.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  1137,
+                  116.0
+                ],
+                [
+                  1192,
+                  115.0
+                ]
+              ],
+              "raw_path_length": 52
+            },
+            {
+              "component": 2,
+              "owners": [
+                "executor",
+                "prediction"
+              ],
+              "pixel_area": 294,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 3.0,
+                "end_max_width": 18.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  1410,
+                  116.0
+                ],
+                [
+                  1462,
+                  115.0
+                ]
+              ],
+              "raw_path_length": 49
+            },
+            {
+              "component": 3,
+              "owners": [
+                "decoder",
+                "program"
+              ],
+              "pixel_area": 296,
+              "arrow": {
+                "shaft_width": 3.0,
+                "start_max_width": 4.0,
+                "end_max_width": 18.0
+              },
+              "connector_id": "connector:r3:2",
+              "directed": true,
+              "path_points": [
+                [
+                  866,
+                  119.0
+                ],
+                [
+                  913.0,
+                  119.0
+                ],
+                [
+                  917,
+                  117.0
+                ]
+              ],
+              "raw_path_length": 48
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "decoder": "decoder",
+            "program": "program",
+            "executor": "executor",
+            "prediction": "prediction"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "decoder",
+            "program",
+            "executor",
+            "prediction"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "baseline",
+        "input_scene_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "scene_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--baseline.json",
+        "scene_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--baseline.pptx",
+        "pptx_sha256": "9e0cc4d3b0ec89166cd99fc190bd1fa910854b543c27752f1c0cd05d205a9745",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--baseline-paths.png",
+        "overlay_sha256": "636b19eb6eba14df01947a7bb3babb22aebc028cbeae13ed4e4ab5dea7e10d76",
+        "mask_path": null,
+        "mask_sha256": null,
+        "audit": {},
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:1": "boundary",
+            "node:r0:2": "sensory",
+            "node:r0:3": "identity",
+            "container:r0:0": "perceive"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:0"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 2,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "boundary",
+              "identity"
+            ],
+            [
+              "boundary",
+              "sensory"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [
+            "boundary",
+            "identity"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "sensory",
+              "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+              "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 5,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "strict_trace",
+        "input_scene_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "scene_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--strict_trace.json",
+        "scene_sha256": "b57cecb1bcb99f9e99a96194aae1ec7df8182cb45a160ceb0ecddfe74a6e554f",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--strict_trace.pptx",
+        "pptx_sha256": "6e76c8dde26b9687447e401e10f845e401be0e23e6a48c86de10f7ad5f8fcb4d",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--strict_trace-paths.png",
+        "overlay_sha256": "b31d4ec850f39bdf8beef9a185b138c4ead242f46b88982dfabf92f2bed7715e",
+        "mask_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--strict_trace-mask.png",
+        "mask_sha256": "053f2e82609484740c6ccc8b6eeb9c3b9c56307993a7e185c6d77a103575b789",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 8,
+              "owners": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "pixel_area": 1000,
+              "arrow": {
+                "shaft_width": 6.0,
+                "start_max_width": 9.0,
+                "end_max_width": 22.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  365,
+                  410.0
+                ],
+                [
+                  355.0,
+                  410.0
+                ],
+                [
+                  343.0,
+                  422.0
+                ],
+                [
+                  339.0,
+                  432.0
+                ],
+                [
+                  339.0,
+                  520.0
+                ],
+                [
+                  336.0,
+                  525
+                ]
+              ],
+              "raw_path_length": 122
+            },
+            {
+              "component": 9,
+              "owners": [
+                "node:r0:1",
+                "node:r0:3"
+              ],
+              "pixel_area": 572,
+              "arrow": {
+                "shaft_width": 6.0,
+                "start_max_width": 10.0,
+                "end_max_width": 23.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  777,
+                  466
+                ],
+                [
+                  779.0,
+                  470.0
+                ],
+                [
+                  784.0,
+                  475.0
+                ],
+                [
+                  787.0,
+                  482.0
+                ],
+                [
+                  788.0,
+                  520.0
+                ],
+                [
+                  791.0,
+                  525
+                ]
+              ],
+              "raw_path_length": 59
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:1": "boundary",
+            "node:r0:2": "sensory",
+            "node:r0:3": "identity",
+            "container:r0:0": "perceive"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:0"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 2,
+          "matched_directed_edges": 2,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 2,
+          "correct_labels": [
+            "boundary",
+            "identity"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "sensory",
+              "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+              "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 2,
+          "bound_endpoints": 4,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "transparent_gap_trace",
+        "input_scene_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "scene_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--transparent_gap_trace.json",
+        "scene_sha256": "b57cecb1bcb99f9e99a96194aae1ec7df8182cb45a160ceb0ecddfe74a6e554f",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--transparent_gap_trace.pptx",
+        "pptx_sha256": "6e76c8dde26b9687447e401e10f845e401be0e23e6a48c86de10f7ad5f8fcb4d",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--transparent_gap_trace-paths.png",
+        "overlay_sha256": "b31d4ec850f39bdf8beef9a185b138c4ead242f46b88982dfabf92f2bed7715e",
+        "mask_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--transparent_gap_trace-mask.png",
+        "mask_sha256": "053f2e82609484740c6ccc8b6eeb9c3b9c56307993a7e185c6d77a103575b789",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 8,
+              "owners": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "pixel_area": 1000,
+              "arrow": {
+                "shaft_width": 6.0,
+                "start_max_width": 9.0,
+                "end_max_width": 22.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  365,
+                  410.0
+                ],
+                [
+                  355.0,
+                  410.0
+                ],
+                [
+                  343.0,
+                  422.0
+                ],
+                [
+                  339.0,
+                  432.0
+                ],
+                [
+                  339.0,
+                  520.0
+                ],
+                [
+                  336.0,
+                  525
+                ]
+              ],
+              "raw_path_length": 122
+            },
+            {
+              "component": 9,
+              "owners": [
+                "node:r0:1",
+                "node:r0:3"
+              ],
+              "pixel_area": 572,
+              "arrow": {
+                "shaft_width": 6.0,
+                "start_max_width": 10.0,
+                "end_max_width": 23.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  777,
+                  466
+                ],
+                [
+                  779.0,
+                  470.0
+                ],
+                [
+                  784.0,
+                  475.0
+                ],
+                [
+                  787.0,
+                  482.0
+                ],
+                [
+                  788.0,
+                  520.0
+                ],
+                [
+                  791.0,
+                  525
+                ]
+              ],
+              "raw_path_length": 59
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:1": "boundary",
+            "node:r0:2": "sensory",
+            "node:r0:3": "identity",
+            "container:r0:0": "perceive"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:0"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 2,
+          "matched_directed_edges": 2,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 2,
+          "correct_labels": [
+            "boundary",
+            "identity"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "sensory",
+              "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+              "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 2,
+          "bound_endpoints": 4,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "oracle_trace",
+        "input_scene_sha256": "e523fba86e28a38ca4dae1e3d2cd58f0fcc82396f1a20a0cdff2cf22bdb177d4",
+        "scene_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--oracle_trace.json",
+        "scene_sha256": "e7cbab609e4c42cf20700d9050b2f5b925fea4b034035cf507451d9c8fe81a93",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--oracle_trace.pptx",
+        "pptx_sha256": "40fe2a14402151d8b09244d9054e5b2474d10db9f3c50c5b3a435c9568c325c9",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--oracle_trace-paths.png",
+        "overlay_sha256": "bcaaa629f8bcedfae083351be2936965639518d53d96f9cadb979aec60248ae3",
+        "mask_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--oracle_trace-mask.png",
+        "mask_sha256": "94a6a0a163ec4a601a8230822962168c4836b00a3948cee5c6ebfc9960aa3507",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 2,
+          "attachment_tolerance": 6,
+          "components": [
+            {
+              "component": 8,
+              "owners": [
+                "boundary",
+                "sensory"
+              ],
+              "pixel_area": 982,
+              "arrow": {
+                "shaft_width": 6.0,
+                "start_max_width": 9.0,
+                "end_max_width": 22.0
+              },
+              "connector_id": "connector:r3:0",
+              "directed": true,
+              "path_points": [
+                [
+                  362,
+                  410.0
+                ],
+                [
+                  355.0,
+                  410.0
+                ],
+                [
+                  343.0,
+                  422.0
+                ],
+                [
+                  339.0,
+                  432.0
+                ],
+                [
+                  339.0,
+                  520.0
+                ],
+                [
+                  336.0,
+                  525
+                ]
+              ],
+              "raw_path_length": 119
+            },
+            {
+              "component": 9,
+              "owners": [
+                "boundary",
+                "identity"
+              ],
+              "pixel_area": 565,
+              "arrow": {
+                "shaft_width": 6.0,
+                "start_max_width": 10.0,
+                "end_max_width": 23.0
+              },
+              "connector_id": "connector:r3:1",
+              "directed": true,
+              "path_points": [
+                [
+                  778,
+                  466.0
+                ],
+                [
+                  780.0,
+                  471.0
+                ],
+                [
+                  784.0,
+                  475.0
+                ],
+                [
+                  787.0,
+                  482.0
+                ],
+                [
+                  788.0,
+                  520.0
+                ],
+                [
+                  791.0,
+                  525
+                ]
+              ],
+              "raw_path_length": 58
+            }
+          ]
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "boundary": "boundary",
+            "sensory": "sensory",
+            "identity": "identity",
+            "perceive": "perceive"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 2,
+          "matched_directed_edges": 2,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 2,
+          "correct_labels": [
+            "identity"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "boundary",
+              "predicted": "Boundary R Redaction\n(Clause-level, target-aware)",
+              "expected": "Boundary Redaction (Clause-level, target-aware)"
+            },
+            {
+              "id": "sensory",
+              "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+              "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+            }
+          ],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 6,
+          "raster_images": 0,
+          "connectors": 2,
+          "bound_endpoints": 4,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "baseline",
+        "input_scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "scene_path": "artifacts\\region-first-r3\\run1\\negative-plots--baseline.json",
+        "scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\negative-plots--baseline.pptx",
+        "pptx_sha256": "5d0a778e1fe6f0d874e0e4a29e241e317576b61fca9d0ce7b042ebaec3de582b",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\negative-plots--baseline-paths.png",
+        "overlay_sha256": "3b11e53f4fe47b492841589e09e889d2ae808bb6ce60d2036584d11cf3ef4481",
+        "mask_path": null,
+        "mask_sha256": null,
+        "audit": {},
+        "metrics": {
+          "target_objects": 0,
+          "matched_objects": 0,
+          "missing_objects": [],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 0,
+          "matched_directed_edges": 0,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 0,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "strict_trace",
+        "input_scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "scene_path": "artifacts\\region-first-r3\\run1\\negative-plots--strict_trace.json",
+        "scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\negative-plots--strict_trace.pptx",
+        "pptx_sha256": "5d0a778e1fe6f0d874e0e4a29e241e317576b61fca9d0ce7b042ebaec3de582b",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\negative-plots--strict_trace-paths.png",
+        "overlay_sha256": "3b11e53f4fe47b492841589e09e889d2ae808bb6ce60d2036584d11cf3ef4481",
+        "mask_path": "artifacts\\region-first-r3\\run1\\negative-plots--strict_trace-mask.png",
+        "mask_sha256": "fd663d4edf1b37a2a1d6c389a97bb5eea817bc96b59ebaca8f23d11441e7d08f",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 7,
+          "attachment_tolerance": 21,
+          "components": []
+        },
+        "metrics": {
+          "target_objects": 0,
+          "matched_objects": 0,
+          "missing_objects": [],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 0,
+          "matched_directed_edges": 0,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 0,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "transparent_gap_trace",
+        "input_scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "scene_path": "artifacts\\region-first-r3\\run1\\negative-plots--transparent_gap_trace.json",
+        "scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\negative-plots--transparent_gap_trace.pptx",
+        "pptx_sha256": "f6a4d8ebe9491b3eaef7392c89657f4c359991c38fa289cbf9cfc640808f182e",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\negative-plots--transparent_gap_trace-paths.png",
+        "overlay_sha256": "3b11e53f4fe47b492841589e09e889d2ae808bb6ce60d2036584d11cf3ef4481",
+        "mask_path": "artifacts\\region-first-r3\\run1\\negative-plots--transparent_gap_trace-mask.png",
+        "mask_sha256": "fd663d4edf1b37a2a1d6c389a97bb5eea817bc96b59ebaca8f23d11441e7d08f",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 7,
+          "attachment_tolerance": 21,
+          "components": []
+        },
+        "metrics": {
+          "target_objects": 0,
+          "matched_objects": 0,
+          "missing_objects": [],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 0,
+          "matched_directed_edges": 0,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 0,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "oracle_trace",
+        "input_scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "scene_path": "artifacts\\region-first-r3\\run1\\negative-plots--oracle_trace.json",
+        "scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "pptx_path": "artifacts\\region-first-r3\\run1\\negative-plots--oracle_trace.pptx",
+        "pptx_sha256": "f6a4d8ebe9491b3eaef7392c89657f4c359991c38fa289cbf9cfc640808f182e",
+        "overlay_path": "artifacts\\region-first-r3\\run1\\negative-plots--oracle_trace-paths.png",
+        "overlay_sha256": "3b11e53f4fe47b492841589e09e889d2ae808bb6ce60d2036584d11cf3ef4481",
+        "mask_path": "artifacts\\region-first-r3\\run1\\negative-plots--oracle_trace-mask.png",
+        "mask_sha256": "fd663d4edf1b37a2a1d6c389a97bb5eea817bc96b59ebaca8f23d11441e7d08f",
+        "audit": {
+          "transparent_owners": [],
+          "mask_pad": 7,
+          "attachment_tolerance": 21,
+          "components": []
+        },
+        "metrics": {
+          "target_objects": 0,
+          "matched_objects": 0,
+          "missing_objects": [],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 0,
+          "matched_directed_edges": 0,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 0,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      }
+    ]
+  },
+  "render_records": [
+    {
+      "id": "cogbot-perceive--baseline",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\cogbot-perceive--baseline.pptx",
+      "pptx_sha256": "9e0cc4d3b0ec89166cd99fc190bd1fa910854b543c27752f1c0cd05d205a9745",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\cogbot-perceive--baseline.png",
+      "render_sha256": "21eb5aff47e23c66b72c5774ed08fbed1707ac6db3da5c5a410e48178ff55505",
+      "width": 1200,
+      "height": 655
+    },
+    {
+      "id": "cogbot-perceive--oracle_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\cogbot-perceive--oracle_trace.pptx",
+      "pptx_sha256": "40fe2a14402151d8b09244d9054e5b2474d10db9f3c50c5b3a435c9568c325c9",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\cogbot-perceive--oracle_trace.png",
+      "render_sha256": "6a7d5861da2ab296afa08ee09adcf2ea1746bc66af2bbdf27c727845a7278ebe",
+      "width": 1200,
+      "height": 655
+    },
+    {
+      "id": "cogbot-perceive--strict_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\cogbot-perceive--strict_trace.pptx",
+      "pptx_sha256": "6e76c8dde26b9687447e401e10f845e401be0e23e6a48c86de10f7ad5f8fcb4d",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\cogbot-perceive--strict_trace.png",
+      "render_sha256": "e60428a917dde9f65b1231826bd2d37c0c038636b3cdc19f5f082380b303aa28",
+      "width": 1200,
+      "height": 655
+    },
+    {
+      "id": "cogbot-perceive--transparent_gap_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\cogbot-perceive--transparent_gap_trace.pptx",
+      "pptx_sha256": "6e76c8dde26b9687447e401e10f845e401be0e23e6a48c86de10f7ad5f8fcb4d",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\cogbot-perceive--transparent_gap_trace.png",
+      "render_sha256": "e60428a917dde9f65b1231826bd2d37c0c038636b3cdc19f5f082380b303aa28",
+      "width": 1200,
+      "height": 655
+    },
+    {
+      "id": "mixed-attention--baseline",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\mixed-attention--baseline.pptx",
+      "pptx_sha256": "3826fe32c2992e572d5f24844167e8b99458b2ae680def17a85ebe58b401655c",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\mixed-attention--baseline.png",
+      "render_sha256": "bb45388c98a73ec2eadeda4cb909b37311afc189873a97d0ca0f19e54da09dfb",
+      "width": 1200,
+      "height": 262
+    },
+    {
+      "id": "mixed-attention--oracle_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\mixed-attention--oracle_trace.pptx",
+      "pptx_sha256": "3b26ad9317795579f560ba978e5bb1a208725a9fd17f956ecc73ff9a621d5c97",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\mixed-attention--oracle_trace.png",
+      "render_sha256": "bd1706cc85e65a8d6ef1802c0b05c133a604fc5f15ac6dd44caa588ac09ec480",
+      "width": 1200,
+      "height": 262
+    },
+    {
+      "id": "mixed-attention--strict_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\mixed-attention--strict_trace.pptx",
+      "pptx_sha256": "b6a838cf82adf10bf6fa5debf037ab1f889b29327270cbddb22dbcb808781f45",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\mixed-attention--strict_trace.png",
+      "render_sha256": "1151e4847b679e99cdd7bc88def22309fc484ac8b0eb6b6a19ecf89a3e609ff6",
+      "width": 1200,
+      "height": 262
+    },
+    {
+      "id": "mixed-attention--transparent_gap_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\mixed-attention--transparent_gap_trace.pptx",
+      "pptx_sha256": "f8f5979123e940c838841d24771a178919b35088584087a0162ff9eef046d35f",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\mixed-attention--transparent_gap_trace.png",
+      "render_sha256": "87f2e811c16a857dfd009581423042fd3daf2686fcc4e9c46eb72a3d2c9d287c",
+      "width": 1200,
+      "height": 262
+    },
+    {
+      "id": "mixed-blip--baseline",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\mixed-blip--baseline.pptx",
+      "pptx_sha256": "0e912f26e06740250c68725e258377470a3897abee861846e44889706b5d50d5",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\mixed-blip--baseline.png",
+      "render_sha256": "76cafa16b5939e945f8198d156f48a7f3213e25478db6eb55c85aa10d116777e",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "id": "mixed-blip--oracle_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\mixed-blip--oracle_trace.pptx",
+      "pptx_sha256": "03249ba76e3fe80cce500d2d82e14d78db822fbe6e92d71c5db2e742a7bbab68",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\mixed-blip--oracle_trace.png",
+      "render_sha256": "3607ad17bcfea5287e57ca78f1232ac904e42c6511f32f82fcf122b4ae22d9d7",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "id": "mixed-blip--strict_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\mixed-blip--strict_trace.pptx",
+      "pptx_sha256": "9221be790d10b5785bbc5d095e28316526a3c2864986e0a6b9a9a331e4e0da6f",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\mixed-blip--strict_trace.png",
+      "render_sha256": "76cafa16b5939e945f8198d156f48a7f3213e25478db6eb55c85aa10d116777e",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "id": "mixed-blip--transparent_gap_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\mixed-blip--transparent_gap_trace.pptx",
+      "pptx_sha256": "9221be790d10b5785bbc5d095e28316526a3c2864986e0a6b9a9a331e4e0da6f",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\mixed-blip--transparent_gap_trace.png",
+      "render_sha256": "76cafa16b5939e945f8198d156f48a7f3213e25478db6eb55c85aa10d116777e",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "id": "negative-plots--baseline",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\negative-plots--baseline.pptx",
+      "pptx_sha256": "5d0a778e1fe6f0d874e0e4a29e241e317576b61fca9d0ce7b042ebaec3de582b",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\negative-plots--baseline.png",
+      "render_sha256": "b6a4a0e75aab03b5bf5236aa109f10bc6e23b1f3c7d2b04e7c2ece44c61d8bcf",
+      "width": 1200,
+      "height": 303
+    },
+    {
+      "id": "negative-plots--oracle_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\negative-plots--oracle_trace.pptx",
+      "pptx_sha256": "f6a4d8ebe9491b3eaef7392c89657f4c359991c38fa289cbf9cfc640808f182e",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\negative-plots--oracle_trace.png",
+      "render_sha256": "b6a4a0e75aab03b5bf5236aa109f10bc6e23b1f3c7d2b04e7c2ece44c61d8bcf",
+      "width": 1200,
+      "height": 303
+    },
+    {
+      "id": "negative-plots--strict_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\negative-plots--strict_trace.pptx",
+      "pptx_sha256": "5d0a778e1fe6f0d874e0e4a29e241e317576b61fca9d0ce7b042ebaec3de582b",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\negative-plots--strict_trace.png",
+      "render_sha256": "b6a4a0e75aab03b5bf5236aa109f10bc6e23b1f3c7d2b04e7c2ece44c61d8bcf",
+      "width": 1200,
+      "height": 303
+    },
+    {
+      "id": "negative-plots--transparent_gap_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\negative-plots--transparent_gap_trace.pptx",
+      "pptx_sha256": "f6a4d8ebe9491b3eaef7392c89657f4c359991c38fa289cbf9cfc640808f182e",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\negative-plots--transparent_gap_trace.png",
+      "render_sha256": "b6a4a0e75aab03b5bf5236aa109f10bc6e23b1f3c7d2b04e7c2ece44c61d8bcf",
+      "width": 1200,
+      "height": 303
+    },
+    {
+      "id": "reasoning-row--baseline",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\reasoning-row--baseline.pptx",
+      "pptx_sha256": "cbf4778f0bfc8d7e8ab43632e7253507e3d263dae1218932ba0347e1726f501b",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\reasoning-row--baseline.png",
+      "render_sha256": "af200cb96c289c63896b72ce67aff36b3f337d7b826bf28efa0295dc581b8fb1",
+      "width": 1200,
+      "height": 492
+    },
+    {
+      "id": "reasoning-row--oracle_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\reasoning-row--oracle_trace.pptx",
+      "pptx_sha256": "f7d1a347fe537824563e43357df998ffabd3ecea4568bd95b881f4cc633563bf",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\reasoning-row--oracle_trace.png",
+      "render_sha256": "c4f6a19a7cb183ae337b0589aebe2ea4744fba1bf299d9343966e25e49b75393",
+      "width": 1200,
+      "height": 492
+    },
+    {
+      "id": "reasoning-row--strict_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\reasoning-row--strict_trace.pptx",
+      "pptx_sha256": "ad7b4ac34d0fa86f6099184b01ce5293d1b6427f33070711ca7acb4be9083ea9",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\reasoning-row--strict_trace.png",
+      "render_sha256": "af200cb96c289c63896b72ce67aff36b3f337d7b826bf28efa0295dc581b8fb1",
+      "width": 1200,
+      "height": 492
+    },
+    {
+      "id": "reasoning-row--transparent_gap_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\reasoning-row--transparent_gap_trace.pptx",
+      "pptx_sha256": "ad7b4ac34d0fa86f6099184b01ce5293d1b6427f33070711ca7acb4be9083ea9",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\reasoning-row--transparent_gap_trace.png",
+      "render_sha256": "af200cb96c289c63896b72ce67aff36b3f337d7b826bf28efa0295dc581b8fb1",
+      "width": 1200,
+      "height": 492
+    },
+    {
+      "id": "serial-hevc--baseline",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\serial-hevc--baseline.pptx",
+      "pptx_sha256": "975691a80854ad70c4a6dab1c0cd40de824678fd6ec7f7f8367c91a629ba2fa6",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\serial-hevc--baseline.png",
+      "render_sha256": "c5f872d5b821e7f1b1ccdc3f69fc9e23bd9e60313319bc9920e2532594fcf97f",
+      "width": 1200,
+      "height": 1552
+    },
+    {
+      "id": "serial-hevc--oracle_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\serial-hevc--oracle_trace.pptx",
+      "pptx_sha256": "30cfe47e20377ab75d592954977bc1ccec4e8fb37a5cc5ccb8f944f61305abeb",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\serial-hevc--oracle_trace.png",
+      "render_sha256": "25b6d1ba2109687d680ed219da8b5a077a0a27681381c49ad2e872fdde8c2592",
+      "width": 1200,
+      "height": 1552
+    },
+    {
+      "id": "serial-hevc--strict_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\serial-hevc--strict_trace.pptx",
+      "pptx_sha256": "1381e56fe76c6f019d5f4d9a4bcad3ae2556a4c537d138a99265b8339ec6534b",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\serial-hevc--strict_trace.png",
+      "render_sha256": "c5f872d5b821e7f1b1ccdc3f69fc9e23bd9e60313319bc9920e2532594fcf97f",
+      "width": 1200,
+      "height": 1552
+    },
+    {
+      "id": "serial-hevc--transparent_gap_trace",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1\\serial-hevc--transparent_gap_trace.pptx",
+      "pptx_sha256": "1381e56fe76c6f019d5f4d9a4bcad3ae2556a4c537d138a99265b8339ec6534b",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3\\run1-renders\\serial-hevc--transparent_gap_trace.png",
+      "render_sha256": "c5f872d5b821e7f1b1ccdc3f69fc9e23bd9e60313319bc9920e2532594fcf97f",
+      "width": 1200,
+      "height": 1552
+    }
+  ],
+  "invariants": [
+    {
+      "sample": "mixed-blip",
+      "arm": "baseline",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010216843703858558
+    },
+    {
+      "sample": "mixed-blip",
+      "arm": "strict_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010216843703858558
+    },
+    {
+      "sample": "mixed-blip",
+      "arm": "transparent_gap_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010216843703858558
+    },
+    {
+      "sample": "mixed-blip",
+      "arm": "oracle_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010146382707887369
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "baseline",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.54426151338339e-05
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "strict_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.54426151338339e-05
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "transparent_gap_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.54426151338339e-05
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "oracle_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.544261512672847e-05
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "baseline",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.94246580177105e-05
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "strict_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.94246580177105e-05
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "transparent_gap_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.94246580177105e-05
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "oracle_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010151048999773593
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "baseline",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010003985104845015
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "strict_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010003985104845015
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "transparent_gap_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010003985104845015
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "oracle_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.234447787775935e-05
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "baseline",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.58575830267705e-05
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "strict_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.58575830267705e-05
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "transparent_gap_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.58575830267705e-05
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "oracle_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.129293620446788e-05
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "baseline",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "strict_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "transparent_gap_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "oracle_trace",
+      "primitives_preserved": true,
+      "connectors_preserved": true,
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "owner_bindings_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0
+    }
+  ],
+  "sheets": [
+    {
+      "sample": "mixed-blip",
+      "group": "trace",
+      "path": "artifacts\\region-first-r3\\review-v2\\mixed-blip-trace.png",
+      "sha256": "8463c420fb1dc5f86c6c4038c8588aafcf6c071adcb7fbca931ce9ed5b83d6b3"
+    },
+    {
+      "sample": "mixed-attention",
+      "group": "trace",
+      "path": "artifacts\\region-first-r3\\review-v2\\mixed-attention-trace.png",
+      "sha256": "fa078056081458dc2745fef58613f0c6da89705fc062113ef59d361940edf5d0"
+    },
+    {
+      "sample": "serial-hevc",
+      "group": "trace",
+      "path": "artifacts\\region-first-r3\\review-v2\\serial-hevc-trace.png",
+      "sha256": "d5ee71fb52664ac75881ef8038c37cf2aea0834b55f5a1351b83a7754bae553d"
+    },
+    {
+      "sample": "reasoning-row",
+      "group": "trace",
+      "path": "artifacts\\region-first-r3\\review-v2\\reasoning-row-trace.png",
+      "sha256": "2e396e0e6ed1741c6872959c867d73a1961ef93bfd87a8eb33be4b2268ec14c4"
+    },
+    {
+      "sample": "cogbot-perceive",
+      "group": "trace",
+      "path": "artifacts\\region-first-r3\\review-v2\\cogbot-perceive-trace.png",
+      "sha256": "cd865a90ed350a09d4f860f9d14419c423a371d10e02c36ca5c9cf287a5d17b5"
+    },
+    {
+      "sample": "negative-plots",
+      "group": "trace",
+      "path": "artifacts\\region-first-r3\\review-v2\\negative-plots-trace.png",
+      "sha256": "86b035c53aa71f3a1e0b8073a6e462f0c91fd35ef858e28db3bde4098e071c8b"
+    }
+  ],
+  "results_sha256": "83661d11525170322b79e9304c2a7ec4223b20f87fa819f9fa476459afdb4b2d",
+  "render_manifest_sha256": "6dd878b748052bac2e3733f4a6ef3fd607e5b91e08aaadd438af052818c578a5",
+  "review_code_sha256": "550379cc0d62d6b375b2b2da58f16b006677dc2a52708f582d9306519682f4ee",
+  "visual_review": {
+    "reviewer": "primary assistant direct inspection",
+    "scope": "Six source/four-arm native PowerPoint sheets; source route overlays for BLIP, Attention, PERCEIVE and foreground masks for the latter two",
+    "verdict": "Source-topology improvement confirmed on consumed samples; native output still distorts routes",
+    "observations": [
+      "Attention transparent-gap source overlay follows four distinct upward shafts to the correct target. Strict masking leaves wrong gap-owner contacts. Native writer collapses four target sites to a side-center and produces overlapping elbow heads.",
+      "PERCEIVE source overlay follows both observed cornered paths. Native output replaces them with straight oblique chords and snaps attachments. Pair correctness alone is insufficient.",
+      "BLIP, HEVC and Reasoning retain three correct routes each. Oracle arm carries different original OCR/style, not a fair OCR improvement comparison.",
+      "Negative stays empty; its selected/oracle shape inputs were already empty.",
+      "Oracle Attention recovers only red-to-attention. Approximate manual boxes plus mask/attachment tolerance are not a strict upper bound; missing routes have fewer than two retained owner contacts. No oracle geometry rescue was performed."
+    ]
+  }
+}
