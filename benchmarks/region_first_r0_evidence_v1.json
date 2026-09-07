@@ -1,0 +1,673 @@
+{
+  "schema_version": "region_first_r0_reviewed_evidence_v1",
+  "verdict": "diagnostic_complete_product_not_approved",
+  "run_commit": "07e83b172f0ab444a8437783de5bcadcb73c4297",
+  "run_git_status": "",
+  "manifest_sha256": "46020d291a911165f2939d64cacc726f9c97c799bd9991504c8e809226f20ee5",
+  "code_sha256": {
+    "src/image_to_editable_ppt/research/region_first.py": "3918e7663d86b99bd9f8fa6f58a83c9bd4f2c5cb5b7605388dbbc2254cfc9098",
+    "tools/run_region_first_diagnostics.py": "a473fae386b740c688d958339c418314d47f0f7d6bdf1d558b4b3bb1f036afba",
+    "src/image_to_editable_ppt/ml/visual_geometry.py": "d7c14c845cc32cc9cbe0a3400a9b88ae3f41a40f1930217b7db4290e4bafd868",
+    "src/image_to_editable_ppt/ml/visual_connectors.py": "717d3e8a4a561ab93ada844739a4d16cac297c356a401fa8b4958f5756c8d32b",
+    "src/image_to_editable_ppt/v3/text/ocr.py": "d22b7a1c6444b7f508aa5e2e03e4fc502b1d1bbd94c5dcee784f2916beed5906",
+    "src/image_to_editable_ppt/v3/emit/pptx_writer.py": "2638040b48f14cd9c6c95493cf2b8c008a51da1a95edbb9477aefa53e391008c",
+    "src/image_to_editable_ppt/v3/emit/style.py": "500fb23f7e3c1efad5e186a1074e02eafaa930b188669e69477dff86d7a5e5c0"
+  },
+  "versions": {
+    "numpy": "2.5.2",
+    "Pillow": "12.3.0",
+    "python-pptx": "1.0.2",
+    "opencv-python-headless": "5.0.0.93",
+    "rapidocr-onnxruntime": "1.4.4"
+  },
+  "records": [
+    {
+      "sample": "mixed-blip",
+      "arm": "full_cv",
+      "manual_information": false,
+      "target_objects": 5,
+      "matched_objects": 5,
+      "missing_objects": [],
+      "target_edges": 3,
+      "matched_directed_edges": 3,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 4,
+      "role_errors": [],
+      "correct_labels": 4,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "decoder",
+          "predicted": "Image-\ngrounded\ntextdecoder",
+          "expected": "Image-grounded text decoder"
+        }
+      ],
+      "native": {
+        "native_shapes": 12,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 5
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\mixed-blip--full_cv.json",
+      "scene_sha256": "f4d4f5d0290000b4ad427bfbba992933c0102477ab8691d740cca06f28f9660a",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\mixed-blip--full_cv.pptx",
+      "pptx_sha256": "ebc281e66009715127f5289a22960e1f062a820cf71098cea8010c1d52256645",
+      "render_sha256": "ccddc88954c10940b5b7d6371d3e71e116b5d2c9021d9023b934398e7f884da3"
+    },
+    {
+      "sample": "mixed-blip",
+      "arm": "roi_cv",
+      "manual_information": true,
+      "target_objects": 5,
+      "matched_objects": 5,
+      "missing_objects": [],
+      "target_edges": 3,
+      "matched_directed_edges": 3,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 4,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "decoder",
+          "predicted": "Image-\ngrounded\ntextdecoder",
+          "expected": "Image-grounded text decoder"
+        }
+      ],
+      "native": {
+        "native_shapes": 8,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 5
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\mixed-blip--roi_cv.json",
+      "scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\mixed-blip--roi_cv.pptx",
+      "pptx_sha256": "1d987c14c605c867c010cb7f3649806b254d858ddd6ff98da67f477f2891ffdc",
+      "render_sha256": "61811f3519e30225c4dad9f295c9e44c9a9e004ffb66a9e122d9639daf185d2e"
+    },
+    {
+      "sample": "mixed-blip",
+      "arm": "oracle_boxes",
+      "manual_information": true,
+      "target_objects": 5,
+      "matched_objects": 5,
+      "missing_objects": [],
+      "target_edges": 3,
+      "matched_directed_edges": 3,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 4,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "decoder",
+          "predicted": "Image-\ngrounded\ntextdecoder",
+          "expected": "Image-grounded text decoder"
+        }
+      ],
+      "native": {
+        "native_shapes": 8,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 5
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\mixed-blip--oracle_boxes.json",
+      "scene_sha256": "8a589ec3cbaeff31a389bf3da8183e3cd97a54b8af6597f8a57751ef09df9d81",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\mixed-blip--oracle_boxes.pptx",
+      "pptx_sha256": "e2c162a0f117cd4f012cf08914f439e263e37a1e8fc74aa6d0b6364ec54fff73",
+      "render_sha256": "c949026534882bb55bec22821bd26bd75542af4e333b695dcaa54473b59f1f24"
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "full_cv",
+      "manual_information": false,
+      "target_objects": 6,
+      "matched_objects": 2,
+      "missing_objects": [
+        "green",
+        "purple",
+        "red",
+        "yellow"
+      ],
+      "target_edges": 4,
+      "matched_directed_edges": 0,
+      "unmatched_local_objects": 2,
+      "excluded_region_hits": 7,
+      "role_errors": [
+        "queries"
+      ],
+      "correct_labels": 1,
+      "missing_labels": 0,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 15,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 1
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\mixed-attention--full_cv.json",
+      "scene_sha256": "4d135e05b5982c51ec98a2e4a601ae59c27b0bfcddc3e5ebee23065a8e8c6480",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\mixed-attention--full_cv.pptx",
+      "pptx_sha256": "9db8c59a7d0589a7068e97d5cc53d8f6e231b27ab95c1ec3ab0e41258d80a3e6",
+      "render_sha256": "45905e56509ce81ad2ae4074fd39913f1a3fef8e5f80a43c06f8e403c9fadc46"
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "roi_cv",
+      "manual_information": true,
+      "target_objects": 6,
+      "matched_objects": 6,
+      "missing_objects": [],
+      "target_edges": 4,
+      "matched_directed_edges": 0,
+      "unmatched_local_objects": 10,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 1,
+      "missing_labels": 0,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 22,
+        "raster_images": 0,
+        "connectors": 6,
+        "bound_endpoints": 12,
+        "nonempty_text_shapes": 1
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\mixed-attention--roi_cv.json",
+      "scene_sha256": "14fc51a1c20125310a7ed61f3f1984691616d93933a1940f9d9709b72898cac9",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\mixed-attention--roi_cv.pptx",
+      "pptx_sha256": "0f8769b6d75f9a8225a61e16bcba7c6beab56790b5f2f3d64589f1c1772a1db8",
+      "render_sha256": "d3f2fb79b5ec9e2fd6a925d0a74cd6565379e7c13d9b953acb8299d666ae7e5c"
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "oracle_boxes",
+      "manual_information": true,
+      "target_objects": 6,
+      "matched_objects": 6,
+      "missing_objects": [],
+      "target_edges": 4,
+      "matched_directed_edges": 4,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 1,
+      "missing_labels": 0,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 10,
+        "raster_images": 0,
+        "connectors": 4,
+        "bound_endpoints": 8,
+        "nonempty_text_shapes": 1
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\mixed-attention--oracle_boxes.json",
+      "scene_sha256": "f70bddecd97fc9f5447f61f422ab9482ca15f442114031bd04638ed14776bb8e",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\mixed-attention--oracle_boxes.pptx",
+      "pptx_sha256": "eae3b0c05eecb11b0c531197495fca91725a88bea712e969326bcb3bac4f37e0",
+      "render_sha256": "8a52b25feab604a7e4f15420c9fddceae9be34b88ce1349bcfb40823cb3773a8"
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "full_cv",
+      "manual_information": false,
+      "target_objects": 4,
+      "matched_objects": 4,
+      "missing_objects": [],
+      "target_edges": 3,
+      "matched_directed_edges": 3,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 3,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "units",
+          "predicted": "all PU Obtain units\nencoded AMVP in",
+          "expected": "Obtain all PU units encoded in AMVP"
+        }
+      ],
+      "native": {
+        "native_shapes": 9,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 6
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\serial-hevc--full_cv.json",
+      "scene_sha256": "071f5bfaff9028b4a3fb0cf3ff8522225e826c52ae7df64d7d108f8c85c568e8",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\serial-hevc--full_cv.pptx",
+      "pptx_sha256": "f890505de0d27eae4e05af287531abe81cb0aa5a943916016c3e8d886e66d98a",
+      "render_sha256": "f7f0aaebf2779acd370b668f90d51e465e8c8b4a47456ec3fad9b1d0d866ce30"
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "roi_cv",
+      "manual_information": true,
+      "target_objects": 4,
+      "matched_objects": 4,
+      "missing_objects": [],
+      "target_edges": 3,
+      "matched_directed_edges": 3,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 3,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "units",
+          "predicted": "all PU Obtain units\nencoded AMVP in",
+          "expected": "Obtain all PU units encoded in AMVP"
+        }
+      ],
+      "native": {
+        "native_shapes": 7,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 4
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\serial-hevc--roi_cv.json",
+      "scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\serial-hevc--roi_cv.pptx",
+      "pptx_sha256": "76874d66f9bf0be2ef1579c0c97cd0ad0eee31d7aff2ae8a2390637ea6f5f3d9",
+      "render_sha256": "a7ad0e7f9eea92a261eed2da492864f08b7be7f07f845464a3fc61489873a0b3"
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "oracle_boxes",
+      "manual_information": true,
+      "target_objects": 4,
+      "matched_objects": 4,
+      "missing_objects": [],
+      "target_edges": 3,
+      "matched_directed_edges": 3,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 2,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "stream",
+          "predicted": "HEVC\nVideo S Stream",
+          "expected": "HEVC Video Stream"
+        },
+        {
+          "id": "units",
+          "predicted": "all PU Obtain units\nencoded AMVP in",
+          "expected": "Obtain all PU units encoded in AMVP"
+        }
+      ],
+      "native": {
+        "native_shapes": 7,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 4
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\serial-hevc--oracle_boxes.json",
+      "scene_sha256": "08348918194a692b6afb39d2aafa0c503f6c4ed1168188b8c898d3fd24f6a611",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\serial-hevc--oracle_boxes.pptx",
+      "pptx_sha256": "91f7018faa1685f41956e4bcbfdcb0e16232e9ab913febc374058b56a343717c",
+      "render_sha256": "2576ed70c51fd399b24db239ee10bff05937a13da75d494211f7a180c9f9344a"
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "full_cv",
+      "manual_information": false,
+      "target_objects": 4,
+      "matched_objects": 3,
+      "missing_objects": [
+        "prediction"
+      ],
+      "target_edges": 3,
+      "matched_directed_edges": 1,
+      "unmatched_local_objects": 2,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 3,
+      "missing_labels": 1,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 28,
+        "raster_images": 0,
+        "connectors": 5,
+        "bound_endpoints": 10,
+        "nonempty_text_shapes": 23
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\reasoning-row--full_cv.json",
+      "scene_sha256": "6c2e7f0b4bdb683c728462021e6803026abee1a97dd20eeed316acc7ab4de585",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\reasoning-row--full_cv.pptx",
+      "pptx_sha256": "81a58b364fe43f0eed1eb828424ce2143be64b9981b3d92526f9dd969091f101",
+      "render_sha256": "94c965b26749efa58bf391946c16052bec1ce9c67557ec6d4ae43d736f873c5c"
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "roi_cv",
+      "manual_information": true,
+      "target_objects": 4,
+      "matched_objects": 4,
+      "missing_objects": [],
+      "target_edges": 3,
+      "matched_directed_edges": 3,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 4,
+      "missing_labels": 0,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 7,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 4
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\reasoning-row--roi_cv.json",
+      "scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\reasoning-row--roi_cv.pptx",
+      "pptx_sha256": "a57b2d863af5b8b82c28babc91ec31b0b8ec47b3a195bed1956052c11b2f103b",
+      "render_sha256": "592dca25b817835ae6a302d54051faa454d669aada44f4b350076f1f60171a6a"
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "oracle_boxes",
+      "manual_information": true,
+      "target_objects": 4,
+      "matched_objects": 4,
+      "missing_objects": [],
+      "target_edges": 3,
+      "matched_directed_edges": 3,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 4,
+      "missing_labels": 0,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 7,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 4
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\reasoning-row--oracle_boxes.json",
+      "scene_sha256": "00ecf033815472f46f43cc7f4b7a1c746c04908666f0ec2a03a58110c8f97164",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\reasoning-row--oracle_boxes.pptx",
+      "pptx_sha256": "5cb9f6cdd33c5bfb27aa5fe64a183aa483b7b1eda6448146f845cbb6f97a4cee",
+      "render_sha256": "41eae4096c7fde5ab5bce51ce303cbd6f55d97332431eab3bcf41eb5fa9fafc5"
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "full_cv",
+      "manual_information": false,
+      "target_objects": 4,
+      "matched_objects": 4,
+      "missing_objects": [],
+      "target_edges": 2,
+      "matched_directed_edges": 0,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 2,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "sensory",
+          "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+          "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+        }
+      ],
+      "native": {
+        "native_shapes": 19,
+        "raster_images": 0,
+        "connectors": 3,
+        "bound_endpoints": 6,
+        "nonempty_text_shapes": 12
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\cogbot-perceive--full_cv.json",
+      "scene_sha256": "05b1b70004aefee7b97a7cf0975dba51837838a24cd8cce60ba28a6ba6d1dc05",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\cogbot-perceive--full_cv.pptx",
+      "pptx_sha256": "52dd8564399b3ffb4322d5bac0c8b007add9fa0bc33ac187de3577d2b05e4657",
+      "render_sha256": "ac868fd8cd68485386fb5b1b05f593e40299e2fdec4144cf9dd9c1fe0832246d"
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "roi_cv",
+      "manual_information": true,
+      "target_objects": 4,
+      "matched_objects": 4,
+      "missing_objects": [],
+      "target_edges": 2,
+      "matched_directed_edges": 0,
+      "unmatched_local_objects": 1,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 2,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "sensory",
+          "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+          "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+        }
+      ],
+      "native": {
+        "native_shapes": 5,
+        "raster_images": 0,
+        "connectors": 0,
+        "bound_endpoints": 0,
+        "nonempty_text_shapes": 3
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\cogbot-perceive--roi_cv.json",
+      "scene_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\cogbot-perceive--roi_cv.pptx",
+      "pptx_sha256": "6b62837ecf682a428b30fda65daabf935a3d5c152f0129dd3534cc9bef289f27",
+      "render_sha256": "87640b859c6b93b797a5ec4c78ba424d29c9e11f2189589a1cbeba86e94256e8"
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "oracle_boxes",
+      "manual_information": true,
+      "target_objects": 4,
+      "matched_objects": 4,
+      "missing_objects": [],
+      "target_edges": 2,
+      "matched_directed_edges": 0,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 1,
+      "missing_labels": 0,
+      "wrong_labels": [
+        {
+          "id": "boundary",
+          "predicted": "Boundary R Redaction\n(Clause-level, target-aware)",
+          "expected": "Boundary Redaction (Clause-level, target-aware)"
+        },
+        {
+          "id": "sensory",
+          "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+          "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+        }
+      ],
+      "native": {
+        "native_shapes": 4,
+        "raster_images": 0,
+        "connectors": 0,
+        "bound_endpoints": 0,
+        "nonempty_text_shapes": 3
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\cogbot-perceive--oracle_boxes.json",
+      "scene_sha256": "e523fba86e28a38ca4dae1e3d2cd58f0fcc82396f1a20a0cdff2cf22bdb177d4",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\cogbot-perceive--oracle_boxes.pptx",
+      "pptx_sha256": "d93d1fb3803774447d635b8616b0b3ed5a3f0a2ff422d6eb2cb4b3c959f4710e",
+      "render_sha256": "c74aaafb100586b620621f764350dce8c1d36f60e4e6ffd72677ed846f8341b0"
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "full_cv",
+      "manual_information": false,
+      "target_objects": 0,
+      "matched_objects": 0,
+      "missing_objects": [],
+      "target_edges": 0,
+      "matched_directed_edges": 0,
+      "unmatched_local_objects": 3,
+      "excluded_region_hits": 3,
+      "role_errors": [],
+      "correct_labels": 0,
+      "missing_labels": 0,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 3,
+        "raster_images": 0,
+        "connectors": 0,
+        "bound_endpoints": 0,
+        "nonempty_text_shapes": 1
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\negative-plots--full_cv.json",
+      "scene_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\negative-plots--full_cv.pptx",
+      "pptx_sha256": "eface4d367f340b039a507e374b9fe7f6345a33dcfe7c6abd788f9d406edd167",
+      "render_sha256": "1c0c2f4f3a57d3565da0a83fd4839ebc4171261d8e526d4c806b30c9a8444dee"
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "roi_cv",
+      "manual_information": true,
+      "target_objects": 0,
+      "matched_objects": 0,
+      "missing_objects": [],
+      "target_edges": 0,
+      "matched_directed_edges": 0,
+      "unmatched_local_objects": 3,
+      "excluded_region_hits": 3,
+      "role_errors": [],
+      "correct_labels": 0,
+      "missing_labels": 0,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 3,
+        "raster_images": 0,
+        "connectors": 0,
+        "bound_endpoints": 0,
+        "nonempty_text_shapes": 1
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\negative-plots--roi_cv.json",
+      "scene_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\negative-plots--roi_cv.pptx",
+      "pptx_sha256": "e9dc83b31dc199f4496e3caf9a77c311988684c06cf2365024e7e01b190bc2af",
+      "render_sha256": "1c0c2f4f3a57d3565da0a83fd4839ebc4171261d8e526d4c806b30c9a8444dee"
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "oracle_boxes",
+      "manual_information": true,
+      "target_objects": 0,
+      "matched_objects": 0,
+      "missing_objects": [],
+      "target_edges": 0,
+      "matched_directed_edges": 0,
+      "unmatched_local_objects": 0,
+      "excluded_region_hits": 0,
+      "role_errors": [],
+      "correct_labels": 0,
+      "missing_labels": 0,
+      "wrong_labels": [],
+      "native": {
+        "native_shapes": 0,
+        "raster_images": 0,
+        "connectors": 0,
+        "bound_endpoints": 0,
+        "nonempty_text_shapes": 0
+      },
+      "scene_path": "artifacts\\region-first-r0\\run1\\negative-plots--oracle_boxes.json",
+      "scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+      "pptx_path": "artifacts\\region-first-r0\\run1\\negative-plots--oracle_boxes.pptx",
+      "pptx_sha256": "9d0b674d649c93c9e75d53c5a529e7fff9b5956955f1dec84655a5bccf178c8e",
+      "render_sha256": "7808dd2fc5f9eab2427a658e6acd101e531e954b1d4741f1c6ef2e16b579e0de"
+    }
+  ],
+  "visual_review": {
+    "reviewer": "assistant",
+    "human_acceptance": false,
+    "reviewed_all_18_powerpoint_outputs": true,
+    "method": "Six same-ROI source/A/B/C comparison sheets, plus full BLIP and attention native renders and source overlays.",
+    "comparisons": [
+      {
+        "sample": "mixed-blip",
+        "comparison_path": "artifacts\\region-first-r0\\review-v1\\mixed-blip-comparison.png",
+        "sha256": "bea8f65f10c5580a493b71084dadcf5baa23083b1681e8e09aee43efe21e3ba8"
+      },
+      {
+        "sample": "mixed-attention",
+        "comparison_path": "artifacts\\region-first-r0\\review-v1\\mixed-attention-comparison.png",
+        "sha256": "9eaacc2beb3112ca78550313f66e058885f2f559f197d768af6175dad8fbd6b7"
+      },
+      {
+        "sample": "serial-hevc",
+        "comparison_path": "artifacts\\region-first-r0\\review-v1\\serial-hevc-comparison.png",
+        "sha256": "c118364441c7135d04b45794a30efb450a6c258172b1bdac6c6949da219ab554"
+      },
+      {
+        "sample": "reasoning-row",
+        "comparison_path": "artifacts\\region-first-r0\\review-v1\\reasoning-row-comparison.png",
+        "sha256": "b2ea733802337c3c12a9e0c5d07079cff0c78b731bb53d658225a5f536dde290"
+      },
+      {
+        "sample": "cogbot-perceive",
+        "comparison_path": "artifacts\\region-first-r0\\review-v1\\cogbot-perceive-comparison.png",
+        "sha256": "350f19e23b0d0e6a16b8f10af99bb9af84e9f5d6b98d59654543599c2d920f5e"
+      },
+      {
+        "sample": "negative-plots",
+        "comparison_path": "artifacts\\region-first-r0\\review-v1\\negative-plots-comparison.png",
+        "sha256": "23f4d3e4192d364eab41e6957b79353a0b521cf52394606b541f4f7ace5685fc"
+      }
+    ],
+    "findings": [
+      "ROI removes photo false positives in BLIP, without harming its five nodes and three pairs.",
+      "Attention ROI recovers six target boxes but creates ten extra objects: gap faces, duplicate token representations and a spurious enclosing container.",
+      "Attention manual boxes recover four source endpoint pairs, but native binding collapses the four target attachment coordinates to one side-center; visually unacceptable fan-in remains.",
+      "PERCEIVE has four target boxes in every arm, but neither of its two elbow paths is recovered even with manual boxes.",
+      "Native-size emit has undersized fonts and thin strokes at normal full-slide viewing; label exactness and native object count do not measure readable output.",
+      "OCR word-order and duplicate-glyph errors remain, sometimes worse with manually specified crop boundaries.",
+      "Negative chart produces three false objects in A/B. C is empty by manual construction, not a learned rejection success."
+    ]
+  },
+  "movement_probe": {
+    "status": "automated_native_behavior_probe_not_human_timing",
+    "powerpoint_version": "16.0",
+    "input_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r0\\run1\\mixed-blip--roi_cv.pptx",
+    "input_sha256": "1d987c14c605c867c010cb7f3649806b254d858ddd6ff98da67f477f2891ffdc",
+    "source_shape_name": "node:r0:0",
+    "target_shape_name": "node:r0:1",
+    "connector_name": "connector:r0:visual:0",
+    "requested_source_move_pt": 12,
+    "observed_source_move_pt": 12,
+    "observed_connector_left_move_pt": 12,
+    "target_unmoved": true,
+    "endpoint_binding_ids_preserved": true,
+    "owned_label_edit_succeeded": true,
+    "original_label": "Image-grounded\rquestion encoder",
+    "source_file_saved": false
+  },
+  "limitations": [
+    "Six consumed development samples with partial targets; no holdout acceptance.",
+    "C object count is provided, not inferred. Target labels and edges are withheld from recovery.",
+    "No shape-family fidelity, hierarchy containment correctness or rendered attachment-coordinate metric; visual review found failures beyond coarse IoU/pair counts.",
+    "No human time calibration, no claim of human time saved.",
+    "Frozen ML baseline is contextual only; A/B/C use frozen CV helpers without the ML detector/gate."
+  ]
+}
