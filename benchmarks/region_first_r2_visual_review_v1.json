@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-08",
+  "reviewer": "primary assistant direct image inspection",
+  "scope": "Six source/A/B/C native PowerPoint ROI sheets, BLIP and Attention rejection overlays, three source/mask/highlight diagnosis sheets",
+  "verdict": "B has a limited duplicate-removal gain; C fails preservation and must not be promoted",
+  "observations": [
+    {"sample": "mixed-attention", "finding": "B removes six redundant token observations: yellow becomes one round token rather than a squared overlapping stack. Three false gap boxes, the enclosing false container and six wrong/unresolved raw connectors remain. Diagram structure is still visually inadequate. C is blank and loses all six true objects."},
+    {"sample": "mixed-blip", "finding": "A/B preserve five useful boxes and three connections with unchanged OCR/style defects. C is entirely blank: a destructive false rejection, not a conservative success."},
+    {"sample": "serial-hevc", "finding": "All arms visually equivalent. Four boxes and three connections preserved; original OCR word-order defect remains."},
+    {"sample": "reasoning-row", "finding": "All arms visually equivalent. Four boxes and three connections preserved; no new candidate-selection gain."},
+    {"sample": "cogbot-perceive", "finding": "All arms visually equivalent. Four target objects and one false fill fragment remain. Missing elbow connections, OCR and inherited fill problems unresolved."},
+    {"sample": "negative-plots", "finding": "A/B retain three false chart-derived objects; C is blank as desired for this one negative. Its positive-sample destruction prevents calling the classifier successful."}
+  ],
+  "post_result_diagnosis": [
+    "BLIP colored-component mask visibly follows letter contours, not plot dots. First label crop yields 113 small colored components covering 8.306 percent. Five legitimate boxes are rejected individually.",
+    "Attention false enclosing container yields 22 components covering 4.154 percent, visibly on the red title. Containment propagation then deletes the true target and all four tokens, even though each token has zero small colored components.",
+    "Negative right plot yields 151 small colored components covering 6.413 percent. Count and mass alone cannot distinguish these dots from colored text or text-edge fragments.",
+    "No thresholds or rules were changed after run1. Mask inspection only reproduces and asserts the recorded component counts; it is not another candidate arm."
+  ]
+}

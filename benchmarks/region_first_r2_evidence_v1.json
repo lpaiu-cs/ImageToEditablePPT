@@ -1,0 +1,2297 @@
+{
+  "status": "reviewed_B_partial_gain_C_failed_not_product_acceptance",
+  "results": {
+    "status": "r2_development_diagnostic_not_acceptance",
+    "manifest_sha256": "f522c574d7b11eb075247e385bd10814605eeb91b7f77dc5043b6699d8966a79",
+    "git_commit": "1b9a70b01b696458fd397103c6e7b944130a6068",
+    "git_status": "",
+    "code_sha256": {
+      "src/image_to_editable_ppt/research/candidate_select.py": "21db771560c18f9bc49771a14a80a32b06032965bcd682515dce9c5796eb5f5a",
+      "tools/run_candidate_selection.py": "a0dc21db7f0a854e5e748d9c4daad07fe533670b34aa0faf0e171476b77e41a7",
+      "src/image_to_editable_ppt/research/region_first.py": "3918e7663d86b99bd9f8fa6f58a83c9bd4f2c5cb5b7605388dbbc2254cfc9098",
+      "src/image_to_editable_ppt/research/native_emit.py": "ae48317520480e55985a78c12d1fe756a621aa76487d2e70dd805a70388df792",
+      "src/image_to_editable_ppt/v3/emit/pptx_writer.py": "2638040b48f14cd9c6c95493cf2b8c008a51da1a95edbb9477aefa53e391008c",
+      "src/image_to_editable_ppt/v3/emit/style.py": "500fb23f7e3c1efad5e186a1074e02eafaa930b188669e69477dff86d7a5e5c0"
+    },
+    "records": [
+      {
+        "sample": "mixed-blip",
+        "arm": "all_candidates",
+        "input_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "scene_path": "artifacts\\region-first-r2\\run1\\mixed-blip--all_candidates.json",
+        "scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\mixed-blip--all_candidates.pptx",
+        "pptx_sha256": "1243c52f3747b32ef5a6b2a6dc53a06f0253c65ca9fcf859c86e5a5077abeb4e",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\mixed-blip--all_candidates-selection.png",
+        "overlay_sha256": "4bb7f6f5c36ce6f89f6f7eb549b0318b1be19006f1e16313b389bde1ee6dacad",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 5,
+          "matched_objects": 5,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "question",
+            "node:r0:1": "answer",
+            "node:r0:2": "decoder",
+            "node:r0:3": "v-image",
+            "node:r0:4": "c-image"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "question",
+            "answer",
+            "v-image",
+            "c-image"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "decoder",
+              "predicted": "Image-\ngrounded\ntextdecoder",
+              "expected": "Image-grounded text decoder"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        }
+      },
+      {
+        "sample": "mixed-blip",
+        "arm": "deduplicate",
+        "input_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "scene_path": "artifacts\\region-first-r2\\run1\\mixed-blip--deduplicate.json",
+        "scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\mixed-blip--deduplicate.pptx",
+        "pptx_sha256": "1243c52f3747b32ef5a6b2a6dc53a06f0253c65ca9fcf859c86e5a5077abeb4e",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\mixed-blip--deduplicate-selection.png",
+        "overlay_sha256": "4bb7f6f5c36ce6f89f6f7eb549b0318b1be19006f1e16313b389bde1ee6dacad",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 5,
+          "matched_objects": 5,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "question",
+            "node:r0:1": "answer",
+            "node:r0:2": "decoder",
+            "node:r0:3": "v-image",
+            "node:r0:4": "c-image"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "question",
+            "answer",
+            "v-image",
+            "c-image"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "decoder",
+              "predicted": "Image-\ngrounded\ntextdecoder",
+              "expected": "Image-grounded text decoder"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        }
+      },
+      {
+        "sample": "mixed-blip",
+        "arm": "evidence_select",
+        "input_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "scene_path": "artifacts\\region-first-r2\\run1\\mixed-blip--evidence_select.json",
+        "scene_sha256": "3f65107592408717881b11ab49e8748a84717eeac2f649f7295713583e78a8ed",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\mixed-blip--evidence_select.pptx",
+        "pptx_sha256": "e55e580859c0adf3ec4302d71da3952bb7558e035e8c7d5cc1fffaff8c851458",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\mixed-blip--evidence_select-selection.png",
+        "overlay_sha256": "9508559c36f97fe63125d17fddc3a0f8d823fdd5607556aee8dc5511c33abcbc",
+        "selection": {
+          "removed": {
+            "node:r0:0": {
+              "reason": "scatter_region",
+              "evidence_owner": "node:r0:0"
+            },
+            "node:r0:1": {
+              "reason": "scatter_region",
+              "evidence_owner": "node:r0:1"
+            },
+            "node:r0:2": {
+              "reason": "scatter_region",
+              "evidence_owner": "node:r0:2"
+            },
+            "node:r0:3": {
+              "reason": "scatter_region",
+              "evidence_owner": "node:r0:3"
+            },
+            "node:r0:4": {
+              "reason": "scatter_region",
+              "evidence_owner": "node:r0:4"
+            }
+          },
+          "features": {
+            "node:r0:0": {
+              "interior_uniform_fraction": 0.8425403225806452,
+              "interior_median": [
+                202.0,
+                238.0,
+                251.0
+              ],
+              "small_color_components": 113,
+              "small_color_area_fraction": 0.08306451612903226,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:1": {
+              "interior_uniform_fraction": 0.837378640776699,
+              "interior_median": [
+                217.0,
+                242.0,
+                208.0
+              ],
+              "small_color_components": 40,
+              "small_color_area_fraction": 0.05961771844660194,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:2": {
+              "interior_uniform_fraction": 0.8333333333333334,
+              "interior_median": [
+                217.0,
+                242.0,
+                208.0
+              ],
+              "small_color_components": 93,
+              "small_color_area_fraction": 0.08423645320197044,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:3": {
+              "interior_uniform_fraction": 0.837145618556701,
+              "interior_median": [
+                242.0,
+                207.0,
+                238.0
+              ],
+              "small_color_components": 38,
+              "small_color_area_fraction": 0.07957474226804123,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:4": {
+              "interior_uniform_fraction": 0.837145618556701,
+              "interior_median": [
+                242.0,
+                207.0,
+                238.0
+              ],
+              "small_color_components": 38,
+              "small_color_area_fraction": 0.07957474226804123,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "dropped_connector_ids": [
+            "connector:r0:visual:0",
+            "connector:r0:visual:1",
+            "connector:r0:visual:2"
+          ]
+        },
+        "metrics": {
+          "target_objects": 5,
+          "matched_objects": 0,
+          "missing_objects": [
+            "answer",
+            "c-image",
+            "decoder",
+            "question",
+            "v-image"
+          ],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "c-image",
+              "decoder"
+            ],
+            [
+              "question",
+              "answer"
+            ],
+            [
+              "v-image",
+              "question"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [
+            "v-image",
+            "question",
+            "answer",
+            "c-image",
+            "decoder"
+          ],
+          "wrong_labels": [],
+          "total_emitted_objects": 0,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "all_candidates",
+        "input_sha256": "14fc51a1c20125310a7ed61f3f1984691616d93933a1940f9d9709b72898cac9",
+        "scene_path": "artifacts\\region-first-r2\\run1\\mixed-attention--all_candidates.json",
+        "scene_sha256": "14fc51a1c20125310a7ed61f3f1984691616d93933a1940f9d9709b72898cac9",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\mixed-attention--all_candidates.pptx",
+        "pptx_sha256": "b45353f5b506af1d2edef74fbd57d301bf12400d00d9e61837cb289c0414eb3e",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\mixed-attention--all_candidates-selection.png",
+        "overlay_sha256": "a1127736a948b3206fc64d660ce46e6f1970a172978512322f13161ad374656f",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 6,
+          "matched_objects": 6,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "attention",
+            "node:r0:4": "yellow",
+            "node:r0:5": "green",
+            "node:r0:6": "red",
+            "node:r0:7": "purple",
+            "container:r0:1": "queries"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:1",
+            "node:r0:2",
+            "node:r0:3",
+            "node:r0:8",
+            "node:r0:9",
+            "node:r0:10",
+            "node:r0:11",
+            "node:r0:12",
+            "container:r0:0",
+            "container:r0:2"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 4,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "green",
+              "attention"
+            ],
+            [
+              "purple",
+              "attention"
+            ],
+            [
+              "red",
+              "attention"
+            ],
+            [
+              "yellow",
+              "attention"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [
+            {
+              "id": "connector:r0:visual:0",
+              "mapped_pair": [
+                null,
+                "yellow"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:1",
+              "mapped_pair": [
+                null,
+                "green"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:2",
+              "mapped_pair": [
+                null,
+                "green"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:3",
+              "mapped_pair": [
+                null,
+                "red"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:4",
+              "mapped_pair": [
+                null,
+                "red"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:5",
+              "mapped_pair": [
+                null,
+                "purple"
+              ],
+              "directed": false
+            }
+          ],
+          "raw_emitted_edges": 6,
+          "correct_labels": [
+            "attention"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 16,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 22,
+          "raster_images": 0,
+          "connectors": 6,
+          "bound_endpoints": 12,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "deduplicate",
+        "input_sha256": "14fc51a1c20125310a7ed61f3f1984691616d93933a1940f9d9709b72898cac9",
+        "scene_path": "artifacts\\region-first-r2\\run1\\mixed-attention--deduplicate.json",
+        "scene_sha256": "794362a8f8841e720aef44be4dfba149ec8bdd2084857a8e2025bef110cbdb7e",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\mixed-attention--deduplicate.pptx",
+        "pptx_sha256": "45aa0fb49ef765bc11dce722e759f4048245cdbdf946da950328368fecf2366d",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\mixed-attention--deduplicate-selection.png",
+        "overlay_sha256": "6e57aa3f6fee5cc20e6bf0953141cdc218d2b603b26a63f3dde8571780b3a074",
+        "selection": {
+          "removed": {
+            "node:r0:8": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:4"
+            },
+            "container:r0:2": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:4"
+            },
+            "node:r0:9": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:4"
+            },
+            "node:r0:10": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:5"
+            },
+            "node:r0:11": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:6"
+            },
+            "node:r0:12": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:7"
+            }
+          },
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 6,
+          "matched_objects": 6,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "attention",
+            "node:r0:4": "yellow",
+            "node:r0:5": "green",
+            "node:r0:6": "red",
+            "node:r0:7": "purple",
+            "container:r0:1": "queries"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:1",
+            "node:r0:2",
+            "node:r0:3",
+            "container:r0:0"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 4,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "green",
+              "attention"
+            ],
+            [
+              "purple",
+              "attention"
+            ],
+            [
+              "red",
+              "attention"
+            ],
+            [
+              "yellow",
+              "attention"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [
+            {
+              "id": "connector:r0:visual:0",
+              "mapped_pair": [
+                null,
+                "yellow"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:1",
+              "mapped_pair": [
+                null,
+                "green"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:2",
+              "mapped_pair": [
+                null,
+                "green"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:3",
+              "mapped_pair": [
+                null,
+                "red"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:4",
+              "mapped_pair": [
+                null,
+                "red"
+              ],
+              "directed": false
+            },
+            {
+              "id": "connector:r0:visual:5",
+              "mapped_pair": [
+                null,
+                "purple"
+              ],
+              "directed": false
+            }
+          ],
+          "raw_emitted_edges": 6,
+          "correct_labels": [
+            "attention"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 10,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 16,
+          "raster_images": 0,
+          "connectors": 6,
+          "bound_endpoints": 12,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "evidence_select",
+        "input_sha256": "14fc51a1c20125310a7ed61f3f1984691616d93933a1940f9d9709b72898cac9",
+        "scene_path": "artifacts\\region-first-r2\\run1\\mixed-attention--evidence_select.json",
+        "scene_sha256": "877c6464e7fe212d25c3e75bac9fd3431efe0b7464b033217e7e8832b9c68bde",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\mixed-attention--evidence_select.pptx",
+        "pptx_sha256": "a9f5c4b8160a1bcc02d92799e5a6d84340640b0ea87894e26fb1b4587110eae9",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\mixed-attention--evidence_select-selection.png",
+        "overlay_sha256": "187d890435e8a88d476fa9fc3958c93846eee74e5b5d81f9f4609b1334da0925",
+        "selection": {
+          "removed": {
+            "node:r0:8": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:4"
+            },
+            "container:r0:2": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:4"
+            },
+            "node:r0:9": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:4"
+            },
+            "node:r0:10": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:5"
+            },
+            "node:r0:11": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:6"
+            },
+            "node:r0:12": {
+              "reason": "duplicate_observation",
+              "representative": "node:r0:7"
+            },
+            "node:r0:0": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "node:r0:1": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "node:r0:2": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "node:r0:3": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "node:r0:4": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "node:r0:5": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "node:r0:6": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "node:r0:7": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "container:r0:0": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            },
+            "container:r0:1": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            }
+          },
+          "features": {
+            "node:r0:0": {
+              "interior_uniform_fraction": 0.9158034995977474,
+              "interior_median": [
+                242.0,
+                242.0,
+                242.0
+              ],
+              "small_color_components": 19,
+              "small_color_area_fraction": 0.06285197103781175,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:1": {
+              "interior_uniform_fraction": 0.9785499785499786,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:2": {
+              "interior_uniform_fraction": 0.9798305768455022,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:3": {
+              "interior_uniform_fraction": 1.0,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:4": {
+              "interior_uniform_fraction": 0.6431451612903226,
+              "interior_median": [
+                249.0,
+                218.0,
+                120.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.14285714285714285,
+                0.21428571428571427,
+                0.14814814814814814,
+                0.2222222222222222
+              ]
+            },
+            "node:r0:5": {
+              "interior_uniform_fraction": 0.65625,
+              "interior_median": [
+                78.0,
+                173.0,
+                91.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.14285714285714285,
+                0.21428571428571427,
+                0.14814814814814814,
+                0.2222222222222222
+              ]
+            },
+            "node:r0:6": {
+              "interior_uniform_fraction": 0.63579604578564,
+              "interior_median": [
+                234.0,
+                51.0,
+                35.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.14814814814814814,
+                0.2222222222222222,
+                0.14814814814814814,
+                0.2222222222222222
+              ]
+            },
+            "node:r0:7": {
+              "interior_uniform_fraction": 0.6524453694068678,
+              "interior_median": [
+                104.0,
+                53.0,
+                154.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.14814814814814814,
+                0.2222222222222222,
+                0.14814814814814814,
+                0.2222222222222222
+              ]
+            },
+            "container:r0:0": {
+              "interior_uniform_fraction": 0.8656777264896569,
+              "interior_median": [
+                242.0,
+                242.0,
+                242.0
+              ],
+              "small_color_components": 22,
+              "small_color_area_fraction": 0.0415433779145461,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.21243523316062177,
+                0.21243523316062177
+              ]
+            },
+            "container:r0:1": {
+              "interior_uniform_fraction": 0.7981459330143541,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "dropped_connector_ids": [
+            "connector:r0:visual:0",
+            "connector:r0:visual:1",
+            "connector:r0:visual:2",
+            "connector:r0:visual:3",
+            "connector:r0:visual:4",
+            "connector:r0:visual:5"
+          ]
+        },
+        "metrics": {
+          "target_objects": 6,
+          "matched_objects": 0,
+          "missing_objects": [
+            "attention",
+            "green",
+            "purple",
+            "queries",
+            "red",
+            "yellow"
+          ],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 4,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "green",
+              "attention"
+            ],
+            [
+              "purple",
+              "attention"
+            ],
+            [
+              "red",
+              "attention"
+            ],
+            [
+              "yellow",
+              "attention"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [
+            "attention"
+          ],
+          "wrong_labels": [],
+          "total_emitted_objects": 0,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "all_candidates",
+        "input_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "scene_path": "artifacts\\region-first-r2\\run1\\serial-hevc--all_candidates.json",
+        "scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\serial-hevc--all_candidates.pptx",
+        "pptx_sha256": "7cee1838c923c064ce6b70197fae970ac52410b25e8041d34ea5aef72a1f4086",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\serial-hevc--all_candidates-selection.png",
+        "overlay_sha256": "342e3545956c246c63b95d165d395f0a193bdb792899b1934de30b2c2386a2a5",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "stream",
+            "node:r0:1": "params",
+            "node:r0:2": "units",
+            "node:r0:3": "compute"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "stream",
+            "params",
+            "compute"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "units",
+              "predicted": "all PU Obtain units\nencoded AMVP in",
+              "expected": "Obtain all PU units encoded in AMVP"
+            }
+          ],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "deduplicate",
+        "input_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "scene_path": "artifacts\\region-first-r2\\run1\\serial-hevc--deduplicate.json",
+        "scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\serial-hevc--deduplicate.pptx",
+        "pptx_sha256": "7cee1838c923c064ce6b70197fae970ac52410b25e8041d34ea5aef72a1f4086",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\serial-hevc--deduplicate-selection.png",
+        "overlay_sha256": "342e3545956c246c63b95d165d395f0a193bdb792899b1934de30b2c2386a2a5",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "stream",
+            "node:r0:1": "params",
+            "node:r0:2": "units",
+            "node:r0:3": "compute"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "stream",
+            "params",
+            "compute"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "units",
+              "predicted": "all PU Obtain units\nencoded AMVP in",
+              "expected": "Obtain all PU units encoded in AMVP"
+            }
+          ],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "evidence_select",
+        "input_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "scene_path": "artifacts\\region-first-r2\\run1\\serial-hevc--evidence_select.json",
+        "scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\serial-hevc--evidence_select.pptx",
+        "pptx_sha256": "7cee1838c923c064ce6b70197fae970ac52410b25e8041d34ea5aef72a1f4086",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\serial-hevc--evidence_select-selection.png",
+        "overlay_sha256": "342e3545956c246c63b95d165d395f0a193bdb792899b1934de30b2c2386a2a5",
+        "selection": {
+          "removed": {},
+          "features": {
+            "node:r0:0": {
+              "interior_uniform_fraction": 0.9545167265991065,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:1": {
+              "interior_uniform_fraction": 0.9292889718441303,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:2": {
+              "interior_uniform_fraction": 0.9135533639293038,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:3": {
+              "interior_uniform_fraction": 0.8919799498746868,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "stream",
+            "node:r0:1": "params",
+            "node:r0:2": "units",
+            "node:r0:3": "compute"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "stream",
+            "params",
+            "compute"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "units",
+              "predicted": "all PU Obtain units\nencoded AMVP in",
+              "expected": "Obtain all PU units encoded in AMVP"
+            }
+          ],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "all_candidates",
+        "input_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "scene_path": "artifacts\\region-first-r2\\run1\\reasoning-row--all_candidates.json",
+        "scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\reasoning-row--all_candidates.pptx",
+        "pptx_sha256": "7bde78643f919855a592abe362de4b2ff2a9cf55e2695bd700c9a04c055217f4",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\reasoning-row--all_candidates-selection.png",
+        "overlay_sha256": "78f9631ace549e0e6655cc871989707db50491150f87e430cb8e4544b5f2a842",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "program",
+            "node:r0:1": "prediction",
+            "node:r0:2": "executor",
+            "node:r0:3": "decoder"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "program",
+            "prediction",
+            "executor",
+            "decoder"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "deduplicate",
+        "input_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "scene_path": "artifacts\\region-first-r2\\run1\\reasoning-row--deduplicate.json",
+        "scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\reasoning-row--deduplicate.pptx",
+        "pptx_sha256": "e394f08a6d23960768a79f954addd088fad038563bccb0be8a6753d9ffd9f09d",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\reasoning-row--deduplicate-selection.png",
+        "overlay_sha256": "78f9631ace549e0e6655cc871989707db50491150f87e430cb8e4544b5f2a842",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "program",
+            "node:r0:1": "prediction",
+            "node:r0:2": "executor",
+            "node:r0:3": "decoder"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "program",
+            "prediction",
+            "executor",
+            "decoder"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "evidence_select",
+        "input_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "scene_path": "artifacts\\region-first-r2\\run1\\reasoning-row--evidence_select.json",
+        "scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\reasoning-row--evidence_select.pptx",
+        "pptx_sha256": "e394f08a6d23960768a79f954addd088fad038563bccb0be8a6753d9ffd9f09d",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\reasoning-row--evidence_select-selection.png",
+        "overlay_sha256": "78f9631ace549e0e6655cc871989707db50491150f87e430cb8e4544b5f2a842",
+        "selection": {
+          "removed": {},
+          "features": {
+            "node:r0:0": {
+              "interior_uniform_fraction": 0.9141361256544502,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:1": {
+              "interior_uniform_fraction": 0.8169150221506243,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:2": {
+              "interior_uniform_fraction": 0.9138804457953394,
+              "interior_median": [
+                197.0,
+                224.0,
+                180.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:3": {
+              "interior_uniform_fraction": 0.9141491722136883,
+              "interior_median": [
+                197.0,
+                224.0,
+                180.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:0": "program",
+            "node:r0:1": "prediction",
+            "node:r0:2": "executor",
+            "node:r0:3": "decoder"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 3,
+          "matched_directed_edges": 3,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 3,
+          "correct_labels": [
+            "program",
+            "prediction",
+            "executor",
+            "decoder"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 4,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "all_candidates",
+        "input_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "scene_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--all_candidates.json",
+        "scene_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--all_candidates.pptx",
+        "pptx_sha256": "e3861cba770afea6c7b32916ea8f7d7e9f26922d2539a0804feb77d5947fbb91",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--all_candidates-selection.png",
+        "overlay_sha256": "52f313afd4085f4bfe3825649468f790472b4b296fe58c2f0b3b253adedc3cc5",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:1": "boundary",
+            "node:r0:2": "sensory",
+            "node:r0:3": "identity",
+            "container:r0:0": "perceive"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:0"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 2,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "boundary",
+              "identity"
+            ],
+            [
+              "boundary",
+              "sensory"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [
+            "boundary",
+            "identity"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "sensory",
+              "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+              "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 5,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "deduplicate",
+        "input_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "scene_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--deduplicate.json",
+        "scene_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--deduplicate.pptx",
+        "pptx_sha256": "e3861cba770afea6c7b32916ea8f7d7e9f26922d2539a0804feb77d5947fbb91",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--deduplicate-selection.png",
+        "overlay_sha256": "52f313afd4085f4bfe3825649468f790472b4b296fe58c2f0b3b253adedc3cc5",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:1": "boundary",
+            "node:r0:2": "sensory",
+            "node:r0:3": "identity",
+            "container:r0:0": "perceive"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:0"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 2,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "boundary",
+              "identity"
+            ],
+            [
+              "boundary",
+              "sensory"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [
+            "boundary",
+            "identity"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "sensory",
+              "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+              "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 5,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "evidence_select",
+        "input_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "scene_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--evidence_select.json",
+        "scene_sha256": "9e26deca22cb1c902dac31597c3a93c2efcc4bbb2f5e9c307f63f2920dfbf2b8",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--evidence_select.pptx",
+        "pptx_sha256": "e3861cba770afea6c7b32916ea8f7d7e9f26922d2539a0804feb77d5947fbb91",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\cogbot-perceive--evidence_select-selection.png",
+        "overlay_sha256": "52f313afd4085f4bfe3825649468f790472b4b296fe58c2f0b3b253adedc3cc5",
+        "selection": {
+          "removed": {},
+          "features": {
+            "node:r0:0": {
+              "interior_uniform_fraction": 1.0,
+              "interior_median": [
+                210.0,
+                226.0,
+                242.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ]
+            },
+            "node:r0:1": {
+              "interior_uniform_fraction": 0.6627532228360957,
+              "interior_median": [
+                250.0,
+                250.0,
+                249.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:2": {
+              "interior_uniform_fraction": 0.6726125248589634,
+              "interior_median": [
+                251.0,
+                251.0,
+                249.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:3": {
+              "interior_uniform_fraction": 0.677719149675374,
+              "interior_median": [
+                250.0,
+                251.0,
+                249.0
+              ],
+              "small_color_components": 0,
+              "small_color_area_fraction": 0.0,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "container:r0:0": {
+              "interior_uniform_fraction": 0.4416657461614934,
+              "interior_median": [
+                210.0,
+                225.0,
+                242.0
+              ],
+              "small_color_components": 7,
+              "small_color_area_fraction": 0.005419921875,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 4,
+          "matched_objects": 4,
+          "missing_objects": [],
+          "object_matches": {
+            "node:r0:1": "boundary",
+            "node:r0:2": "sensory",
+            "node:r0:3": "identity",
+            "container:r0:0": "perceive"
+          },
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:0"
+          ],
+          "excluded_region_hits": [],
+          "target_edges": 2,
+          "matched_directed_edges": 0,
+          "missing_edges": [
+            [
+              "boundary",
+              "identity"
+            ],
+            [
+              "boundary",
+              "sensory"
+            ]
+          ],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [
+            "boundary",
+            "identity"
+          ],
+          "missing_labels": [],
+          "wrong_labels": [
+            {
+              "id": "sensory",
+              "predicted": "System Sensory\n(Delta ingest, durable cursor,\nchunking & embedding)",
+              "expected": "Sensory System (Delta ingest, durable cursor, chunking & embedding)"
+            }
+          ],
+          "total_emitted_objects": 5,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 5,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "all_candidates",
+        "input_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+        "scene_path": "artifacts\\region-first-r2\\run1\\negative-plots--all_candidates.json",
+        "scene_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\negative-plots--all_candidates.pptx",
+        "pptx_sha256": "5c7d68708b7de2a9c3615849e57cf0ab906868aa38e482169d7e08c535fa0c1a",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\negative-plots--all_candidates-selection.png",
+        "overlay_sha256": "3a5b637020940e1755153277fb44a28677bbb3bc4052d723f599ad9d4b7bf352",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 0,
+          "matched_objects": 0,
+          "missing_objects": [],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:0",
+            "node:r0:1",
+            "container:r0:0"
+          ],
+          "excluded_region_hits": [
+            "node:r0:0",
+            "node:r0:1",
+            "container:r0:0"
+          ],
+          "target_edges": 0,
+          "matched_directed_edges": 0,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 3,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 3,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "deduplicate",
+        "input_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+        "scene_path": "artifacts\\region-first-r2\\run1\\negative-plots--deduplicate.json",
+        "scene_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\negative-plots--deduplicate.pptx",
+        "pptx_sha256": "5c7d68708b7de2a9c3615849e57cf0ab906868aa38e482169d7e08c535fa0c1a",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\negative-plots--deduplicate-selection.png",
+        "overlay_sha256": "3a5b637020940e1755153277fb44a28677bbb3bc4052d723f599ad9d4b7bf352",
+        "selection": {
+          "removed": {},
+          "features": {},
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 0,
+          "matched_objects": 0,
+          "missing_objects": [],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [
+            "node:r0:0",
+            "node:r0:1",
+            "container:r0:0"
+          ],
+          "excluded_region_hits": [
+            "node:r0:0",
+            "node:r0:1",
+            "container:r0:0"
+          ],
+          "target_edges": 0,
+          "matched_directed_edges": 0,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 3,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 3,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "evidence_select",
+        "input_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+        "scene_path": "artifacts\\region-first-r2\\run1\\negative-plots--evidence_select.json",
+        "scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "pptx_path": "artifacts\\region-first-r2\\run1\\negative-plots--evidence_select.pptx",
+        "pptx_sha256": "363a72330cc6b0d60e74eb1bda7a9de3e020ffcd6a2576203011021e7633fb8f",
+        "overlay_path": "artifacts\\region-first-r2\\run1\\negative-plots--evidence_select-selection.png",
+        "overlay_sha256": "50a0140cd03fc9234b842e7af86f8c2c847033d7aa04717b07e3417082516a38",
+        "selection": {
+          "removed": {
+            "node:r0:0": {
+              "reason": "scatter_region",
+              "evidence_owner": "node:r0:0"
+            },
+            "node:r0:1": {
+              "reason": "scatter_region",
+              "evidence_owner": "node:r0:1"
+            },
+            "container:r0:0": {
+              "reason": "scatter_region",
+              "evidence_owner": "container:r0:0"
+            }
+          },
+          "features": {
+            "node:r0:0": {
+              "interior_uniform_fraction": 0.92281290310461,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 151,
+              "small_color_area_fraction": 0.0641310127617801,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "node:r0:1": {
+              "interior_uniform_fraction": 0.7735916055607833,
+              "interior_median": [
+                255.0,
+                0.0,
+                0.0
+              ],
+              "small_color_components": 35,
+              "small_color_area_fraction": 0.03357420591942901,
+              "side_gap_fractions": [
+                0.22580645161290322,
+                0.07917888563049853,
+                0.23357664233576642,
+                0.35036496350364965
+              ]
+            },
+            "container:r0:0": {
+              "interior_uniform_fraction": 0.9069931996643665,
+              "interior_median": [
+                255.0,
+                255.0,
+                255.0
+              ],
+              "small_color_components": 471,
+              "small_color_area_fraction": 0.02227176047120419,
+              "side_gap_fractions": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "dropped_connector_ids": []
+        },
+        "metrics": {
+          "target_objects": 0,
+          "matched_objects": 0,
+          "missing_objects": [],
+          "object_matches": {},
+          "role_errors": [],
+          "unmatched_local_objects": [],
+          "excluded_region_hits": [],
+          "target_edges": 0,
+          "matched_directed_edges": 0,
+          "missing_edges": [],
+          "wrong_or_unresolved_local_edges": [],
+          "raw_emitted_edges": 0,
+          "correct_labels": [],
+          "missing_labels": [],
+          "wrong_labels": [],
+          "total_emitted_objects": 0,
+          "unassessed_outside_roi": 0
+        },
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      }
+    ]
+  },
+  "render_records": [
+    {
+      "id": "cogbot-perceive--all_candidates",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\cogbot-perceive--all_candidates.pptx",
+      "pptx_sha256": "e3861cba770afea6c7b32916ea8f7d7e9f26922d2539a0804feb77d5947fbb91",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\cogbot-perceive--all_candidates.png",
+      "render_sha256": "21eb5aff47e23c66b72c5774ed08fbed1707ac6db3da5c5a410e48178ff55505",
+      "width": 1200,
+      "height": 655
+    },
+    {
+      "id": "cogbot-perceive--deduplicate",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\cogbot-perceive--deduplicate.pptx",
+      "pptx_sha256": "e3861cba770afea6c7b32916ea8f7d7e9f26922d2539a0804feb77d5947fbb91",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\cogbot-perceive--deduplicate.png",
+      "render_sha256": "21eb5aff47e23c66b72c5774ed08fbed1707ac6db3da5c5a410e48178ff55505",
+      "width": 1200,
+      "height": 655
+    },
+    {
+      "id": "cogbot-perceive--evidence_select",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\cogbot-perceive--evidence_select.pptx",
+      "pptx_sha256": "e3861cba770afea6c7b32916ea8f7d7e9f26922d2539a0804feb77d5947fbb91",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\cogbot-perceive--evidence_select.png",
+      "render_sha256": "21eb5aff47e23c66b72c5774ed08fbed1707ac6db3da5c5a410e48178ff55505",
+      "width": 1200,
+      "height": 655
+    },
+    {
+      "id": "mixed-attention--all_candidates",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\mixed-attention--all_candidates.pptx",
+      "pptx_sha256": "b45353f5b506af1d2edef74fbd57d301bf12400d00d9e61837cb289c0414eb3e",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\mixed-attention--all_candidates.png",
+      "render_sha256": "5740bb08d0fc958c06ff0b2a535ffe7d2ed799ae2032ab71e1ccc9ec1b792475",
+      "width": 1200,
+      "height": 262
+    },
+    {
+      "id": "mixed-attention--deduplicate",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\mixed-attention--deduplicate.pptx",
+      "pptx_sha256": "45aa0fb49ef765bc11dce722e759f4048245cdbdf946da950328368fecf2366d",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\mixed-attention--deduplicate.png",
+      "render_sha256": "e1c15bd23935a915e51cc3d7d9dbf842a675aae686cf13ea2987bcb0088b093a",
+      "width": 1200,
+      "height": 262
+    },
+    {
+      "id": "mixed-attention--evidence_select",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\mixed-attention--evidence_select.pptx",
+      "pptx_sha256": "a9f5c4b8160a1bcc02d92799e5a6d84340640b0ea87894e26fb1b4587110eae9",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\mixed-attention--evidence_select.png",
+      "render_sha256": "758dcd0ec34e39c85ad536342550b7c21977fdc66a9cc8e59a126f2ac4cc869d",
+      "width": 1200,
+      "height": 262
+    },
+    {
+      "id": "mixed-blip--all_candidates",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\mixed-blip--all_candidates.pptx",
+      "pptx_sha256": "1243c52f3747b32ef5a6b2a6dc53a06f0253c65ca9fcf859c86e5a5077abeb4e",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\mixed-blip--all_candidates.png",
+      "render_sha256": "76cafa16b5939e945f8198d156f48a7f3213e25478db6eb55c85aa10d116777e",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "id": "mixed-blip--deduplicate",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\mixed-blip--deduplicate.pptx",
+      "pptx_sha256": "1243c52f3747b32ef5a6b2a6dc53a06f0253c65ca9fcf859c86e5a5077abeb4e",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\mixed-blip--deduplicate.png",
+      "render_sha256": "76cafa16b5939e945f8198d156f48a7f3213e25478db6eb55c85aa10d116777e",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "id": "mixed-blip--evidence_select",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\mixed-blip--evidence_select.pptx",
+      "pptx_sha256": "e55e580859c0adf3ec4302d71da3952bb7558e035e8c7d5cc1fffaff8c851458",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\mixed-blip--evidence_select.png",
+      "render_sha256": "4d4628899ee8ef8e25adcf79314ba8f4b475a91758cccd7afb976011b1cef7ca",
+      "width": 1200,
+      "height": 700
+    },
+    {
+      "id": "negative-plots--all_candidates",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\negative-plots--all_candidates.pptx",
+      "pptx_sha256": "5c7d68708b7de2a9c3615849e57cf0ab906868aa38e482169d7e08c535fa0c1a",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\negative-plots--all_candidates.png",
+      "render_sha256": "f44ea9f2e9cb307197d335ed3396191b7222f15a940efd2ca52489ddd41fcaa0",
+      "width": 1200,
+      "height": 303
+    },
+    {
+      "id": "negative-plots--deduplicate",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\negative-plots--deduplicate.pptx",
+      "pptx_sha256": "5c7d68708b7de2a9c3615849e57cf0ab906868aa38e482169d7e08c535fa0c1a",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\negative-plots--deduplicate.png",
+      "render_sha256": "f44ea9f2e9cb307197d335ed3396191b7222f15a940efd2ca52489ddd41fcaa0",
+      "width": 1200,
+      "height": 303
+    },
+    {
+      "id": "negative-plots--evidence_select",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\negative-plots--evidence_select.pptx",
+      "pptx_sha256": "363a72330cc6b0d60e74eb1bda7a9de3e020ffcd6a2576203011021e7633fb8f",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\negative-plots--evidence_select.png",
+      "render_sha256": "b6a4a0e75aab03b5bf5236aa109f10bc6e23b1f3c7d2b04e7c2ece44c61d8bcf",
+      "width": 1200,
+      "height": 303
+    },
+    {
+      "id": "reasoning-row--all_candidates",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\reasoning-row--all_candidates.pptx",
+      "pptx_sha256": "7bde78643f919855a592abe362de4b2ff2a9cf55e2695bd700c9a04c055217f4",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\reasoning-row--all_candidates.png",
+      "render_sha256": "af200cb96c289c63896b72ce67aff36b3f337d7b826bf28efa0295dc581b8fb1",
+      "width": 1200,
+      "height": 492
+    },
+    {
+      "id": "reasoning-row--deduplicate",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\reasoning-row--deduplicate.pptx",
+      "pptx_sha256": "e394f08a6d23960768a79f954addd088fad038563bccb0be8a6753d9ffd9f09d",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\reasoning-row--deduplicate.png",
+      "render_sha256": "af200cb96c289c63896b72ce67aff36b3f337d7b826bf28efa0295dc581b8fb1",
+      "width": 1200,
+      "height": 492
+    },
+    {
+      "id": "reasoning-row--evidence_select",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\reasoning-row--evidence_select.pptx",
+      "pptx_sha256": "e394f08a6d23960768a79f954addd088fad038563bccb0be8a6753d9ffd9f09d",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\reasoning-row--evidence_select.png",
+      "render_sha256": "af200cb96c289c63896b72ce67aff36b3f337d7b826bf28efa0295dc581b8fb1",
+      "width": 1200,
+      "height": 492
+    },
+    {
+      "id": "serial-hevc--all_candidates",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\serial-hevc--all_candidates.pptx",
+      "pptx_sha256": "7cee1838c923c064ce6b70197fae970ac52410b25e8041d34ea5aef72a1f4086",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\serial-hevc--all_candidates.png",
+      "render_sha256": "c5f872d5b821e7f1b1ccdc3f69fc9e23bd9e60313319bc9920e2532594fcf97f",
+      "width": 1200,
+      "height": 1552
+    },
+    {
+      "id": "serial-hevc--deduplicate",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\serial-hevc--deduplicate.pptx",
+      "pptx_sha256": "7cee1838c923c064ce6b70197fae970ac52410b25e8041d34ea5aef72a1f4086",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\serial-hevc--deduplicate.png",
+      "render_sha256": "c5f872d5b821e7f1b1ccdc3f69fc9e23bd9e60313319bc9920e2532594fcf97f",
+      "width": 1200,
+      "height": 1552
+    },
+    {
+      "id": "serial-hevc--evidence_select",
+      "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1\\serial-hevc--evidence_select.pptx",
+      "pptx_sha256": "7cee1838c923c064ce6b70197fae970ac52410b25e8041d34ea5aef72a1f4086",
+      "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r2\\run1-renders\\serial-hevc--evidence_select.png",
+      "render_sha256": "c5f872d5b821e7f1b1ccdc3f69fc9e23bd9e60313319bc9920e2532594fcf97f",
+      "width": 1200,
+      "height": 1552
+    }
+  ],
+  "run_sha256": "9050ce7e5a6dcf5c0e1186295ad41446170438d36b20d174ba3fd977dd84d5ac",
+  "render_manifest_sha256": "f238b20f075bde9c4499b91434dd999af735a6806250fbab97733870d435ab99",
+  "review_code_sha256": "04c865983a67320fb4c11ceae2463256f6c4d3be699c2ebf3bc4b10183082e2f",
+  "sheets": [
+    {
+      "sample": "mixed-blip",
+      "path": "artifacts\\region-first-r2\\review-v2\\mixed-blip-comparison.png",
+      "sha256": "fd964329ac3b28353a1adbfffb5505d19265e0a22d59dbd8f5e6171bde2f9c5b"
+    },
+    {
+      "sample": "mixed-attention",
+      "path": "artifacts\\region-first-r2\\review-v2\\mixed-attention-comparison.png",
+      "sha256": "d958ec71eb9e4939707fd47ade8ded89ef0e88951268cd8cdeba61d1a2c45481"
+    },
+    {
+      "sample": "serial-hevc",
+      "path": "artifacts\\region-first-r2\\review-v2\\serial-hevc-comparison.png",
+      "sha256": "ee33988e70b5d141e1b80ed81c205683f501f9e131a7af13f05a8e45aa9032b8"
+    },
+    {
+      "sample": "reasoning-row",
+      "path": "artifacts\\region-first-r2\\review-v2\\reasoning-row-comparison.png",
+      "sha256": "c7dc9a75c57eacffe64c7ccca02b269f54f7deeff8987a9f0da4341db94fb0da"
+    },
+    {
+      "sample": "cogbot-perceive",
+      "path": "artifacts\\region-first-r2\\review-v2\\cogbot-perceive-comparison.png",
+      "sha256": "390d0f1a2a245670facb2b302716257d99e6dd115e4a4a77d9728ab5217a5ea9"
+    },
+    {
+      "sample": "negative-plots",
+      "path": "artifacts\\region-first-r2\\review-v2\\negative-plots-comparison.png",
+      "sha256": "f2ce5470ef8fffc1269631517b83fe20e4b2d09f57a8af743916736dec79b5bc"
+    }
+  ],
+  "invariants": [
+    {
+      "sample": "mixed-blip",
+      "arm": "all_candidates",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010216843703858558
+    },
+    {
+      "sample": "mixed-blip",
+      "arm": "deduplicate",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010216843703858558
+    },
+    {
+      "sample": "mixed-blip",
+      "arm": "evidence_select",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "all_candidates",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.54426151338339e-05
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "deduplicate",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.54426151338339e-05
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "evidence_select",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "all_candidates",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.94246580177105e-05
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "deduplicate",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.94246580177105e-05
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "evidence_select",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.94246580177105e-05
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "all_candidates",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010003985104845015
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "deduplicate",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010003985104845015
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "evidence_select",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0.00010003985104845015
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "all_candidates",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.58575830267705e-05
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "deduplicate",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.58575830267705e-05
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "evidence_select",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.58575830267705e-05
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "all_candidates",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.017913664877142e-05
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "deduplicate",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 9.017913664877142e-05
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "evidence_select",
+      "source_fields_preserved": true,
+      "connectors_are_exact_subset": true,
+      "pptx_shape_ids_exact": true,
+      "labels_preserved": true,
+      "bound_owner_pairs_preserved": true,
+      "raster_count": 0,
+      "max_box_error_px": 0
+    }
+  ],
+  "visual_review": {
+    "date": "2026-09-08",
+    "reviewer": "primary assistant direct image inspection",
+    "scope": "Six source/A/B/C native PowerPoint ROI sheets, BLIP and Attention rejection overlays, three source/mask/highlight diagnosis sheets",
+    "verdict": "B has a limited duplicate-removal gain; C fails preservation and must not be promoted",
+    "observations": [
+      {
+        "sample": "mixed-attention",
+        "finding": "B removes six redundant token observations: yellow becomes one round token rather than a squared overlapping stack. Three false gap boxes, the enclosing false container and six wrong/unresolved raw connectors remain. Diagram structure is still visually inadequate. C is blank and loses all six true objects."
+      },
+      {
+        "sample": "mixed-blip",
+        "finding": "A/B preserve five useful boxes and three connections with unchanged OCR/style defects. C is entirely blank: a destructive false rejection, not a conservative success."
+      },
+      {
+        "sample": "serial-hevc",
+        "finding": "All arms visually equivalent. Four boxes and three connections preserved; original OCR word-order defect remains."
+      },
+      {
+        "sample": "reasoning-row",
+        "finding": "All arms visually equivalent. Four boxes and three connections preserved; no new candidate-selection gain."
+      },
+      {
+        "sample": "cogbot-perceive",
+        "finding": "All arms visually equivalent. Four target objects and one false fill fragment remain. Missing elbow connections, OCR and inherited fill problems unresolved."
+      },
+      {
+        "sample": "negative-plots",
+        "finding": "A/B retain three false chart-derived objects; C is blank as desired for this one negative. Its positive-sample destruction prevents calling the classifier successful."
+      }
+    ],
+    "post_result_diagnosis": [
+      "BLIP colored-component mask visibly follows letter contours, not plot dots. First label crop yields 113 small colored components covering 8.306 percent. Five legitimate boxes are rejected individually.",
+      "Attention false enclosing container yields 22 components covering 4.154 percent, visibly on the red title. Containment propagation then deletes the true target and all four tokens, even though each token has zero small colored components.",
+      "Negative right plot yields 151 small colored components covering 6.413 percent. Count and mass alone cannot distinguish these dots from colored text or text-edge fragments.",
+      "No thresholds or rules were changed after run1. Mask inspection only reproduces and asserts the recorded component counts; it is not another candidate arm."
+    ]
+  },
+  "post_result_diagnostic": {
+    "status": "post_result_explanation_not_new_arm",
+    "records": [
+      {
+        "sample": "mixed-blip",
+        "owner": "node:r0:0",
+        "components": 113,
+        "fraction": 0.08306451612903226,
+        "path": "artifacts\\region-first-r2\\rejection-inspection-v1\\mixed-blip-mask.png",
+        "sha256": "19f83d0a372fa1ad30abc3acd91087fdaf3e0379851c4a92f313666d2b828530"
+      },
+      {
+        "sample": "mixed-attention",
+        "owner": "container:r0:0",
+        "components": 22,
+        "fraction": 0.0415433779145461,
+        "path": "artifacts\\region-first-r2\\rejection-inspection-v1\\mixed-attention-mask.png",
+        "sha256": "b44493c4bf40343a50175f6e1dd7058b439b8373409e030a1a3d5c802d4c891b"
+      },
+      {
+        "sample": "negative-plots",
+        "owner": "node:r0:0",
+        "components": 151,
+        "fraction": 0.0641310127617801,
+        "path": "artifacts\\region-first-r2\\rejection-inspection-v1\\negative-plots-mask.png",
+        "sha256": "a067e2a05256e42ec1a6fdb731fda30c382a8961fe3a28228b0c04605b230a10"
+      }
+    ]
+  },
+  "diagnostic_manifest_sha256": "8c367f74733af33d7306b57c5e9c9240753c6a14a621ba1c1865469e26a881ca",
+  "diagnostic_code_sha256": "80d3186eacf1842a5cb9f13de7ddf31e3ea1f8d2a168b5c0b71accfb33bff2ce"
+}
