@@ -1,0 +1,60 @@
+{
+  "schema_version": "region_first_r1_inputs_v1",
+  "status": "fixed_consumed_development_scenes_not_automatic_quality",
+  "inputs": [
+    {
+      "sample": "mixed-blip",
+      "r0_arm": "roi_cv",
+      "scene_path": "artifacts\\region-first-r0\\run1\\mixed-blip--roi_cv.json",
+      "scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+      "baseline_pptx_path": "artifacts\\region-first-r0\\run1\\mixed-blip--roi_cv.pptx",
+      "baseline_pptx_sha256": "1d987c14c605c867c010cb7f3649806b254d858ddd6ff98da67f477f2891ffdc",
+      "baseline_render_sha256": "61811f3519e30225c4dad9f295c9e44c9a9e004ffb66a9e122d9639daf185d2e"
+    },
+    {
+      "sample": "mixed-attention",
+      "r0_arm": "oracle_boxes",
+      "scene_path": "artifacts\\region-first-r0\\run1\\mixed-attention--oracle_boxes.json",
+      "scene_sha256": "f70bddecd97fc9f5447f61f422ab9482ca15f442114031bd04638ed14776bb8e",
+      "baseline_pptx_path": "artifacts\\region-first-r0\\run1\\mixed-attention--oracle_boxes.pptx",
+      "baseline_pptx_sha256": "eae3b0c05eecb11b0c531197495fca91725a88bea712e969326bcb3bac4f37e0",
+      "baseline_render_sha256": "8a52b25feab604a7e4f15420c9fddceae9be34b88ce1349bcfb40823cb3773a8"
+    },
+    {
+      "sample": "serial-hevc",
+      "r0_arm": "roi_cv",
+      "scene_path": "artifacts\\region-first-r0\\run1\\serial-hevc--roi_cv.json",
+      "scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+      "baseline_pptx_path": "artifacts\\region-first-r0\\run1\\serial-hevc--roi_cv.pptx",
+      "baseline_pptx_sha256": "76874d66f9bf0be2ef1579c0c97cd0ad0eee31d7aff2ae8a2390637ea6f5f3d9",
+      "baseline_render_sha256": "a7ad0e7f9eea92a261eed2da492864f08b7be7f07f845464a3fc61489873a0b3"
+    },
+    {
+      "sample": "reasoning-row",
+      "r0_arm": "roi_cv",
+      "scene_path": "artifacts\\region-first-r0\\run1\\reasoning-row--roi_cv.json",
+      "scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+      "baseline_pptx_path": "artifacts\\region-first-r0\\run1\\reasoning-row--roi_cv.pptx",
+      "baseline_pptx_sha256": "a57b2d863af5b8b82c28babc91ec31b0b8ec47b3a195bed1956052c11b2f103b",
+      "baseline_render_sha256": "592dca25b817835ae6a302d54051faa454d669aada44f4b350076f1f60171a6a"
+    },
+    {
+      "sample": "cogbot-perceive",
+      "r0_arm": "oracle_boxes",
+      "scene_path": "artifacts\\region-first-r0\\run1\\cogbot-perceive--oracle_boxes.json",
+      "scene_sha256": "e523fba86e28a38ca4dae1e3d2cd58f0fcc82396f1a20a0cdff2cf22bdb177d4",
+      "baseline_pptx_path": "artifacts\\region-first-r0\\run1\\cogbot-perceive--oracle_boxes.pptx",
+      "baseline_pptx_sha256": "d93d1fb3803774447d635b8616b0b3ed5a3f0a2ff422d6eb2cb4b3c959f4710e",
+      "baseline_render_sha256": "c74aaafb100586b620621f764350dce8c1d36f60e4e6ffd72677ed846f8341b0"
+    },
+    {
+      "sample": "negative-plots",
+      "r0_arm": "full_cv",
+      "scene_path": "artifacts\\region-first-r0\\run1\\negative-plots--full_cv.json",
+      "scene_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+      "baseline_pptx_path": "artifacts\\region-first-r0\\run1\\negative-plots--full_cv.pptx",
+      "baseline_pptx_sha256": "eface4d367f340b039a507e374b9fe7f6345a33dcfe7c6abd788f9d406edd167",
+      "baseline_render_sha256": "1c0c2f4f3a57d3565da0a83fd4839ebc4171261d8e526d4c806b30c9a8444dee"
+    }
+  ]
+}
