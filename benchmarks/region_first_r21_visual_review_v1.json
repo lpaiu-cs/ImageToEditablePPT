@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-08",
+  "reviewer": "primary assistant direct image inspection",
+  "scope": "36 real PowerPoint outputs through 18 geometry/texture/combined comparison sheets; intermediate source selection overlays for Attention, BLIP and negative plots",
+  "verdict": "combined preserves the 23 consumed development targets and reduces extras, but output is still not product-acceptable",
+  "observations": [
+    {"sample": "mixed-attention", "finding": "face_only removes the rightmost wide gap face and its two incident wrong connectors. envelope_only removes the fake outer frame without deleting the target or tokens. combined performs both changes; two false gap boxes and four wrong/unresolved raw connectors remain. Correct directed relations remain 0/4. Guarded scatter preserves the red title instead of treating it as dots."},
+    {"sample": "mixed-blip", "finding": "local_scatter still erases all five valid boxes. Guarded scatter and combined preserve all five boxes and three connections. Existing OCR/style limitations remain; protection is not a recognition improvement."},
+    {"sample": "negative-plots", "finding": "The three chart-derived false objects remain under geometry-only arms but disappear under guarded_scatter and combined. The independently judged red fill fragment is removed without parent rejection propagation. This is one consumed colored-scatter negative, not general chart rejection."},
+    {"sample": "serial-hevc", "finding": "All six arms visually equivalent. Four boxes/three connections intact; scrambled OCR word order remains."},
+    {"sample": "reasoning-row", "finding": "All six arms visually equivalent. Four boxes/three connections intact; heavy arrows/styles unchanged."},
+    {"sample": "cogbot-perceive", "finding": "All six arms visually equivalent. One false fill fragment, wrong fill/text, and two missing elbow connections remain."}
+  ],
+  "limits": "No thresholds changed after run1. No new holdout, human timing, R1 custom-site or reroute fix, or production-default change. Selected primitive and connector fields remain exact source subsets."
+}
