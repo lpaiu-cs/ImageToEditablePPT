@@ -57,3 +57,10 @@ None of A/B/C is a production model or evidence of fully automatic product quali
 5. At most one bounded mixed-role follow-up in this R0. Do not keep tuning six examples until success.
 6. Report failures as failures; preserve existing production default and propose the next falsifiable test.
 
+## Pre-conversion target review
+All six native-source target overlays in artifacts/region-first-r0/targets-v1 were opened
+and visually inspected before conversion on 2026-09-08. The boxes delimit the intended
+23 local objects and 15 directed relations. No algorithm output was used to revise these targets.
+This is an assistant review, not human acceptance. Sources, current target coordinates and ROI
+boundaries were accepted for this coarse IoU diagnostic; they are not pixel-perfect annotations.
+Containers have no target OCR label in R0; node label accuracy is evaluated separately.

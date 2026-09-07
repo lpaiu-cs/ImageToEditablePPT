@@ -1,6 +1,8 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
-최종 업데이트: 2026-09-02
+최종 업데이트: 2026-09-08
+
+현재 연구선: `codex/region-first-diagnostics`. 사용자 승인으로 [Region-first R0](docs/region_first_r0_protocol.md)를 별도 개발 진단으로 시작한다. Phase 15/16 동결 자료와 NO-GO는 유지하며, 아래 Phase 16 상태는 그 동결 연구선에만 해당한다. R0는 수동 ROI/경계 대조군을 자동 성능으로 세지 않고, 사람 시간 절약이나 holdout 승인을 주장하지 않는다.
 상태: `Phase 15는 동결됐다. Phase 16.0은 새 dev/holdout·수동 annotation v2·정확 재생성한 Phase 15 baseline·육안 A/B rubric·PowerPoint 보정 deck까지 고정했으나, 사람의 실제 편집시간 측정이 없어 experiment lock은 blocked다. MEG algorithm tuning과 holdout candidate run은 시작하지 않았으며 candidate/NO-GO를 유지한다.`
 
 ---
