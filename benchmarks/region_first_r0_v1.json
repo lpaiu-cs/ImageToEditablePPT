@@ -1,0 +1,507 @@
+{
+  "schema_version": "region_first_r0_v1",
+  "purpose": "consumed_development_diagnostics_not_acceptance",
+  "reviewer": "assistant_source_visual_review_not_human_acceptance",
+  "coordinate_space": "normalized_source",
+  "samples": [
+    {
+      "id": "mixed-blip",
+      "path": "data/phase16_dev_v1/phase16-dev-p063.png",
+      "sha256": "b33879476bd2f722cb1f09f562653c597a590ac4fa5a80848656b55f443af9ef",
+      "size": [
+        1192,
+        696
+      ],
+      "roi": [
+        0.04,
+        0.63,
+        0.96,
+        0.796
+      ],
+      "note": "Only lower BLIP box-to-box structures. Photo arrows and free labels outside ROI unassessed.",
+      "excluded": [
+        [
+          0,
+          0.04,
+          1,
+          0.48
+        ],
+        [
+          0.05,
+          0.81,
+          0.14,
+          0.96
+        ],
+        [
+          0.66,
+          0.81,
+          0.73,
+          0.96
+        ]
+      ],
+      "objects": [
+        {
+          "id": "v-image",
+          "bbox": [
+            0.054,
+            0.65,
+            0.15,
+            0.759
+          ],
+          "label": "Image encoder",
+          "role": "node",
+          "shape": "rounded_box"
+        },
+        {
+          "id": "question",
+          "bbox": [
+            0.194,
+            0.635,
+            0.375,
+            0.772
+          ],
+          "label": "Image-grounded question encoder",
+          "role": "node",
+          "shape": "rounded_box"
+        },
+        {
+          "id": "answer",
+          "bbox": [
+            0.419,
+            0.648,
+            0.52,
+            0.756
+          ],
+          "label": "Answer decoder",
+          "role": "node",
+          "shape": "rounded_box"
+        },
+        {
+          "id": "c-image",
+          "bbox": [
+            0.66,
+            0.66,
+            0.756,
+            0.771
+          ],
+          "label": "Image encoder",
+          "role": "node",
+          "shape": "rounded_box"
+        },
+        {
+          "id": "decoder",
+          "bbox": [
+            0.801,
+            0.648,
+            0.942,
+            0.792
+          ],
+          "label": "Image-grounded text decoder",
+          "role": "node",
+          "shape": "rounded_box"
+        }
+      ],
+      "edges": [
+        [
+          "v-image",
+          "question"
+        ],
+        [
+          "question",
+          "answer"
+        ],
+        [
+          "c-image",
+          "decoder"
+        ]
+      ]
+    },
+    {
+      "id": "mixed-attention",
+      "path": "data/phase16_dev_v1/phase16-dev-p040.png",
+      "sha256": "9a9b6eaf4e2070f6a62fe888b161f4df2a645b2bca54407de138d80ea76665a1",
+      "size": [
+        1760,
+        386
+      ],
+      "roi": [
+        0.445,
+        0.175,
+        0.688,
+        0.824
+      ],
+      "note": "Query tokens are structural nodes inside a grouping box. Four visible arrows to attention. External title and Circle Queries label unassessed.",
+      "excluded": [
+        [
+          0,
+          0,
+          0.2,
+          0.915
+        ],
+        [
+          0.797,
+          0,
+          1,
+          0.92
+        ]
+      ],
+      "objects": [
+        {
+          "id": "attention",
+          "bbox": [
+            0.454,
+            0.192,
+            0.683,
+            0.533
+          ],
+          "label": "Circle Cross Attention",
+          "role": "node",
+          "shape": "box"
+        },
+        {
+          "id": "queries",
+          "bbox": [
+            0.454,
+            0.637,
+            0.684,
+            0.812
+          ],
+          "label": null,
+          "role": "container",
+          "shape": "box"
+        },
+        {
+          "id": "yellow",
+          "bbox": [
+            0.466,
+            0.684,
+            0.486,
+            0.769
+          ],
+          "label": null,
+          "role": "node",
+          "shape": "ellipse"
+        },
+        {
+          "id": "green",
+          "bbox": [
+            0.507,
+            0.684,
+            0.527,
+            0.769
+          ],
+          "label": null,
+          "role": "node",
+          "shape": "ellipse"
+        },
+        {
+          "id": "red",
+          "bbox": [
+            0.548,
+            0.684,
+            0.568,
+            0.769
+          ],
+          "label": null,
+          "role": "node",
+          "shape": "ellipse"
+        },
+        {
+          "id": "purple",
+          "bbox": [
+            0.648,
+            0.684,
+            0.668,
+            0.769
+          ],
+          "label": null,
+          "role": "node",
+          "shape": "ellipse"
+        }
+      ],
+      "edges": [
+        [
+          "yellow",
+          "attention"
+        ],
+        [
+          "green",
+          "attention"
+        ],
+        [
+          "red",
+          "attention"
+        ],
+        [
+          "purple",
+          "attention"
+        ]
+      ]
+    },
+    {
+      "id": "serial-hevc",
+      "path": "data/phase16_dev_v1/phase16-dev-p008.png",
+      "sha256": "6db93a3495386dc8eb104d414729bad54c995d83f088d2715b6765fc5dd9e9aa",
+      "size": [
+        2265,
+        2929
+      ],
+      "roi": [
+        0.26,
+        0,
+        0.77,
+        0.67
+      ],
+      "note": "First four rectangular nodes only; decision diamond and branches outside scope.",
+      "excluded": [],
+      "objects": [
+        {
+          "id": "stream",
+          "bbox": [
+            0.281,
+            0.001,
+            0.752,
+            0.138
+          ],
+          "label": "HEVC Video Stream",
+          "role": "node",
+          "shape": "box"
+        },
+        {
+          "id": "params",
+          "bbox": [
+            0.281,
+            0.2,
+            0.752,
+            0.298
+          ],
+          "label": "Decoding Parameters",
+          "role": "node",
+          "shape": "box"
+        },
+        {
+          "id": "units",
+          "bbox": [
+            0.281,
+            0.345,
+            0.752,
+            0.477
+          ],
+          "label": "Obtain all PU units encoded in AMVP",
+          "role": "node",
+          "shape": "box"
+        },
+        {
+          "id": "compute",
+          "bbox": [
+            0.281,
+            0.524,
+            0.752,
+            0.656
+          ],
+          "label": "Compute Optimal(mvp) according to Formula(7)",
+          "role": "node",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        [
+          "stream",
+          "params"
+        ],
+        [
+          "params",
+          "units"
+        ],
+        [
+          "units",
+          "compute"
+        ]
+      ]
+    },
+    {
+      "id": "reasoning-row",
+      "path": "data/phase16_dev_v1/phase16-dev-p034.png",
+      "sha256": "506d71a1d4f65f38d98a71865528b1f787e3bb02dab92f580a5c3cf5d9d7aec3",
+      "size": [
+        2292,
+        939
+      ],
+      "roi": [
+        0.277,
+        0.07,
+        0.738,
+        0.178
+      ],
+      "note": "Top logical row only; all other rows and global routes remain unassessed.",
+      "excluded": [],
+      "objects": [
+        {
+          "id": "decoder",
+          "bbox": [
+            0.282,
+            0.085,
+            0.378,
+            0.164
+          ],
+          "label": "Decoder 1",
+          "role": "node",
+          "shape": "box"
+        },
+        {
+          "id": "program",
+          "bbox": [
+            0.4,
+            0.084,
+            0.496,
+            0.164
+          ],
+          "label": "Program 1",
+          "role": "node",
+          "shape": "box"
+        },
+        {
+          "id": "executor",
+          "bbox": [
+            0.52,
+            0.084,
+            0.615,
+            0.164
+          ],
+          "label": "Executor 1",
+          "role": "node",
+          "shape": "box"
+        },
+        {
+          "id": "prediction",
+          "bbox": [
+            0.638,
+            0.084,
+            0.734,
+            0.164
+          ],
+          "label": "Symbolic Prediction 1",
+          "role": "node",
+          "shape": "box"
+        }
+      ],
+      "edges": [
+        [
+          "decoder",
+          "program"
+        ],
+        [
+          "program",
+          "executor"
+        ],
+        [
+          "executor",
+          "prediction"
+        ]
+      ]
+    },
+    {
+      "id": "cogbot-perceive",
+      "path": "input.png",
+      "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf",
+      "size": [
+        2760,
+        1504
+      ],
+      "roi": [
+        0.02,
+        0.165,
+        0.376,
+        0.475
+      ],
+      "note": "PERCEIVE panel with three child nodes. Other panels not annotated. Icons inside a structural node must not invalidate its enclosing box.",
+      "excluded": [],
+      "objects": [
+        {
+          "id": "perceive",
+          "bbox": [
+            0.03,
+            0.175,
+            0.372,
+            0.47
+          ],
+          "label": null,
+          "role": "container",
+          "shape": "box"
+        },
+        {
+          "id": "boundary",
+          "bbox": [
+            0.131,
+            0.236,
+            0.282,
+            0.312
+          ],
+          "label": "Boundary Redaction (Clause-level, target-aware)",
+          "role": "node",
+          "shape": "rounded_box"
+        },
+        {
+          "id": "sensory",
+          "bbox": [
+            0.042,
+            0.349,
+            0.202,
+            0.449
+          ],
+          "label": "Sensory System (Delta ingest, durable cursor, chunking & embedding)",
+          "role": "node",
+          "shape": "rounded_box"
+        },
+        {
+          "id": "identity",
+          "bbox": [
+            0.212,
+            0.349,
+            0.36,
+            0.449
+          ],
+          "label": "Identity & Fast Path (nickname mapping, FastPathMemoryWriter)",
+          "role": "node",
+          "shape": "rounded_box"
+        }
+      ],
+      "edges": [
+        [
+          "boundary",
+          "sensory"
+        ],
+        [
+          "boundary",
+          "identity"
+        ]
+      ]
+    },
+    {
+      "id": "negative-plots",
+      "path": "data/phase16_dev_v1/phase16-dev-p002.png",
+      "sha256": "9eff2196d51f5ecea908c7aca2cb99b66c1038b1e5516dac5ee5e22033a0e06c",
+      "size": [
+        5672,
+        1432
+      ],
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "note": "No target structural diagram; chart axes, bars and frames must not become editable diagram objects.",
+      "excluded": [
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "objects": [],
+      "edges": []
+    }
+  ]
+}
