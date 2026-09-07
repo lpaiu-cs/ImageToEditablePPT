@@ -1,0 +1,2946 @@
+{
+  "status": "reviewed_partial_emitter_gain_reroute_stress_failed_not_product_acceptance",
+  "sheets": [
+    {
+      "sample": "mixed-blip",
+      "path": "artifacts\\region-first-r1\\review-v3\\mixed-blip-comparison.png",
+      "sha256": "fc3d75262876d885c3b17690bbe1e5e908d1485c6f8e1e7994b2627c1d8bf334"
+    },
+    {
+      "sample": "mixed-attention",
+      "path": "artifacts\\region-first-r1\\review-v3\\mixed-attention-comparison.png",
+      "sha256": "976a6c61e3295f8665ab4186c46dd55c81d4d755fa598c18930ef55f856e9b9e"
+    },
+    {
+      "sample": "serial-hevc",
+      "path": "artifacts\\region-first-r1\\review-v3\\serial-hevc-comparison.png",
+      "sha256": "865608bc0584fbeadbb4450b727f9e253dd2a085b8acbe9b51b654ae92eab08e"
+    },
+    {
+      "sample": "reasoning-row",
+      "path": "artifacts\\region-first-r1\\review-v3\\reasoning-row-comparison.png",
+      "sha256": "a76c066a359323022b7d3e22cafe4d9d971276fb65479eb97deb8cea853e1c02"
+    },
+    {
+      "sample": "cogbot-perceive",
+      "path": "artifacts\\region-first-r1\\review-v3\\cogbot-perceive-comparison.png",
+      "sha256": "a6cc1964707ce7ffc8589b2006b809f8c65a946d22e2131f2abbe676d36a7356"
+    },
+    {
+      "sample": "negative-plots",
+      "path": "artifacts\\region-first-r1\\review-v3\\negative-plots-comparison.png",
+      "sha256": "100dc8922ae3e56006b2714f581da29cdca5a2afb5c674836414ce57d3acc748"
+    }
+  ],
+  "edit_audits": [
+    {
+      "arm": "normalize_only",
+      "stage": "edited",
+      "path": "artifacts\\region-first-r1\\edit-probe-v1\\normalize_only--edited.pptx",
+      "sha256": "adee5326e0ba4cedfa5ac27cecdd5bf90d4b3812704d2aad2b29a83a13a3a05e",
+      "max_endpoint_error_pt": 56.731317108088774,
+      "endpoint_tolerance_pass": false,
+      "target_transform_error_pt": 7.158196134327e-05,
+      "target_custom_site_count": 0,
+      "render_sha256": "975c003b09683d6c8365b5292e972364404ae20dd15a9bb62c41022b6b96bf97",
+      "max_untouched_owner_error_pt": 5.726556906182623e-05,
+      "shape_count": 10,
+      "expected_shape_count": 10,
+      "labels_preserved": true,
+      "edges": [
+        {
+          "id": "connector:r0:visual:0",
+          "expected_pt": [
+            273.9272727272727,
+            86.39999999999999,
+            289.0363636363636,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            318.83582677165356,
+            49.31314960629921,
+            311.1777165354331,
+            131.14496062992126
+          ],
+          "max_error_pt": 44.90855404438088,
+          "owners": [
+            "yellow",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "2"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:1",
+          "expected_pt": [
+            296.8363636363636,
+            86.39999999999999,
+            317.6727272727273,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            330.6994488188976,
+            61.17685039370079,
+            323.04133858267716,
+            119.28133858267717
+          ],
+          "max_error_pt": 33.86308518253401,
+          "owners": [
+            "green",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "2"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:2",
+          "expected_pt": [
+            321.05454545454546,
+            86.39999999999999,
+            347.9454545454546,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            342.4812598425197,
+            72.95866141732283,
+            334.82314960629924,
+            107.49952755905512
+          ],
+          "max_error_pt": 21.426714387974243,
+          "owners": [
+            "red",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "2"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:3",
+          "expected_pt": [
+            378.9818181818182,
+            86.39999999999999,
+            420.3545454545455,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            371.28133858267717,
+            101.75858267716535,
+            363.6232283464567,
+            78.69944881889764
+          ],
+          "max_error_pt": 56.731317108088774,
+          "owners": [
+            "purple",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "normalize_only",
+      "stage": "reopened",
+      "path": "artifacts\\region-first-r1\\edit-probe-v1\\normalize_only--reopened.pptx",
+      "sha256": "adee5326e0ba4cedfa5ac27cecdd5bf90d4b3812704d2aad2b29a83a13a3a05e",
+      "max_endpoint_error_pt": 56.731317108088774,
+      "endpoint_tolerance_pass": false,
+      "target_transform_error_pt": 7.158196134327e-05,
+      "target_custom_site_count": 0,
+      "render_sha256": "975c003b09683d6c8365b5292e972364404ae20dd15a9bb62c41022b6b96bf97",
+      "max_untouched_owner_error_pt": 5.726556906182623e-05,
+      "shape_count": 10,
+      "expected_shape_count": 10,
+      "labels_preserved": true,
+      "edges": [
+        {
+          "id": "connector:r0:visual:0",
+          "expected_pt": [
+            273.9272727272727,
+            86.39999999999999,
+            289.0363636363636,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            318.83582677165356,
+            49.31314960629921,
+            311.1777165354331,
+            131.14496062992126
+          ],
+          "max_error_pt": 44.90855404438088,
+          "owners": [
+            "yellow",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "2"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:1",
+          "expected_pt": [
+            296.8363636363636,
+            86.39999999999999,
+            317.6727272727273,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            330.6994488188976,
+            61.17685039370079,
+            323.04133858267716,
+            119.28133858267717
+          ],
+          "max_error_pt": 33.86308518253401,
+          "owners": [
+            "green",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "2"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:2",
+          "expected_pt": [
+            321.05454545454546,
+            86.39999999999999,
+            347.9454545454546,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            342.4812598425197,
+            72.95866141732283,
+            334.82314960629924,
+            107.49952755905512
+          ],
+          "max_error_pt": 21.426714387974243,
+          "owners": [
+            "red",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "2"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:3",
+          "expected_pt": [
+            378.9818181818182,
+            86.39999999999999,
+            420.3545454545455,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            371.28133858267717,
+            101.75858267716535,
+            363.6232283464567,
+            78.69944881889764
+          ],
+          "max_error_pt": 56.731317108088774,
+          "owners": [
+            "purple",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "normalize_only",
+      "stage": "rerouted",
+      "path": "artifacts\\region-first-r1\\edit-probe-v1\\normalize_only--rerouted.pptx",
+      "sha256": "018fbcd5fb90ee12dbc5495a1c00ea4dd5c21e89b03e92e371e0927c6c9aaa01",
+      "max_endpoint_error_pt": 47.26367931281317,
+      "endpoint_tolerance_pass": false,
+      "target_transform_error_pt": 7.158196134327e-05,
+      "target_custom_site_count": 0,
+      "render_sha256": "5e85b205a3169653e6478503e1be9d007235c9b9f50796b00041a68d4bbf7dc1",
+      "max_untouched_owner_error_pt": 5.726556906182623e-05,
+      "shape_count": 10,
+      "expected_shape_count": 10,
+      "labels_preserved": true,
+      "edges": [
+        {
+          "id": "connector:r0:visual:0",
+          "expected_pt": [
+            273.9272727272727,
+            86.39999999999999,
+            289.0363636363636,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            264.6599212598425,
+            77.56905511811024,
+            282.92181102362207,
+            76.96905511811023
+          ],
+          "max_error_pt": 17.08912670007159,
+          "owners": [
+            "yellow",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "1"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:1",
+          "expected_pt": [
+            296.8363636363636,
+            86.39999999999999,
+            317.6727272727273,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            273.6500787401575,
+            88.1407874015748,
+            293.4936220472441,
+            67.97897637795276
+          ],
+          "max_error_pt": 26.07920544022906,
+          "owners": [
+            "green",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "1",
+            "1"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:2",
+          "expected_pt": [
+            321.05454545454546,
+            86.39999999999999,
+            347.9454545454546,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            327.2726771653543,
+            91.8,
+            355.92267716535434,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.977222619899749,
+          "owners": [
+            "red",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "6",
+            "2"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:3",
+          "expected_pt": [
+            378.9818181818182,
+            86.39999999999999,
+            420.3545454545455,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            355.92267716535434,
+            94.05811023622047,
+            373.0908661417323,
+            91.8
+          ],
+          "max_error_pt": 47.26367931281317,
+          "owners": [
+            "purple",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "2",
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "normalized_sites",
+      "stage": "edited",
+      "path": "artifacts\\region-first-r1\\edit-probe-v1\\normalized_sites--edited.pptx",
+      "sha256": "738920df377104a41b70f084f09701d2a93ee3d71153b159b11dbe325b841fa7",
+      "max_endpoint_error_pt": 7.158196135037542e-05,
+      "endpoint_tolerance_pass": true,
+      "target_transform_error_pt": 7.158196134327e-05,
+      "target_custom_site_count": 8,
+      "render_sha256": "4ed171b44693f08ab0f48715b419b99240856128ffe4d26671c658c618741171",
+      "max_untouched_owner_error_pt": 5.726556906182623e-05,
+      "shape_count": 10,
+      "expected_shape_count": 10,
+      "labels_preserved": true,
+      "edges": [
+        {
+          "id": "connector:r0:visual:0",
+          "expected_pt": [
+            273.9272727272727,
+            86.39999999999999,
+            289.0363636363636,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            273.9272440944882,
+            86.4,
+            289.0363779527559,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.158196135037542e-05,
+          "owners": [
+            "yellow",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "4",
+            "4"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:1",
+          "expected_pt": [
+            296.8363636363636,
+            86.39999999999999,
+            317.6727272727273,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            296.8362992125984,
+            86.4,
+            317.67267716535434,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.158196135037542e-05,
+          "owners": [
+            "green",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "4",
+            "5"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:2",
+          "expected_pt": [
+            321.05454545454546,
+            86.39999999999999,
+            347.9454545454546,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            321.0544881889764,
+            86.4,
+            347.94543307086616,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.158196135037542e-05,
+          "owners": [
+            "red",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "4",
+            "6"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:3",
+          "expected_pt": [
+            378.9818181818182,
+            86.39999999999999,
+            420.3545454545455,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            378.9818110236221,
+            86.4,
+            420.3544881889764,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.158196135037542e-05,
+          "owners": [
+            "purple",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "7"
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "normalized_sites",
+      "stage": "reopened",
+      "path": "artifacts\\region-first-r1\\edit-probe-v1\\normalized_sites--reopened.pptx",
+      "sha256": "738920df377104a41b70f084f09701d2a93ee3d71153b159b11dbe325b841fa7",
+      "max_endpoint_error_pt": 7.158196135037542e-05,
+      "endpoint_tolerance_pass": true,
+      "target_transform_error_pt": 7.158196134327e-05,
+      "target_custom_site_count": 8,
+      "render_sha256": "4ed171b44693f08ab0f48715b419b99240856128ffe4d26671c658c618741171",
+      "max_untouched_owner_error_pt": 5.726556906182623e-05,
+      "shape_count": 10,
+      "expected_shape_count": 10,
+      "labels_preserved": true,
+      "edges": [
+        {
+          "id": "connector:r0:visual:0",
+          "expected_pt": [
+            273.9272727272727,
+            86.39999999999999,
+            289.0363636363636,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            273.9272440944882,
+            86.4,
+            289.0363779527559,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.158196135037542e-05,
+          "owners": [
+            "yellow",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "4",
+            "4"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:1",
+          "expected_pt": [
+            296.8363636363636,
+            86.39999999999999,
+            317.6727272727273,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            296.8362992125984,
+            86.4,
+            317.67267716535434,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.158196135037542e-05,
+          "owners": [
+            "green",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "4",
+            "5"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:2",
+          "expected_pt": [
+            321.05454545454546,
+            86.39999999999999,
+            347.9454545454546,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            321.0544881889764,
+            86.4,
+            347.94543307086616,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.158196135037542e-05,
+          "owners": [
+            "red",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "4",
+            "6"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:3",
+          "expected_pt": [
+            378.9818181818182,
+            86.39999999999999,
+            420.3545454545455,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            378.9818110236221,
+            86.4,
+            420.3544881889764,
+            94.05811023622047
+          ],
+          "max_error_pt": 7.158196135037542e-05,
+          "owners": [
+            "purple",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "0",
+            "7"
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "normalized_sites",
+      "stage": "rerouted",
+      "path": "artifacts\\region-first-r1\\edit-probe-v1\\normalized_sites--rerouted.pptx",
+      "sha256": "be02fb1fa891a4ddd10661fb99882d802018924038357a2897bd95167d5f5b47",
+      "max_endpoint_error_pt": 64.43186828919113,
+      "endpoint_tolerance_pass": false,
+      "target_transform_error_pt": 7.158196134327e-05,
+      "target_custom_site_count": 8,
+      "render_sha256": "9dd35c9d7dbc46183eb7b3882dde52d63d98151a9f0ffc37a785b1dd89a574b9",
+      "max_untouched_owner_error_pt": 5.726556906182623e-05,
+      "shape_count": 10,
+      "expected_shape_count": 10,
+      "labels_preserved": true,
+      "edges": [
+        {
+          "id": "connector:r0:visual:0",
+          "expected_pt": [
+            273.9272727272727,
+            86.39999999999999,
+            289.0363636363636,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            279.8181102362205,
+            91.8,
+            289.0363779527559,
+            94.05811023622047
+          ],
+          "max_error_pt": 5.890837508947811,
+          "owners": [
+            "yellow",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "3",
+            "4"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:1",
+          "expected_pt": [
+            296.8363636363636,
+            86.39999999999999,
+            317.6727272727273,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            291.9272440944882,
+            91.8,
+            289.0363779527559,
+            94.05811023622047
+          ],
+          "max_error_pt": 28.636349319971373,
+          "owners": [
+            "green",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "1",
+            "4"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:2",
+          "expected_pt": [
+            321.05454545454546,
+            86.39999999999999,
+            347.9454545454546,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            315.4908661417323,
+            91.8,
+            317.67267716535434,
+            94.05811023622047
+          ],
+          "max_error_pt": 30.27277738010025,
+          "owners": [
+            "red",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "1",
+            "5"
+          ]
+        },
+        {
+          "id": "connector:r0:visual:3",
+          "expected_pt": [
+            378.9818181818182,
+            86.39999999999999,
+            420.3545454545455,
+            94.05818181818182
+          ],
+          "actual_pt": [
+            373.0908661417323,
+            91.8,
+            355.92267716535434,
+            94.05811023622047
+          ],
+          "max_error_pt": 64.43186828919113,
+          "owners": [
+            "purple",
+            "attention"
+          ],
+          "owner_pair_preserved": true,
+          "sites": [
+            "1",
+            "2"
+          ]
+        }
+      ]
+    }
+  ],
+  "fixed_scene_invariants": [
+    {
+      "sample": "mixed-blip",
+      "arm": "normalize_only",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 0.00010216843703858558,
+      "raster_count": 0
+    },
+    {
+      "sample": "mixed-blip",
+      "arm": "normalized_sites",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 0.00010216843703858558,
+      "raster_count": 0
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "normalize_only",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 9.544261512672847e-05,
+      "raster_count": 0
+    },
+    {
+      "sample": "mixed-attention",
+      "arm": "normalized_sites",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 9.544261512672847e-05,
+      "raster_count": 0
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "normalize_only",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 9.94246580177105e-05,
+      "raster_count": 0
+    },
+    {
+      "sample": "serial-hevc",
+      "arm": "normalized_sites",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 9.94246580177105e-05,
+      "raster_count": 0
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "normalize_only",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 0.00010003985104845015,
+      "raster_count": 0
+    },
+    {
+      "sample": "reasoning-row",
+      "arm": "normalized_sites",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 0.00010003985104845015,
+      "raster_count": 0
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "normalize_only",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 9.129293620446788e-05,
+      "raster_count": 0
+    },
+    {
+      "sample": "cogbot-perceive",
+      "arm": "normalized_sites",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 9.129293620446788e-05,
+      "raster_count": 0
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "normalize_only",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 9.017913664877142e-05,
+      "raster_count": 0
+    },
+    {
+      "sample": "negative-plots",
+      "arm": "normalized_sites",
+      "exact_object_ids": true,
+      "labels_preserved": true,
+      "owner_pairs_preserved": true,
+      "direction_flags_preserved": true,
+      "max_box_error_px": 9.017913664877142e-05,
+      "raster_count": 0
+    }
+  ],
+  "probe": {
+    "status": "automated_native_probe_not_human_timing",
+    "powerpoint_version": "16.0",
+    "records": [
+      {
+        "arm": "normalize_only",
+        "input_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r1\\run1\\mixed-attention--normalize_only.pptx",
+        "input_sha256": "43fa5a17676427b48374cd5ca8cade90814c9a980a0d4432e1e869d9f9b07b69",
+        "original_unchanged": true,
+        "text_edit_succeeded": true,
+        "before": [
+          {
+            "name": "queries",
+            "id": 2,
+            "left": 261.4908752441406,
+            "top": 80.5090560913086,
+            "width": 132.54544067382812,
+            "height": 21.927244186401367
+          },
+          {
+            "name": "attention",
+            "id": 3,
+            "left": 261.4908752441406,
+            "top": 24.218111038208008,
+            "width": 131.890869140625,
+            "height": 43.20000076293945
+          },
+          {
+            "name": "green",
+            "id": 4,
+            "left": 291.92724609375,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "red",
+            "id": 5,
+            "left": 315.4908752441406,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "purple",
+            "id": 6,
+            "left": 373.09088134765625,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "yellow",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 86.4000015258789,
+            "width": 11.454487800598145,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "connector:r0:visual:0",
+            "id": 8,
+            "left": 274.09088134765625,
+            "top": 67.4181137084961,
+            "width": 53.34543228149414,
+            "height": 18.981889724731445,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "yellow",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:1",
+            "id": 9,
+            "left": 297.818115234375,
+            "top": 67.4181137084961,
+            "width": 29.618188858032227,
+            "height": 18.981889724731445,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "green",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:2",
+            "id": 10,
+            "left": 321.3817443847656,
+            "top": 67.4181137084961,
+            "width": 6.054566860198975,
+            "height": 18.981889724731445,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "red",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:3",
+            "id": 11,
+            "left": 327.4363098144531,
+            "top": 67.4181137084961,
+            "width": 51.545433044433594,
+            "height": 18.981889724731445,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "purple",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          }
+        ],
+        "edited": [
+          {
+            "name": "queries",
+            "id": 2,
+            "left": 261.4908752441406,
+            "top": 80.5090560913086,
+            "width": 132.54544067382812,
+            "height": 21.927244186401367
+          },
+          {
+            "name": "attention",
+            "id": 3,
+            "left": 273.4908752441406,
+            "top": 42.218109130859375,
+            "width": 164.86361694335938,
+            "height": 51.84000015258789
+          },
+          {
+            "name": "green",
+            "id": 4,
+            "left": 291.92724609375,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "red",
+            "id": 5,
+            "left": 315.4908752441406,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "purple",
+            "id": 6,
+            "left": 373.09088134765625,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "yellow",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 86.4000015258789,
+            "width": 11.454487800598145,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "connector:r0:visual:0",
+            "id": 8,
+            "left": 311.1777038574219,
+            "top": 49.313148498535156,
+            "width": 7.65811014175415,
+            "height": 81.8318099975586,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "yellow",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:1",
+            "id": 9,
+            "left": 323.0413513183594,
+            "top": 61.176849365234375,
+            "width": 7.65811014175415,
+            "height": 58.104488372802734,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "green",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:2",
+            "id": 10,
+            "left": 334.8231506347656,
+            "top": 72.95866394042969,
+            "width": 7.65811014175415,
+            "height": 34.54086685180664,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "red",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:3",
+            "id": 11,
+            "left": 363.62322998046875,
+            "top": 78.69944763183594,
+            "width": 7.65811014175415,
+            "height": 23.059133529663086,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "purple",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          }
+        ],
+        "reopened": [
+          {
+            "name": "queries",
+            "id": 2,
+            "left": 261.4908752441406,
+            "top": 80.5090560913086,
+            "width": 132.54544067382812,
+            "height": 21.927244186401367
+          },
+          {
+            "name": "attention",
+            "id": 3,
+            "left": 273.4908752441406,
+            "top": 42.218109130859375,
+            "width": 164.86361694335938,
+            "height": 51.84000015258789
+          },
+          {
+            "name": "green",
+            "id": 4,
+            "left": 291.92724609375,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "red",
+            "id": 5,
+            "left": 315.4908752441406,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "purple",
+            "id": 6,
+            "left": 373.09088134765625,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "yellow",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 86.4000015258789,
+            "width": 11.454487800598145,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "connector:r0:visual:0",
+            "id": 8,
+            "left": 311.1777038574219,
+            "top": 49.313148498535156,
+            "width": 7.65811014175415,
+            "height": 81.8318099975586,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "yellow",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:1",
+            "id": 9,
+            "left": 323.0413513183594,
+            "top": 61.176849365234375,
+            "width": 7.65811014175415,
+            "height": 58.104488372802734,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "green",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:2",
+            "id": 10,
+            "left": 334.8231506347656,
+            "top": 72.95866394042969,
+            "width": 7.65811014175415,
+            "height": 34.54086685180664,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "red",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:3",
+            "id": 11,
+            "left": 363.62322998046875,
+            "top": 78.69944763183594,
+            "width": 7.65811014175415,
+            "height": 23.059133529663086,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "purple",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 3
+          }
+        ],
+        "rerouted": [
+          {
+            "name": "queries",
+            "id": 2,
+            "left": 261.4908752441406,
+            "top": 80.5090560913086,
+            "width": 132.54544067382812,
+            "height": 21.927244186401367
+          },
+          {
+            "name": "attention",
+            "id": 3,
+            "left": 273.4908752441406,
+            "top": 42.218109130859375,
+            "width": 164.86361694335938,
+            "height": 51.84000015258789
+          },
+          {
+            "name": "green",
+            "id": 4,
+            "left": 291.92724609375,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "red",
+            "id": 5,
+            "left": 315.4908752441406,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "purple",
+            "id": 6,
+            "left": 373.09088134765625,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "yellow",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 86.4000015258789,
+            "width": 11.454487800598145,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "connector:r0:visual:0",
+            "id": 8,
+            "left": 264.659912109375,
+            "top": 76.96905517578125,
+            "width": 18.261890411376953,
+            "height": 0.6000000238418579,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "yellow",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r0:visual:1",
+            "id": 9,
+            "left": 273.65008544921875,
+            "top": 67.97897338867188,
+            "width": 19.843544006347656,
+            "height": 20.16181182861328,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "green",
+            "begin_site": 2,
+            "end_owner": "attention",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r0:visual:2",
+            "id": 10,
+            "left": 327.2726745605469,
+            "top": 91.80000305175781,
+            "width": 28.649999618530273,
+            "height": 2.258110284805298,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "red",
+            "begin_site": 7,
+            "end_owner": "attention",
+            "end_site": 3
+          },
+          {
+            "name": "connector:r0:visual:3",
+            "id": 11,
+            "left": 355.92266845703125,
+            "top": 91.80000305175781,
+            "width": 17.168188095092773,
+            "height": 2.258110284805298,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "purple",
+            "begin_site": 3,
+            "end_owner": "attention",
+            "end_site": 3
+          }
+        ]
+      },
+      {
+        "arm": "normalized_sites",
+        "input_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r1\\run1\\mixed-attention--normalized_sites.pptx",
+        "input_sha256": "4b6661fdd974b5998cef91b85d0fba4b3ba1dcd809ab7c54dcac035892a9f28a",
+        "original_unchanged": true,
+        "text_edit_succeeded": true,
+        "before": [
+          {
+            "name": "queries",
+            "id": 2,
+            "left": 261.4908752441406,
+            "top": 80.5090560913086,
+            "width": 132.54544067382812,
+            "height": 21.927244186401367
+          },
+          {
+            "name": "attention",
+            "id": 3,
+            "left": 261.4908752441406,
+            "top": 24.218111038208008,
+            "width": 131.890869140625,
+            "height": 43.20000076293945
+          },
+          {
+            "name": "green",
+            "id": 4,
+            "left": 291.92724609375,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "red",
+            "id": 5,
+            "left": 315.4908752441406,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "purple",
+            "id": 6,
+            "left": 373.09088134765625,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "yellow",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 86.4000015258789,
+            "width": 11.454487800598145,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "connector:r0:visual:0",
+            "id": 8,
+            "left": 273.92724609375,
+            "top": 67.4181900024414,
+            "width": 0.0,
+            "height": 18.9818115234375,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "yellow",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r0:visual:1",
+            "id": 9,
+            "left": 296.83636474609375,
+            "top": 67.4181900024414,
+            "width": 0.0,
+            "height": 18.9818115234375,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "green",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r0:visual:2",
+            "id": 10,
+            "left": 321.0545654296875,
+            "top": 67.4181900024414,
+            "width": 0.0,
+            "height": 18.9818115234375,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "red",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 7
+          },
+          {
+            "name": "connector:r0:visual:3",
+            "id": 11,
+            "left": 378.9818115234375,
+            "top": 67.4181900024414,
+            "width": 0.0,
+            "height": 18.9818115234375,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "purple",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 8
+          }
+        ],
+        "edited": [
+          {
+            "name": "queries",
+            "id": 2,
+            "left": 261.4908752441406,
+            "top": 80.5090560913086,
+            "width": 132.54544067382812,
+            "height": 21.927244186401367
+          },
+          {
+            "name": "attention",
+            "id": 3,
+            "left": 273.4908752441406,
+            "top": 42.218109130859375,
+            "width": 164.86361694335938,
+            "height": 51.84000015258789
+          },
+          {
+            "name": "green",
+            "id": 4,
+            "left": 291.92724609375,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "red",
+            "id": 5,
+            "left": 315.4908752441406,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "purple",
+            "id": 6,
+            "left": 373.09088134765625,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "yellow",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 86.4000015258789,
+            "width": 11.454487800598145,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "connector:r0:visual:0",
+            "id": 8,
+            "left": 273.92724609375,
+            "top": 86.4000015258789,
+            "width": 15.10913372039795,
+            "height": 7.65811014175415,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "yellow",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r0:visual:1",
+            "id": 9,
+            "left": 296.8363037109375,
+            "top": 86.4000015258789,
+            "width": 20.83637809753418,
+            "height": 7.65811014175415,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "green",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r0:visual:2",
+            "id": 10,
+            "left": 321.0544738769531,
+            "top": 86.4000015258789,
+            "width": 26.890945434570312,
+            "height": 7.65811014175415,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "red",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 7
+          },
+          {
+            "name": "connector:r0:visual:3",
+            "id": 11,
+            "left": 378.9818115234375,
+            "top": 86.4000015258789,
+            "width": 41.372676849365234,
+            "height": 7.65811014175415,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "purple",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 8
+          }
+        ],
+        "reopened": [
+          {
+            "name": "queries",
+            "id": 2,
+            "left": 261.4908752441406,
+            "top": 80.5090560913086,
+            "width": 132.54544067382812,
+            "height": 21.927244186401367
+          },
+          {
+            "name": "attention",
+            "id": 3,
+            "left": 273.4908752441406,
+            "top": 42.218109130859375,
+            "width": 164.86361694335938,
+            "height": 51.84000015258789
+          },
+          {
+            "name": "green",
+            "id": 4,
+            "left": 291.92724609375,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "red",
+            "id": 5,
+            "left": 315.4908752441406,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "purple",
+            "id": 6,
+            "left": 373.09088134765625,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "yellow",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 86.4000015258789,
+            "width": 11.454487800598145,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "connector:r0:visual:0",
+            "id": 8,
+            "left": 273.92724609375,
+            "top": 86.4000015258789,
+            "width": 15.10913372039795,
+            "height": 7.65811014175415,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "yellow",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r0:visual:1",
+            "id": 9,
+            "left": 296.8363037109375,
+            "top": 86.4000015258789,
+            "width": 20.83637809753418,
+            "height": 7.65811014175415,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "green",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r0:visual:2",
+            "id": 10,
+            "left": 321.0544738769531,
+            "top": 86.4000015258789,
+            "width": 26.890945434570312,
+            "height": 7.65811014175415,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "red",
+            "begin_site": 5,
+            "end_owner": "attention",
+            "end_site": 7
+          },
+          {
+            "name": "connector:r0:visual:3",
+            "id": 11,
+            "left": 378.9818115234375,
+            "top": 86.4000015258789,
+            "width": 41.372676849365234,
+            "height": 7.65811014175415,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "purple",
+            "begin_site": 1,
+            "end_owner": "attention",
+            "end_site": 8
+          }
+        ],
+        "rerouted": [
+          {
+            "name": "queries",
+            "id": 2,
+            "left": 261.4908752441406,
+            "top": 80.5090560913086,
+            "width": 132.54544067382812,
+            "height": 21.927244186401367
+          },
+          {
+            "name": "attention",
+            "id": 3,
+            "left": 273.4908752441406,
+            "top": 42.218109130859375,
+            "width": 164.86361694335938,
+            "height": 51.84000015258789
+          },
+          {
+            "name": "green",
+            "id": 4,
+            "left": 291.92724609375,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "red",
+            "id": 5,
+            "left": 315.4908752441406,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "purple",
+            "id": 6,
+            "left": 373.09088134765625,
+            "top": 86.4000015258789,
+            "width": 11.781810760498047,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "yellow",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 86.4000015258789,
+            "width": 11.454487800598145,
+            "height": 10.800000190734863
+          },
+          {
+            "name": "connector:r0:visual:0",
+            "id": 8,
+            "left": 279.818115234375,
+            "top": 91.80000305175781,
+            "width": 9.218267440795898,
+            "height": 2.258110284805298,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "yellow",
+            "begin_site": 4,
+            "end_owner": "attention",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r0:visual:1",
+            "id": 9,
+            "left": 289.036376953125,
+            "top": 91.80000305175781,
+            "width": 2.8908660411834717,
+            "height": 2.258110284805298,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "green",
+            "begin_site": 2,
+            "end_owner": "attention",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r0:visual:2",
+            "id": 10,
+            "left": 315.4908752441406,
+            "top": 91.80000305175781,
+            "width": 2.1818110942840576,
+            "height": 2.258110284805298,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "red",
+            "begin_site": 2,
+            "end_owner": "attention",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r0:visual:3",
+            "id": 11,
+            "left": 355.92266845703125,
+            "top": 91.80000305175781,
+            "width": 17.168188095092773,
+            "height": 2.258110284805298,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "purple",
+            "begin_site": 2,
+            "end_owner": "attention",
+            "end_site": 3
+          }
+        ]
+      }
+    ]
+  },
+  "run_results": {
+    "status": "r1_emitter_diagnostic_not_reconstruction_acceptance",
+    "manifest_sha256": "dbe1da05a787df906f53f4b6b459103279b7749643a43fc1c349e3b4e6453b87",
+    "git_commit": "3a0e6e4655657dc139cf45f94f488212874a9f15",
+    "git_status": "",
+    "code_sha256": {
+      "src/image_to_editable_ppt/research/native_emit.py": "ae48317520480e55985a78c12d1fe756a621aa76487d2e70dd805a70388df792",
+      "tools/run_native_emit_experiment.py": "3c0bc9ec1beaa0ccb34bf6bc36c011d1be7bdcab70d64b9c4d19f678ffb65cde",
+      "src/image_to_editable_ppt/v3/emit/pptx_writer.py": "2638040b48f14cd9c6c95493cf2b8c008a51da1a95edbb9477aefa53e391008c"
+    },
+    "records": [
+      {
+        "sample": "mixed-blip",
+        "arm": "normalize_only",
+        "input_scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "path": "artifacts\\region-first-r1\\run1\\mixed-blip--normalize_only.pptx",
+        "sha256": "fb0211709f5e2bef1a53130769fd3d1b1f4c1e8425e542f1fb4e054d335b81c7",
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        },
+        "endpoint_audit": [
+          {
+            "id": "connector:r0:visual:0",
+            "max_coordinate_error_px": 0.644444679314347,
+            "actual": [
+              286.71128608923885,
+              315.0602624671916,
+              322.7919160104987,
+              314.41595800524937
+            ],
+            "expected": [
+              286.71140939597313,
+              315.0604026845637,
+              322.7919463087248,
+              315.0604026845637
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:1",
+            "max_coordinate_error_px": 1.2887308213989854,
+            "actual": [
+              114.04020997375328,
+              315.7045669291339,
+              150.12073490813648,
+              315.0602624671916
+            ],
+            "expected": [
+              114.04026845637583,
+              316.3489932885906,
+              150.1208053691275,
+              316.3489932885906
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:2",
+            "max_coordinate_error_px": 1.288762528844984,
+            "actual": [
+              579.2214173228347,
+              320.214593175853,
+              615.9462467191601,
+              322.7918110236221
+            ],
+            "expected": [
+              579.2214765100671,
+              321.503355704698,
+              615.9463087248322,
+              321.503355704698
+            ],
+            "bound_endpoints": 2
+          }
+        ],
+        "sites": null
+      },
+      {
+        "sample": "mixed-blip",
+        "arm": "normalized_sites",
+        "input_scene_sha256": "15da97ded167b25616e31efae7b38f8ef4200e0b631e7dd454f3900ec245b8fe",
+        "path": "artifacts\\region-first-r1\\run1\\mixed-blip--normalized_sites.pptx",
+        "sha256": "f26c34bc38dab547f8d916883599d64056738ebe8ae0a8e9d195e68dee611d1d",
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        },
+        "endpoint_audit": [
+          {
+            "id": "connector:r0:visual:0",
+            "max_coordinate_error_px": 3.523049548448398e-05,
+            "actual": [
+              286.7113910761155,
+              315.0603674540682,
+              322.7919160104987,
+              315.0603674540682
+            ],
+            "expected": [
+              286.71140939597313,
+              315.0604026845637,
+              322.7919463087248,
+              315.0604026845637
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:1",
+            "max_coordinate_error_px": 4.650425410090975e-05,
+            "actual": [
+              114.04031496062993,
+              316.34897637795274,
+              150.12083989501312,
+              316.34897637795274
+            ],
+            "expected": [
+              114.04026845637583,
+              316.3489932885906,
+              150.1208053691275,
+              316.3489932885906
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:2",
+            "max_coordinate_error_px": 4.8618083781093446e-05,
+            "actual": [
+              579.2215223097113,
+              321.5033070866142,
+              615.9463517060367,
+              321.5033070866142
+            ],
+            "expected": [
+              579.2214765100671,
+              321.503355704698,
+              615.9463087248322,
+              321.503355704698
+            ],
+            "bound_endpoints": 2
+          }
+        ],
+        "sites": {
+          "node:r0:0": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0,
+              "v": 0.521739,
+              "angle": 10800000
+            }
+          ],
+          "node:r0:1": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0,
+              "v": 0.513889,
+              "angle": 10800000
+            }
+          ],
+          "node:r0:3": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 1,
+              "v": 0.513889,
+              "angle": 0
+            }
+          ],
+          "node:r0:4": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 1,
+              "v": 0.527778,
+              "angle": 0
+            }
+          ],
+          "node:r0:2": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0,
+              "v": 0.479167,
+              "angle": 10800000
+            }
+          ]
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "normalize_only",
+        "input_scene_sha256": "f70bddecd97fc9f5447f61f422ab9482ca15f442114031bd04638ed14776bb8e",
+        "path": "artifacts\\region-first-r1\\run1\\mixed-attention--normalize_only.pptx",
+        "sha256": "43fa5a17676427b48374cd5ca8cade90814c9a980a0d4432e1e869d9f9b07b69",
+        "native": {
+          "native_shapes": 10,
+          "raster_images": 0,
+          "connectors": 4,
+          "bound_endpoints": 8,
+          "nonempty_text_shapes": 1
+        },
+        "endpoint_audit": [
+          {
+            "id": "connector:r0:visual:0",
+            "max_coordinate_error_px": 71.345368647101,
+            "actual": [
+              365.45448818897637,
+              115.2,
+              436.5817322834646,
+              89.89081364829396
+            ],
+            "expected": [
+              365.2363636363636,
+              115.19999999999999,
+              365.2363636363636,
+              89.89090909090909
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:1",
+            "max_coordinate_error_px": 40.799914101646436,
+            "actual": [
+              397.090813648294,
+              115.2,
+              436.5817322834646,
+              89.89081364829396
+            ],
+            "expected": [
+              395.78181818181815,
+              115.19999999999999,
+              395.78181818181815,
+              89.89090909090909
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:2",
+            "max_coordinate_error_px": 8.509005010737326,
+            "actual": [
+              428.50897637795276,
+              115.2,
+              436.5817322834646,
+              89.89081364829396
+            ],
+            "expected": [
+              428.07272727272726,
+              115.19999999999999,
+              428.07272727272726,
+              89.89090909090909
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:3",
+            "max_coordinate_error_px": 68.72735862562632,
+            "actual": [
+              505.3089763779528,
+              115.2,
+              436.5817322834646,
+              89.89081364829396
+            ],
+            "expected": [
+              505.3090909090909,
+              115.19999999999999,
+              505.3090909090909,
+              89.89090909090909
+            ],
+            "bound_endpoints": 2
+          }
+        ],
+        "sites": null
+      },
+      {
+        "sample": "mixed-attention",
+        "arm": "normalized_sites",
+        "input_scene_sha256": "f70bddecd97fc9f5447f61f422ab9482ca15f442114031bd04638ed14776bb8e",
+        "path": "artifacts\\region-first-r1\\run1\\mixed-attention--normalized_sites.pptx",
+        "sha256": "4b6661fdd974b5998cef91b85d0fba4b3ba1dcd809ab7c54dcac035892a9f28a",
+        "native": {
+          "native_shapes": 10,
+          "raster_images": 0,
+          "connectors": 4,
+          "bound_endpoints": 8,
+          "nonempty_text_shapes": 1
+        },
+        "endpoint_audit": [
+          {
+            "id": "connector:r0:visual:0",
+            "max_coordinate_error_px": 3.8177046008058824e-05,
+            "actual": [
+              365.2363254593176,
+              115.2,
+              365.2363254593176,
+              89.8909186351706
+            ],
+            "expected": [
+              365.2363636363636,
+              115.19999999999999,
+              365.2363636363636,
+              89.89090909090909
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:1",
+            "max_coordinate_error_px": 1.908852306087283e-05,
+            "actual": [
+              395.7818372703412,
+              115.2,
+              395.7818372703412,
+              89.8909186351706
+            ],
+            "expected": [
+              395.78181818181815,
+              115.19999999999999,
+              395.78181818181815,
+              89.89090909090909
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:2",
+            "max_coordinate_error_px": 2.8632784562887537e-05,
+            "actual": [
+              428.0727559055118,
+              115.2,
+              428.0727559055118,
+              89.8909186351706
+            ],
+            "expected": [
+              428.07272727272726,
+              115.19999999999999,
+              428.07272727272726,
+              89.89090909090909
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:3",
+            "max_coordinate_error_px": 9.54426151622556e-06,
+            "actual": [
+              505.3090813648294,
+              115.2,
+              505.3090813648294,
+              89.8909186351706
+            ],
+            "expected": [
+              505.3090909090909,
+              115.19999999999999,
+              505.3090909090909,
+              89.89090909090909
+            ],
+            "bound_endpoints": 2
+          }
+        ],
+        "sites": {
+          "yellow": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0.485714,
+              "v": 0,
+              "angle": 16200000
+            }
+          ],
+          "attention": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0.094293,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 0.26799,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 0.451613,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 0.890819,
+              "v": 1,
+              "angle": 5400000
+            }
+          ],
+          "green": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0.416667,
+              "v": 0,
+              "angle": 16200000
+            }
+          ],
+          "red": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0.472222,
+              "v": 0,
+              "angle": 16200000
+            }
+          ],
+          "purple": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            }
+          ]
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "normalize_only",
+        "input_scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "path": "artifacts\\region-first-r1\\run1\\serial-hevc--normalize_only.pptx",
+        "sha256": "fad8b2f8dfe6507f616b48ac78be50b36251b30bd2c0953d4bb96b63c685fd47",
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        },
+        "endpoint_audit": [
+          {
+            "id": "connector:r0:visual:0",
+            "max_coordinate_error_px": 0.16945785750289133,
+            "actual": [
+              396.54561679790027,
+              135.62897637795277,
+              396.54561679790027,
+              200.05291338582677
+            ],
+            "expected": [
+              396.3761589403974,
+              135.6291390728477,
+              396.3761589403974,
+              200.05298013245033
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:1",
+            "max_coordinate_error_px": 0.16945785750289133,
+            "actual": [
+              396.54561679790027,
+              294.3150656167979,
+              396.54561679790027,
+              344.4979527559055
+            ],
+            "expected": [
+              396.3761589403974,
+              294.3152317880795,
+              396.3761589403974,
+              344.4980132450331
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:2",
+            "max_coordinate_error_px": 0.16945785750289133,
+            "actual": [
+              396.54561679790027,
+              471.9892913385827,
+              396.54561679790027,
+              522.1721784776903
+            ],
+            "expected": [
+              396.3761589403974,
+              471.9894039735099,
+              396.3761589403974,
+              522.1721854304636
+            ],
+            "bound_endpoints": 2
+          }
+        ],
+        "sites": null
+      },
+      {
+        "sample": "serial-hevc",
+        "arm": "normalized_sites",
+        "input_scene_sha256": "012515021836db0f22063f29e637d73c89c0ce1c26bfb3c41e129c46bdffec00",
+        "path": "artifacts\\region-first-r1\\run1\\serial-hevc--normalized_sites.pptx",
+        "sha256": "fd99abcf7898353975f5c0f97c10fde31c7ddf88d2485255fe1a1a0c120077cf",
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        },
+        "endpoint_audit": [
+          {
+            "id": "connector:r0:visual:0",
+            "max_coordinate_error_px": 4.727885834654444e-05,
+            "actual": [
+              396.3761679790026,
+              135.62918635170604,
+              396.3761679790026,
+              200.0530183727034
+            ],
+            "expected": [
+              396.3761589403974,
+              135.6291390728477,
+              396.3761589403974,
+              200.05298013245033
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:1",
+            "max_coordinate_error_px": 4.449774905879167e-05,
+            "actual": [
+              396.3761679790026,
+              294.3152755905512,
+              396.3761679790026,
+              344.4980577427822
+            ],
+            "expected": [
+              396.3761589403974,
+              294.3152317880795,
+              396.3761589403974,
+              344.4980132450331
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:2",
+            "max_coordinate_error_px": 9.038605242039921e-06,
+            "actual": [
+              396.3761679790026,
+              471.9893963254593,
+              396.3761679790026,
+              522.1721784776903
+            ],
+            "expected": [
+              396.3761589403974,
+              471.9894039735099,
+              396.3761589403974,
+              522.1721854304636
+            ],
+            "bound_endpoints": 2
+          }
+        ],
+        "sites": {
+          "node:r0:0": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0.499527,
+              "v": 1,
+              "angle": 5400000
+            }
+          ],
+          "node:r0:1": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0.499527,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0.499527,
+              "v": 1,
+              "angle": 5400000
+            }
+          ],
+          "node:r0:2": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0.499527,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0.499527,
+              "v": 1,
+              "angle": 5400000
+            }
+          ],
+          "node:r0:3": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0.499527,
+              "v": 0,
+              "angle": 16200000
+            }
+          ]
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "normalize_only",
+        "input_scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "path": "artifacts\\region-first-r1\\run1\\reasoning-row--normalize_only.pptx",
+        "sha256": "e3b46a03769e4907b9a3a172a2090725e700d4cbac3190f27c5828bd7cfae55c",
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        },
+        "endpoint_audit": [
+          {
+            "id": "connector:r0:visual:0",
+            "max_coordinate_error_px": 0.1674254854268824,
+            "actual": [
+              380.6491338582677,
+              39.03653543307087,
+              400.41879265091865,
+              39.03653543307087
+            ],
+            "expected": [
+              380.64921465968587,
+              38.869109947643985,
+              400.4188481675393,
+              38.869109947643985
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:1",
+            "max_coordinate_error_px": 0.5027315826359384,
+            "actual": [
+              289.5077165354331,
+              39.20409448818898,
+              307.9371128608924,
+              39.03653543307087
+            ],
+            "expected": [
+              289.5078534031414,
+              39.539267015706805,
+              307.9371727748691,
+              39.539267015706805
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:2",
+            "max_coordinate_error_px": 0.1674254854268824,
+            "actual": [
+              472.12556430446193,
+              39.03653543307087,
+              490.55496062992125,
+              39.03653543307087
+            ],
+            "expected": [
+              472.12565445026183,
+              38.869109947643985,
+              490.55497382198956,
+              38.869109947643985
+            ],
+            "bound_endpoints": 2
+          }
+        ],
+        "sites": null
+      },
+      {
+        "sample": "reasoning-row",
+        "arm": "normalized_sites",
+        "input_scene_sha256": "9b568ae503bf28e3bfe600c5c732362c9e008f194758f1c58d7078f405038c75",
+        "path": "artifacts\\region-first-r1\\run1\\reasoning-row--normalized_sites.pptx",
+        "sha256": "55d23f6749e7c2fc163c3c9f3ec0cd2341fe125491bb4185f1a3b01d4782101f",
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        },
+        "endpoint_audit": [
+          {
+            "id": "connector:r0:visual:0",
+            "max_coordinate_error_px": 4.947025598767141e-05,
+            "actual": [
+              380.64923884514434,
+              38.8690813648294,
+              400.4188976377953,
+              38.8690813648294
+            ],
+            "expected": [
+              380.64921465968587,
+              38.869109947643985,
+              400.4188481675393,
+              38.869109947643985
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:1",
+            "max_coordinate_error_px": 5.991397671323284e-05,
+            "actual": [
+              289.5078215223097,
+              39.53931758530184,
+              307.9371128608924,
+              39.53931758530184
+            ],
+            "expected": [
+              289.5078534031414,
+              39.539267015706805,
+              307.9371727748691,
+              39.539267015706805
+            ],
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r0:visual:2",
+            "max_coordinate_error_px": 2.858281458628653e-05,
+            "actual": [
+              472.12566929133857,
+              38.8690813648294,
+              490.55496062992125,
+              38.8690813648294
+            ],
+            "expected": [
+              472.12565445026183,
+              38.869109947643985,
+              490.55497382198956,
+              38.869109947643985
+            ],
+            "bound_endpoints": 2
+          }
+        ],
+        "sites": {
+          "node:r0:0": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 1,
+              "v": 0.493151,
+              "angle": 0
+            },
+            {
+              "u": 0,
+              "v": 0.520548,
+              "angle": 10800000
+            }
+          ],
+          "node:r0:2": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0,
+              "v": 0.492958,
+              "angle": 10800000
+            },
+            {
+              "u": 1,
+              "v": 0.492958,
+              "angle": 0
+            }
+          ],
+          "node:r0:3": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 1,
+              "v": 0.514286,
+              "angle": 0
+            }
+          ],
+          "node:r0:1": [
+            {
+              "u": 0.5,
+              "v": 0,
+              "angle": 16200000
+            },
+            {
+              "u": 0,
+              "v": 0.5,
+              "angle": 10800000
+            },
+            {
+              "u": 0.5,
+              "v": 1,
+              "angle": 5400000
+            },
+            {
+              "u": 1,
+              "v": 0.5,
+              "angle": 0
+            },
+            {
+              "u": 0,
+              "v": 0.493151,
+              "angle": 10800000
+            }
+          ]
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "normalize_only",
+        "input_scene_sha256": "e523fba86e28a38ca4dae1e3d2cd58f0fcc82396f1a20a0cdff2cf22bdb177d4",
+        "path": "artifacts\\region-first-r1\\run1\\cogbot-perceive--normalize_only.pptx",
+        "sha256": "76f7aec0ece71c8c339a0453fe97e5d035172015ee2e1fdf1764e4fb3340a03e",
+        "native": {
+          "native_shapes": 4,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 3
+        },
+        "endpoint_audit": [],
+        "sites": null
+      },
+      {
+        "sample": "cogbot-perceive",
+        "arm": "normalized_sites",
+        "input_scene_sha256": "e523fba86e28a38ca4dae1e3d2cd58f0fcc82396f1a20a0cdff2cf22bdb177d4",
+        "path": "artifacts\\region-first-r1\\run1\\cogbot-perceive--normalized_sites.pptx",
+        "sha256": "729e4ee1a7e71375f097c86075b14244f3f93f78dacf7d0e01bb10db49b03b76",
+        "native": {
+          "native_shapes": 4,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 3
+        },
+        "endpoint_audit": [],
+        "sites": {}
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "normalize_only",
+        "input_scene_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+        "path": "artifacts\\region-first-r1\\run1\\negative-plots--normalize_only.pptx",
+        "sha256": "ec5400cf651b16270bd11b0e333108aa0daf30ebe37f023e1767532e3ecf0763",
+        "native": {
+          "native_shapes": 3,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 1
+        },
+        "endpoint_audit": [],
+        "sites": null
+      },
+      {
+        "sample": "negative-plots",
+        "arm": "normalized_sites",
+        "input_scene_sha256": "82df4d85c14a6abe336fbc1549b0a0d6d05ed01fddf1ef5faa45b71ff65949ae",
+        "path": "artifacts\\region-first-r1\\run1\\negative-plots--normalized_sites.pptx",
+        "sha256": "7d32a3eb33782482b66e4de12324a09117f685211ee135112c2aaee52c235a82",
+        "native": {
+          "native_shapes": 3,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 1
+        },
+        "endpoint_audit": [],
+        "sites": {}
+      }
+    ]
+  },
+  "render_manifest_sha256": "d2cebfbefb2b20135e2599aa1fac1f5771851d164a04e4c45fba877a278806a8",
+  "probe_sha256": "c4247257103b4332e0d545dd43536983c1ed75f22b7eb68e4efd5614612aab7b",
+  "audit_code_sha256": {
+    "tools/review_native_emit_experiment.py": "2c1f8fa056aa1c8eb1f768ad69fd02f405903745c7202b1057664e9878878433",
+    "tools/probe_native_emit_powerpoint.ps1": "de88d22b2b5b25d4573a6214ba9e1497b37e3985dd9bf243f013bec73568bb00"
+  },
+  "visual_review": {
+    "reviewer": "primary assistant direct image inspection",
+    "date": "2026-09-08",
+    "scope": "Six source/A/B/C ROI comparison PNGs plus attention native edit/reopen/reroute PNGs; not human timing or new holdout",
+    "observations": [
+      {
+        "sample": "mixed-blip",
+        "finding": "B/C labels and arrows larger and clearer than A. Five boxes and three connections retained. Text-decoder OCR defect and absent source outlines remain. C does not repair recognition."
+      },
+      {
+        "sample": "mixed-attention",
+        "finding": "A/B arrows converge and overlap at the target side-center. C displays four distinct upward arrows at observed attachment positions. Token border/style and container corner differences remain; these are manually supplied R0 oracle objects, not detector gains."
+      },
+      {
+        "sample": "serial-hevc",
+        "finding": "B/C materially more readable than tiny A text. Four boxes/three arrows remain. Scrambled OCR word order remains visible, not corrected from the source."
+      },
+      {
+        "sample": "reasoning-row",
+        "finding": "B/C labels and arrowheads clearer than A. C changes connected filled round boxes to a simpler less-rounded custom path. Stroke widths/arrowheads now look heavy; not pixel-perfect tuning."
+      },
+      {
+        "sample": "cogbot-perceive",
+        "finding": "B/C label size improved but wrong OCR, inherited fill errors and both missing elbow connectors remain. C equals B because there are no recovered connectors."
+      },
+      {
+        "sample": "negative-plots",
+        "finding": "All arms retain three false chart-derived objects. Normalization makes wrong text more legible, not more correct. C equals B; this remains a negative rejection failure."
+      }
+    ],
+    "edit_probe": {
+      "ordinary_move_resize_reopen": "All four endpoints follow target-relative sites. However the preregistered move/resize pushes target into source token row: connectors become diagonal in an overlapping layout, not a clean automatically arranged diagram.",
+      "explicit_reroute": "FAIL: native reroute changes source/target site indices and attachments. Owner bindings survive but original route intent does not. No corrective pass or hidden rerun.",
+      "visual_limit": "Connector shadows/heavy strokes are visible at normalized scale and inherited from the old writer. Production remains unchanged; style cleanup is separate work."
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "reviewer": "primary assistant direct image inspection",
+  "date": "2026-09-08",
+  "scope": "Six source/A/B/C ROI comparison PNGs plus attention native edit/reopen/reroute PNGs; not human timing or new holdout",
+  "observations": [
+    {"sample": "mixed-blip", "finding": "B/C labels and arrows larger and clearer than A. Five boxes and three connections retained. Text-decoder OCR defect and absent source outlines remain. C does not repair recognition."},
+    {"sample": "mixed-attention", "finding": "A/B arrows converge and overlap at the target side-center. C displays four distinct upward arrows at observed attachment positions. Token border/style and container corner differences remain; these are manually supplied R0 oracle objects, not detector gains."},
+    {"sample": "serial-hevc", "finding": "B/C materially more readable than tiny A text. Four boxes/three arrows remain. Scrambled OCR word order remains visible, not corrected from the source."},
+    {"sample": "reasoning-row", "finding": "B/C labels and arrowheads clearer than A. C changes connected filled round boxes to a simpler less-rounded custom path. Stroke widths/arrowheads now look heavy; not pixel-perfect tuning."},
+    {"sample": "cogbot-perceive", "finding": "B/C label size improved but wrong OCR, inherited fill errors and both missing elbow connectors remain. C equals B because there are no recovered connectors."},
+    {"sample": "negative-plots", "finding": "All arms retain three false chart-derived objects. Normalization makes wrong text more legible, not more correct. C equals B; this remains a negative rejection failure."}
+  ],
+  "edit_probe": {
+    "ordinary_move_resize_reopen": "All four endpoints follow target-relative sites. However the preregistered move/resize pushes target into source token row: connectors become diagonal in an overlapping layout, not a clean automatically arranged diagram.",
+    "explicit_reroute": "FAIL: native reroute changes source/target site indices and attachments. Owner bindings survive but original route intent does not. No corrective pass or hidden rerun.",
+    "visual_limit": "Connector shadows/heavy strokes are visible at normalized scale and inherited from the old writer. Production remains unchanged; style cleanup is separate work."
+  }
+}
