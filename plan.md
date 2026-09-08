@@ -2,6 +2,8 @@
 
 최종 업데이트: 2026-09-08
 
+완료: [R5 / v0.3 결과](docs/region_complex_r5_results.md). 전체 reasoning 그림에서 실제 노드 24개·정확 라벨 24개·정확 실선 관계 24개를 원본/PowerPoint 육안으로 확인했다. 거짓 큰 박스 5개 제거, 역방향 elbow 수정, 직선 fanout 6개 복구. 점선 합류 5개·배경 구획은 생략한다. 작은 ROI 23객체/15관계·합성 11계약·전체 테스트 279개와 native edit/reopen 및 설치 wheel을 검증했다. 정확한 부분복원으로 코드 통합하되 범용 복잡 도식·사람 시간·holdout 승인은 하지 않는다. v0.2와 실패한 R5 중간 실험도 보존한다. 다음은 점선/색상 선의 독립된 근거 모델과 nested-panel 라벨 소유이며 현재 판정을 넘어 승인하지 않는다.
+
 현재 연구선: `codex/region-first-diagnostics`. 사용자 승인 [R4 및 프로덕션 계획](docs/region_first_r4_production_plan.md)을 실행해 **v0.2 명시적 ROI 변환 CLI 통합**을 완료했다. [최종 결과](docs/region_native_production_results.md): 실제 이미지→CLI의 다이어그램 5개에서 객체 23/23·방향 관계 15/15·오검출 0, 큰 비도식 1개는 자원 제한 거절. 합성 11개 개수/기권 계약 및 native edit/reopen·설치 wheel을 검증했다. OCR은 12개 일치·1개 공백 오류·4개 생략이며 reroute/겹침 한계가 남는다. 배율 실패 및 컨테이너 회귀를 별도 기록하고 역할별 mask로 해결했다. 다음은 독립적으로 고른 ROI와 사람 보정 비용 검증이다. 기존 기본 ML/v3 경로와 Phase15/16 판정은 보존한다. ROI 제공 조건을 전체 이미지 자동 성능, 사람 시간 절약 또는 holdout 승인으로 세지 않는다.
 상태: `Phase 15는 동결됐다. Phase 16.0은 새 dev/holdout·수동 annotation v2·정확 재생성한 Phase 15 baseline·육안 A/B rubric·PowerPoint 보정 deck까지 고정했으나, 사람의 실제 편집시간 측정이 없어 experiment lock은 blocked다. MEG algorithm tuning과 holdout candidate run은 시작하지 않았으며 candidate/NO-GO를 유지한다.`
 

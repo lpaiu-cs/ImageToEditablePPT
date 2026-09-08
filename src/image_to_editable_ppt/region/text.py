@@ -1,6 +1,7 @@
 """Conservative crop OCR: stable geometric order and agreement, never semantic repair."""
 from dataclasses import replace
 import cv2
+import numpy as np
 from image_to_editable_ppt.v3.core.enums import PortOwnerKind
 from image_to_editable_ppt.v3.text.ocr import _load_engine
 
@@ -37,7 +38,12 @@ def recognize_consistent(engine,crop):
         return None,dict(reason='backend_error',error_type=type(error).__name__)
     if a is None or b is None: return None,dict(reason=ra if a is None else rb)
     if ' '.join(a.split())!=' '.join(b.split()): return None,dict(reason='scale_disagreement')
-    return a,dict(reason='two_scale_agreement',confidence_floor=.90)
+    record=dict(reason='two_scale_agreement',confidence_floor=.90)
+    if len(first)==1:
+        xs,ys=zip(*first[0][0])
+        if max(ys)-min(ys)>2*(max(xs)-min(xs)):
+            record['clockwise_vertical']=True
+    return a,record
 
 
 def recover_labels(scene,rgb,*,enabled=True):
@@ -51,6 +57,19 @@ def recover_labels(scene,rgb,*,enabled=True):
         x1,y1=min(w,round(b.x1)-3),min(h,round(b.y1)-3)
         label=None; record=dict(reason='disabled' if not enabled else 'too_small')
         if enabled and x1-x0>=8 and y1-y0>=8:
-            label,record=recognize_consistent(engine,rgb[y0:y1,x0:x1])
-        shapes.append(replace(s,label=label)); audit[s.id]=record
+            crop=rgb[y0:y1,x0:x1]
+            label,record=recognize_consistent(engine,crop)
+            if label is None and record['reason']=='overlapping_snippets':
+                # Tight crops can split a word and trailing numeral into
+                # overlapping detector boxes. Retry a fixed border, retaining
+                # the same confidence, reading-order and two-scale checks.
+                color=np.median(crop.reshape(-1,3),axis=0).tolist()
+                padded=cv2.copyMakeBorder(crop,16,16,16,16,cv2.BORDER_CONSTANT,value=color)
+                label,retry=recognize_consistent(engine,padded)
+                record=dict(retry,initial_reason=record['reason'],transform='interior_color_border_16')
+            if label is None and crop.shape[0]>3*crop.shape[1] and record['reason'] in ('low_confidence','empty'):
+                label,retry=recognize_consistent(engine,cv2.rotate(crop,cv2.ROTATE_90_COUNTERCLOCKWISE))
+                record=dict(retry,initial_reason=record['reason'],transform='vertical_crop_ccw90',clockwise_vertical=bool(label))
+        provenance=s.provenance+('region:text_clockwise',) if label and record.get('clockwise_vertical') else s.provenance
+        shapes.append(replace(s,label=label,provenance=provenance)); audit[s.id]=record
     return replace(scene,shapes=tuple(shapes)),audit

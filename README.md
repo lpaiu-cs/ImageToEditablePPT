@@ -2,12 +2,18 @@
 
 이 저장소는 현재 **v3 아키텍처 재구성 중**이다. 목표는 논문용 구조적 다이어그램을 generic reconstruction이 아니라 **family-constrained parsing + editable primitive scene**으로 정규화하는 것이다.
 
-## v0.2: 선택 영역을 native PPTX로 변환
+## v0.3: 선택 영역을 native PPTX로 변환
 
 실제 사용 진입점에 **명시적 ROI 변환**을 추가했다. 전체 그림에서 구조적 다이어그램
 영역을 지정하면 보수적으로 박스·연결선·확신 가능한 텍스트를 추출한다. 별도 모델이나
 PowerPoint 설치 없이 변환할 수 있고, 결과는 native shape/connector다. PowerPoint 설치는
 실제 렌더 및 편집 검증을 실행할 때만 필요하다. 기존 기본 ML/v3 경로는 변경하지 않았다.
+
+v0.3은 배경 조각을 객체로 채택하기 전에 네 변의 근거를 확인하고, 실제 박스 윤곽과
+라벨을 우선한다. 독립적인 끝 화살촉이 확인되는 직선 fanout만 제한적으로 복구한다.
+기준 reasoning 그림에서 24개 노드·24개 라벨·24개 실선 관계를 확인했지만, 점선 합류
+5개와 배경 구획은 생략된다. 파란 선·어두운 배경·일반 분기 도식까지 검증된 기능은
+아니다. [R5 결과와 승인 범위](docs/region_complex_r5_results.md)를 반드시 함께 본다.
 
 ```bash
 python -m pip install -e ".[ocr]"

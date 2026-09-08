@@ -60,7 +60,7 @@ def run(root,manifest,out):
         (out/'results.json').write_text(json.dumps(results,indent=2),encoding='utf-8')
 
 
-def review(root,manifest,run_dir,renders,out):
+def review(root,manifest,run_dir,renders,out,*,native_label='Native PowerPoint v0.2'):
     out.mkdir(parents=True,exist_ok=False)
     data=json.loads(manifest.read_text()); result=json.loads((run_dir/'results.json').read_text())
     assert digest(manifest)==result['manifest_sha256']
@@ -83,7 +83,7 @@ def review(root,manifest,run_dir,renders,out):
         assert check['ids_exact'] and check['owner_bindings'] and not check['raster_count']
         audits.append(check)
         panels=[]
-        for source,label in [(root/item['path'],'Source (fixed ROI)'),(renders/f"{item['id']}.png",'Native PowerPoint v0.2')]:
+        for source,label in [(root/item['path'],'Source (fixed ROI)'),(renders/f"{item['id']}.png",native_label)]:
             with Image.open(source) as im: crop=im.convert('RGB').crop(pixel_box(item['roi'],im.size))
             thumb=ImageOps.contain(crop,(780,800)); panel=Image.new('RGB',(800,850),'#eef2f6')
             panel.paste(thumb,((800-thumb.width)//2,45+(800-thumb.height)//2))

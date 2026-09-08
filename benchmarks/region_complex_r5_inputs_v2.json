@@ -1,0 +1,157 @@
+{
+  "runtime_commit": "f2dc3ac443a4196f053e56cfb3c5ad8ec0c6a1ad",
+  "runtime_sha256": {
+    "src\\image_to_editable_ppt\\region\\convert.py": "b46ac1e16cc427ec7a2a78f1564ba56325c079cc95c434a4fa3cfa39de195649",
+    "src\\image_to_editable_ppt\\region\\emitter.py": "91110891fa0273cc535a5dcf2496dd4b203bfa987ba710e673d843affb035e50",
+    "src\\image_to_editable_ppt\\region\\geometry.py": "bd45c584710bd905fc82de7dc99c34d4fd21f34b73a03cd86d746cda1ac1052f",
+    "src\\image_to_editable_ppt\\region\\identity.py": "26175f248181dfa94977eeef7213c664fc5e0acec8eafe814670fa2b61d805b1",
+    "src\\image_to_editable_ppt\\region\\proposals.py": "a1794d80bda64a99c8975c7302c606a4c444c9826acd0b9ce68774d97b3f6a05",
+    "src\\image_to_editable_ppt\\region\\text.py": "0f9dcea9d120a5e9c78a79099b77adde238d5396e2e4b7e3f4db9a90b434fbd9",
+    "src\\image_to_editable_ppt\\region\\tracing.py": "685e7a2b95a9538fc9a3a5d4dea15919f29ea331a5611972d2d05400354e14b0",
+    "src\\image_to_editable_ppt\\region\\_native_geometry.py": "21010ea5a93cfac746621ab60bd14892c34e6754e9a139edb833d9ad601b64a4",
+    "src\\image_to_editable_ppt\\region\\_path_fit.py": "12864fba06c1538a486c7b46e60b0e904f87c9c59bd9974d7b82c3203fac1e44",
+    "src\\image_to_editable_ppt\\region\\_selection_base.py": "82858ed4240e496a3b856cebf32104d96e06cbf0fef24f86ece0c93a340459e6",
+    "src\\image_to_editable_ppt\\region\\_selection_local.py": "41d241112ad3b4c22f90b4d5b02bd04ee741a9ba73a4ed99010f8c91bb6c91c4",
+    "src\\image_to_editable_ppt\\region\\__init__.py": "daa97ae44e1472164682202b6d4bf986c2576eebeea508f24f341d7c8f95d1ad"
+  },
+  "cli_sha256": "ee7b3b2d2b48b599fe89c1ecae69e30aece143cefbb7c873eac4ecddc0acc2c3",
+  "rules": "No runtime changes, resizing, retry crops or cutoff adjustment after results. No automatic full-image or human-time acceptance claim.",
+  "samples": [
+    {
+      "id": "reasoning-full",
+      "path": "data/phase16_dev_v1/phase16-dev-p034.png",
+      "sha256": "506d71a1d4f65f38d98a71865528b1f787e3bb02dab92f580a5c3cf5d9d7aec3",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "reason": "Dense fork/join with mixed direct/curved relations",
+      "population": "existing development split, not holdout; prior baseline exposure",
+      "size": [
+        2292,
+        939
+      ]
+    },
+    {
+      "id": "blue-flow",
+      "path": "data/phase16_dev_v1/phase16-dev-p042.png",
+      "sha256": "92c0d27074b59490e42ea71fc3161f199228ffade46c9cbb65aabd69579e6507",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "reason": "Blue orthogonal flow and shared branches",
+      "population": "existing development split, not holdout; prior baseline exposure",
+      "size": [
+        1660,
+        817
+      ]
+    },
+    {
+      "id": "nested-panels",
+      "path": "data/phase16_dev_v1/phase16-dev-p058.png",
+      "sha256": "7fe4595a79760df391e9a2d472739ceb4bec615a57c83fbafd2e015611654c8e",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "reason": "Nested colored containers, many text boxes and icon exclusions",
+      "population": "existing development split, not holdout; prior baseline exposure",
+      "size": [
+        1498,
+        1028
+      ]
+    },
+    {
+      "id": "contrastive",
+      "path": "data/phase16_dev_v1/phase16-dev-p043.png",
+      "sha256": "a4cfc7d181506e118e097b6bff848258dfc19e13c2913c03935e0a4b686f6348",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "reason": "Multi-branch encoder/decoder and dotted/curved relations",
+      "population": "existing development split, not holdout; prior baseline exposure",
+      "size": [
+        1826,
+        1009
+      ]
+    },
+    {
+      "id": "dark-transformer",
+      "path": "data/phase16_dev_v1/phase16-dev-p011.png",
+      "sha256": "bfae744ed2bdf9bbe2e4eec842b4d83af36c4d70c61a530199ca693a3f139074",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "reason": "Black background, nested stack and skip connections",
+      "population": "existing development split, not holdout; prior baseline exposure",
+      "size": [
+        877,
+        739
+      ]
+    },
+    {
+      "id": "fusion",
+      "path": "data/phase16_dev_v1/phase16-dev-p092.png",
+      "sha256": "2a07664014207bab324a66182b224f915a414b19ec82ac477425fde0511c520a",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "reason": "Nested branches, thin slanted links and fusion node",
+      "population": "existing development split, not holdout; prior baseline exposure",
+      "size": [
+        2000,
+        1125
+      ]
+    },
+    {
+      "id": "original-full",
+      "path": "input.png",
+      "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "reason": "Full original complex input, including resource-bound behavior",
+      "population": "previously consumed original project input",
+      "size": [
+        2760,
+        1504
+      ]
+    },
+    {
+      "id": "original-body",
+      "path": "input.png",
+      "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf",
+      "roi": [
+        0,
+        0.04,
+        1,
+        1
+      ],
+      "reason": "Original body ROI excluding top 4 percent; clipped header is out of scope, not full-image success",
+      "population": "previously consumed original project input",
+      "size": [
+        2760,
+        1504
+      ]
+    }
+  ]
+}

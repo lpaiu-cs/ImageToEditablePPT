@@ -1,0 +1,3067 @@
+{
+  "manifest": {
+    "runtime_commit": "f2dc3ac443a4196f053e56cfb3c5ad8ec0c6a1ad",
+    "runtime_sha256": {
+      "src\\image_to_editable_ppt\\region\\convert.py": "b46ac1e16cc427ec7a2a78f1564ba56325c079cc95c434a4fa3cfa39de195649",
+      "src\\image_to_editable_ppt\\region\\emitter.py": "91110891fa0273cc535a5dcf2496dd4b203bfa987ba710e673d843affb035e50",
+      "src\\image_to_editable_ppt\\region\\geometry.py": "bd45c584710bd905fc82de7dc99c34d4fd21f34b73a03cd86d746cda1ac1052f",
+      "src\\image_to_editable_ppt\\region\\identity.py": "26175f248181dfa94977eeef7213c664fc5e0acec8eafe814670fa2b61d805b1",
+      "src\\image_to_editable_ppt\\region\\proposals.py": "a1794d80bda64a99c8975c7302c606a4c444c9826acd0b9ce68774d97b3f6a05",
+      "src\\image_to_editable_ppt\\region\\text.py": "0f9dcea9d120a5e9c78a79099b77adde238d5396e2e4b7e3f4db9a90b434fbd9",
+      "src\\image_to_editable_ppt\\region\\tracing.py": "685e7a2b95a9538fc9a3a5d4dea15919f29ea331a5611972d2d05400354e14b0",
+      "src\\image_to_editable_ppt\\region\\_native_geometry.py": "21010ea5a93cfac746621ab60bd14892c34e6754e9a139edb833d9ad601b64a4",
+      "src\\image_to_editable_ppt\\region\\_path_fit.py": "12864fba06c1538a486c7b46e60b0e904f87c9c59bd9974d7b82c3203fac1e44",
+      "src\\image_to_editable_ppt\\region\\_selection_base.py": "82858ed4240e496a3b856cebf32104d96e06cbf0fef24f86ece0c93a340459e6",
+      "src\\image_to_editable_ppt\\region\\_selection_local.py": "41d241112ad3b4c22f90b4d5b02bd04ee741a9ba73a4ed99010f8c91bb6c91c4",
+      "src\\image_to_editable_ppt\\region\\__init__.py": "daa97ae44e1472164682202b6d4bf986c2576eebeea508f24f341d7c8f95d1ad"
+    },
+    "cli_sha256": "ee7b3b2d2b48b599fe89c1ecae69e30aece143cefbb7c873eac4ecddc0acc2c3",
+    "rules": "No runtime changes, resizing, retry crops or cutoff adjustment after results. No automatic full-image or human-time acceptance claim.",
+    "samples": [
+      {
+        "id": "reasoning-full",
+        "path": "data/phase16_dev_v1/phase16-dev-p034.png",
+        "sha256": "506d71a1d4f65f38d98a71865528b1f787e3bb02dab92f580a5c3cf5d9d7aec3",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Dense fork/join with mixed direct/curved relations",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          2292,
+          939
+        ]
+      },
+      {
+        "id": "blue-flow",
+        "path": "data/phase16_dev_v1/phase16-dev-p042.png",
+        "sha256": "92c0d27074b59490e42ea71fc3161f199228ffade46c9cbb65aabd69579e6507",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Blue orthogonal flow and shared branches",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          1660,
+          817
+        ]
+      },
+      {
+        "id": "nested-panels",
+        "path": "data/phase16_dev_v1/phase16-dev-p058.png",
+        "sha256": "7fe4595a79760df391e9a2d472739ceb4bec615a57c83fbafd2e015611654c8e",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Nested colored containers, many text boxes and icon exclusions",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          1498,
+          1028
+        ]
+      },
+      {
+        "id": "contrastive",
+        "path": "data/phase16_dev_v1/phase16-dev-p043.png",
+        "sha256": "a4cfc7d181506e118e097b6bff848258dfc19e13c2913c03935e0a4b686f6348",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Multi-branch encoder/decoder and dotted/curved relations",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          1826,
+          1009
+        ]
+      },
+      {
+        "id": "dark-transformer",
+        "path": "data/phase16_dev_v1/phase16-dev-p011.png",
+        "sha256": "bfae744ed2bdf9bbe2e4eec842b4d83af36c4d70c61a530199ca693a3f139074",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Black background, nested stack and skip connections",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          877,
+          739
+        ]
+      },
+      {
+        "id": "fusion",
+        "path": "data/phase16_dev_v1/phase16-dev-p092.png",
+        "sha256": "2a07664014207bab324a66182b224f915a414b19ec82ac477425fde0511c520a",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Nested branches, thin slanted links and fusion node",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          2000,
+          1125
+        ]
+      },
+      {
+        "id": "original-full",
+        "path": "input.png",
+        "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Full original complex input, including resource-bound behavior",
+        "population": "previously consumed original project input",
+        "size": [
+          2760,
+          1504
+        ]
+      },
+      {
+        "id": "original-body",
+        "path": "input.png",
+        "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf",
+        "roi": [
+          0,
+          0.04,
+          1,
+          1
+        ],
+        "reason": "Original body ROI excluding top 4 percent; clipped header is out of scope, not full-image success",
+        "population": "previously consumed original project input",
+        "size": [
+          2760,
+          1504
+        ]
+      }
+    ]
+  },
+  "primary_graph_audit": {
+    "method": "post-inspection source graph consistency, not frozen holdout metric",
+    "names": {
+      "node:region:0": "Program 1",
+      "node:region:1": "Executor 1",
+      "node:region:2": "Symbolic Prediction 1",
+      "node:region:3": "Input",
+      "node:region:4": "Encoder",
+      "node:region:5": "Text Embedding",
+      "node:region:6": "Decoder 1",
+      "node:region:7": "Mixture-of-Experts",
+      "node:region:8": "Decoder 2",
+      "node:region:9": "Program 2",
+      "node:region:10": "Executor 2",
+      "node:region:11": "Symbolic Prediction 2",
+      "node:region:12": "Decoder 3",
+      "node:region:13": "Program 3",
+      "node:region:14": "Executor 3",
+      "node:region:15": "Symbolic Prediction 3",
+      "node:region:16": "Final Prediction",
+      "node:region:17": "Predictor 1",
+      "node:region:18": "Neural Prediction 1",
+      "node:region:19": "Neural Prediction 2",
+      "node:region:20": "Predictor 2",
+      "node:region:21": "Neural Prediction 3",
+      "node:region:22": "Predictor 3",
+      "node:region:23": "Gating Network"
+    },
+    "expected_solid_edges": [
+      [
+        "Decoder 1",
+        "Program 1"
+      ],
+      [
+        "Program 1",
+        "Executor 1"
+      ],
+      [
+        "Executor 1",
+        "Symbolic Prediction 1"
+      ],
+      [
+        "Text Embedding",
+        "Decoder 1"
+      ],
+      [
+        "Text Embedding",
+        "Predictor 1"
+      ],
+      [
+        "Predictor 1",
+        "Neural Prediction 1"
+      ],
+      [
+        "Decoder 2",
+        "Program 2"
+      ],
+      [
+        "Program 2",
+        "Executor 2"
+      ],
+      [
+        "Executor 2",
+        "Symbolic Prediction 2"
+      ],
+      [
+        "Text Embedding",
+        "Decoder 2"
+      ],
+      [
+        "Text Embedding",
+        "Predictor 2"
+      ],
+      [
+        "Predictor 2",
+        "Neural Prediction 2"
+      ],
+      [
+        "Decoder 3",
+        "Program 3"
+      ],
+      [
+        "Program 3",
+        "Executor 3"
+      ],
+      [
+        "Executor 3",
+        "Symbolic Prediction 3"
+      ],
+      [
+        "Text Embedding",
+        "Decoder 3"
+      ],
+      [
+        "Text Embedding",
+        "Predictor 3"
+      ],
+      [
+        "Predictor 3",
+        "Neural Prediction 3"
+      ],
+      [
+        "Input",
+        "Encoder"
+      ],
+      [
+        "Encoder",
+        "Text Embedding"
+      ],
+      [
+        "Text Embedding",
+        "Gating Network"
+      ],
+      [
+        "Gating Network",
+        "Mixture-of-Experts"
+      ],
+      [
+        "Mixture-of-Experts",
+        "Final Prediction"
+      ],
+      [
+        "Neural Prediction 1",
+        "Mixture-of-Experts"
+      ]
+    ],
+    "emitted_solid_edges": [
+      [
+        "Program 1",
+        "Executor 1"
+      ],
+      [
+        "Executor 1",
+        "Symbolic Prediction 1"
+      ],
+      [
+        "Decoder 1",
+        "Program 1"
+      ],
+      [
+        "Text Embedding",
+        "Decoder 1"
+      ],
+      [
+        "Text Embedding",
+        "Decoder 2"
+      ],
+      [
+        "Text Embedding",
+        "Decoder 3"
+      ],
+      [
+        "Text Embedding",
+        "Predictor 1"
+      ],
+      [
+        "Text Embedding",
+        "Predictor 2"
+      ],
+      [
+        "Text Embedding",
+        "Predictor 3"
+      ],
+      [
+        "Decoder 2",
+        "Program 2"
+      ],
+      [
+        "Program 2",
+        "Executor 2"
+      ],
+      [
+        "Executor 2",
+        "Symbolic Prediction 2"
+      ],
+      [
+        "Executor 3",
+        "Symbolic Prediction 3"
+      ],
+      [
+        "Decoder 3",
+        "Program 3"
+      ],
+      [
+        "Program 3",
+        "Executor 3"
+      ],
+      [
+        "Neural Prediction 1",
+        "Mixture-of-Experts"
+      ],
+      [
+        "Mixture-of-Experts",
+        "Final Prediction"
+      ],
+      [
+        "Input",
+        "Encoder"
+      ],
+      [
+        "Encoder",
+        "Text Embedding"
+      ],
+      [
+        "Predictor 1",
+        "Neural Prediction 1"
+      ],
+      [
+        "Predictor 2",
+        "Neural Prediction 2"
+      ],
+      [
+        "Predictor 3",
+        "Neural Prediction 3"
+      ],
+      [
+        "Text Embedding",
+        "Gating Network"
+      ],
+      [
+        "Gating Network",
+        "Mixture-of-Experts"
+      ]
+    ]
+  },
+  "visual_review": {
+    "method": "Agent directly inspected source and native PowerPoint comparisons; post-output visual audit, not independent blind scoring",
+    "primary": {
+      "nodes_correct": 24,
+      "false_large_nodes": 0,
+      "labels_correct": 24,
+      "solid_directed_relations_correct": 24,
+      "omitted_dashed_relations": 5,
+      "omitted": [
+        "two gray background panels",
+        "two section titles",
+        "repetition ellipses"
+      ],
+      "verdict": "Useful editable partial reconstruction; no full-image or human-time acceptance claim"
+    },
+    "cohort": {
+      "blue-flow": "Seven actual nodes, three labels; all blue links still missing. Partial nodes only, not complete-flow approval.",
+      "nested-panels": "Major layout retained, but incorrect merged panel fills and label ownership remain, including PDF duplicate text. Fails complex nested-panel quality.",
+      "contrastive": "Five genuine large encoder/decoder nodes recovered after revision-1 regression. Small symbolic/MLP nodes and relations remain absent.",
+      "dark-transformer": "False orange panel fragment removed; two correct local upward arrows recovered. Most topology and enclosing panel absent; not complete-transformer approval.",
+      "fusion": "Genuine branch nodes and central input arrow retained. Fusion/output and slanted relations absent; no whole-diagram approval.",
+      "original-body": "Three former large fragments removed, but partial islands, blank black orchestrator and two false database-cap ellipses remain. Fails overall complex-input standard.",
+      "original-full": "4MP resource rejection, no output; not a classification success"
+    }
+  },
+  "cohort": [
+    {
+      "id": "reasoning-full",
+      "counts": {
+        "nodes": 24,
+        "containers": 0,
+        "connectors": 24,
+        "labels": 24,
+        "omitted_connectors": 0
+      },
+      "returncode": 0,
+      "pptx_sha256": "c50a6dfd3f02b7e551a5479d953a6ada9f07c092247b0f2840a1a2eff14e9ca7",
+      "report_sha256": "091cd8b1c4a1bf7455f96de08e580d3cff3b446661388cc5f197a2a522a5861d"
+    },
+    {
+      "id": "blue-flow",
+      "counts": {
+        "nodes": 7,
+        "containers": 0,
+        "connectors": 0,
+        "labels": 3,
+        "omitted_connectors": 0
+      },
+      "returncode": 0,
+      "pptx_sha256": "1aa8cd5cc2713d4b53e8073476cf803757488057dadae41cf56bb11518d4be84",
+      "report_sha256": "bd6d47456766974c4c74f6baab3fb5f3cf39e272a5cb51a753a10c3790d03f23"
+    },
+    {
+      "id": "nested-panels",
+      "counts": {
+        "nodes": 23,
+        "containers": 6,
+        "connectors": 0,
+        "labels": 16,
+        "omitted_connectors": 0
+      },
+      "returncode": 0,
+      "pptx_sha256": "1b31a4d2f5de9eda1e200815c11d127942b45a26760b27cc4747f7e4b2e3c214",
+      "report_sha256": "6f2f107f2aa8e82e4a13d75364ce41031be2f4038c5a9e93786782b613cc9750"
+    },
+    {
+      "id": "contrastive",
+      "counts": {
+        "nodes": 5,
+        "containers": 0,
+        "connectors": 0,
+        "labels": 5,
+        "omitted_connectors": 1
+      },
+      "returncode": 0,
+      "pptx_sha256": "efd052cf17777cee91830552bb1da13534de36aa064499537a73f668712ff54e",
+      "report_sha256": "b664e9d6a57325fb36e08ca1b12fc6c04a24f2cc7b088f01146939c0ab754cbf"
+    },
+    {
+      "id": "dark-transformer",
+      "counts": {
+        "nodes": 11,
+        "containers": 0,
+        "connectors": 2,
+        "labels": 5,
+        "omitted_connectors": 0
+      },
+      "returncode": 0,
+      "pptx_sha256": "c6d8256ed208acbec68208ee6fe4d282d1445d9284165bece0a508db367365c7",
+      "report_sha256": "2aa4426c39f740eaa99b2031f54f425d7d8cd8f57ce66daae263d9df6c67eaea"
+    },
+    {
+      "id": "fusion",
+      "counts": {
+        "nodes": 5,
+        "containers": 2,
+        "connectors": 1,
+        "labels": 5,
+        "omitted_connectors": 0
+      },
+      "returncode": 0,
+      "pptx_sha256": "c4e1164643683f68e7ab159937f74d11aeaa4b4f8accfeab87f5b37f4f490bd8",
+      "report_sha256": "ef17ee3a714bb2699282cbfa3063870be9f84232cc8346604e2f27be09243bd2"
+    },
+    {
+      "id": "original-full",
+      "counts": null,
+      "returncode": 1,
+      "pptx_sha256": null,
+      "report_sha256": null
+    },
+    {
+      "id": "original-body",
+      "counts": {
+        "nodes": 11,
+        "containers": 3,
+        "connectors": 4,
+        "labels": 3,
+        "omitted_connectors": 3
+      },
+      "returncode": 0,
+      "pptx_sha256": "7500d3baed99c449d907975158d572b16cd29767c650b882b49b0c480615be62",
+      "report_sha256": "aeecd4f9adbf37f148cd4b62e9d4fc16bda33572470684bb657e0d2b05551272"
+    }
+  ],
+  "audits": [
+    {
+      "id": "reasoning-full",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "blue-flow",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "nested-panels",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "contrastive",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "dark-transformer",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 2
+    },
+    {
+      "id": "fusion",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "original-body",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    }
+  ],
+  "renders": {
+    "schema_version": "phase16_powerpoint_render_manifest_v1",
+    "generated_at": "2026-09-08T04:34:17.4068909+00:00",
+    "powerpoint_version": "16.0",
+    "export_format": "PNG",
+    "target_width": 1600,
+    "records": [
+      {
+        "id": "blue-flow",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\run\\blue-flow.pptx",
+        "pptx_sha256": "1aa8cd5cc2713d4b53e8073476cf803757488057dadae41cf56bb11518d4be84",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\renders\\blue-flow.png",
+        "render_sha256": "24313bcbf12cd981071965d227e2449951627c1c57ab65102f4f2e069f2e5ee7",
+        "width": 1600,
+        "height": 788
+      },
+      {
+        "id": "contrastive",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\run\\contrastive.pptx",
+        "pptx_sha256": "efd052cf17777cee91830552bb1da13534de36aa064499537a73f668712ff54e",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\renders\\contrastive.png",
+        "render_sha256": "c73f291364a172feeb3a04d5ae20a5b3b523b3d11d344ec25f0300cd957124df",
+        "width": 1600,
+        "height": 883
+      },
+      {
+        "id": "dark-transformer",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\run\\dark-transformer.pptx",
+        "pptx_sha256": "c6d8256ed208acbec68208ee6fe4d282d1445d9284165bece0a508db367365c7",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\renders\\dark-transformer.png",
+        "render_sha256": "c9e4762d7134f91267b144386b3b382f87cc23b81e4d48e9753beabd0c01ae49",
+        "width": 1600,
+        "height": 1348
+      },
+      {
+        "id": "fusion",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\run\\fusion.pptx",
+        "pptx_sha256": "c4e1164643683f68e7ab159937f74d11aeaa4b4f8accfeab87f5b37f4f490bd8",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\renders\\fusion.png",
+        "render_sha256": "dfb74d36b740636868036dd0ff17041f1dd2751f4be8269302544116e2c1c20d",
+        "width": 1600,
+        "height": 900
+      },
+      {
+        "id": "nested-panels",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\run\\nested-panels.pptx",
+        "pptx_sha256": "1b31a4d2f5de9eda1e200815c11d127942b45a26760b27cc4747f7e4b2e3c214",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\renders\\nested-panels.png",
+        "render_sha256": "2b5186abfb3ee776a28680922cb586b6c4e90b524f9ad6e9dd2ef47ddf959eaa",
+        "width": 1600,
+        "height": 1098
+      },
+      {
+        "id": "original-body",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\run\\original-body.pptx",
+        "pptx_sha256": "7500d3baed99c449d907975158d572b16cd29767c650b882b49b0c480615be62",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\renders\\original-body.png",
+        "render_sha256": "4447a4c078780484370362a50e62ec3ba1a4f451f56e4f6dbd8200a7c013d3f1",
+        "width": 1600,
+        "height": 873
+      },
+      {
+        "id": "reasoning-full",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\run\\reasoning-full.pptx",
+        "pptx_sha256": "c50a6dfd3f02b7e551a5479d953a6ada9f07c092247b0f2840a1a2eff14e9ca7",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\final-v2\\renders\\reasoning-full.png",
+        "render_sha256": "5836e99fb659a6ca5db4913e2957563b4bb2e12dcb835e314b82652ecf114a62",
+        "width": 1600,
+        "height": 656
+      }
+    ]
+  },
+  "sheets": [
+    {
+      "id": "reasoning-full",
+      "path": "artifacts\\region-complex-r5\\final-v2\\review\\reasoning-full-comparison.png",
+      "sha256": "10bf5982a94066de0fedcb2ca71f35398bf5238aadf48bc00b66a035fa82e30c"
+    },
+    {
+      "id": "blue-flow",
+      "path": "artifacts\\region-complex-r5\\final-v2\\review\\blue-flow-comparison.png",
+      "sha256": "7a8c5be14bd26f81dd3fe2905d7df27ad6058d89102decbaaf148609eaa587a8"
+    },
+    {
+      "id": "nested-panels",
+      "path": "artifacts\\region-complex-r5\\final-v2\\review\\nested-panels-comparison.png",
+      "sha256": "bdbc78f7d661dbaed8aab414f999224d95de80f242d8181aa700f48564e4d7fe"
+    },
+    {
+      "id": "contrastive",
+      "path": "artifacts\\region-complex-r5\\final-v2\\review\\contrastive-comparison.png",
+      "sha256": "616ca9d2e2616301dcf446f415408fe29cc97e563f78942344746b652b6240c7"
+    },
+    {
+      "id": "dark-transformer",
+      "path": "artifacts\\region-complex-r5\\final-v2\\review\\dark-transformer-comparison.png",
+      "sha256": "65475453b3f24879be559b5822e852f25ade53a849940982c289528c0a6cdf8f"
+    },
+    {
+      "id": "fusion",
+      "path": "artifacts\\region-complex-r5\\final-v2\\review\\fusion-comparison.png",
+      "sha256": "faee3a056b327b1f04d0c093e3f01dc64ec387b5b87ddda06207a7e564c68d3c"
+    },
+    {
+      "id": "original-body",
+      "path": "artifacts\\region-complex-r5\\final-v2\\review\\original-body-comparison.png",
+      "sha256": "ce657214cf0430a513c637572d5913d09c77064716265f5cc06008587f46c33b"
+    }
+  ],
+  "native_edit": {
+    "powerpoint_version": "16.0",
+    "records": [
+      {
+        "sample": "reasoning-full",
+        "edited_owner": "node:region:5",
+        "input_sha256": "c50a6dfd3f02b7e551a5479d953a6ada9f07c092247b0f2840a1a2eff14e9ca7",
+        "original_unchanged": true,
+        "text_edit_succeeded": true,
+        "before": [
+          {
+            "name": "node:region:4",
+            "id": 2,
+            "left": 54.53401565551758,
+            "top": 20.35598373413086,
+            "width": 25.382125854492188,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:7",
+            "id": 3,
+            "left": 472.4607238769531,
+            "top": 20.35598373413086,
+            "width": 25.13086700439453,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:3",
+            "id": 4,
+            "left": 4.523543357849121,
+            "top": 20.35598373413086,
+            "width": 18.59684944152832,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:5",
+            "id": 5,
+            "left": 112.33503723144531,
+            "top": 20.35598373413086,
+            "width": 18.34551239013672,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:23",
+            "id": 6,
+            "left": 233.7172393798828,
+            "top": 209.34024047851562,
+            "width": 103.53921508789062,
+            "height": 25.382125854492188
+          },
+          {
+            "name": "node:region:19",
+            "id": 7,
+            "left": 320.16748046875,
+            "top": 132.94236755371094,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:12",
+            "id": 8,
+            "left": 162.84811401367188,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:0",
+            "id": 9,
+            "left": 230.9528350830078,
+            "top": 20.104644775390625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:2",
+            "id": 10,
+            "left": 367.9162292480469,
+            "top": 20.104644775390625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:21",
+            "id": 11,
+            "left": 320.4188232421875,
+            "top": 158.07322692871094,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:8",
+            "id": 12,
+            "left": 163.3507080078125,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:22",
+            "id": 13,
+            "left": 208.3350372314453,
+            "top": 158.32456970214844,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:1",
+            "id": 14,
+            "left": 300.062744140625,
+            "top": 20.104644775390625,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:6",
+            "id": 15,
+            "left": 162.84811401367188,
+            "top": 20.35598373413086,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:14",
+            "id": 16,
+            "left": 300.062744140625,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:18",
+            "id": 17,
+            "left": 320.16748046875,
+            "top": 107.81149291992188,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:11",
+            "id": 18,
+            "left": 368.16748046875,
+            "top": 45.98952865600586,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:15",
+            "id": 19,
+            "left": 368.16748046875,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:9",
+            "id": 20,
+            "left": 231.2041778564453,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:10",
+            "id": 21,
+            "left": 300.062744140625,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:13",
+            "id": 22,
+            "left": 231.2041778564453,
+            "top": 70.6177978515625,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:17",
+            "id": 23,
+            "left": 208.3350372314453,
+            "top": 107.81149291992188,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:20",
+            "id": 24,
+            "left": 208.3350372314453,
+            "top": 133.19369506835938,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:16",
+            "id": 25,
+            "left": 529.7591552734375,
+            "top": 87.70677185058594,
+            "width": 45.738189697265625,
+            "height": 18.84811019897461
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 26,
+            "left": 285.4869384765625,
+            "top": 29.151811599731445,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:0",
+            "begin_site": 5,
+            "end_owner": "node:region:1",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 27,
+            "left": 354.34552001953125,
+            "top": 29.151811599731445,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:1",
+            "begin_site": 6,
+            "end_owner": "node:region:2",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:2",
+            "id": 28,
+            "left": 217.3822021484375,
+            "top": 29.40315055847168,
+            "width": 13.570708274841309,
+            "height": 0.25133857131004333,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:6",
+            "begin_site": 5,
+            "end_owner": "node:region:0",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:3",
+            "id": 29,
+            "left": 130.68063354492188,
+            "top": 31.91621971130371,
+            "width": 32.16756057739258,
+            "height": 65.08897399902344,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:6",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:4",
+            "id": 30,
+            "left": 130.68063354492188,
+            "top": 57.04708480834961,
+            "width": 32.67015838623047,
+            "height": 39.95811080932617,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:8",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:5",
+            "id": 31,
+            "left": 130.68063354492188,
+            "top": 80.92149353027344,
+            "width": 32.16756057739258,
+            "height": 16.08378028869629,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:12",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:6",
+            "id": 32,
+            "left": 130.68063354492188,
+            "top": 97.00519561767578,
+            "width": 77.65448760986328,
+            "height": 19.60212516784668,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:17",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:7",
+            "id": 33,
+            "left": 130.68063354492188,
+            "top": 97.00519561767578,
+            "width": 77.65448760986328,
+            "height": 44.23039245605469,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:20",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:8",
+            "id": 34,
+            "left": 130.68063354492188,
+            "top": 97.00519561767578,
+            "width": 77.65448760986328,
+            "height": 68.6073226928711,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:22",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:9",
+            "id": 35,
+            "left": 217.633544921875,
+            "top": 54.53401565551758,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:8",
+            "begin_site": 6,
+            "end_owner": "node:region:9",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:10",
+            "id": 36,
+            "left": 285.4869384765625,
+            "top": 54.28275680541992,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:9",
+            "begin_site": 5,
+            "end_owner": "node:region:10",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:11",
+            "id": 37,
+            "left": 354.34552001953125,
+            "top": 54.28275680541992,
+            "width": 13.821968078613281,
+            "height": 0.5025984048843384,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:10",
+            "begin_site": 6,
+            "end_owner": "node:region:11",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:12",
+            "id": 38,
+            "left": 354.59686279296875,
+            "top": 79.41361999511719,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:14",
+            "begin_site": 5,
+            "end_owner": "node:region:15",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:13",
+            "id": 39,
+            "left": 217.3822021484375,
+            "top": 79.66496276855469,
+            "width": 13.821968078613281,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:12",
+            "begin_site": 6,
+            "end_owner": "node:region:13",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:14",
+            "id": 40,
+            "left": 285.4869384765625,
+            "top": 79.41361999511719,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:13",
+            "begin_site": 5,
+            "end_owner": "node:region:14",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:15",
+            "id": 41,
+            "left": 374.7015686035156,
+            "top": 97.25653839111328,
+            "width": 97.7591323852539,
+            "height": 19.099449157714844,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:18",
+            "begin_site": 5,
+            "end_owner": "node:region:7",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:16",
+            "id": 42,
+            "left": 497.5916442871094,
+            "top": 97.25653839111328,
+            "width": 32.16756057739258,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:7",
+            "begin_site": 6,
+            "end_owner": "node:region:16",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:17",
+            "id": 43,
+            "left": 23.120393753051758,
+            "top": 98.26181030273438,
+            "width": 31.41362190246582,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:3",
+            "begin_site": 5,
+            "end_owner": "node:region:4",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:18",
+            "id": 44,
+            "left": 79.91622161865234,
+            "top": 98.26181030273438,
+            "width": 32.418819427490234,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:4",
+            "begin_site": 6,
+            "end_owner": "node:region:5",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:19",
+            "id": 45,
+            "left": 262.6177978515625,
+            "top": 116.6073226928711,
+            "width": 57.54976272583008,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:17",
+            "begin_site": 6,
+            "end_owner": "node:region:18",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:20",
+            "id": 46,
+            "left": 262.6177978515625,
+            "top": 141.98953247070312,
+            "width": 57.54976272583008,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:20",
+            "begin_site": 6,
+            "end_owner": "node:region:19",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:21",
+            "id": 47,
+            "left": 262.6177978515625,
+            "top": 167.12039184570312,
+            "width": 57.801025390625,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:22",
+            "begin_site": 6,
+            "end_owner": "node:region:21",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:22",
+            "id": 48,
+            "left": 121.13086700439453,
+            "top": 176.4188232421875,
+            "width": 112.58638000488281,
+            "height": 45.48693084716797,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 7,
+            "end_owner": "node:region:23",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:23",
+            "id": 49,
+            "left": 337.25653076171875,
+            "top": 176.4188232421875,
+            "width": 147.51834106445312,
+            "height": 45.48693084716797,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:23",
+            "begin_site": 6,
+            "end_owner": "node:region:7",
+            "end_site": 7
+          }
+        ],
+        "edited": [
+          {
+            "name": "node:region:4",
+            "id": 2,
+            "left": 54.53401565551758,
+            "top": 20.35598373413086,
+            "width": 25.382125854492188,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:7",
+            "id": 3,
+            "left": 472.4607238769531,
+            "top": 20.35598373413086,
+            "width": 25.13086700439453,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:3",
+            "id": 4,
+            "left": 4.523543357849121,
+            "top": 20.35598373413086,
+            "width": 18.59684944152832,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:5",
+            "id": 5,
+            "left": 124.33503723144531,
+            "top": 38.35590362548828,
+            "width": 22.9318904876709,
+            "height": 187.2752685546875
+          },
+          {
+            "name": "node:region:23",
+            "id": 6,
+            "left": 233.7172393798828,
+            "top": 209.34024047851562,
+            "width": 103.53921508789062,
+            "height": 25.382125854492188
+          },
+          {
+            "name": "node:region:19",
+            "id": 7,
+            "left": 320.16748046875,
+            "top": 132.94236755371094,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:12",
+            "id": 8,
+            "left": 162.84811401367188,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:0",
+            "id": 9,
+            "left": 230.9528350830078,
+            "top": 20.104644775390625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:2",
+            "id": 10,
+            "left": 367.9162292480469,
+            "top": 20.104644775390625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:21",
+            "id": 11,
+            "left": 320.4188232421875,
+            "top": 158.07322692871094,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:8",
+            "id": 12,
+            "left": 163.3507080078125,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:22",
+            "id": 13,
+            "left": 208.3350372314453,
+            "top": 158.32456970214844,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:1",
+            "id": 14,
+            "left": 300.062744140625,
+            "top": 20.104644775390625,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:6",
+            "id": 15,
+            "left": 162.84811401367188,
+            "top": 20.35598373413086,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:14",
+            "id": 16,
+            "left": 300.062744140625,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:18",
+            "id": 17,
+            "left": 320.16748046875,
+            "top": 107.81149291992188,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:11",
+            "id": 18,
+            "left": 368.16748046875,
+            "top": 45.98952865600586,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:15",
+            "id": 19,
+            "left": 368.16748046875,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:9",
+            "id": 20,
+            "left": 231.2041778564453,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:10",
+            "id": 21,
+            "left": 300.062744140625,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:13",
+            "id": 22,
+            "left": 231.2041778564453,
+            "top": 70.6177978515625,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:17",
+            "id": 23,
+            "left": 208.3350372314453,
+            "top": 107.81149291992188,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:20",
+            "id": 24,
+            "left": 208.3350372314453,
+            "top": 133.19369506835938,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:16",
+            "id": 25,
+            "left": 529.7591552734375,
+            "top": 87.70677185058594,
+            "width": 45.738189697265625,
+            "height": 18.84811019897461
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 26,
+            "left": 285.4869384765625,
+            "top": 29.151811599731445,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:0",
+            "begin_site": 5,
+            "end_owner": "node:region:1",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 27,
+            "left": 354.34552001953125,
+            "top": 29.151811599731445,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:1",
+            "begin_site": 6,
+            "end_owner": "node:region:2",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:2",
+            "id": 28,
+            "left": 217.3822021484375,
+            "top": 29.40315055847168,
+            "width": 13.570708274841309,
+            "height": 0.25133857131004333,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:6",
+            "begin_site": 5,
+            "end_owner": "node:region:0",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:3",
+            "id": 29,
+            "left": 147.2669219970703,
+            "top": 31.916141510009766,
+            "width": 15.581181526184082,
+            "height": 98.41873931884766,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:6",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:4",
+            "id": 30,
+            "left": 147.2669219970703,
+            "top": 57.0470085144043,
+            "width": 16.08378028869629,
+            "height": 73.28787231445312,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:8",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:5",
+            "id": 31,
+            "left": 147.2669219970703,
+            "top": 80.92141723632812,
+            "width": 15.581181526184082,
+            "height": 49.4134635925293,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:12",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:6",
+            "id": 32,
+            "left": 147.2669219970703,
+            "top": 116.60724639892578,
+            "width": 61.068111419677734,
+            "height": 13.727638244628906,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:17",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:7",
+            "id": 33,
+            "left": 147.2669219970703,
+            "top": 130.3348846435547,
+            "width": 61.068111419677734,
+            "height": 10.900629997253418,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:20",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:8",
+            "id": 34,
+            "left": 147.2669219970703,
+            "top": 130.3348846435547,
+            "width": 61.068111419677734,
+            "height": 35.27763748168945,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:22",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:9",
+            "id": 35,
+            "left": 217.633544921875,
+            "top": 54.53401565551758,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:8",
+            "begin_site": 6,
+            "end_owner": "node:region:9",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:10",
+            "id": 36,
+            "left": 285.4869384765625,
+            "top": 54.28275680541992,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:9",
+            "begin_site": 5,
+            "end_owner": "node:region:10",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:11",
+            "id": 37,
+            "left": 354.34552001953125,
+            "top": 54.28275680541992,
+            "width": 13.821968078613281,
+            "height": 0.5025984048843384,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:10",
+            "begin_site": 6,
+            "end_owner": "node:region:11",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:12",
+            "id": 38,
+            "left": 354.59686279296875,
+            "top": 79.41361999511719,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:14",
+            "begin_site": 5,
+            "end_owner": "node:region:15",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:13",
+            "id": 39,
+            "left": 217.3822021484375,
+            "top": 79.66496276855469,
+            "width": 13.821968078613281,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:12",
+            "begin_site": 6,
+            "end_owner": "node:region:13",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:14",
+            "id": 40,
+            "left": 285.4869384765625,
+            "top": 79.41361999511719,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:13",
+            "begin_site": 5,
+            "end_owner": "node:region:14",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:15",
+            "id": 41,
+            "left": 374.7015686035156,
+            "top": 97.25653839111328,
+            "width": 97.7591323852539,
+            "height": 19.099449157714844,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:18",
+            "begin_site": 5,
+            "end_owner": "node:region:7",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:16",
+            "id": 42,
+            "left": 497.5916442871094,
+            "top": 97.25653839111328,
+            "width": 32.16756057739258,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:7",
+            "begin_site": 6,
+            "end_owner": "node:region:16",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:17",
+            "id": 43,
+            "left": 23.120393753051758,
+            "top": 98.26181030273438,
+            "width": 31.41362190246582,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:3",
+            "begin_site": 5,
+            "end_owner": "node:region:4",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:18",
+            "id": 44,
+            "left": 79.91614532470703,
+            "top": 98.26173400878906,
+            "width": 44.41889953613281,
+            "height": 33.581024169921875,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:4",
+            "begin_site": 6,
+            "end_owner": "node:region:5",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:19",
+            "id": 45,
+            "left": 262.6177978515625,
+            "top": 116.6073226928711,
+            "width": 57.54976272583008,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:17",
+            "begin_site": 6,
+            "end_owner": "node:region:18",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:20",
+            "id": 46,
+            "left": 262.6177978515625,
+            "top": 141.98953247070312,
+            "width": 57.54976272583008,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:20",
+            "begin_site": 6,
+            "end_owner": "node:region:19",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:21",
+            "id": 47,
+            "left": 262.6177978515625,
+            "top": 167.12039184570312,
+            "width": 57.801025390625,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:22",
+            "begin_site": 6,
+            "end_owner": "node:region:21",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:22",
+            "id": 48,
+            "left": 182.66070556640625,
+            "top": 174.57464599609375,
+            "width": 3.7255117893218994,
+            "height": 98.38748168945312,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 7,
+            "end_owner": "node:region:23",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:23",
+            "id": 49,
+            "left": 337.25653076171875,
+            "top": 176.4188232421875,
+            "width": 147.51834106445312,
+            "height": 45.48693084716797,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:23",
+            "begin_site": 6,
+            "end_owner": "node:region:7",
+            "end_site": 7
+          }
+        ],
+        "reopened": [
+          {
+            "name": "node:region:4",
+            "id": 2,
+            "left": 54.53401565551758,
+            "top": 20.35598373413086,
+            "width": 25.382125854492188,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:7",
+            "id": 3,
+            "left": 472.4607238769531,
+            "top": 20.35598373413086,
+            "width": 25.13086700439453,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:3",
+            "id": 4,
+            "left": 4.523543357849121,
+            "top": 20.35598373413086,
+            "width": 18.59684944152832,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:5",
+            "id": 5,
+            "left": 124.33503723144531,
+            "top": 38.35590362548828,
+            "width": 22.9318904876709,
+            "height": 187.2752685546875
+          },
+          {
+            "name": "node:region:23",
+            "id": 6,
+            "left": 233.7172393798828,
+            "top": 209.34024047851562,
+            "width": 103.53921508789062,
+            "height": 25.382125854492188
+          },
+          {
+            "name": "node:region:19",
+            "id": 7,
+            "left": 320.16748046875,
+            "top": 132.94236755371094,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:12",
+            "id": 8,
+            "left": 162.84811401367188,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:0",
+            "id": 9,
+            "left": 230.9528350830078,
+            "top": 20.104644775390625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:2",
+            "id": 10,
+            "left": 367.9162292480469,
+            "top": 20.104644775390625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:21",
+            "id": 11,
+            "left": 320.4188232421875,
+            "top": 158.07322692871094,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:8",
+            "id": 12,
+            "left": 163.3507080078125,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:22",
+            "id": 13,
+            "left": 208.3350372314453,
+            "top": 158.32456970214844,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:1",
+            "id": 14,
+            "left": 300.062744140625,
+            "top": 20.104644775390625,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:6",
+            "id": 15,
+            "left": 162.84811401367188,
+            "top": 20.35598373413086,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:14",
+            "id": 16,
+            "left": 300.062744140625,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:18",
+            "id": 17,
+            "left": 320.16748046875,
+            "top": 107.81149291992188,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:11",
+            "id": 18,
+            "left": 368.16748046875,
+            "top": 45.98952865600586,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:15",
+            "id": 19,
+            "left": 368.16748046875,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:9",
+            "id": 20,
+            "left": 231.2041778564453,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:10",
+            "id": 21,
+            "left": 300.062744140625,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:13",
+            "id": 22,
+            "left": 231.2041778564453,
+            "top": 70.6177978515625,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:17",
+            "id": 23,
+            "left": 208.3350372314453,
+            "top": 107.81149291992188,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:20",
+            "id": 24,
+            "left": 208.3350372314453,
+            "top": 133.19369506835938,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:16",
+            "id": 25,
+            "left": 529.7591552734375,
+            "top": 87.70677185058594,
+            "width": 45.738189697265625,
+            "height": 18.84811019897461
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 26,
+            "left": 285.4869384765625,
+            "top": 29.151811599731445,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:0",
+            "begin_site": 5,
+            "end_owner": "node:region:1",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 27,
+            "left": 354.34552001953125,
+            "top": 29.151811599731445,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:1",
+            "begin_site": 6,
+            "end_owner": "node:region:2",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:2",
+            "id": 28,
+            "left": 217.3822021484375,
+            "top": 29.40315055847168,
+            "width": 13.570708274841309,
+            "height": 0.25133857131004333,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:6",
+            "begin_site": 5,
+            "end_owner": "node:region:0",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:3",
+            "id": 29,
+            "left": 147.2669219970703,
+            "top": 31.916141510009766,
+            "width": 15.581181526184082,
+            "height": 98.41873931884766,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:6",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:4",
+            "id": 30,
+            "left": 147.2669219970703,
+            "top": 57.0470085144043,
+            "width": 16.08378028869629,
+            "height": 73.28787231445312,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:8",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:5",
+            "id": 31,
+            "left": 147.2669219970703,
+            "top": 80.92141723632812,
+            "width": 15.581181526184082,
+            "height": 49.4134635925293,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:12",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:6",
+            "id": 32,
+            "left": 147.2669219970703,
+            "top": 116.60724639892578,
+            "width": 61.068111419677734,
+            "height": 13.727638244628906,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:17",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:7",
+            "id": 33,
+            "left": 147.2669219970703,
+            "top": 130.3348846435547,
+            "width": 61.068111419677734,
+            "height": 10.900629997253418,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:20",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:8",
+            "id": 34,
+            "left": 147.2669219970703,
+            "top": 130.3348846435547,
+            "width": 61.068111419677734,
+            "height": 35.27763748168945,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:22",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:9",
+            "id": 35,
+            "left": 217.633544921875,
+            "top": 54.53401565551758,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:8",
+            "begin_site": 6,
+            "end_owner": "node:region:9",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:10",
+            "id": 36,
+            "left": 285.4869384765625,
+            "top": 54.28275680541992,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:9",
+            "begin_site": 5,
+            "end_owner": "node:region:10",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:11",
+            "id": 37,
+            "left": 354.34552001953125,
+            "top": 54.28275680541992,
+            "width": 13.821968078613281,
+            "height": 0.5025984048843384,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:10",
+            "begin_site": 6,
+            "end_owner": "node:region:11",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:12",
+            "id": 38,
+            "left": 354.59686279296875,
+            "top": 79.41361999511719,
+            "width": 13.570708274841309,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:14",
+            "begin_site": 5,
+            "end_owner": "node:region:15",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:13",
+            "id": 39,
+            "left": 217.3822021484375,
+            "top": 79.66496276855469,
+            "width": 13.821968078613281,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:12",
+            "begin_site": 6,
+            "end_owner": "node:region:13",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:14",
+            "id": 40,
+            "left": 285.4869384765625,
+            "top": 79.41361999511719,
+            "width": 14.575905799865723,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:13",
+            "begin_site": 5,
+            "end_owner": "node:region:14",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:15",
+            "id": 41,
+            "left": 374.7015686035156,
+            "top": 97.25653839111328,
+            "width": 97.7591323852539,
+            "height": 19.099449157714844,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:18",
+            "begin_site": 5,
+            "end_owner": "node:region:7",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:16",
+            "id": 42,
+            "left": 497.5916442871094,
+            "top": 97.25653839111328,
+            "width": 32.16756057739258,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:7",
+            "begin_site": 6,
+            "end_owner": "node:region:16",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:17",
+            "id": 43,
+            "left": 23.120393753051758,
+            "top": 98.26181030273438,
+            "width": 31.41362190246582,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:3",
+            "begin_site": 5,
+            "end_owner": "node:region:4",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:18",
+            "id": 44,
+            "left": 79.91614532470703,
+            "top": 98.26173400878906,
+            "width": 44.41889953613281,
+            "height": 33.581024169921875,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:4",
+            "begin_site": 6,
+            "end_owner": "node:region:5",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:19",
+            "id": 45,
+            "left": 262.6177978515625,
+            "top": 116.6073226928711,
+            "width": 57.54976272583008,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:17",
+            "begin_site": 6,
+            "end_owner": "node:region:18",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:20",
+            "id": 46,
+            "left": 262.6177978515625,
+            "top": 141.98953247070312,
+            "width": 57.54976272583008,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:20",
+            "begin_site": 6,
+            "end_owner": "node:region:19",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:21",
+            "id": 47,
+            "left": 262.6177978515625,
+            "top": 167.12039184570312,
+            "width": 57.801025390625,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:22",
+            "begin_site": 6,
+            "end_owner": "node:region:21",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:22",
+            "id": 48,
+            "left": 182.66070556640625,
+            "top": 174.57464599609375,
+            "width": 3.7255117893218994,
+            "height": 98.38748168945312,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 7,
+            "end_owner": "node:region:23",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:23",
+            "id": 49,
+            "left": 337.25653076171875,
+            "top": 176.4188232421875,
+            "width": 147.51834106445312,
+            "height": 45.48693084716797,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:23",
+            "begin_site": 6,
+            "end_owner": "node:region:7",
+            "end_site": 7
+          }
+        ],
+        "rerouted": [
+          {
+            "name": "node:region:4",
+            "id": 2,
+            "left": 54.53401565551758,
+            "top": 20.35598373413086,
+            "width": 25.382125854492188,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:7",
+            "id": 3,
+            "left": 472.4607238769531,
+            "top": 20.35598373413086,
+            "width": 25.13086700439453,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:3",
+            "id": 4,
+            "left": 4.523543357849121,
+            "top": 20.35598373413086,
+            "width": 18.59684944152832,
+            "height": 156.06275939941406
+          },
+          {
+            "name": "node:region:5",
+            "id": 5,
+            "left": 124.33503723144531,
+            "top": 38.35590362548828,
+            "width": 22.9318904876709,
+            "height": 187.2752685546875
+          },
+          {
+            "name": "node:region:23",
+            "id": 6,
+            "left": 233.7172393798828,
+            "top": 209.34024047851562,
+            "width": 103.53921508789062,
+            "height": 25.382125854492188
+          },
+          {
+            "name": "node:region:19",
+            "id": 7,
+            "left": 320.16748046875,
+            "top": 132.94236755371094,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:12",
+            "id": 8,
+            "left": 162.84811401367188,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:0",
+            "id": 9,
+            "left": 230.9528350830078,
+            "top": 20.104644775390625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:2",
+            "id": 10,
+            "left": 367.9162292480469,
+            "top": 20.104644775390625,
+            "width": 54.53401565551758,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:21",
+            "id": 11,
+            "left": 320.4188232421875,
+            "top": 158.07322692871094,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:8",
+            "id": 12,
+            "left": 163.3507080078125,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:22",
+            "id": 13,
+            "left": 208.3350372314453,
+            "top": 158.32456970214844,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:1",
+            "id": 14,
+            "left": 300.062744140625,
+            "top": 20.104644775390625,
+            "width": 54.282676696777344,
+            "height": 18.34551239013672
+          },
+          {
+            "name": "node:region:6",
+            "id": 15,
+            "left": 162.84811401367188,
+            "top": 20.35598373413086,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:14",
+            "id": 16,
+            "left": 300.062744140625,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:18",
+            "id": 17,
+            "left": 320.16748046875,
+            "top": 107.81149291992188,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:11",
+            "id": 18,
+            "left": 368.16748046875,
+            "top": 45.98952865600586,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:15",
+            "id": 19,
+            "left": 368.16748046875,
+            "top": 70.6177978515625,
+            "width": 54.53401565551758,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:9",
+            "id": 20,
+            "left": 231.2041778564453,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:10",
+            "id": 21,
+            "left": 300.062744140625,
+            "top": 45.48685073852539,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:13",
+            "id": 22,
+            "left": 231.2041778564453,
+            "top": 70.6177978515625,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:17",
+            "id": 23,
+            "left": 208.3350372314453,
+            "top": 107.81149291992188,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:20",
+            "id": 24,
+            "left": 208.3350372314453,
+            "top": 133.19369506835938,
+            "width": 54.282676696777344,
+            "height": 18.094173431396484
+          },
+          {
+            "name": "node:region:16",
+            "id": 25,
+            "left": 529.7591552734375,
+            "top": 87.70677185058594,
+            "width": 45.738189697265625,
+            "height": 18.84811019897461
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 26,
+            "left": 285.4868469238281,
+            "top": 29.277400970458984,
+            "width": 14.575905799865723,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:0",
+            "begin_site": 4,
+            "end_owner": "node:region:1",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 27,
+            "left": 354.3454284667969,
+            "top": 29.277400970458984,
+            "width": 13.57078742980957,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:1",
+            "begin_site": 4,
+            "end_owner": "node:region:2",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:2",
+            "id": 28,
+            "left": 217.3821258544922,
+            "top": 29.4030704498291,
+            "width": 13.570708274841309,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:6",
+            "begin_site": 4,
+            "end_owner": "node:region:0",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:3",
+            "id": 29,
+            "left": 135.801025390625,
+            "top": 31.916141510009766,
+            "width": 27.047086715698242,
+            "height": 6.43976354598999,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 1,
+            "end_owner": "node:region:6",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:4",
+            "id": 30,
+            "left": 135.801025390625,
+            "top": 38.35590362548828,
+            "width": 27.549684524536133,
+            "height": 16.303701400756836,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 1,
+            "end_owner": "node:region:8",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:5",
+            "id": 31,
+            "left": 135.801025390625,
+            "top": 38.35590362548828,
+            "width": 27.047086715698242,
+            "height": 41.43464660644531,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 1,
+            "end_owner": "node:region:12",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:6",
+            "id": 32,
+            "left": 147.2669219970703,
+            "top": 116.85858154296875,
+            "width": 61.068111419677734,
+            "height": 13.476299285888672,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 5,
+            "end_owner": "node:region:17",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:7",
+            "id": 33,
+            "left": 147.2669219970703,
+            "top": 131.99354553222656,
+            "width": 61.068111419677734,
+            "height": 9.241968154907227,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 4,
+            "end_owner": "node:region:20",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:8",
+            "id": 34,
+            "left": 147.2669219970703,
+            "top": 131.99354553222656,
+            "width": 61.068111419677734,
+            "height": 33.61897659301758,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 4,
+            "end_owner": "node:region:22",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:9",
+            "id": 35,
+            "left": 217.63339233398438,
+            "top": 54.533935546875,
+            "width": 13.57078742980957,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:8",
+            "begin_site": 6,
+            "end_owner": "node:region:9",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:10",
+            "id": 36,
+            "left": 285.4868469238281,
+            "top": 54.533935546875,
+            "width": 14.575905799865723,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:9",
+            "begin_site": 4,
+            "end_owner": "node:region:10",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:11",
+            "id": 37,
+            "left": 354.3454284667969,
+            "top": 54.533935546875,
+            "width": 13.822047233581543,
+            "height": 0.25133857131004333,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:10",
+            "begin_site": 4,
+            "end_owner": "node:region:11",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:12",
+            "id": 38,
+            "left": 354.5967712402344,
+            "top": 79.66487884521484,
+            "width": 13.570708274841309,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:14",
+            "begin_site": 4,
+            "end_owner": "node:region:15",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:13",
+            "id": 39,
+            "left": 217.3821258544922,
+            "top": 79.66487884521484,
+            "width": 13.822047233581543,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:12",
+            "begin_site": 6,
+            "end_owner": "node:region:13",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:14",
+            "id": 40,
+            "left": 285.4868469238281,
+            "top": 79.66487884521484,
+            "width": 14.575905799865723,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:13",
+            "begin_site": 4,
+            "end_owner": "node:region:14",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:15",
+            "id": 41,
+            "left": 374.7015075683594,
+            "top": 98.38739776611328,
+            "width": 97.75921630859375,
+            "height": 17.968582153320312,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:18",
+            "begin_site": 5,
+            "end_owner": "node:region:7",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:16",
+            "id": 42,
+            "left": 497.5915832519531,
+            "top": 97.25645446777344,
+            "width": 32.16756057739258,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:7",
+            "begin_site": 6,
+            "end_owner": "node:region:16",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:17",
+            "id": 43,
+            "left": 23.120393753051758,
+            "top": 98.38739776611328,
+            "width": 31.41362190246582,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:3",
+            "begin_site": 4,
+            "end_owner": "node:region:4",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:18",
+            "id": 44,
+            "left": 79.91614532470703,
+            "top": 98.38739776611328,
+            "width": 44.41889953613281,
+            "height": 33.455352783203125,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:4",
+            "begin_site": 4,
+            "end_owner": "node:region:5",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:19",
+            "id": 45,
+            "left": 262.6177062988281,
+            "top": 116.85858154296875,
+            "width": 57.54976272583008,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:17",
+            "begin_site": 4,
+            "end_owner": "node:region:18",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:20",
+            "id": 46,
+            "left": 262.6177062988281,
+            "top": 141.9894561767578,
+            "width": 57.54976272583008,
+            "height": 0.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:20",
+            "begin_site": 6,
+            "end_owner": "node:region:19",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:21",
+            "id": 47,
+            "left": 262.6177062988281,
+            "top": 167.1203155517578,
+            "width": 57.80110168457031,
+            "height": 7.874015864217654e-05,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:22",
+            "begin_site": 6,
+            "end_owner": "node:region:21",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:22",
+            "id": 48,
+            "left": 182.95921325683594,
+            "top": 174.87315368652344,
+            "width": 3.5998425483703613,
+            "height": 97.91622161865234,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:5",
+            "begin_site": 3,
+            "end_owner": "node:region:23",
+            "end_site": 2
+          },
+          {
+            "name": "connector:r3:23",
+            "id": 49,
+            "left": 337.2564697265625,
+            "top": 176.4187469482422,
+            "width": 147.51834106445312,
+            "height": 45.48693084716797,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:region:23",
+            "begin_site": 6,
+            "end_owner": "node:region:7",
+            "end_site": 7
+          }
+        ]
+      }
+    ]
+  },
+  "package": {
+    "git_commit": "f2dc3ac443a4196f053e56cfb3c5ad8ec0c6a1ad",
+    "wheel_path": "artifacts\\region-complex-r5\\package\\dist\\image_to_editable_ppt-0.3.0-py3-none-any.whl",
+    "wheel_sha256": "b6f35fab939d7d8be428b0cafa58f52444a39d04f47a98c3c0cf493ef6ee0376",
+    "runtime_sha256": {
+      "src\\image_to_editable_ppt\\region\\convert.py": "b46ac1e16cc427ec7a2a78f1564ba56325c079cc95c434a4fa3cfa39de195649",
+      "src\\image_to_editable_ppt\\region\\emitter.py": "91110891fa0273cc535a5dcf2496dd4b203bfa987ba710e673d843affb035e50",
+      "src\\image_to_editable_ppt\\region\\geometry.py": "bd45c584710bd905fc82de7dc99c34d4fd21f34b73a03cd86d746cda1ac1052f",
+      "src\\image_to_editable_ppt\\region\\identity.py": "26175f248181dfa94977eeef7213c664fc5e0acec8eafe814670fa2b61d805b1",
+      "src\\image_to_editable_ppt\\region\\proposals.py": "a1794d80bda64a99c8975c7302c606a4c444c9826acd0b9ce68774d97b3f6a05",
+      "src\\image_to_editable_ppt\\region\\text.py": "0f9dcea9d120a5e9c78a79099b77adde238d5396e2e4b7e3f4db9a90b434fbd9",
+      "src\\image_to_editable_ppt\\region\\tracing.py": "685e7a2b95a9538fc9a3a5d4dea15919f29ea331a5611972d2d05400354e14b0",
+      "src\\image_to_editable_ppt\\region\\_native_geometry.py": "21010ea5a93cfac746621ab60bd14892c34e6754e9a139edb833d9ad601b64a4",
+      "src\\image_to_editable_ppt\\region\\_path_fit.py": "12864fba06c1538a486c7b46e60b0e904f87c9c59bd9974d7b82c3203fac1e44",
+      "src\\image_to_editable_ppt\\region\\_selection_base.py": "82858ed4240e496a3b856cebf32104d96e06cbf0fef24f86ece0c93a340459e6",
+      "src\\image_to_editable_ppt\\region\\_selection_local.py": "41d241112ad3b4c22f90b4d5b02bd04ee741a9ba73a4ed99010f8c91bb6c91c4",
+      "src\\image_to_editable_ppt\\region\\__init__.py": "daa97ae44e1472164682202b6d4bf986c2576eebeea508f24f341d7c8f95d1ad"
+    },
+    "installed_runtime_matches_source": true,
+    "output_sha256": "dfab34270862906a2e90d5bbd85c444668c2a99ce3d6cf2fd161430802a0f751",
+    "report_sha256": "b756fa6f61eec7b7787f5d11a1fda9905a96b5a42bb9f76cbea810c1a2aedcce",
+    "commands": [
+      {
+        "command": [
+          "C:\\vs\\ImageToEditablePPT\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pip",
+          "wheel",
+          ".",
+          "--no-deps",
+          "--no-build-isolation",
+          "-w",
+          "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\package\\dist"
+        ],
+        "returncode": 0,
+        "stdout": "Processing .\\.\n  Preparing metadata (pyproject.toml): started\n  Preparing metadata (pyproject.toml): finished with status 'done'\nBuilding wheels for collected packages: image-to-editable-ppt\n  Building wheel for image-to-editable-ppt (pyproject.toml): started\n  Building wheel for image-to-editable-ppt (pyproject.toml): finished with status 'done'\n  Created wheel for image-to-editable-ppt: filename=image_to_editable_ppt-0.3.0-py3-none-any.whl size=248928 sha256=b6f35fab939d7d8be428b0cafa58f52444a39d04f47a98c3c0cf493ef6ee0376\n  Stored in directory: C:\\Users\\lpaiu\\AppData\\Local\\Temp\\pip-ephem-wheel-cache-w3t5vu0o\\wheels\\cd\\9e\\79\\d50eafa7a7e18b41e3f180a1b1260b2e88a7cd93b5f7db71e3\nSuccessfully built image-to-editable-ppt\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "C:\\vs\\ImageToEditablePPT\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pip",
+          "install",
+          "--no-deps",
+          "--target",
+          "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\package\\installed",
+          "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\package\\dist\\image_to_editable_ppt-0.3.0-py3-none-any.whl"
+        ],
+        "returncode": 0,
+        "stdout": "Processing .\\artifacts\\region-complex-r5\\package\\dist\\image_to_editable_ppt-0.3.0-py3-none-any.whl\nInstalling collected packages: image-to-editable-ppt\nSuccessfully installed image-to-editable-ppt-0.3.0\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "C:\\vs\\ImageToEditablePPT\\.venv\\Scripts\\python.exe",
+          "-I",
+          "-c",
+          "import sys,json; from pathlib import Path\ntarget=Path('C:\\\\vs\\\\ImageToEditablePPT\\\\artifacts\\\\region-complex-r5\\\\package\\\\installed').resolve(); sys.path.insert(0,str(target))\nimport image_to_editable_ppt.region.convert as runtime\nassert Path(runtime.__file__).is_relative_to(target)\nfrom image_to_editable_ppt.ml.convert_to_pptx import main\nassert main(['C:\\\\vs\\\\ImageToEditablePPT\\\\artifacts\\\\region-native-production\\\\synthetic-v3\\\\chain-1.5.png', '-o', 'C:\\\\vs\\\\ImageToEditablePPT\\\\artifacts\\\\region-complex-r5\\\\package\\\\smoke.pptx', '--region', '0', '0', '1', '1', '--no-ocr'])==0\nassert 'torch' not in sys.modules\nr=json.loads(Path('C:\\\\vs\\\\ImageToEditablePPT\\\\artifacts\\\\region-complex-r5\\\\package\\\\smoke.region.json').read_text())\nassert r['counts']['nodes']==3 and r['counts']['connectors']==2\nprint('verified installed wheel without loading torch:',runtime.__file__)"
+        ],
+        "returncode": 0,
+        "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\artifacts\\region-native-production\\synthetic-v3\\chain-1.5.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\package\\smoke.pptx family=user_scoped_region nodes=3 containers=0 connectors=2 texts=0/3\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\package\\smoke.region.json omitted_connectors=0\nverified installed wheel without loading torch: C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-r5\\package\\installed\\image_to_editable_ppt\\region\\convert.py\n",
+        "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n"
+      },
+      {
+        "command": [
+          "C:\\vs\\ImageToEditablePPT\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q"
+        ],
+        "returncode": 0,
+        "stdout": "........................................................................ [ 25%]\n........................................................................ [ 51%]\n........................................................................ [ 77%]\n...............................................................          [100%]\n============================== warnings summary ===============================\ntests/test_v3_phase7_training.py::test_train_infer_eval_loop_produces_valid_artifacts\ntests/test_v3_phase8_connector_segmenter.py::test_train_and_segment_smoke\ntests/test_v3_phase8_family_classifier.py::test_train_and_classify_smoke\n  C:\\vs\\ImageToEditablePPT\\.venv\\Lib\\site-packages\\lightning\\pytorch\\utilities\\_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.\n\ntests/test_v3_phase7_training.py::test_train_infer_eval_loop_produces_valid_artifacts\ntests/test_v3_phase8_connector_segmenter.py::test_train_and_segment_smoke\ntests/test_v3_phase8_family_classifier.py::test_train_and_classify_smoke\n  C:\\vs\\ImageToEditablePPT\\.venv\\Lib\\site-packages\\lightning\\pytorch\\trainer\\connectors\\data_connector.py:434: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=15` in the `DataLoader` to improve performance.\n\ntests/test_v3_phase7_training.py::test_train_infer_eval_loop_produces_valid_artifacts\ntests/test_v3_phase8_connector_segmenter.py::test_train_and_segment_smoke\ntests/test_v3_phase8_family_classifier.py::test_train_and_classify_smoke\n  C:\\vs\\ImageToEditablePPT\\.venv\\Lib\\site-packages\\lightning\\pytorch\\trainer\\connectors\\data_connector.py:434: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=15` in the `DataLoader` to improve performance.\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n279 passed, 9 warnings in 15.48s\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "returncode": 0,
+        "stdout": "f2dc3ac443a4196f053e56cfb3c5ad8ec0c6a1ad\n",
+        "stderr": ""
+      }
+    ],
+    "verifier_sha256": "b7ffe3a36e48fd736a8a3fa97bba54201ede3fe628062b4d53e187bdad3f4dcf"
+  },
+  "regression": [
+    {
+      "sample": "mixed-blip",
+      "metrics": {
+        "target_objects": 5,
+        "matched_objects": 5,
+        "missing_objects": [],
+        "object_matches": {
+          "node:region:0": "question",
+          "node:region:1": "answer",
+          "node:region:2": "decoder",
+          "node:region:3": "v-image",
+          "node:region:4": "c-image"
+        },
+        "role_errors": [],
+        "unmatched_local_objects": [],
+        "excluded_region_hits": [],
+        "target_edges": 3,
+        "matched_directed_edges": 3,
+        "missing_edges": [],
+        "wrong_or_unresolved_local_edges": [],
+        "raw_emitted_edges": 3,
+        "correct_labels": [
+          "question",
+          "answer",
+          "v-image",
+          "c-image"
+        ],
+        "missing_labels": [],
+        "wrong_labels": [
+          {
+            "id": "decoder",
+            "predicted": "Image-\ngrounded\ntextdecoder",
+            "expected": "Image-grounded text decoder"
+          }
+        ],
+        "total_emitted_objects": 5,
+        "unassessed_outside_roi": 0
+      }
+    },
+    {
+      "sample": "mixed-attention",
+      "metrics": {
+        "target_objects": 6,
+        "matched_objects": 6,
+        "missing_objects": [],
+        "object_matches": {
+          "node:region:0": "attention",
+          "node:region:4": "yellow",
+          "node:region:5": "green",
+          "node:region:6": "red",
+          "node:region:7": "purple",
+          "container:region:1": "queries"
+        },
+        "role_errors": [],
+        "unmatched_local_objects": [],
+        "excluded_region_hits": [],
+        "target_edges": 4,
+        "matched_directed_edges": 4,
+        "missing_edges": [],
+        "wrong_or_unresolved_local_edges": [],
+        "raw_emitted_edges": 4,
+        "correct_labels": [
+          "attention"
+        ],
+        "missing_labels": [],
+        "wrong_labels": [],
+        "total_emitted_objects": 6,
+        "unassessed_outside_roi": 0
+      }
+    },
+    {
+      "sample": "serial-hevc",
+      "metrics": {
+        "target_objects": 4,
+        "matched_objects": 4,
+        "missing_objects": [],
+        "object_matches": {
+          "node:region:0": "stream",
+          "node:region:1": "params",
+          "node:region:2": "units",
+          "node:region:3": "compute"
+        },
+        "role_errors": [],
+        "unmatched_local_objects": [],
+        "excluded_region_hits": [],
+        "target_edges": 3,
+        "matched_directed_edges": 3,
+        "missing_edges": [],
+        "wrong_or_unresolved_local_edges": [],
+        "raw_emitted_edges": 3,
+        "correct_labels": [
+          "stream",
+          "params",
+          "units",
+          "compute"
+        ],
+        "missing_labels": [],
+        "wrong_labels": [],
+        "total_emitted_objects": 4,
+        "unassessed_outside_roi": 0
+      }
+    },
+    {
+      "sample": "reasoning-row",
+      "metrics": {
+        "target_objects": 4,
+        "matched_objects": 4,
+        "missing_objects": [],
+        "object_matches": {
+          "node:region:0": "program",
+          "node:region:1": "executor",
+          "node:region:2": "prediction",
+          "node:region:3": "decoder"
+        },
+        "role_errors": [],
+        "unmatched_local_objects": [],
+        "excluded_region_hits": [],
+        "target_edges": 3,
+        "matched_directed_edges": 3,
+        "missing_edges": [],
+        "wrong_or_unresolved_local_edges": [],
+        "raw_emitted_edges": 3,
+        "correct_labels": [
+          "program",
+          "executor",
+          "prediction",
+          "decoder"
+        ],
+        "missing_labels": [],
+        "wrong_labels": [],
+        "total_emitted_objects": 4,
+        "unassessed_outside_roi": 0
+      }
+    },
+    {
+      "sample": "cogbot-perceive",
+      "metrics": {
+        "target_objects": 4,
+        "matched_objects": 4,
+        "missing_objects": [],
+        "object_matches": {
+          "node:region:0": "boundary",
+          "node:region:1": "sensory",
+          "node:region:2": "identity",
+          "container:region:0": "perceive"
+        },
+        "role_errors": [],
+        "unmatched_local_objects": [],
+        "excluded_region_hits": [],
+        "target_edges": 2,
+        "matched_directed_edges": 2,
+        "missing_edges": [],
+        "wrong_or_unresolved_local_edges": [],
+        "raw_emitted_edges": 2,
+        "correct_labels": [
+          "boundary"
+        ],
+        "missing_labels": [
+          "sensory",
+          "identity"
+        ],
+        "wrong_labels": [],
+        "total_emitted_objects": 4,
+        "unassessed_outside_roi": 0
+      }
+    }
+  ],
+  "synthetic_contracts_passed": 11,
+  "provenance": {
+    "artifacts/region-complex-r5/final-v2/review/evidence.json": "70ca186be7ec5aa9cb16df3e3556d9c83ade3ff370961b40869a91e2b90a8716",
+    "artifacts/region-complex-r5/regression-final/results.json": "688c881841c0b4ec519264e6feb219d00e3be6d0ff0e78d4e3898395ed39b0ac",
+    "artifacts/region-complex-r5/synthetic-final/results.json": "4bc6142685b871ce237c81a15970a29a5e555a2134e7cf3056e9434a7ab4e687",
+    "artifacts/region-complex-r5/final-v2/edit-probe/probe.json": "dad5c7e50c729a7c24ba22d6fd8a4fa2e9a0410e368ac4f4d58739b931d0a762",
+    "artifacts/region-complex-r5/package/verification.json": "5b5b1ff34670d1dd8aebaa7211ab8dd4c520a71c719aefbf8f27f649198f3b1c",
+    "benchmarks/region_complex_r5_visual_review.json": "7135f9af5fbcaf007f247824f8df7cfb3df966222afffd8965a551fab7b39043",
+    "tools/summarize_region_r5.py": "e410cf122d29341b052123f93a48368c3449fd3acce7f8625ae247974496b835"
+  }
+}

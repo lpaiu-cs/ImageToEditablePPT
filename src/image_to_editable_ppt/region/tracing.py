@@ -46,7 +46,9 @@ def direction(mask,path):
         widths.append(float(np.count_nonzero(values)))
     if len(widths)<6: return 0,dict(reason='short_path')
     shaft=float(np.percentile(widths,25))
-    band=max(2,round(len(widths)*.35))
+    # Arrowheads are local endpoint evidence. A fractional window on a long
+    # elbow can include the corner, whose transverse shaft mimics a wide head.
+    band=max(2,min(40,round(len(widths)*.20)))
     first,last=max(widths[:band]),max(widths[-band:])
     def head(a,b): return a>=1.6*shaft and a>=shaft+2 and a>=1.35*b
     result=1 if head(last,first) else (-1 if head(first,last) else 0)
@@ -71,6 +73,41 @@ def observed_border_pad(raw,box,base):
             elif seen or offset>=base:
                 break  # Do not jump a bright gap to a distinct parallel structure.
     return pad
+
+
+def straight_fanout(component,contacts,tolerance):
+    """Unique straight-ray hub with independently arrowed leaf terminals.
+
+    This does not solve general junction topology. Bent branches, crossings,
+    competing hubs and mixed directions abstain as before.
+    """
+    if not 3<=len(contacts)<=8 or np.count_nonzero(component)>30_000:
+        return None
+    cache={}; hubs=[]
+    for i in range(len(contacts)):
+        arms=[]
+        for j in range(len(contacts)):
+            if i==j: continue
+            key=tuple(sorted((i,j)))
+            if key not in cache:
+                path=shortest(component,contacts[key[0]][1],contacts[key[1]][1])
+                if len(path)<60:
+                    cache[key]=None
+                else:
+                    points=np.asarray(path,dtype=np.float32)
+                    shaft=points[20:-20]
+                    vx,vy,cx,cy=cv2.fitLine(shaft,cv2.DIST_L2,0,.01,.01).reshape(-1)
+                    residual=np.abs((points[:,0]-cx)*vy-(points[:,1]-cy)*vx)
+                    cache[key]=path if (float(residual[20:-20].max())<=tolerance
+                        and max(float(residual[0]),float(residual[-1]))<=min(10,3*tolerance)) else None
+            path=cache[key]
+            if path is None: break
+            path=path if i<j else list(reversed(path))
+            sign,arrow=direction(component,path[len(path)//3:])
+            if sign!=1: break
+            arms.append((contacts[i][0],contacts[j][0],path,arrow))
+        if len(arms)==len(contacts)-1: hubs.append(arms)
+    return hubs[0] if len(hubs)==1 else None
 
 
 def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
@@ -126,9 +163,22 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
             contacts.append((s,(int(xs[chosen])-bx,int(ys[chosen])-by)))
         if len(contacts)<2: continue
         r=dict(component=index,owners=[s.id for s,_ in contacts],pixel_area=area)
-        if len(contacts)!=2:
-            r['rejected']='ambiguous_multi_owner'; records.append(r); continue
         component=labels[by:by+bh,bx:bx+bw]==index
+        if len(contacts)!=2:
+            fan=straight_fanout(component,contacts,max(2,.003*min(h,w)))
+            if fan is None:
+                r['rejected']='ambiguous_multi_owner'; records.append(r); continue
+            for a,b,path,arrow in fan:
+                points=[project(path[0][0]+bx+x0,path[0][1]+by+y0,a.bbox),
+                        project(path[-1][0]+bx+x0,path[-1][1]+by+y0,b.bbox)]
+                cid=f'connector:r3:{len(edges)}'
+                edges.append(EmitConnectorPrimitive(cid,ConnectorKind.ARROW,.8,
+                    a.id,a.owner_kind,b.id,b.owner_kind,cid+':start',cid+':end',
+                    path_points=tuple(Point(*q) for q in points),arrowhead_end=True,
+                    source='r5_straight_fanout',provenance=('r5:unique_straight_hub','r5:terminal_arrow_evidence')))
+                records.append(dict(r,connector_id=cid,directed=True,path_points=points,
+                    raw_path_length=len(path),arrow=arrow,method='unique_straight_fanout'))
+            continue
         path=shortest(component,contacts[0][1],contacts[1][1])
         if len(path)<6:
             r['rejected']='short'; records.append(r); continue

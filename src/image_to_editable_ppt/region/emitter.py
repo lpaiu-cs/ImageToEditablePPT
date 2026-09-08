@@ -46,6 +46,9 @@ def write_native(scene,path,*,styles=None):
     geometries={key:custom_geometry(owners[key],value) for key,value in sites.items()}
     write_pptx(scene,path,styles=styles)
     deck=Presentation(path); objects={s.name:s for s in deck.slides[0].shapes}
+    for owner in scene.shapes:
+        if owner.label and 'region:text_clockwise' in owner.provenance:
+            objects[owner.id].text_frame._txBody.bodyPr.set('vert','vert')
     for owner,geom in geometries.items():
         props=objects[owner]._element.spPr; props.replace(props.find(qn('a:prstGeom')),geom)
     for c in scene.connectors:

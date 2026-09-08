@@ -1,7 +1,7 @@
 """Image-coordinate geometry; no annotations or research artifacts enter runtime."""
 from dataclasses import replace
 import math
-from image_to_editable_ppt.ml.visual_geometry import detect_visual_geometry
+from image_to_editable_ppt.region.proposals import detect_region_geometry
 from image_to_editable_ppt.v3.core.enums import NodeKind, ContainerKind, PortOwnerKind
 from image_to_editable_ppt.v3.core.types import BBox, ImageSize, Point
 from image_to_editable_ppt.v3.emit.models import EmitScene, EmitShapePrimitive
@@ -30,7 +30,7 @@ def validate_roi(roi, size):
 
 def detect_scene(rgb, roi):
     h,w=rgb.shape[:2]; x0,y0,x1,y1=validate_roi(roi,(w,h))
-    evidence=detect_visual_geometry(rgb[y0:y1,x0:x1])
+    evidence=detect_region_geometry(rgb[y0:y1,x0:x1])
     shapes=[]
     for role,candidates in ((PortOwnerKind.NODE,evidence.nodes),(PortOwnerKind.CONTAINER,evidence.containers)):
         for i,c in enumerate(candidates):

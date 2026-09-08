@@ -1,0 +1,21 @@
+{
+  "method": "Agent directly inspected source and native PowerPoint comparisons; post-output visual audit, not independent blind scoring",
+  "primary": {
+    "nodes_correct": 24,
+    "false_large_nodes": 0,
+    "labels_correct": 24,
+    "solid_directed_relations_correct": 24,
+    "omitted_dashed_relations": 5,
+    "omitted": ["two gray background panels", "two section titles", "repetition ellipses"],
+    "verdict": "Useful editable partial reconstruction; no full-image or human-time acceptance claim"
+  },
+  "cohort": {
+    "blue-flow": "Seven actual nodes, three labels; all blue links still missing. Partial nodes only, not complete-flow approval.",
+    "nested-panels": "Major layout retained, but incorrect merged panel fills and label ownership remain, including PDF duplicate text. Fails complex nested-panel quality.",
+    "contrastive": "Five genuine large encoder/decoder nodes recovered after revision-1 regression. Small symbolic/MLP nodes and relations remain absent.",
+    "dark-transformer": "False orange panel fragment removed; two correct local upward arrows recovered. Most topology and enclosing panel absent; not complete-transformer approval.",
+    "fusion": "Genuine branch nodes and central input arrow retained. Fusion/output and slanted relations absent; no whole-diagram approval.",
+    "original-body": "Three former large fragments removed, but partial islands, blank black orchestrator and two false database-cap ellipses remain. Fails overall complex-input standard.",
+    "original-full": "4MP resource rejection, no output; not a classification success"
+  }
+}

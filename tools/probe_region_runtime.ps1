@@ -1,4 +1,4 @@
-param([string]$InputDirectory='artifacts/region-native-production/run1',[string]$OutputDirectory='artifacts/region-native-production/edit-probe-v1')
+param([string]$InputDirectory='artifacts/region-native-production/run1',[string]$OutputDirectory='artifacts/region-native-production/edit-probe-v1',[string]$CasesPath='')
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
 if (Get-Process POWERPNT -ErrorAction SilentlyContinue) { throw 'Existing PowerPoint process' }
@@ -21,9 +21,12 @@ function Snapshot($slide) {
 $app=New-Object -ComObject PowerPoint.Application
 $deck=$null; $records=@()
 try {
- foreach ($case in @(@{sample='mixed-attention'; owner='node:region:0'},@{sample='cogbot-perceive'; owner='node:region:1'})) {
+ $cases=@(@{sample='mixed-attention'; owner='node:region:0'},@{sample='cogbot-perceive'; owner='node:region:1'})
+ if ($CasesPath) { $cases=@(Get-Content -LiteralPath $CasesPath -Raw | ConvertFrom-Json -AsHashtable) }
+ foreach ($case in $cases) {
   $name=$case.sample
-  $file=(Resolve-Path -LiteralPath (Join-Path $InputDirectory "$name--region_native.pptx")).Path
+  $filename=if ($case.ContainsKey('filename')) { $case.filename } else { "$name--region_native.pptx" }
+  $file=(Resolve-Path -LiteralPath (Join-Path $InputDirectory $filename)).Path
   $hash=(Get-FileHash -LiteralPath $file).Hash
   $deck=$app.Presentations.Open($file,$true,$true,$false)
   $slide=$deck.Slides.Item(1); $before=@(Snapshot $slide)
