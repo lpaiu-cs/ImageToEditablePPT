@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-08",
+  "runtime": "f7897b0 v0.2, unchanged",
+  "population": "six pre-existing development figures plus two predefined scopes of previously consumed input.png; no independent holdout",
+  "method": "Source-only selection sheets before execution; actual PowerPoint native outputs and source/output comparison sheets inspected directly. Counts below are emitted objects, not true positives.",
+  "overall": "Complex-image suitability not demonstrated; several results contain false geometry in addition to omissions. Preserve small-ROI benefit without extending it to complex full diagrams.",
+  "reasoning-full": "Unsatisfactory. Some interior row links and final/gating links survive, but large spurious rounded rectangles overlap rows and merge unrelated text. Lower predictor relations and upstream fanout are mostly missing. Large false nodes are uniform_fill proposals, not original boxes.",
+  "blue-flow": "Unsatisfactory as a flow diagram: seven boxes but zero connectors, only two labels. Blue arrows are missing. Source-selected blue pixels have median grayscale 121 and none pass grayscale <110.",
+  "nested-panels": "Partial usable arrangement, not acceptance. Several panels and node positions survive and icons disappear, but headers disappear, child boundaries merge visually into large pale fills, and text ownership is wrong in the central API panel. Zero connectors is not itself a failure for this panel-centric source.",
+  "contrastive": "Very sparse partial result: five large encoder/decoder boxes with labels, no links. Small symbolic nodes, MLP nodes and nearly all explanatory structure vanish. One traced route explicitly exceeds preset fit support and is omitted.",
+  "dark-transformer": "Unsatisfactory. Colored major blocks survive, but the nested enclosing shape is replaced by an unrelated orange vertical shape; labels and all links are lost in part. Two traced paths were rejected by the preset contract. Background removal alone is not the problem; false geometry is.",
+  "fusion": "Conservative limited partial result. POS/NER/RoBERTa/GRU branches and two surrounding panels remain; only central input-to-RoBERTa link survives. Fusion/output and most slanted branch relations disappear. Cannot claim the ensemble structure is recovered.",
+  "original-full": "No PPT generated: full 2760x1504 image exceeds 4MP ROI bound. A resource rejection, not a classification or visual pass.",
+  "original-body": "Unsatisfactory. PERCEIVE island and some ACT elements survive, but upper spurious outlines/text debris, a blank black orchestrator box, fragmented database shape and missing inter-region relations remain. Four unsupported routes are explicitly omitted. This ROI excludes top 4 percent and is not whole-image success.",
+  "next_priority": "First prevent uniform-fill/background-face false objects and inherited wrong text ownership. Separately test color/polarity-aware stroke evidence, then true multi-owner junction topology. Do not simply raise grayscale threshold globally or increase native preset complexity. No implementation changes made in this validation."
+}

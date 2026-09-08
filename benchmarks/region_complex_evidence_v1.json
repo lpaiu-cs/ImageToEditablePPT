@@ -1,0 +1,3735 @@
+{
+  "manifest": {
+    "runtime_commit": "f7897b0c2db0a448b061317d717982793b5abbf7",
+    "runtime_sha256": {
+      "src\\image_to_editable_ppt\\region\\convert.py": "b46ac1e16cc427ec7a2a78f1564ba56325c079cc95c434a4fa3cfa39de195649",
+      "src\\image_to_editable_ppt\\region\\emitter.py": "8c8264ea5c016775271db7a849db72913f9429f744f228604cda41269cbbf588",
+      "src\\image_to_editable_ppt\\region\\geometry.py": "5f8467c109047aa07734af40ed851d95fa9d64c2268e2f0fdbfe6c854fd9388a",
+      "src\\image_to_editable_ppt\\region\\identity.py": "26175f248181dfa94977eeef7213c664fc5e0acec8eafe814670fa2b61d805b1",
+      "src\\image_to_editable_ppt\\region\\text.py": "20732d8d02fd106560dbe0e30f5df8e92dd47aa308cf4b62e8d5110309119b67",
+      "src\\image_to_editable_ppt\\region\\tracing.py": "06016ccc9568eb30339cb776fe0c21dc4649177dec3615f912cbfbd1424400df",
+      "src\\image_to_editable_ppt\\region\\_native_geometry.py": "21010ea5a93cfac746621ab60bd14892c34e6754e9a139edb833d9ad601b64a4",
+      "src\\image_to_editable_ppt\\region\\_path_fit.py": "12864fba06c1538a486c7b46e60b0e904f87c9c59bd9974d7b82c3203fac1e44",
+      "src\\image_to_editable_ppt\\region\\_selection_base.py": "82858ed4240e496a3b856cebf32104d96e06cbf0fef24f86ece0c93a340459e6",
+      "src\\image_to_editable_ppt\\region\\_selection_local.py": "41d241112ad3b4c22f90b4d5b02bd04ee741a9ba73a4ed99010f8c91bb6c91c4",
+      "src\\image_to_editable_ppt\\region\\__init__.py": "daa97ae44e1472164682202b6d4bf986c2576eebeea508f24f341d7c8f95d1ad"
+    },
+    "cli_sha256": "ee7b3b2d2b48b599fe89c1ecae69e30aece143cefbb7c873eac4ecddc0acc2c3",
+    "rules": "No runtime changes, resizing, retry crops or cutoff adjustment after results. No automatic full-image or human-time acceptance claim.",
+    "samples": [
+      {
+        "id": "reasoning-full",
+        "path": "data/phase16_dev_v1/phase16-dev-p034.png",
+        "sha256": "506d71a1d4f65f38d98a71865528b1f787e3bb02dab92f580a5c3cf5d9d7aec3",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Dense fork/join with mixed direct/curved relations",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          2292,
+          939
+        ]
+      },
+      {
+        "id": "blue-flow",
+        "path": "data/phase16_dev_v1/phase16-dev-p042.png",
+        "sha256": "92c0d27074b59490e42ea71fc3161f199228ffade46c9cbb65aabd69579e6507",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Blue orthogonal flow and shared branches",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          1660,
+          817
+        ]
+      },
+      {
+        "id": "nested-panels",
+        "path": "data/phase16_dev_v1/phase16-dev-p058.png",
+        "sha256": "7fe4595a79760df391e9a2d472739ceb4bec615a57c83fbafd2e015611654c8e",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Nested colored containers, many text boxes and icon exclusions",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          1498,
+          1028
+        ]
+      },
+      {
+        "id": "contrastive",
+        "path": "data/phase16_dev_v1/phase16-dev-p043.png",
+        "sha256": "a4cfc7d181506e118e097b6bff848258dfc19e13c2913c03935e0a4b686f6348",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Multi-branch encoder/decoder and dotted/curved relations",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          1826,
+          1009
+        ]
+      },
+      {
+        "id": "dark-transformer",
+        "path": "data/phase16_dev_v1/phase16-dev-p011.png",
+        "sha256": "bfae744ed2bdf9bbe2e4eec842b4d83af36c4d70c61a530199ca693a3f139074",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Black background, nested stack and skip connections",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          877,
+          739
+        ]
+      },
+      {
+        "id": "fusion",
+        "path": "data/phase16_dev_v1/phase16-dev-p092.png",
+        "sha256": "2a07664014207bab324a66182b224f915a414b19ec82ac477425fde0511c520a",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Nested branches, thin slanted links and fusion node",
+        "population": "existing development split, not holdout; prior baseline exposure",
+        "size": [
+          2000,
+          1125
+        ]
+      },
+      {
+        "id": "original-full",
+        "path": "input.png",
+        "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf",
+        "roi": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "reason": "Full original complex input, including resource-bound behavior",
+        "population": "previously consumed original project input",
+        "size": [
+          2760,
+          1504
+        ]
+      },
+      {
+        "id": "original-body",
+        "path": "input.png",
+        "sha256": "f664aecdd35261c549fd3dc9fba7b2098e5ad50d9c515fc2db30169edbe381cf",
+        "roi": [
+          0,
+          0.04,
+          1,
+          1
+        ],
+        "reason": "Original body ROI excluding top 4 percent; clipped header is out of scope, not full-image success",
+        "population": "previously consumed original project input",
+        "size": [
+          2760,
+          1504
+        ]
+      }
+    ]
+  },
+  "records": [
+    {
+      "id": "reasoning-full",
+      "elapsed_s": 17.655999999988126,
+      "returncode": 0,
+      "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\data\\phase16_dev_v1\\phase16-dev-p034.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\reasoning-full.pptx family=user_scoped_region nodes=23 containers=0 connectors=8 texts=10/23\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\reasoning-full.region.json omitted_connectors=0\n",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n",
+      "pptx_sha256": "26bc4f2daaf07490a8193b61428be98be591e935abb15ed7d27ffb277ef53963",
+      "report_sha256": "23c1d8af2ff61949c05ea538eb9604a3dcf18226f42520fbceddbbd7daf0511b",
+      "counts": {
+        "nodes": 23,
+        "containers": 0,
+        "connectors": 8,
+        "labels": 10,
+        "omitted_connectors": 0
+      },
+      "emitted_scene": {
+        "image_size": {
+          "width": 768,
+          "height": 315
+        },
+        "coordinate_space": "image_space",
+        "shapes": [
+          {
+            "id": "node:region:0",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 205.40314136125656,
+              "y0": 5.696335078534032,
+              "x1": 348.14659685863876,
+              "y1": 54.952879581151834
+            },
+            "confidence": 0.458528951486698,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:1",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 429.9057591623037,
+              "y0": 5.696335078534032,
+              "x1": 572.6492146596859,
+              "y1": 45.57068062827226
+            },
+            "confidence": 0.5453702607803684,
+            "label": "ng\ncutor 1 Symbolic",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:2",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 307.9371727748691,
+              "y0": 26.80628272251309,
+              "x1": 380.64921465968587,
+              "y1": 51.26701570680628
+            },
+            "confidence": 1.0,
+            "label": "Program 1",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:3",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 400.4188481675393,
+              "y0": 27.141361256544503,
+              "x1": 472.12565445026183,
+              "y1": 50.93193717277487
+            },
+            "confidence": 0.8618533631696722,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:4",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 73.04712041884817,
+              "y0": 27.476439790575917,
+              "x1": 106.21989528795812,
+              "y1": 234.89005235602096
+            },
+            "confidence": 0.9484832166576916,
+            "label": "Encoder",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:5",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 217.46596858638745,
+              "y0": 27.476439790575917,
+              "x1": 289.5078534031414,
+              "y1": 50.93193717277487
+            },
+            "confidence": 0.8628571428571429,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:6",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 630.2827225130891,
+              "y0": 27.476439790575917,
+              "x1": 663.1204188481676,
+              "y1": 234.89005235602096
+            },
+            "confidence": 0.8763476311364611,
+            "label": "Mixture-of-Experts",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:7",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 308.27225130890054,
+              "y0": 60.64921465968587,
+              "x1": 380.64921465968587,
+              "y1": 84.77486910994764
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:8",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 218.13612565445027,
+              "y0": 60.98429319371728,
+              "x1": 289.8429319371728,
+              "y1": 84.77486910994764
+            },
+            "confidence": 0.8392786626299855,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:9",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 400.4188481675393,
+              "y0": 60.98429319371728,
+              "x1": 472.12565445026183,
+              "y1": 84.43979057591623
+            },
+            "confidence": 0.8355140186915888,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:10",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 490.890052356021,
+              "y0": 61.319371727748695,
+              "x1": 563.6020942408377,
+              "y1": 85.44502617801048
+            },
+            "confidence": 1.0,
+            "label": "Symbolic\nPrediction 2",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:11",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 308.27225130890054,
+              "y0": 94.15706806282724,
+              "x1": 380.64921465968587,
+              "y1": 118.28272251308901
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:12",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 490.890052356021,
+              "y0": 94.15706806282724,
+              "x1": 563.6020942408377,
+              "y1": 118.28272251308901
+            },
+            "confidence": 1.0,
+            "label": "Symbolic\nPrediction 3",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:13",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 217.46596858638745,
+              "y0": 94.49214659685865,
+              "x1": 289.5078534031414,
+              "y1": 118.28272251308901
+            },
+            "confidence": 0.8411398624303963,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:14",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 400.4188481675393,
+              "y0": 94.49214659685865,
+              "x1": 472.4607329842932,
+              "y1": 117.9476439790576
+            },
+            "confidence": 0.8489036544850498,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:15",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 205.40314136125656,
+              "y0": 106.55497382198953,
+              "x1": 572.6492146596859,
+              "y1": 131.01570680628274
+            },
+            "confidence": 0.5745925407459254,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:16",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 706.3455497382199,
+              "y0": 116.94240837696336,
+              "x1": 767.3298429319373,
+              "y1": 142.07329842931938
+            },
+            "confidence": 1.0,
+            "label": "Final\nPrediction",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:17",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 216.1256544502618,
+              "y0": 136.71204188481676,
+              "x1": 572.3141361256545,
+              "y1": 155.47643979057594
+            },
+            "confidence": 0.5892185190162612,
+            "label": "Neural",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:18",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 205.40314136125656,
+              "y0": 140.0628272251309,
+              "x1": 572.3141361256545,
+              "y1": 262.70157068062827
+            },
+            "confidence": 0.6557052673603314,
+            "label": "Neural\nPredictor 1\nPrediction 1\nNeural\nPredictor 2\nPrediction 2\nNeural\nPredictor 3\nPrediction 3\nAnalogical Reasoning",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:19",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 278.11518324607334,
+              "y0": 144.08376963350787,
+              "x1": 349.8219895287958,
+              "y1": 167.53926701570683
+            },
+            "confidence": 0.8487983978638184,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:20",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 278.11518324607334,
+              "y0": 177.92670157068065,
+              "x1": 349.8219895287958,
+              "y1": 201.3821989528796
+            },
+            "confidence": 0.8242323097463284,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:21",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 278.11518324607334,
+              "y0": 211.434554973822,
+              "x1": 349.8219895287958,
+              "y1": 235.22513089005238
+            },
+            "confidence": 0.8280900355403449,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:22",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 311.9581151832461,
+              "y0": 279.455497382199,
+              "x1": 449.3403141361257,
+              "y1": 312.62827225130894
+            },
+            "confidence": 0.8429169746242917,
+            "label": "Gating Network",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          }
+        ],
+        "texts": [],
+        "connectors": [
+          {
+            "id": "connector:r3:0",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:2",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:3",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:0:start",
+            "target_port_id": "connector:r3:0:end",
+            "path_points": [
+              {
+                "x": 380.64921465968587,
+                "y": 38.869109947643985
+              },
+              {
+                "x": 400.4188481675393,
+                "y": 38.53403141361257
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:1",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:8",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:7",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:1:start",
+            "target_port_id": "connector:r3:1:end",
+            "path_points": [
+              {
+                "x": 289.8429319371728,
+                "y": 72.71204188481676
+              },
+              {
+                "x": 308.27225130890054,
+                "y": 72.71204188481676
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:2",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:7",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:9",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:2:start",
+            "target_port_id": "connector:r3:2:end",
+            "path_points": [
+              {
+                "x": 380.64921465968587,
+                "y": 72.37696335078535
+              },
+              {
+                "x": 400.4188481675393,
+                "y": 72.37696335078535
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:3",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:9",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:10",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:3:start",
+            "target_port_id": "connector:r3:3:end",
+            "path_points": [
+              {
+                "x": 472.12565445026183,
+                "y": 72.37696335078535
+              },
+              {
+                "x": 488.5445026178011,
+                "y": 72.37696335078535
+              },
+              {
+                "x": 490.890052356021,
+                "y": 73.04712041884817
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:4",
+            "kind": "line",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:12",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:15",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:4:start",
+            "target_port_id": "connector:r3:4:end",
+            "path_points": [
+              {
+                "x": 490.890052356021,
+                "y": 104.54450261780106
+              },
+              {
+                "x": 486.5340314136126,
+                "y": 106.55497382198953
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": false,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:5",
+            "kind": "line",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:14",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:15",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:5:start",
+            "target_port_id": "connector:r3:5:end",
+            "path_points": [
+              {
+                "x": 400.4188481675393,
+                "y": 104.54450261780106
+              },
+              {
+                "x": 395.3926701570681,
+                "y": 106.55497382198953
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": false,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:6",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:6",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:16",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:6:start",
+            "target_port_id": "connector:r3:6:end",
+            "path_points": [
+              {
+                "x": 663.1204188481676,
+                "y": 129.67539267015707
+              },
+              {
+                "x": 706.3455497382199,
+                "y": 129.67539267015707
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:7",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:22",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:6",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:7:start",
+            "target_port_id": "connector:r3:7:end",
+            "path_points": [
+              {
+                "x": 449.3403141361257,
+                "y": 295.8743455497382
+              },
+              {
+                "x": 645.696335078534,
+                "y": 295.5392670157068
+              },
+              {
+                "x": 646.3664921465969,
+                "y": 294.869109947644
+              },
+              {
+                "x": 646.3664921465969,
+                "y": 234.89005235602096
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          }
+        ],
+        "residuals": [],
+        "source": "region_native_v1",
+        "provenance": []
+      },
+      "rejected_connectors": {},
+      "tracing": {
+        "transparent_owners": [],
+        "mask_pad": 5,
+        "owner_mask_pads": {
+          "node:region:0": 5,
+          "node:region:1": 5,
+          "node:region:2": 5,
+          "node:region:3": 5,
+          "node:region:4": 5,
+          "node:region:5": 5,
+          "node:region:6": 5,
+          "node:region:7": 5,
+          "node:region:8": 5,
+          "node:region:9": 5,
+          "node:region:10": 5,
+          "node:region:11": 5,
+          "node:region:12": 5,
+          "node:region:13": 5,
+          "node:region:14": 5,
+          "node:region:15": 5,
+          "node:region:16": 5,
+          "node:region:17": 5,
+          "node:region:18": 5,
+          "node:region:19": 5,
+          "node:region:20": 5,
+          "node:region:21": 5,
+          "node:region:22": 5
+        },
+        "attachment_tolerance": 15,
+        "components": [
+          {
+            "component": 2,
+            "owners": [
+              "node:region:0",
+              "node:region:4",
+              "node:region:8",
+              "node:region:15",
+              "node:region:18",
+              "node:region:22"
+            ],
+            "pixel_area": 12734,
+            "rejected": "ambiguous_multi_owner"
+          },
+          {
+            "component": 3,
+            "owners": [
+              "node:region:2",
+              "node:region:3"
+            ],
+            "pixel_area": 312,
+            "arrow": {
+              "shaft_width": 3.0,
+              "start_max_width": 3.0,
+              "end_max_width": 18.0
+            },
+            "connector_id": "connector:r3:0",
+            "directed": true,
+            "path_points": [
+              [
+                1136,
+                116.0
+              ],
+              [
+                1195,
+                115.0
+              ]
+            ],
+            "raw_path_length": 50
+          },
+          {
+            "component": 11,
+            "owners": [
+              "node:region:7",
+              "node:region:8"
+            ],
+            "pixel_area": 267,
+            "arrow": {
+              "shaft_width": 3.0,
+              "start_max_width": 18.0,
+              "end_max_width": 3.0
+            },
+            "connector_id": "connector:r3:1",
+            "directed": true,
+            "path_points": [
+              [
+                865,
+                217.0
+              ],
+              [
+                920,
+                217.0
+              ]
+            ],
+            "raw_path_length": 46
+          },
+          {
+            "component": 12,
+            "owners": [
+              "node:region:7",
+              "node:region:9"
+            ],
+            "pixel_area": 337,
+            "arrow": {
+              "shaft_width": 4.0,
+              "start_max_width": 4.0,
+              "end_max_width": 18.0
+            },
+            "connector_id": "connector:r3:2",
+            "directed": true,
+            "path_points": [
+              [
+                1136,
+                216.0
+              ],
+              [
+                1195,
+                216.0
+              ]
+            ],
+            "raw_path_length": 50
+          },
+          {
+            "component": 13,
+            "owners": [
+              "node:region:9",
+              "node:region:10"
+            ],
+            "pixel_area": 303,
+            "arrow": {
+              "shaft_width": 3.0,
+              "start_max_width": 4.0,
+              "end_max_width": 18.0
+            },
+            "connector_id": "connector:r3:3",
+            "directed": true,
+            "path_points": [
+              [
+                1409,
+                216.0
+              ],
+              [
+                1458.0,
+                216.0
+              ],
+              [
+                1465,
+                218.0
+              ]
+            ],
+            "raw_path_length": 47
+          },
+          {
+            "component": 33,
+            "owners": [
+              "node:region:12",
+              "node:region:15"
+            ],
+            "pixel_area": 57,
+            "arrow": {
+              "shaft_width": 3.25,
+              "start_max_width": 3.0,
+              "end_max_width": 5.0
+            },
+            "connector_id": "connector:r3:4",
+            "directed": false,
+            "path_points": [
+              [
+                1465,
+                312.0
+              ],
+              [
+                1452.0,
+                318
+              ]
+            ],
+            "raw_path_length": 6
+          },
+          {
+            "component": 34,
+            "owners": [
+              "node:region:11",
+              "node:region:15"
+            ],
+            "pixel_area": 34,
+            "rejected": "short"
+          },
+          {
+            "component": 35,
+            "owners": [
+              "node:region:14",
+              "node:region:15"
+            ],
+            "pixel_area": 48,
+            "arrow": {
+              "shaft_width": 3.25,
+              "start_max_width": 3.0,
+              "end_max_width": 5.0
+            },
+            "connector_id": "connector:r3:5",
+            "directed": false,
+            "path_points": [
+              [
+                1195,
+                312.0
+              ],
+              [
+                1180.0,
+                318
+              ]
+            ],
+            "raw_path_length": 6
+          },
+          {
+            "component": 56,
+            "owners": [
+              "node:region:6",
+              "node:region:17",
+              "node:region:18"
+            ],
+            "pixel_area": 1547,
+            "rejected": "ambiguous_multi_owner"
+          },
+          {
+            "component": 59,
+            "owners": [
+              "node:region:6",
+              "node:region:16"
+            ],
+            "pixel_area": 507,
+            "arrow": {
+              "shaft_width": 3.0,
+              "start_max_width": 3.0,
+              "end_max_width": 18.0
+            },
+            "connector_id": "connector:r3:6",
+            "directed": true,
+            "path_points": [
+              [
+                1979,
+                387.0
+              ],
+              [
+                2108,
+                387.0
+              ]
+            ],
+            "raw_path_length": 120
+          },
+          {
+            "component": 73,
+            "owners": [
+              "node:region:17",
+              "node:region:18"
+            ],
+            "pixel_area": 49,
+            "rejected": "short"
+          },
+          {
+            "component": 79,
+            "owners": [
+              "node:region:6",
+              "node:region:22"
+            ],
+            "pixel_area": 2424,
+            "arrow": {
+              "shaft_width": 3.0,
+              "start_max_width": 24.0,
+              "end_max_width": 3.0
+            },
+            "connector_id": "connector:r3:7",
+            "directed": true,
+            "path_points": [
+              [
+                1341,
+                883.0
+              ],
+              [
+                1927.0,
+                882.0
+              ],
+              [
+                1929.0,
+                880.0
+              ],
+              [
+                1929.0,
+                701
+              ]
+            ],
+            "raw_path_length": 758
+          }
+        ]
+      }
+    },
+    {
+      "id": "blue-flow",
+      "elapsed_s": 6.062999999994645,
+      "returncode": 0,
+      "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\data\\phase16_dev_v1\\phase16-dev-p042.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\blue-flow.pptx family=user_scoped_region nodes=7 containers=0 connectors=0 texts=2/7\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\blue-flow.region.json omitted_connectors=0\n",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n",
+      "pptx_sha256": "b6097048a43651144fb3021104108866e0bbab5999b644318deba4138561d16a",
+      "report_sha256": "a53e75c931b7c1e7fe604157d1b578350a1ac0926a308750444c6efd58745c9c",
+      "counts": {
+        "nodes": 7,
+        "containers": 0,
+        "connectors": 0,
+        "labels": 2,
+        "omitted_connectors": 0
+      },
+      "emitted_scene": {
+        "image_size": {
+          "width": 768,
+          "height": 378
+        },
+        "coordinate_space": "image_space",
+        "shapes": [
+          {
+            "id": "node:region:0",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 14.342168674698796,
+              "y0": 15.267469879518073,
+              "x1": 194.77590361445783,
+              "y1": 93.45542168674699
+            },
+            "confidence": 0.8816568047337278,
+            "label": "Configuration\nSpace\n(Listing 3)",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:1",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 246.13012048192772,
+              "y0": 89.75421686746988,
+              "x1": 438.13012048192775,
+              "y1": 145.73493975903614
+            },
+            "confidence": 0.9173553719008265,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:2",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 548.7036144578313,
+              "y0": 89.75421686746988,
+              "x1": 751.344578313253,
+              "y1": 145.73493975903614
+            },
+            "confidence": 0.9008264462809917,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:3",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 14.342168674698796,
+              "y0": 148.9734939759036,
+              "x1": 194.77590361445783,
+              "y1": 202.17831325301205
+            },
+            "confidence": 0.9304347826086956,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:4",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 245.20481927710844,
+              "y0": 205.41686746987952,
+              "x1": 438.13012048192775,
+              "y1": 286.8433734939759
+            },
+            "confidence": 0.9318181818181818,
+            "label": "Multi-Objective\nOptimization\n(Section 3.5)",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:5",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 548.7036144578313,
+              "y0": 214.6698795180723,
+              "x1": 751.344578313253,
+              "y1": 270.65060240963857
+            },
+            "confidence": 0.9090909090909091,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:6",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 13.879518072289157,
+              "y0": 283.60481927710845,
+              "x1": 194.3132530120482,
+              "y1": 360.40481927710846
+            },
+            "confidence": 0.8795180722891566,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          }
+        ],
+        "texts": [],
+        "connectors": [],
+        "residuals": [],
+        "source": "region_native_v1",
+        "provenance": []
+      },
+      "rejected_connectors": {},
+      "tracing": {
+        "transparent_owners": [],
+        "mask_pad": 4,
+        "owner_mask_pads": {
+          "node:region:0": 4,
+          "node:region:1": 4,
+          "node:region:2": 4,
+          "node:region:3": 4,
+          "node:region:4": 4,
+          "node:region:5": 4,
+          "node:region:6": 4
+        },
+        "attachment_tolerance": 12,
+        "components": []
+      }
+    },
+    {
+      "id": "nested-panels",
+      "elapsed_s": 14.812000000005355,
+      "returncode": 0,
+      "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\data\\phase16_dev_v1\\phase16-dev-p058.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\nested-panels.pptx family=user_scoped_region nodes=23 containers=6 connectors=0 texts=16/23\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\nested-panels.region.json omitted_connectors=0\n",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n",
+      "pptx_sha256": "8399707dc7a1c7d7138f306360448181b42d62e7cb84f46befcbe9a5abf92fd0",
+      "report_sha256": "75827b58e53bd1c0e685eec758754873a16d7f047de3e56aa694b874637878e2",
+      "counts": {
+        "nodes": 23,
+        "containers": 6,
+        "connectors": 0,
+        "labels": 16,
+        "omitted_connectors": 0
+      },
+      "emitted_scene": {
+        "image_size": {
+          "width": 768,
+          "height": 527
+        },
+        "coordinate_space": "image_space",
+        "shapes": [
+          {
+            "id": "node:region:1",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 249.67690253671563,
+              "y0": 53.31909212283045,
+              "x1": 514.7343124165554,
+              "y1": 93.30841121495328
+            },
+            "confidence": 0.8115855775430244,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:3",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 37.42590120160214,
+              "y0": 94.33377837116156,
+              "x1": 225.5807743658211,
+              "y1": 134.3230974632844
+            },
+            "confidence": 0.8284776077691609,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:4",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 536.2670226969293,
+              "y0": 94.33377837116156,
+              "x1": 627.524699599466,
+              "y1": 144.06408544726304
+            },
+            "confidence": 0.711398123479671,
+            "label": "Template\nRepertory",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:5",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 638.803738317757,
+              "y0": 94.33377837116156,
+              "x1": 729.5487316421896,
+              "y1": 144.06408544726304
+            },
+            "confidence": 0.9122837672549362,
+            "label": "XMind",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:6",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 259.93057409879844,
+              "y0": 145.0894526034713,
+              "x1": 371.6955941255007,
+              "y1": 277.36181575433915
+            },
+            "confidence": 0.5920275940544769,
+            "label": "LLMAPIs\nGPT 4.0\nLLaMA",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:7",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 37.42590120160214,
+              "y0": 150.2162883845127,
+              "x1": 123.55674232309747,
+              "y1": 190.20560747663552
+            },
+            "confidence": 0.88507326007326,
+            "label": "XMind",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:8",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 139.4499332443258,
+              "y0": 150.2162883845127,
+              "x1": 225.5807743658211,
+              "y1": 190.20560747663552
+            },
+            "confidence": 0.9114010989010989,
+            "label": "ReAct",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:9",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 402.9692923898532,
+              "y0": 190.71829105473967,
+              "x1": 494.739652870494,
+              "y1": 272.7476635514019
+            },
+            "confidence": 0.88125,
+            "label": "CFLLM-\nins-7B",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:11",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 536.2670226969293,
+              "y0": 216.86515353805075,
+              "x1": 729.5487316421896,
+              "y1": 256.8544726301736
+            },
+            "confidence": 0.8445215262191389,
+            "label": "Graph Neural Network",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:12",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 34.86248331108145,
+              "y0": 268.13351134846465,
+              "x1": 228.1441922563418,
+              "y1": 308.12283044058745
+            },
+            "confidence": 0.8692783785621981,
+            "label": "Price-Volume Sheet",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:13",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 536.2670226969293,
+              "y0": 276.33644859813086,
+              "x1": 729.5487316421896,
+              "y1": 316.3257676902537
+            },
+            "confidence": 0.8349996599333469,
+            "label": "Risk Contagion Detector",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:14",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 34.86248331108145,
+              "y0": 329.6555407209613,
+              "x1": 228.1441922563418,
+              "y1": 369.64485981308417
+            },
+            "confidence": 0.8379582398150037,
+            "label": "Alpha Prediction Model",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:15",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 536.2670226969293,
+              "y0": 334.7823765020027,
+              "x1": 729.5487316421896,
+              "y1": 374.7716955941255
+            },
+            "confidence": 0.8161599673536013,
+            "label": "Institution Relation Detector",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:16",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 258.90520694259015,
+              "y0": 338.8838451268358,
+              "x1": 331.70627503337784,
+              "y1": 421.4259012016022
+            },
+            "confidence": 1.0,
+            "label": "Whisper +\nTokenizer",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:17",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 346.0614152202937,
+              "y0": 338.8838451268358,
+              "x1": 418.3497997329773,
+              "y1": 421.4259012016022
+            },
+            "confidence": 1.0,
+            "label": "Tokenizer",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:18",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 432.7049399198932,
+              "y0": 338.8838451268358,
+              "x1": 505.50600801068094,
+              "y1": 421.4259012016022
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:19",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 34.86248331108145,
+              "y0": 391.177570093458,
+              "x1": 228.1441922563418,
+              "y1": 430.6542056074767
+            },
+            "confidence": 0.891556719142926,
+            "label": "Factor Repertory",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:20",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 536.2670226969293,
+              "y0": 394.2536715620828,
+              "x1": 729.5487316421896,
+              "y1": 433.7303070761015
+            },
+            "confidence": 0.8304454166523132,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:21",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 258.90520694259015,
+              "y0": 430.6542056074767,
+              "x1": 331.70627503337784,
+              "y1": 493.20160213618163
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:22",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 346.0614152202937,
+              "y0": 430.6542056074767,
+              "x1": 418.3497997329773,
+              "y1": 493.20160213618163
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:23",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 432.7049399198932,
+              "y0": 430.6542056074767,
+              "x1": 505.50600801068094,
+              "y1": 493.20160213618163
+            },
+            "confidence": 1.0,
+            "label": "PDF\nPDF",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:24",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 34.86248331108145,
+              "y0": 452.1869158878505,
+              "x1": 228.1441922563418,
+              "y1": 492.17623497997334
+            },
+            "confidence": 0.8396245664150174,
+            "label": "Vector Database (News)",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:25",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 536.2670226969293,
+              "y0": 452.1869158878505,
+              "x1": 729.5487316421896,
+              "y1": 492.17623497997334
+            },
+            "confidence": 0.8427871862885126,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:0",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 23.58344459279039,
+              "y0": 52.293724966622165,
+              "x1": 239.42323097463287,
+              "y1": 206.61148197596796
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:1",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 524.9879839786382,
+              "y0": 52.293724966622165,
+              "x1": 740.8277703604807,
+              "y1": 155.3431241655541
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:2",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 248.65153538050737,
+              "y0": 103.56208277703605,
+              "x1": 515.7596795727637,
+              "y1": 288.6408544726302
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:3",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 524.9879839786382,
+              "y0": 164.57142857142858,
+              "x1": 740.8277703604807,
+              "y1": 503.4552736982644
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:4",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 23.58344459279039,
+              "y0": 215.8397863818425,
+              "x1": 239.42323097463287,
+              "y1": 503.4552736982644
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:5",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 248.65153538050737,
+              "y0": 297.8691588785047,
+              "x1": 515.7596795727637,
+              "y1": 503.4552736982644
+            },
+            "confidence": 1.0,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          }
+        ],
+        "texts": [],
+        "connectors": [],
+        "residuals": [],
+        "source": "region_native_v1",
+        "provenance": []
+      },
+      "rejected_connectors": {},
+      "tracing": {
+        "transparent_owners": [],
+        "mask_pad": 5,
+        "owner_mask_pads": {
+          "node:region:1": 5,
+          "node:region:3": 5,
+          "node:region:4": 5,
+          "node:region:5": 5,
+          "node:region:6": 5,
+          "node:region:7": 5,
+          "node:region:8": 5,
+          "node:region:9": 5,
+          "node:region:11": 5,
+          "node:region:12": 5,
+          "node:region:13": 5,
+          "node:region:14": 5,
+          "node:region:15": 5,
+          "node:region:16": 5,
+          "node:region:17": 5,
+          "node:region:18": 5,
+          "node:region:19": 5,
+          "node:region:20": 5,
+          "node:region:21": 5,
+          "node:region:22": 5,
+          "node:region:23": 5,
+          "node:region:24": 5,
+          "node:region:25": 5,
+          "container:region:0": 5,
+          "container:region:1": 5,
+          "container:region:2": 5,
+          "container:region:3": 5,
+          "container:region:4": 5,
+          "container:region:5": 5
+        },
+        "attachment_tolerance": 15,
+        "components": []
+      }
+    },
+    {
+      "id": "contrastive",
+      "elapsed_s": 7.327999999979511,
+      "returncode": 0,
+      "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\data\\phase16_dev_v1\\phase16-dev-p043.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\contrastive.pptx family=user_scoped_region nodes=5 containers=0 connectors=0 texts=5/5\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\contrastive.region.json omitted_connectors=1\n",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n",
+      "pptx_sha256": "9827da69a7b1aafe917081de99e15fbcddc3158353453ebf8258e6cc93a6d243",
+      "report_sha256": "96fb0d2cc57b87fb870ccead263aa6a20c1a437c8ffe9ee47c9927b9d193dcd8",
+      "counts": {
+        "nodes": 5,
+        "containers": 0,
+        "connectors": 0,
+        "labels": 5,
+        "omitted_connectors": 1
+      },
+      "emitted_scene": {
+        "image_size": {
+          "width": 768,
+          "height": 424
+        },
+        "coordinate_space": "image_space",
+        "shapes": [
+          {
+            "id": "node:region:0",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 3.3647316538882803,
+              "y0": 183.37787513691129,
+              "x1": 193.05147864184008,
+              "y1": 212.3986856516977
+            },
+            "confidence": 0.8504129310067804,
+            "label": "Momentum Decoder",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:1",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 297.7787513691128,
+              "y0": 183.37787513691129,
+              "x1": 487.46549835706463,
+              "y1": 212.3986856516977
+            },
+            "confidence": 0.9375301262894052,
+            "label": "Decoder",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:2",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 3.3647316538882803,
+              "y0": 305.34939759036143,
+              "x1": 193.05147864184008,
+              "y1": 334.37020810514787
+            },
+            "confidence": 0.851473376393843,
+            "label": "Momentum Encoder",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:3",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 297.7787513691128,
+              "y0": 305.34939759036143,
+              "x1": 487.46549835706463,
+              "y1": 334.37020810514787
+            },
+            "confidence": 0.9381728204633825,
+            "label": "Encoder",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:4",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 545.5071193866374,
+              "y0": 305.34939759036143,
+              "x1": 735.6144578313252,
+              "y1": 334.37020810514787
+            },
+            "confidence": 0.8514492753623188,
+            "label": "Momentum Encoder",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          }
+        ],
+        "texts": [],
+        "connectors": [],
+        "residuals": [],
+        "source": "region_native_v1",
+        "provenance": []
+      },
+      "rejected_connectors": {
+        "connector:r3:0": "no supported preset within 4px: 10.09419496166484"
+      },
+      "tracing": {
+        "transparent_owners": [],
+        "mask_pad": 5,
+        "owner_mask_pads": {
+          "node:region:0": 5,
+          "node:region:1": 5,
+          "node:region:2": 5,
+          "node:region:3": 5,
+          "node:region:4": 5
+        },
+        "attachment_tolerance": 15,
+        "components": [
+          {
+            "component": 14,
+            "owners": [
+              "node:region:0",
+              "node:region:1"
+            ],
+            "pixel_area": 10327,
+            "arrow": {
+              "shaft_width": 3.0,
+              "start_max_width": 24.0,
+              "end_max_width": 40.0
+            },
+            "connector_id": "connector:r3:0",
+            "directed": true,
+            "path_points": [
+              [
+                459,
+                468.0
+              ],
+              [
+                530.0,
+                468.0
+              ],
+              [
+                533.0,
+                471.0
+              ],
+              [
+                533.0,
+                485.0
+              ],
+              [
+                541.0,
+                492.0
+              ],
+              [
+                628.0,
+                492.0
+              ],
+              [
+                633.0,
+                486.0
+              ],
+              [
+                633.0,
+                473.0
+              ],
+              [
+                636.0,
+                470.0
+              ],
+              [
+                708,
+                468.0
+              ]
+            ],
+            "raw_path_length": 267
+          }
+        ]
+      }
+    },
+    {
+      "id": "dark-transformer",
+      "elapsed_s": 8.40700000000652,
+      "returncode": 0,
+      "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\data\\phase16_dev_v1\\phase16-dev-p011.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\dark-transformer.pptx family=user_scoped_region nodes=12 containers=0 connectors=0 texts=5/12\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\dark-transformer.region.json omitted_connectors=2\n",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n",
+      "pptx_sha256": "a959c46950241bbf312aa0e0540ba085aa494adaff9516dc224e83cf678f2163",
+      "report_sha256": "074b793c83eef076366464eebac68c039af9a1591f9934fe13ff801bdc7d5a5d",
+      "counts": {
+        "nodes": 12,
+        "containers": 0,
+        "connectors": 0,
+        "labels": 5,
+        "omitted_connectors": 2
+      },
+      "emitted_scene": {
+        "image_size": {
+          "width": 768,
+          "height": 647
+        },
+        "coordinate_space": "image_space",
+        "shapes": [
+          {
+            "id": "node:region:0",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 257.4595210946408,
+              "y0": 19.265678449258836,
+              "x1": 373.92930444697834,
+              "y1": 420.3420752565564
+            },
+            "confidence": 0.4213152969760646,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:1",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 169.01254275940707,
+              "y0": 45.53705815279362,
+              "x1": 344.15507411630557,
+              "y1": 84.94412770809578
+            },
+            "confidence": 0.8052222222222222,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:2",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 514.9190421892816,
+              "y0": 86.69555302166476,
+              "x1": 689.1858608893957,
+              "y1": 184.77537058152794
+            },
+            "confidence": 0.9156048097631012,
+            "label": "Attention",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:3",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 169.01254275940707,
+              "y0": 105.96123147092361,
+              "x1": 345.0307867730901,
+              "y1": 198.78677309007983
+            },
+            "confidence": 0.8895146906974561,
+            "label": "Feed\nForward",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:4",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 169.01254275940707,
+              "y0": 220.67958950969214,
+              "x1": 344.15507411630557,
+              "y1": 259.2109464082098
+            },
+            "confidence": 0.8010227272727273,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:5",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 437.8563283922463,
+              "y0": 264.46522234891677,
+              "x1": 478.139110604333,
+              "y1": 385.31356898517674
+            },
+            "confidence": 0.9886578449905482,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:6",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 510.5404789053592,
+              "y0": 264.46522234891677,
+              "x1": 550.8232611174459,
+              "y1": 385.31356898517674
+            },
+            "confidence": 0.9886578449905482,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:7",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 582.3489167616876,
+              "y0": 264.46522234891677,
+              "x1": 622.6316989737743,
+              "y1": 385.31356898517674
+            },
+            "confidence": 0.9886578449905482,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:8",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 726.8415051311289,
+              "y0": 264.46522234891677,
+              "x1": 766.2485746864311,
+              "y1": 385.31356898517674
+            },
+            "confidence": 0.9884057971014493,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:9",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 169.01254275940707,
+              "y0": 281.10376282782215,
+              "x1": 343.2793614595211,
+              "y1": 380.05929304446977
+            },
+            "confidence": 0.8876239605105172,
+            "label": "Self-\nattention",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:10",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 165.5096921322691,
+              "y0": 471.13340935005704,
+              "x1": 346.78221208665906,
+              "y1": 566.5860889395667
+            },
+            "confidence": 0.8635819704826486,
+            "label": "Input\nEmbedding",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:11",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 512.2919042189282,
+              "y0": 471.13340935005704,
+              "x1": 692.6887115165337,
+              "y1": 566.5860889395667
+            },
+            "confidence": 0.8473768593569074,
+            "label": "Output\nEmbedding",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          }
+        ],
+        "texts": [],
+        "connectors": [],
+        "residuals": [],
+        "source": "region_native_v1",
+        "provenance": []
+      },
+      "rejected_connectors": {
+        "connector:r3:0": "no supported preset within 4px: 39.64957688762568",
+        "connector:r3:1": "no supported preset within 4px: 26.791655551465837"
+      },
+      "tracing": {
+        "transparent_owners": [],
+        "mask_pad": 4,
+        "owner_mask_pads": {
+          "node:region:0": 13,
+          "node:region:1": 4,
+          "node:region:2": 13,
+          "node:region:3": 4,
+          "node:region:4": 4,
+          "node:region:5": 13,
+          "node:region:6": 13,
+          "node:region:7": 13,
+          "node:region:8": 13,
+          "node:region:9": 4,
+          "node:region:10": 13,
+          "node:region:11": 13
+        },
+        "attachment_tolerance": 12,
+        "components": [
+          {
+            "component": 1,
+            "owners": [
+              "node:region:4",
+              "node:region:9"
+            ],
+            "pixel_area": 369376,
+            "arrow": {
+              "shaft_width": 5.0,
+              "start_max_width": 26.0,
+              "end_max_width": 21.0
+            },
+            "connector_id": "connector:r3:0",
+            "directed": false,
+            "path_points": [
+              [
+                193,
+                273.0
+              ],
+              [
+                165.0,
+                273.0
+              ],
+              [
+                162.0,
+                276.0
+              ],
+              [
+                162.0,
+                467.0
+              ],
+              [
+                240.0,
+                468.0
+              ],
+              [
+                242.0,
+                434
+              ]
+            ],
+            "raw_path_length": 327
+          },
+          {
+            "component": 2,
+            "owners": [
+              "node:region:1",
+              "node:region:3"
+            ],
+            "pixel_area": 1319,
+            "arrow": {
+              "shaft_width": 4.0,
+              "start_max_width": 25.0,
+              "end_max_width": 4.0
+            },
+            "connector_id": "connector:r3:1",
+            "directed": true,
+            "path_points": [
+              [
+                236.0,
+                227
+              ],
+              [
+                163.0,
+                233.0
+              ],
+              [
+                163.0,
+                76.0
+              ],
+              [
+                166.0,
+                73.0
+              ],
+              [
+                193,
+                73.0
+              ]
+            ],
+            "raw_path_length": 257
+          }
+        ]
+      }
+    },
+    {
+      "id": "fusion",
+      "elapsed_s": 3.4070000000065193,
+      "returncode": 0,
+      "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\data\\phase16_dev_v1\\phase16-dev-p092.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\fusion.pptx family=user_scoped_region nodes=5 containers=2 connectors=1 texts=5/5\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\fusion.region.json omitted_connectors=0\n",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n",
+      "pptx_sha256": "06cd1d1a62a2751d1d11cfaa615eb6b96070ceec0e6c6f1ba8312f91eada4ac7",
+      "report_sha256": "23d38e690340a297ffaa525b93e725b5b726b1d4f5d2d3865d3992853b0e55ce",
+      "counts": {
+        "nodes": 5,
+        "containers": 2,
+        "connectors": 1,
+        "labels": 5,
+        "omitted_connectors": 0
+      },
+      "emitted_scene": {
+        "image_size": {
+          "width": 768,
+          "height": 432
+        },
+        "coordinate_space": "image_space",
+        "shapes": [
+          {
+            "id": "node:region:2",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 187.776,
+              "y0": 155.904,
+              "x1": 237.312,
+              "y1": 215.424
+            },
+            "confidence": 0.9305326331582896,
+            "label": "POS",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:3",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 252.672,
+              "y0": 155.904,
+              "x1": 302.592,
+              "y1": 215.424
+            },
+            "confidence": 0.9252109181141439,
+            "label": "NER",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:4",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 341.76,
+              "y0": 155.904,
+              "x1": 449.664,
+              "y1": 215.424
+            },
+            "confidence": 0.9367007232235105,
+            "label": "RoBERTa",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:5",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 494.592,
+              "y0": 155.904,
+              "x1": 602.496,
+              "y1": 215.424
+            },
+            "confidence": 0.9383308460567099,
+            "label": "GRU + WA",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:6",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 232.704,
+              "y0": 332.928,
+              "x1": 559.104,
+              "y1": 357.12
+            },
+            "confidence": 0.42130718954248364,
+            "label": "About what proportion of the population of the US is living on farms?",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:0",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 181.248,
+              "y0": 112.512,
+              "x1": 309.504,
+              "y1": 272.25600000000003
+            },
+            "confidence": 0.7964071856287425,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:1",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 481.536,
+              "y0": 112.512,
+              "x1": 609.792,
+              "y1": 272.25600000000003
+            },
+            "confidence": 0.7964071856287425,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          }
+        ],
+        "texts": [],
+        "connectors": [
+          {
+            "id": "connector:r3:0",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:6",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:4",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:0:start",
+            "target_port_id": "connector:r3:0:end",
+            "path_points": [
+              {
+                "x": 395.52,
+                "y": 332.928
+              },
+              {
+                "x": 395.136,
+                "y": 215.424
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          }
+        ],
+        "residuals": [],
+        "source": "region_native_v1",
+        "provenance": []
+      },
+      "rejected_connectors": {},
+      "tracing": {
+        "transparent_owners": [],
+        "mask_pad": 6,
+        "owner_mask_pads": {
+          "node:region:2": 6,
+          "node:region:3": 6,
+          "node:region:4": 6,
+          "node:region:5": 6,
+          "node:region:6": 6,
+          "container:region:0": 6,
+          "container:region:1": 6
+        },
+        "attachment_tolerance": 18,
+        "components": [
+          {
+            "component": 17,
+            "owners": [
+              "node:region:4",
+              "node:region:6"
+            ],
+            "pixel_area": 1045,
+            "arrow": {
+              "shaft_width": 3.0,
+              "start_max_width": 10.0,
+              "end_max_width": 4.0
+            },
+            "connector_id": "connector:r3:0",
+            "directed": true,
+            "path_points": [
+              [
+                1030.0,
+                867
+              ],
+              [
+                1029.0,
+                561
+              ]
+            ],
+            "raw_path_length": 295
+          }
+        ]
+      }
+    },
+    {
+      "id": "original-full",
+      "elapsed_s": 0.7349999999860302,
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n[FAIL] C:\\vs\\ImageToEditablePPT\\input.png: region exceeds 4 megapixels; select a smaller region\n"
+    },
+    {
+      "id": "original-body",
+      "elapsed_s": 12.96899999998277,
+      "returncode": 0,
+      "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\input.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\original-body.pptx family=user_scoped_region nodes=14 containers=3 connectors=6 texts=4/14\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\original-body.region.json omitted_connectors=4\n",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n",
+      "pptx_sha256": "02a393ea38103a9dece03bf135b554fc6ac2ee9b9f5f6af62e7a88d309db7644",
+      "report_sha256": "4acfa2f0000bca23495fb986960a8f5a59803a2912ace41cf5cd6ed38283aab3",
+      "counts": {
+        "nodes": 14,
+        "containers": 3,
+        "connectors": 6,
+        "labels": 4,
+        "omitted_connectors": 4
+      },
+      "emitted_scene": {
+        "image_size": {
+          "width": 768,
+          "height": 419
+        },
+        "coordinate_space": "image_space",
+        "shapes": [
+          {
+            "id": "node:region:0",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 398.1913043478261,
+              "y0": 16.695652173913043,
+              "x1": 503.6521739130435,
+              "y1": 125.49565217391304
+            },
+            "confidence": 0.522785092010878,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:1",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 610.7826086956521,
+              "y0": 16.695652173913043,
+              "x1": 648.3478260869565,
+              "y1": 71.51304347826087
+            },
+            "confidence": 0.6337281443880428,
+            "label": "ce",
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:2",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 101.56521739130434,
+              "y0": 99.06086956521739,
+              "x1": 216.20869565217393,
+              "y1": 129.6695652173913
+            },
+            "confidence": 0.9181818181818182,
+            "label": "Boundary Redaction\n(Clause-level, target-aware)",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:3",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 33.391304347826086,
+              "y0": 146.08695652173913,
+              "x1": 154.15652173913043,
+              "y1": 186.9913043478261
+            },
+            "confidence": 0.9319727891156463,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:4",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 163.61739130434782,
+              "y0": 146.08695652173913,
+              "x1": 276.31304347826085,
+              "y1": 186.9913043478261
+            },
+            "confidence": 0.9251700680272109,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:5",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 501.4260869565218,
+              "y0": 153.3217391304348,
+              "x1": 589.9130434782609,
+              "y1": 190.6086956521739
+            },
+            "confidence": 0.8880597014925373,
+            "label": "QueryPlanner\n(referent cache &\nrole alias)",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:6",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 115.2,
+              "y0": 249.3217391304348,
+              "x1": 253.49565217391304,
+              "y1": 287.16521739130434
+            },
+            "confidence": 0.9338235294117647,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:7",
+            "owner_kind": "node",
+            "shape_kind": "ellipse",
+            "bbox": {
+              "x0": 642.7826086956521,
+              "y0": 249.6,
+              "x1": 754.9217391304348,
+              "y1": 266.5739130434783
+            },
+            "confidence": 0.9123865333853628,
+            "label": null,
+            "source": "visual_geometry:closed_ellipse",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:8",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 484.7304347826087,
+              "y0": 274.6434782608696,
+              "x1": 602.9913043478261,
+              "y1": 324.4521739130435
+            },
+            "confidence": 0.9273743016759777,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:9",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 244.59130434782608,
+              "y0": 306.9217391304348,
+              "x1": 362.5739130434783,
+              "y1": 365.3565217391304
+            },
+            "confidence": 0.9285714285714286,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:10",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 32.0,
+              "y0": 308.8695652173913,
+              "x1": 124.38260869565218,
+              "y1": 359.7913043478261
+            },
+            "confidence": 0.9234972677595629,
+            "label": "Boundary\nEnforcement\n(memory-safe text,\nuser-visible repair)",
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:11",
+            "owner_kind": "node",
+            "shape_kind": "box",
+            "bbox": {
+              "x0": 131.0608695652174,
+              "y0": 308.8695652173913,
+              "x1": 236.52173913043478,
+              "y1": 359.7913043478261
+            },
+            "confidence": 0.9234972677595629,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:12",
+            "owner_kind": "node",
+            "shape_kind": "ellipse",
+            "bbox": {
+              "x0": 637.2173913043479,
+              "y0": 334.46956521739133,
+              "x1": 760.7652173913043,
+              "y1": 351.16521739130434
+            },
+            "confidence": 0.9394663512898822,
+            "label": null,
+            "source": "visual_geometry:closed_ellipse",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "node:region:13",
+            "owner_kind": "node",
+            "shape_kind": "rounded_box",
+            "bbox": {
+              "x0": 81.25217391304348,
+              "y0": 376.48695652173916,
+              "x1": 195.61739130434782,
+              "y1": 410.9913043478261
+            },
+            "confidence": 0.6830115375559218,
+            "label": null,
+            "source": "visual_geometry:uniform_fill",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:0",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 24.208695652173912,
+              "y0": 73.73913043478261,
+              "x1": 284.38260869565215,
+              "y1": 195.33913043478262
+            },
+            "confidence": 0.9519450800915332,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:1",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 320.0,
+              "y0": 141.63478260869564,
+              "x1": 458.295652173913,
+              "y1": 220.38260869565218
+            },
+            "confidence": 0.823321554770318,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          },
+          {
+            "id": "container:region:2",
+            "owner_kind": "container",
+            "shape_kind": "flow_cluster",
+            "bbox": {
+              "x0": 474.4347826086957,
+              "y0": 249.6,
+              "x1": 613.2869565217392,
+              "y1": 332.24347826086955
+            },
+            "confidence": 0.9427609427609428,
+            "label": null,
+            "source": "visual_geometry:closed_outline",
+            "provenance": [
+              "region:source_geometry"
+            ]
+          }
+        ],
+        "texts": [],
+        "connectors": [
+          {
+            "id": "connector:r3:0",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:2",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:3",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:0:start",
+            "target_port_id": "connector:r3:0:end",
+            "path_points": [
+              {
+                "x": 101.56521739130434,
+                "y": 114.08695652173913
+              },
+              {
+                "x": 95.44347826086957,
+                "y": 117.42608695652174
+              },
+              {
+                "x": 94.33043478260869,
+                "y": 120.20869565217392
+              },
+              {
+                "x": 94.33043478260869,
+                "y": 143.30434782608697
+              },
+              {
+                "x": 93.49565217391304,
+                "y": 146.08695652173913
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:2",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:2",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:4",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:2:start",
+            "target_port_id": "connector:r3:2:end",
+            "path_points": [
+              {
+                "x": 216.20869565217393,
+                "y": 129.6695652173913
+              },
+              {
+                "x": 220.10434782608695,
+                "y": 146.08695652173913
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:4",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:6",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:9",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:4:start",
+            "target_port_id": "connector:r3:4:end",
+            "path_points": [
+              {
+                "x": 253.49565217391304,
+                "y": 276.03478260869565
+              },
+              {
+                "x": 293.5652173913044,
+                "y": 276.03478260869565
+              },
+              {
+                "x": 296.90434782608696,
+                "y": 279.37391304347824
+              },
+              {
+                "x": 298.5739130434783,
+                "y": 283.54782608695655
+              },
+              {
+                "x": 299.1304347826087,
+                "y": 306.9217391304348
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:5",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:6",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:11",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:5:start",
+            "target_port_id": "connector:r3:5:end",
+            "path_points": [
+              {
+                "x": 183.37391304347827,
+                "y": 287.16521739130434
+              },
+              {
+                "x": 183.37391304347827,
+                "y": 308.8695652173913
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:7",
+            "kind": "line",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:10",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:13",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:7:start",
+            "target_port_id": "connector:r3:7:end",
+            "path_points": [
+              {
+                "x": 77.91304347826087,
+                "y": 359.7913043478261
+              },
+              {
+                "x": 81.25217391304348,
+                "y": 392.3478260869565
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": false,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          },
+          {
+            "id": "connector:r3:9",
+            "kind": "arrow",
+            "confidence": 0.8,
+            "source_owner_id": "node:region:13",
+            "source_owner_kind": "node",
+            "target_owner_id": "node:region:11",
+            "target_owner_kind": "node",
+            "source_port_id": "connector:r3:9:start",
+            "target_port_id": "connector:r3:9:end",
+            "path_points": [
+              {
+                "x": 183.65217391304347,
+                "y": 376.48695652173916
+              },
+              {
+                "x": 183.65217391304347,
+                "y": 359.7913043478261
+              }
+            ],
+            "source_instance_id": null,
+            "target_instance_id": null,
+            "arrowhead_start": false,
+            "arrowhead_end": true,
+            "source_candidate_id": null,
+            "source_evidence_id": null,
+            "source": "r3_stroke_trace",
+            "provenance": [
+              "r3:continuous_component",
+              "r3:bounded_mask_gap_repair"
+            ]
+          }
+        ],
+        "residuals": [],
+        "source": "region_native_v1",
+        "provenance": []
+      },
+      "rejected_connectors": {
+        "connector:r3:1": "no supported preset within 4px: 4.367470105699324",
+        "connector:r3:3": "no supported preset within 4px: 4.006956521739118",
+        "connector:r3:6": "no supported preset within 4px: 240.41739130434786",
+        "connector:r3:8": "no supported preset within 4px: 7.234782608695639"
+      },
+      "tracing": {
+        "transparent_owners": [],
+        "mask_pad": 7,
+        "owner_mask_pads": {
+          "node:region:0": 7,
+          "node:region:1": 7,
+          "node:region:2": 7,
+          "node:region:3": 7,
+          "node:region:4": 7,
+          "node:region:5": 7,
+          "node:region:6": 7,
+          "node:region:7": 7,
+          "node:region:8": 7,
+          "node:region:9": 7,
+          "node:region:10": 7,
+          "node:region:11": 7,
+          "node:region:12": 7,
+          "node:region:13": 10,
+          "container:region:0": 7,
+          "container:region:1": 7,
+          "container:region:2": 7
+        },
+        "attachment_tolerance": 21,
+        "components": [
+          {
+            "component": 68,
+            "owners": [
+              "node:region:2",
+              "node:region:3"
+            ],
+            "pixel_area": 941,
+            "arrow": {
+              "shaft_width": 6.0,
+              "start_max_width": 9.0,
+              "end_max_width": 22.0
+            },
+            "connector_id": "connector:r3:0",
+            "directed": true,
+            "path_points": [
+              [
+                365,
+                410.0
+              ],
+              [
+                343.0,
+                422.0
+              ],
+              [
+                339.0,
+                432.0
+              ],
+              [
+                339.0,
+                515.0
+              ],
+              [
+                336.0,
+                525
+              ]
+            ],
+            "raw_path_length": 112
+          },
+          {
+            "component": 75,
+            "owners": [
+              "node:region:0",
+              "node:region:5"
+            ],
+            "pixel_area": 1479,
+            "arrow": {
+              "shaft_width": 6.0,
+              "start_max_width": 6.0,
+              "end_max_width": 30.0
+            },
+            "connector_id": "connector:r3:1",
+            "directed": true,
+            "path_points": [
+              [
+                1735.0,
+                451
+              ],
+              [
+                1735.0,
+                597.0
+              ],
+              [
+                1753.0,
+                613.0
+              ],
+              [
+                1802,
+                618.0
+              ]
+            ],
+            "raw_path_length": 200
+          },
+          {
+            "component": 76,
+            "owners": [
+              "node:region:2",
+              "node:region:4"
+            ],
+            "pixel_area": 503,
+            "arrow": {
+              "shaft_width": 6.0,
+              "start_max_width": 8.0,
+              "end_max_width": 23.0
+            },
+            "connector_id": "connector:r3:2",
+            "directed": true,
+            "path_points": [
+              [
+                777,
+                466
+              ],
+              [
+                791.0,
+                525
+              ]
+            ],
+            "raw_path_length": 52
+          },
+          {
+            "component": 116,
+            "owners": [
+              "node:region:6",
+              "node:region:10"
+            ],
+            "pixel_area": 1618,
+            "arrow": {
+              "shaft_width": 6.0,
+              "start_max_width": 6.0,
+              "end_max_width": 22.0
+            },
+            "connector_id": "connector:r3:3",
+            "directed": true,
+            "path_points": [
+              [
+                414,
+                992.0
+              ],
+              [
+                301.0,
+                992.0
+              ],
+              [
+                283.0,
+                1016.0
+              ],
+              [
+                283.0,
+                1100.0
+              ],
+              [
+                280.0,
+                1110
+              ]
+            ],
+            "raw_path_length": 218
+          },
+          {
+            "component": 117,
+            "owners": [
+              "node:region:6",
+              "node:region:9"
+            ],
+            "pixel_area": 1726,
+            "arrow": {
+              "shaft_width": 6.0,
+              "start_max_width": 6.0,
+              "end_max_width": 22.0
+            },
+            "connector_id": "connector:r3:4",
+            "directed": true,
+            "path_points": [
+              [
+                911,
+                992.0
+              ],
+              [
+                1055.0,
+                992.0
+              ],
+              [
+                1067.0,
+                1004.0
+              ],
+              [
+                1073.0,
+                1019.0
+              ],
+              [
+                1075.0,
+                1103
+              ]
+            ],
+            "raw_path_length": 242
+          },
+          {
+            "component": 121,
+            "owners": [
+              "node:region:6",
+              "node:region:11"
+            ],
+            "pixel_area": 594,
+            "arrow": {
+              "shaft_width": 6.0,
+              "start_max_width": 7.0,
+              "end_max_width": 22.0
+            },
+            "connector_id": "connector:r3:5",
+            "directed": true,
+            "path_points": [
+              [
+                659.0,
+                1032
+              ],
+              [
+                659.0,
+                1110
+              ]
+            ],
+            "raw_path_length": 65
+          },
+          {
+            "component": 143,
+            "owners": [
+              "node:region:9",
+              "node:region:13"
+            ],
+            "pixel_area": 29345,
+            "arrow": {
+              "shaft_width": 7.0,
+              "start_max_width": 31.0,
+              "end_max_width": 27.0
+            },
+            "connector_id": "connector:r3:6",
+            "directed": false,
+            "path_points": [
+              [
+                1090.0,
+                1313
+              ],
+              [
+                1090.0,
+                1363.0
+              ],
+              [
+                1106.0,
+                1379.0
+              ],
+              [
+                1117.0,
+                1383.0
+              ],
+              [
+                1946.0,
+                1383.0
+              ],
+              [
+                1954.0,
+                1394.0
+              ],
+              [
+                1954.0,
+                1424.0
+              ],
+              [
+                1932.0,
+                1441.0
+              ],
+              [
+                716.0,
+                1441.0
+              ],
+              [
+                703,
+                1444.0
+              ]
+            ],
+            "raw_path_length": 2182
+          },
+          {
+            "component": 145,
+            "owners": [
+              "node:region:10",
+              "node:region:13"
+            ],
+            "pixel_area": 893,
+            "arrow": {
+              "shaft_width": 5.0,
+              "start_max_width": 6.0,
+              "end_max_width": 5.0
+            },
+            "connector_id": "connector:r3:7",
+            "directed": false,
+            "path_points": [
+              [
+                280.0,
+                1293
+              ],
+              [
+                292,
+                1410.0
+              ]
+            ],
+            "raw_path_length": 111
+          },
+          {
+            "component": 146,
+            "owners": [
+              "node:region:10",
+              "node:region:11"
+            ],
+            "pixel_area": 2077,
+            "arrow": {
+              "shaft_width": 6.0,
+              "start_max_width": 21.0,
+              "end_max_width": 17.0
+            },
+            "connector_id": "connector:r3:8",
+            "directed": false,
+            "path_points": [
+              [
+                336.0,
+                1293
+              ],
+              [
+                336.0,
+                1307.0
+              ],
+              [
+                351.0,
+                1319.0
+              ],
+              [
+                627.0,
+                1319.0
+              ],
+              [
+                640.0,
+                1293
+              ]
+            ],
+            "raw_path_length": 318
+          },
+          {
+            "component": 147,
+            "owners": [
+              "node:region:11",
+              "node:region:13"
+            ],
+            "pixel_area": 477,
+            "arrow": {
+              "shaft_width": 7.0,
+              "start_max_width": 23.0,
+              "end_max_width": 7.0
+            },
+            "connector_id": "connector:r3:9",
+            "directed": true,
+            "path_points": [
+              [
+                660.0,
+                1353
+              ],
+              [
+                660.0,
+                1293
+              ]
+            ],
+            "raw_path_length": 44
+          }
+        ]
+      }
+    }
+  ],
+  "audits": [
+    {
+      "id": "reasoning-full",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 2
+    },
+    {
+      "id": "blue-flow",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "nested-panels",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "contrastive",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "dark-transformer",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "fusion",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    },
+    {
+      "id": "original-body",
+      "ids_exact": true,
+      "owner_bindings": true,
+      "raster_count": 0,
+      "ambiguous_components": 0
+    }
+  ],
+  "sheets": [
+    {
+      "id": "reasoning-full",
+      "path": "artifacts\\region-complex-v1\\review\\reasoning-full-comparison.png",
+      "sha256": "c2c067c01c8a649dd4b71247be66ab4f0beddf23e6ce6f78f496dc92a6f64e97"
+    },
+    {
+      "id": "blue-flow",
+      "path": "artifacts\\region-complex-v1\\review\\blue-flow-comparison.png",
+      "sha256": "a391eb014ab7f6334c600137adebc774a5cadc00a7bd4a36b5898ac098f08f27"
+    },
+    {
+      "id": "nested-panels",
+      "path": "artifacts\\region-complex-v1\\review\\nested-panels-comparison.png",
+      "sha256": "952f64d6e5d8c62920465078c45d44976228cb48b1f227527e96f8605e17d0bd"
+    },
+    {
+      "id": "contrastive",
+      "path": "artifacts\\region-complex-v1\\review\\contrastive-comparison.png",
+      "sha256": "e36e8d1a2de182e24d7dead9737a4c0fbcd5f2d9705cb506468d7292919ce5de"
+    },
+    {
+      "id": "dark-transformer",
+      "path": "artifacts\\region-complex-v1\\review\\dark-transformer-comparison.png",
+      "sha256": "69ec19bd69bd91537df479a8de84b6be581994e6f7d77b8b03196518c879fcf4"
+    },
+    {
+      "id": "fusion",
+      "path": "artifacts\\region-complex-v1\\review\\fusion-comparison.png",
+      "sha256": "037b379fa4e31131f7de7c5c50df2ec45a66be53674d948be6037ced8ba2d18c"
+    },
+    {
+      "id": "original-body",
+      "path": "artifacts\\region-complex-v1\\review\\original-body-comparison.png",
+      "sha256": "b9b9961b1c9aed4b0bae0470711d3dc9a207b11f9c21a723069a3817f5a0a8a8"
+    }
+  ],
+  "renders": {
+    "schema_version": "phase16_powerpoint_render_manifest_v1",
+    "generated_at": "2026-09-08T04:02:21.9214650+00:00",
+    "powerpoint_version": "16.0",
+    "export_format": "PNG",
+    "target_width": 1200,
+    "records": [
+      {
+        "id": "blue-flow",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\blue-flow.pptx",
+        "pptx_sha256": "b6097048a43651144fb3021104108866e0bbab5999b644318deba4138561d16a",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\renders\\blue-flow.png",
+        "render_sha256": "9a47b099c88b1168d2dc4fd34d5f0a79ae467fc20ff4561fa4c28aad54daa1d8",
+        "width": 1200,
+        "height": 591
+      },
+      {
+        "id": "contrastive",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\contrastive.pptx",
+        "pptx_sha256": "9827da69a7b1aafe917081de99e15fbcddc3158353453ebf8258e6cc93a6d243",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\renders\\contrastive.png",
+        "render_sha256": "cefef8116659e6bee7c620ad0fbc5d62d86f836e01f022ac5106027700181176",
+        "width": 1200,
+        "height": 662
+      },
+      {
+        "id": "dark-transformer",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\dark-transformer.pptx",
+        "pptx_sha256": "a959c46950241bbf312aa0e0540ba085aa494adaff9516dc224e83cf678f2163",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\renders\\dark-transformer.png",
+        "render_sha256": "99e0aa548669872535fc4037d8630bf9bfec4fe803394a7185ebb07a28cb5ca3",
+        "width": 1200,
+        "height": 1011
+      },
+      {
+        "id": "fusion",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\fusion.pptx",
+        "pptx_sha256": "06cd1d1a62a2751d1d11cfaa615eb6b96070ceec0e6c6f1ba8312f91eada4ac7",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\renders\\fusion.png",
+        "render_sha256": "e2cc0f7e9b9dc712900e7477cfd22daea889feb5e37c929bcfe9a5ff20a16c32",
+        "width": 1200,
+        "height": 675
+      },
+      {
+        "id": "nested-panels",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\nested-panels.pptx",
+        "pptx_sha256": "8399707dc7a1c7d7138f306360448181b42d62e7cb84f46befcbe9a5abf92fd0",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\renders\\nested-panels.png",
+        "render_sha256": "b641ca3a16c4e7a0b816fb1eed4d26b8c9b193a815faf386122ea0a6630c9c95",
+        "width": 1200,
+        "height": 823
+      },
+      {
+        "id": "original-body",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\original-body.pptx",
+        "pptx_sha256": "02a393ea38103a9dece03bf135b554fc6ac2ee9b9f5f6af62e7a88d309db7644",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\renders\\original-body.png",
+        "render_sha256": "6314abeb587fffcc2eda912fe0a72e1dbe5eb0bf4018c39a92db15fdf311482f",
+        "width": 1200,
+        "height": 655
+      },
+      {
+        "id": "reasoning-full",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\run1\\reasoning-full.pptx",
+        "pptx_sha256": "26bc4f2daaf07490a8193b61428be98be591e935abb15ed7d27ffb277ef53963",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-complex-v1\\renders\\reasoning-full.png",
+        "render_sha256": "50f49d9f054875ee229da6928338a62c1edc8a5a3ee83737adee5276a7175eea",
+        "width": 1200,
+        "height": 492
+      }
+    ]
+  },
+  "blue_pixel_diagnostic": {
+    "selector": "B-R>70 and G-R>30 and B>160; descriptive source-pixel diagnostic, not annotated edge mask",
+    "count": 39947,
+    "median_gray": 121.0,
+    "fraction_below_110": 0.0
+  },
+  "visual_review": {
+    "date": "2026-09-08",
+    "runtime": "f7897b0 v0.2, unchanged",
+    "population": "six pre-existing development figures plus two predefined scopes of previously consumed input.png; no independent holdout",
+    "method": "Source-only selection sheets before execution; actual PowerPoint native outputs and source/output comparison sheets inspected directly. Counts below are emitted objects, not true positives.",
+    "overall": "Complex-image suitability not demonstrated; several results contain false geometry in addition to omissions. Preserve small-ROI benefit without extending it to complex full diagrams.",
+    "reasoning-full": "Unsatisfactory. Some interior row links and final/gating links survive, but large spurious rounded rectangles overlap rows and merge unrelated text. Lower predictor relations and upstream fanout are mostly missing. Large false nodes are uniform_fill proposals, not original boxes.",
+    "blue-flow": "Unsatisfactory as a flow diagram: seven boxes but zero connectors, only two labels. Blue arrows are missing. Source-selected blue pixels have median grayscale 121 and none pass grayscale <110.",
+    "nested-panels": "Partial usable arrangement, not acceptance. Several panels and node positions survive and icons disappear, but headers disappear, child boundaries merge visually into large pale fills, and text ownership is wrong in the central API panel. Zero connectors is not itself a failure for this panel-centric source.",
+    "contrastive": "Very sparse partial result: five large encoder/decoder boxes with labels, no links. Small symbolic nodes, MLP nodes and nearly all explanatory structure vanish. One traced route explicitly exceeds preset fit support and is omitted.",
+    "dark-transformer": "Unsatisfactory. Colored major blocks survive, but the nested enclosing shape is replaced by an unrelated orange vertical shape; labels and all links are lost in part. Two traced paths were rejected by the preset contract. Background removal alone is not the problem; false geometry is.",
+    "fusion": "Conservative limited partial result. POS/NER/RoBERTa/GRU branches and two surrounding panels remain; only central input-to-RoBERTa link survives. Fusion/output and most slanted branch relations disappear. Cannot claim the ensemble structure is recovered.",
+    "original-full": "No PPT generated: full 2760x1504 image exceeds 4MP ROI bound. A resource rejection, not a classification or visual pass.",
+    "original-body": "Unsatisfactory. PERCEIVE island and some ACT elements survive, but upper spurious outlines/text debris, a blank black orchestrator box, fragmented database shape and missing inter-region relations remain. Four unsupported routes are explicitly omitted. This ROI excludes top 4 percent and is not whole-image success.",
+    "next_priority": "First prevent uniform-fill/background-face false objects and inherited wrong text ownership. Separately test color/polarity-aware stroke evidence, then true multi-owner junction topology. Do not simply raise grayscale threshold globally or increase native preset complexity. No implementation changes made in this validation."
+  },
+  "provenance": {
+    "artifacts\\region-complex-v1\\run1\\results.json": "4d046995cbf9e952e39c5eed0f19eea6e1d6f6264ae187883b5001e8bae052a9",
+    "artifacts\\region-complex-v1\\review\\evidence.json": "e856f36cebd2015852526ce7ca2c71bc769c22bddf6c83acf3aa4f48f4f35aca",
+    "benchmarks\\region_complex_inputs_v1.json": "bd920be33443751c0e96366ffb9f9802fc6efd12bd5d0dbe066740f8e91ccc3b",
+    "tools\\validate_complex_regions.py": "7f3a665ffe3ad322764059ce57526ac6fc9d6591a9a88614f168f31fe8a7ae19"
+  }
+}

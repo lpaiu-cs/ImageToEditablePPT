@@ -122,3 +122,11 @@ rtk proxy .venv/Scripts/python.exe tools/validate_region_synthetic.py --output-d
 
 Use new output names. Native PowerPoint probes refuse existing PowerPoint processes, never
 overwrite the source presentation and close only their own application/presentations.
+
+## Subsequent complex-input check
+
+The unchanged v0.2 runtime was subsequently tested on harder whole diagrams. Seven native
+renders expose false large uniform-fill objects, misplaced text and missing colored/junction
+connections. The complex-image visual standard is not met; this does not erase the narrower
+ROI gain above. See [complex validation](region_complex_validation_results.md) for the frozen
+inputs, actual source/output comparisons and the distinction between omission and false geometry.

@@ -5,6 +5,8 @@
 현재 연구선: `codex/region-first-diagnostics`. 사용자 승인 [R4 및 프로덕션 계획](docs/region_first_r4_production_plan.md)을 실행해 **v0.2 명시적 ROI 변환 CLI 통합**을 완료했다. [최종 결과](docs/region_native_production_results.md): 실제 이미지→CLI의 다이어그램 5개에서 객체 23/23·방향 관계 15/15·오검출 0, 큰 비도식 1개는 자원 제한 거절. 합성 11개 개수/기권 계약 및 native edit/reopen·설치 wheel을 검증했다. OCR은 12개 일치·1개 공백 오류·4개 생략이며 reroute/겹침 한계가 남는다. 배율 실패 및 컨테이너 회귀를 별도 기록하고 역할별 mask로 해결했다. 다음은 독립적으로 고른 ROI와 사람 보정 비용 검증이다. 기존 기본 ML/v3 경로와 Phase15/16 판정은 보존한다. ROI 제공 조건을 전체 이미지 자동 성능, 사람 시간 절약 또는 holdout 승인으로 세지 않는다.
 상태: `Phase 15는 동결됐다. Phase 16.0은 새 dev/holdout·수동 annotation v2·정확 재생성한 Phase 15 baseline·육안 A/B rubric·PowerPoint 보정 deck까지 고정했으나, 사람의 실제 편집시간 측정이 없어 experiment lock은 blocked다. MEG algorithm tuning과 holdout candidate run은 시작하지 않았으며 candidate/NO-GO를 유지한다.`
 
+추가 복잡 입력 검증(2026-09-08): v0.2 런타임을 변경하지 않고 실제 도식 6개와 input.png의 전체/본문 조건을 확인했다. 8조건 중 7개 PPT를 PowerPoint로 렌더했다. [검증 결과](docs/region_complex_validation_results.md)는 **복잡 전체 도식 기준 미달**이다. 큰 uniform-fill 오검출·틀린 텍스트 소유·파란 선 누락·분기/곡선 생략이 확인됐다. 작은 ROI에서의 개선은 유지하되 전체 복잡 도식에 일반화하지 않는다. 다음 기술 우선순위는 객체 정체성/라벨 소유 → 색상·배경 극성별 선 근거 → 다중 접점 구조이며 이번 검증에서 수정은 하지 않았다.
+
 ---
 
 ## 문서 운영 원칙
