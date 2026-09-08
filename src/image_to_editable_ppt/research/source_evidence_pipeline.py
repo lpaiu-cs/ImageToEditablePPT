@@ -40,7 +40,7 @@ def detector_scene(rgb,objects):
     return EmitScene(ImageSize(w,h),shapes=tuple(shapes),source='research:rgb_source_evidence')
 
 
-def reconstruct(rgb,objects,output,*,engine=None):
+def reconstruct(rgb,objects,output,*,engine=None,closed_nodes=False):
     """Create editable native PPT, returning full image-derived stage evidence.
 
     The caller runs the detector and supplies bound objects; this function never
@@ -56,12 +56,17 @@ def reconstruct(rgb,objects,output,*,engine=None):
     scene,_,trace=trace_with_centerlines(selected,rgb)
     scene,rays=add_source_rays(scene,rgb)
     scene,text=recover_spatial_text(scene,rgb,engine)
+    closed_audit=None
+    styles=sample_shape_styles(rgb,scene)
+    if closed_nodes:
+        from image_to_editable_ppt.research.closed_nodes import recover_closed_nodes
+        scene,styles,closed_audit=recover_closed_nodes(scene,rgb)
     normalized,scale=normalize_scene(scene)
-    emitted,emission=write_label_anchor_native(normalized,output,styles=sample_shape_styles(rgb,scene))
+    emitted,emission=write_label_anchor_native(normalized,output,styles=styles)
     return dict(schema='research_source_evidence_pipeline_v1',source_size=[rgb.shape[1],rgb.shape[0]],
         source_scene=asdict(scene),prediction_scene=asdict(prediction),emitted_scene=asdict(emitted),normalization_scale=scale,
         initial_text_audit=initial_text,anchor_text_audit=anchor_text,spatial_ocr=observations,
-        owner_audit=owner_audit,tracing_audit=trace,source_ray_audit=rays,spatial_text_audit=text,emission=emission,
+        owner_audit=owner_audit,tracing_audit=trace,source_ray_audit=rays,spatial_text_audit=text,closed_node_audit=closed_audit,emission=emission,
         counts=dict(nodes=sum(s.owner_kind is PortOwnerKind.NODE for s in emitted.shapes),
             containers=sum(s.owner_kind is PortOwnerKind.CONTAINER for s in emitted.shapes),connectors=len(emitted.connectors),
             labels=sum(bool(s.label) for s in emitted.shapes),omitted_connectors=len(emission['rejected_connectors'])))

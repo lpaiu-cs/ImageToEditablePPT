@@ -94,19 +94,19 @@ def worker(image,output):
     cv2.setNumThreads(1)
     reads,denied=install_guard(image,output.parent,ROOT/'src')
     request=json.loads(sys.stdin.read())
-    if set(request)!={'source_sha256','objects'} or digest(image)!=request['source_sha256']:
+    if set(request)!={'source_sha256','objects','closed_nodes'} or type(request['closed_nodes']) is not bool or digest(image)!=request['source_sha256']:
         raise ValueError('RGB/detection-only request required')
     with Image.open(image) as im:
         if im.mode!='RGB':raise ValueError('RGB mode required')
         rgb=np.asarray(im)
-    report=reconstruct(rgb,request['objects'],output)
+    report=reconstruct(rgb,request['objects'],output,closed_nodes=request['closed_nodes'])
     report['source_sha256']=request['source_sha256']
     save(output.with_suffix('.region.json'),report)
     save(output.with_suffix('.io.json'),dict(python_read_paths=sorted(reads),denied_paths=denied,boundary='Python audit hook, not an OS sandbox'))
     print(json.dumps(report['counts']))
 
 
-def run(handoff,out):
+def run(handoff,out,*,closed_nodes=False):
     samples,provenance=verified_inputs(handoff)
     out.mkdir(parents=True,exist_ok=False);(out/'rgb').mkdir();(out/'pptx').mkdir()
     paths=[Path(__file__).resolve(),ROOT/'docs/r10_fresh_rgb_pipeline_spec.md']
@@ -116,14 +116,14 @@ def run(handoff,out):
     import rapidocr_onnxruntime
     models={str(p):digest(p) for p in (Path(rapidocr_onnxruntime.__file__).parent/'models').glob('*.onnx')}
     save(out/'lock.json',dict(provenance=provenance,code_sha256=code,models_sha256=models,
-        mode='fresh_detector_to_native',population=provenance['inference_lock'].get('population','previously exposed synthetic validation; not unseen acceptance')))
+        mode='fresh_detector_to_native',closed_nodes=closed_nodes,population=provenance['inference_lock'].get('population','previously exposed synthetic validation; not unseen acceptance')))
     records=[]
     for index,sample in enumerate(samples):
         slot=f'{index:03d}';image=out/'rgb'/f'{slot}.png';output=out/'pptx'/f'{slot}.pptx'
         data=Path(sample['image']).read_bytes()
         if hashlib.sha256(data).hexdigest()!=sample['source_sha256']:raise ValueError('RGB changed')
         with image.open('xb') as stream:stream.write(data)
-        request=dict(source_sha256=sample['source_sha256'],objects=sample['objects'])
+        request=dict(source_sha256=sample['source_sha256'],objects=sample['objects'],closed_nodes=closed_nodes)
         env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
         p=subprocess.run([sys.executable,str(Path(__file__).resolve()),'worker','--image',str(image.resolve()),'--output',str(output.resolve())],
             input=json.dumps(request),capture_output=True,text=True,encoding='utf-8',errors='replace',cwd=ROOT,env=env,timeout=240)
@@ -139,7 +139,8 @@ def run(handoff,out):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('mode',choices=['run','worker']);p.add_argument('--handoff',type=Path)
+    p.add_argument('--closed-nodes',action='store_true')
     p.add_argument('--image',type=Path);p.add_argument('--output',type=Path,required=True)
     a=p.parse_args()
     if a.mode=='worker':worker(a.image,a.output)
-    else:run(a.handoff,a.output)
+    else:run(a.handoff,a.output,closed_nodes=a.closed_nodes)
