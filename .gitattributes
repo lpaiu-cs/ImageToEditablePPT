@@ -50,3 +50,8 @@ src/image_to_editable_ppt/research/revision_assessment.py -text
 tests/test_revision_assessment.py -text
 tools/assess_frozen_revisions.py -text
 docs/research_error_contract_v1.md -text
+src/image_to_editable_ppt/research/duplicate_owner_v2.py -text
+tools/r9_d_v2_fixtures.py -text
+tools/run_r9_d_v2_controls.py -text
+docs/r9_duplicate_owner_v2_spec.md -text
+tools/audit_d_v2_raster_support.py -text
