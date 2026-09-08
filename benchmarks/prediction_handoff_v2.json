@@ -1,0 +1,77 @@
+{
+  "schema_version": "prediction_handoff_v2_summary",
+  "v1_reference_commit": "7bb2beddcd50ffd65146082a6f82947f3a2613e1",
+  "research_only": true,
+  "artifact_root": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\ml-image-only-v2",
+  "bundle_file": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\ml-image-only-v2\\baseline.handoff.final.json",
+  "bundle_sha256": "346c4090c209e13243ed7a4d96723fe09921e037660acf4f3e8dd776c08f45e4",
+  "payload_sha256": "67fd2464008807d3360ece10d832ba80e1e0fcedf3ab9f906e8dcf9150cafee6",
+  "declaration_sha256": "75d0a0bb1e0eae82128e0043027aad7d4926d1715078ef862fb3af8a2f288dec",
+  "class_schema_sha256": "24df10e9f40ab969d1eab9f003cf2a536c93ce716ed11f0deeff7f730a7caca0",
+  "inference_code": {
+    "attestation": "post_run_reference_snapshot",
+    "run_git_commit": null,
+    "reference_git_commit": "7bb2beddcd50ffd65146082a6f82947f3a2613e1",
+    "scope": "listed_project_files_only_not_execution_attested",
+    "files": [
+      {
+        "logical_path": "tools/ml_image_only_pilot.py",
+        "file": {
+          "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\ml-image-only-v2\\provenance\\ml_image_only_pilot.py",
+          "sha256": "3e8f9218eb99d68456b6c49a584c40361c426c54a9b2f3888548580bdcea4da7"
+        }
+      },
+      {
+        "logical_path": "src/image_to_editable_ppt/ml/lightning_module.py",
+        "file": {
+          "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\ml-image-only-v2\\provenance\\lightning_module.py",
+          "sha256": "4e0ca559bd65a96e6dca2b98e28d8d786b0f0b353a5c000578b51133df2f52c3"
+        }
+      },
+      {
+        "logical_path": "src/image_to_editable_ppt/ml/dataset.py",
+        "file": {
+          "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\ml-image-only-v2\\provenance\\dataset.py",
+          "sha256": "b59911245595d6854865bfd4b5f14f7a54d40fc9d137fe175ee798a814b3081e"
+        }
+      },
+      {
+        "logical_path": "src/image_to_editable_ppt/v3/core/enums.py",
+        "file": {
+          "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\ml-image-only-v2\\provenance\\enums.py",
+          "sha256": "fa4e996e59a2c4c405c6ae6b5effb7afbe37b3691ea7eb5c166286db94b1e8b4"
+        }
+      }
+    ],
+    "sha256": "960033feef445e7358bb2ce9098470d06de587715033606e9ed98ea2d9a81852"
+  },
+  "exporter_code": {
+    "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\src\\image_to_editable_ppt\\research\\prediction_handoff.py",
+    "sha256": "83b82752e7c0884494bead1daa5ba9f2580d92c57396d05d744c7bd9da74b0ff"
+  },
+  "cli_sha256": "49db9811eeeaa65b473cc9bb36492b41c401f09620d6b4f655489987b3319183",
+  "sample_count": 15,
+  "object_counts": {
+    "node": 94,
+    "container": 11
+  },
+  "omitted_count": 49,
+  "source_prediction": {
+    "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\ml-image-only-v1\\baseline_legacy_predictions.json",
+    "sha256": "c6ed36cfc81dc1ff38d2bddb4a90489b24b2a0a75c2fb617ac249412faebeb4a"
+  },
+  "read_audits": {
+    "baseline.handoff.final.json.reads.json": "a8912d62ee4c30b8aa7d4de7771278a47dfb951b7e9345fb518029655377c1e2",
+    "baseline.handoff.final.json.validation.reads.json": "f7cf87e720fb0134df7a4d40f319a5d485e3c0aa502c0087a9c9a6a95240054c",
+    "strict-final-rejected.json.reads.json": "5a59ca610dea4a3e362b4f8a02fe2ca8d6ff782de2607d8d5f20ae920185f99f"
+  },
+  "strict_default_rejected": true,
+  "v1_hashes_unchanged": true,
+  "tests": "51 passed",
+  "limitations": [
+    "Legacy class names are inferred from Git enum history, not recorded in the checkpoint.",
+    "Inference code is a post-run reference snapshot; the actual run Git commit and code SHA are not attested.",
+    "Export validates existing predictions only; it does not rerun inference or approve model performance.",
+    "Synthetic validation was exposed to checkpoint selection; this is not an unseen holdout result."
+  ]
+}
