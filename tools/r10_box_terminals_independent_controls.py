@@ -16,7 +16,7 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 def build(out):
     out.mkdir(parents=True,exist_ok=False);rows=[]
-    modes=['arrow','plain','double','glyph','branch','cross','separate_opposite','hidden_opposite',
+    modes=['arrow','plain','double','glyph','compact_glyph','branch','cross','separate_opposite','hidden_opposite',
            'truncated_opposite','nearbyhead','curve','shape_contact']
     for mode,angle,s,aa,shape in itertools.product(modes,[0,30,90],[.75,1,1.5],[1,4],['rectangle','ellipse']):
         r=s*aa;im=Image.new('RGB',(round(360*r),)*2,'white');d=ImageDraw.Draw(im)
@@ -26,10 +26,12 @@ def build(out):
         def poly(points):d.polygon([tuple(point(x,y)*r) for x,y in points],fill='black')
         inset=16 if shape=='ellipse' else 16/max(abs(u));lo,hi=-100+inset,100-inset
         line([(lo,0),(0,15),(hi,0)] if mode=='curve' else [(lo,0),(hi,0)])
-        if mode not in ('plain','glyph'):poly([(hi,0),(hi-8,5),(hi-8,-5)])
+        if mode not in ('plain','glyph','compact_glyph'):poly([(hi,0),(hi-8,5),(hi-8,-5)])
         if mode=='double':poly([(lo,0),(lo+8,5),(lo+8,-5)])
         if mode=='glyph':
             line([(hi-6,-6),(hi-6,6)]);line([(hi-10,-6),(hi-2,-6)])
+        if mode=='compact_glyph':
+            line([(hi-4,-4),(hi-4,4)]);line([(hi-7,-4),(hi-1,-4)])
         if mode=='branch':line([(25,0),(40,25)])
         if mode=='cross':line([(0,-30),(0,30)])
         if mode=='separate_opposite':poly([(lo+1,0),(lo+5,5),(lo+5,-5)]);d.line([tuple(point(lo+6,y)*r) for y in [-7,7]],fill='white',width=max(1,round(2*r)))
