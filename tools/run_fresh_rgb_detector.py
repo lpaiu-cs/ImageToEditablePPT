@@ -34,6 +34,7 @@ def main():
     import numpy as np
     import numpy.ma
     import torch
+    import torch.utils.serialization
     import torchvision
     import lightning
     from PIL import Image
