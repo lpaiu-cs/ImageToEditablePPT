@@ -45,3 +45,8 @@ tools/r9_duplicate_owner_fixtures.py -text
 tools/run_r9_duplicate_owner_controls.py -text
 docs/r9_duplicate_owner_experiment_spec.md -text
 benchmarks/r9_*.json -text
+benchmarks/research_error_contract_v1.json -text
+src/image_to_editable_ppt/research/revision_assessment.py -text
+tests/test_revision_assessment.py -text
+tools/assess_frozen_revisions.py -text
+docs/research_error_contract_v1.md -text

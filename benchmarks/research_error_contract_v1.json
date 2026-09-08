@@ -1,0 +1,18 @@
+{
+  "phase": "research_error_contract_v1",
+  "verdict": "classification_verified_not_product_acceptance",
+  "spec_commit": "1ed1c8c",
+  "implementation_commit": "dcd237a",
+  "controls_passed": 17,
+  "artifact_root": "artifacts/region-source-evidence-r9/error-contract-v1",
+  "files": {
+    "lock.json": "3e404a941364cd951bd53f378bcba4765611a90c2f7a2b833dc9ad5baaa210fb",
+    "results.json": "8f8ebd50b147be5ac6aa5c8ccf28280f5772c0e66365582df66f5b2c0bcbc4a6"
+  },
+  "source_changes": {"structural": 0, "geometry": 6, "metadata": 0},
+  "emitted_changes": {"structural_added_connectors": 6, "geometry_common_objects": 0, "metadata": 0},
+  "existing_ground_truth_verdict": "six_added_connections_are_true_positive",
+  "historical_results_modified": false,
+  "new_inference_or_training_executed": false,
+  "human_edit_cost_measured": false
+}
