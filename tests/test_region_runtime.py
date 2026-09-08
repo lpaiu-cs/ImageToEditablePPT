@@ -177,3 +177,22 @@ def test_large_roi_rejected_before_output(tmp_path):
     with pytest.raises(ValueError,match='4 megapixels'):
         convert_region(source,tmp_path/'large.pptx',region=(0,0,1,1),recover_text=False)
     assert not (tmp_path/'large.pptx').exists()
+
+
+def test_hash_binds_decoded_snapshot_and_transparency(tmp_path,monkeypatch):
+    import json,hashlib
+    from PIL import Image
+    import image_to_editable_ppt.region.convert as runtime
+    source=tmp_path/'transparent.png'
+    Image.new('RGBA',(200,200),(0,0,0,0)).save(source)
+    expected=hashlib.sha256(source.read_bytes()).hexdigest()
+    writer=runtime.write_native
+    def mutate_after_read(scene,path,**kwargs):
+        Image.new('RGB',(200,200),'black').save(source)
+        return writer(scene,path,**kwargs)
+    monkeypatch.setattr(runtime,'write_native',mutate_after_read)
+    output=tmp_path/'out.pptx'
+    runtime.convert_region(source,output,region=(0,0,1,1),recover_text=False)
+    report=json.loads(output.with_suffix('.region.json').read_text())
+    assert report['source_sha256']==expected!=hashlib.sha256(source.read_bytes()).hexdigest()
+    assert report['status']=='empty'

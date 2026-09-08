@@ -1,6 +1,7 @@
 """Production-facing region API. Explicit scope, safe outputs and observable abstention."""
 from dataclasses import asdict
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -37,11 +38,18 @@ def convert_region(input_path,output_path,*,region,recover_text=True,sample_styl
     if output.suffix.lower()!='.pptx': raise ValueError('output must end with .pptx')
     report_path=output.with_suffix('.region.json')
     if output.exists() or report_path.exists(): raise FileExistsError('output or diagnostics already exists; choose a new output path')
-    with Image.open(source) as original:
+    # Bind the evidence hash to the exact bytes decoded, even if input changes during OCR.
+    with source.open('rb') as handle:
+        source_bytes=handle.read(64*1024*1024+1)
+    if len(source_bytes)>64*1024*1024: raise ValueError('input file exceeds 64 MiB')
+    with Image.open(io.BytesIO(source_bytes)) as original:
         if original.width*original.height>16_000_000: raise ValueError('source exceeds 16 megapixels; crop or reduce it first')
         scope=validate_roi(region,original.size)
         if (scope[2]-scope[0])*(scope[3]-scope[1])>4_000_000: raise ValueError('region exceeds 4 megapixels; select a smaller region')
-        image=original.convert('RGB')
+        if original.mode=='RGBA' or 'transparency' in original.info:
+            rgba=original.convert('RGBA'); image=Image.new('RGBA',original.size,'white')
+            image.alpha_composite(rgba); image=image.convert('RGB')
+        else: image=original.convert('RGB')
     rgb=np.asarray(image)
     scene=detect_scene(rgb,region)
     if len(scene.shapes)>300: raise ValueError('region exceeds 300 geometry candidates; select a smaller region')
@@ -55,7 +63,7 @@ def convert_region(input_path,output_path,*,region,recover_text=True,sample_styl
     with tempfile.TemporaryDirectory(prefix='.region-',dir=output.parent) as directory:
         temp=Path(directory)/'output.pptx'
         emitted,emission=write_native(normalized,temp,styles=styles)
-        report=dict(schema='region_native_v1',mode='user_scoped_region',source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+        report=dict(schema='region_native_v1',mode='user_scoped_region',source_sha256=hashlib.sha256(source_bytes).hexdigest(),
             source_size=list(image.size),region=list(region),normalization_scale=scale,
             output_sha256=hashlib.sha256(temp.read_bytes()).hexdigest(),limitations=LIMITATIONS,
             source_scene=asdict(final),emitted_scene=asdict(emitted),
