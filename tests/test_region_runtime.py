@@ -71,3 +71,89 @@ def test_ocr_omits_entire_uncertain_label():
 @pytest.mark.parametrize('roi',[(0,0,0,1),(-.1,0,1,1),(0,0,float('nan'),1),(0,0,.01,.01),(0,0,1,float('inf'))])
 def test_bad_roi(roi):
     with pytest.raises(ValueError): validate_roi(roi,(200,200))
+
+
+def test_native_unsupported_route_is_reported(tmp_path):
+    from image_to_editable_ppt.region.emitter import write_native
+    from pptx import Presentation
+    shapes=(box('a',(10,10,50,50)),box('b',(180,10,220,50)))
+    route=edge('c','a','b',[(50,30),(80,30),(80,140),(160,140),(160,30),(180,30)])
+    scene=EmitScene(ImageSize(240,200),shapes=shapes,connectors=(route,))
+    emitted,audit=write_native(scene,tmp_path/'out.pptx')
+    assert len(emitted.shapes)==2 and not emitted.connectors and 'c' in audit['rejected_connectors']
+    assert len(Presentation(tmp_path/'out.pptx').slides[0].shapes)==2
+
+
+def test_native_one_bound_connector_no_effects(tmp_path):
+    from image_to_editable_ppt.region.emitter import write_native
+    from image_to_editable_ppt.research.preset_emit import preset_vertices
+    from pptx import Presentation
+    shapes=(box('a',(10,10,50,50)),box('b',(150,110,200,150)))
+    route=edge('c','a','b',[(50,30),(175,30),(175,110)])
+    scene=EmitScene(ImageSize(240,200),shapes=shapes,connectors=(route,))
+    emitted,audit=write_native(scene,tmp_path/'out.pptx')
+    assert len(emitted.connectors)==1 and not audit['rejected_connectors']
+    deck=Presentation(tmp_path/'out.pptx'); objects={s.name:s for s in deck.slides[0].shapes}
+    assert set(objects)=={'a','b','c'}
+    assert len(objects['c']._element.xpath('.//a:stCxn | .//a:endCxn'))==2
+    assert objects['c']._element.xpath('.//a:effectLst')
+    assert not deck.slides[0]._element.xpath('.//p:pic')
+    points=preset_vertices(objects['c'])
+    assert points[0]==pytest.approx((37.5,22.5),abs=.001)
+    assert points[-1]==pytest.approx((131.25,82.5),abs=.001)
+
+
+def test_cli_end_to_end_and_no_overwrite(tmp_path):
+    import json
+    from PIL import Image
+    from image_to_editable_ppt.ml.convert_to_pptx import main
+    rgb=np.full((240,400,3),255,np.uint8)
+    cv2.rectangle(rgb,(30,60),(140,170),(0,0,0),2)
+    cv2.rectangle(rgb,(260,60),(370,170),(0,0,0),2)
+    cv2.arrowedLine(rgb,(140,115),(260,115),(0,0,0),2,tipLength=.15)
+    source=tmp_path/'input.png'; Image.fromarray(rgb).save(source)
+    output=tmp_path/'out.pptx'
+    argv=[str(source),'-o',str(output),'--region','0','0','1','1','--no-ocr']
+    assert main(argv)==0
+    report=json.loads(output.with_suffix('.region.json').read_text())
+    assert report['counts']['nodes']==2 and report['counts']['connectors']==1
+    before=output.read_bytes()
+    assert main(argv)==1 and output.read_bytes()==before
+    assert not list(tmp_path.glob('.region-*'))
+
+
+def test_region_blank_and_invalid_flags(tmp_path):
+    import json
+    from PIL import Image
+    from image_to_editable_ppt.ml.convert_to_pptx import main
+    source=tmp_path/'blank.png'; Image.new('RGB',(200,200),'white').save(source)
+    output=tmp_path/'blank.pptx'
+    argv=[str(source),'-o',str(output),'--region','0','0','1','1','--no-ocr']
+    assert main(argv+['--no-gate'])==2 and not output.exists()
+    assert main(argv)==0
+    assert json.loads(output.with_suffix('.region.json').read_text())['status']=='empty'
+
+
+def test_atomic_publication_race_rolls_back_only_own_report(tmp_path,monkeypatch):
+    import os
+    from PIL import Image
+    from image_to_editable_ppt.region.convert import convert_region
+    source=tmp_path/'blank.png'; Image.new('RGB',(200,200),'white').save(source)
+    output=tmp_path/'out.pptx'; link=os.link
+    def racing_link(src,dst):
+        if str(dst).endswith('.pptx'):
+            output.write_bytes(b'user-created-file')
+        return link(src,dst)
+    monkeypatch.setattr(os,'link',racing_link)
+    with pytest.raises(FileExistsError): convert_region(source,output,region=(0,0,1,1),recover_text=False)
+    assert output.read_bytes()==b'user-created-file'
+    assert not output.with_suffix('.region.json').exists()
+
+
+def test_runtime_has_no_research_imports():
+    from pathlib import Path
+    import ast
+    directory=Path(__file__).parents[1]/'src/image_to_editable_ppt/region'
+    for file in directory.glob('*.py'):
+        for node in ast.walk(ast.parse(file.read_text())):
+            if isinstance(node,ast.ImportFrom): assert '.research' not in (node.module or '')

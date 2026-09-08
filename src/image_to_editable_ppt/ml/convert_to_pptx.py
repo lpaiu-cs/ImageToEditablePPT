@@ -74,6 +74,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no-gate", action="store_true", help="skip the OOD not-a-diagram gate")
     parser.add_argument("--no-ocr", action="store_true", help="skip text recovery (OCR)")
     parser.add_argument("--no-style", action="store_true", help="skip per-shape colour sampling")
+    parser.add_argument("--region", nargs=4, type=float, metavar=('X0','Y0','X1','Y1'),
+        help="convert an explicitly selected diagram ROI (normalized 0..1) using native presets; no ML checkpoint required")
     return parser
 
 
@@ -181,6 +183,10 @@ def _plan_output_paths(inputs: list[Path], output: str | None) -> list[Path]:
 
 
 def convert_one(input_path: Path, output_path: Path, *, args: argparse.Namespace, provider) -> dict[str, object]:
+    if getattr(args, 'region', None) is not None:
+        from image_to_editable_ppt.region.convert import convert_region
+        return convert_region(input_path,output_path,region=args.region,
+            recover_text=not args.no_ocr,sample_style=not args.no_style)
     import numpy as np
     from PIL import Image
 
@@ -224,7 +230,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"output planning failed: {error}", file=sys.stderr)
         return 2
 
-    provider = None if args.no_ml else _build_provider(args)
+    if args.region is not None and (args.bundle or args.allow_candidate_bundle or args.no_gate):
+        print('region mode cannot be combined with --bundle, --allow-candidate-bundle or --no-gate',file=sys.stderr)
+        return 2
+    provider = None if args.no_ml or args.region is not None else _build_provider(args)
+    if args.region is not None:
+        print('region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.',file=sys.stderr)
     if not args.no_ocr:
         from image_to_editable_ppt.v3.text.ocr import ocr_available
 
@@ -241,8 +252,8 @@ def main(argv: list[str] | None = None) -> int:
             continue
         if summary["nodes"] == 0 and summary["containers"] == 0:
             detail = (
-                "no structure was detected"
-                if args.no_ml
+                "no confident structure remained in the selected scope"
+                if args.no_ml or args.region is not None
                 else "OOD gate rejected it as not-a-diagram, or no structure was detected; use --no-gate to force"
             )
             print(
@@ -255,6 +266,8 @@ def main(argv: list[str] | None = None) -> int:
                 f"family={summary['family']} nodes={summary['nodes']} containers={summary['containers']} "
                 f"connectors={summary['connectors']} texts={summary['recognized_texts']}/{summary['texts']}"
             )
+        if summary.get('diagnostics'):
+            print(f"[REPORT] {summary['diagnostics']} omitted_connectors={summary['omitted_connectors']}")
     return exit_code
 
 
