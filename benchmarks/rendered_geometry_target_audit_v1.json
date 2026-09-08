@@ -1,0 +1,329 @@
+{
+  "schema_version": "rendered_geometry_target_audit_v1",
+  "scope": "read-only source PPT/annotation comparison for two existing validation graph samples; no inference or training",
+  "cases": [
+    {
+      "id": "graph_1302_00029",
+      "source_rgb_sha256": "9b4396663b7ff886b32d1bd7be4827a89421283fe76b5dab52f9408bcc1548d0",
+      "annotation_sha256": "4f9107bbe76b94ab82d3308671dcd9a1eb05e733514219889f67535bb9dc97b9",
+      "source_ppt_sha256": "4f4126121205398c7c8cadb4d7fabbbd3f1a8d76b4f952244a9c2d8204686685",
+      "source_ppt": "C:\\vs\\ImageToEditablePPT\\workbench-ml\\ds-v13-soffice\\val\\graph_1302_00029.pptx",
+      "image_size": [
+        640,
+        360
+      ],
+      "slide_size_emu": [
+        6096000,
+        3429000
+      ],
+      "geometry_counts": {
+        "ellipse": 5
+      },
+      "annotation_kind_counts": {
+        "box": 5
+      },
+      "mismatch_count": 5,
+      "baseline_detection_metrics": {
+        "nodes": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "true_positive": 5,
+          "false_positive": 0,
+          "false_negative": 0,
+          "prediction_count": 5,
+          "reference_count": 5
+        },
+        "containers": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "true_positive": 2,
+          "false_positive": 0,
+          "false_negative": 0,
+          "prediction_count": 2,
+          "reference_count": 2
+        }
+      },
+      "nodes": [
+        {
+          "id": "node:graph_1302_00029:0",
+          "annotation_kind": "box",
+          "annotation_label": "v3",
+          "source_ppt": {
+            "ppt_shape_id": "4",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              356.72,
+              61.13417322834646,
+              404.3794225721785,
+              108.79359580052494
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "v3"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 4.5231937448875215e-05
+        },
+        {
+          "id": "node:graph_1302_00029:1",
+          "annotation_kind": "box",
+          "annotation_label": "v1",
+          "source_ppt": {
+            "ppt_shape_id": "5",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              487.7727034120735,
+              155.35727034120737,
+              535.432125984252,
+              203.01669291338584
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "v1"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 0.00011849707868805126
+        },
+        {
+          "id": "node:graph_1302_00029:2",
+          "annotation_kind": "box",
+          "annotation_label": "q1",
+          "source_ppt": {
+            "ppt_shape_id": "6",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              358.8632020997375,
+              257.2506036745407,
+              406.52262467191605,
+              304.91002624671916
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "q1"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 5.1342734991521866e-05
+        },
+        {
+          "id": "node:graph_1302_00029:3",
+          "annotation_kind": "box",
+          "annotation_label": "A",
+          "source_ppt": {
+            "ppt_shape_id": "7",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              143.3487664041995,
+              219.07275590551183,
+              191.00818897637797,
+              266.7321784776903
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "A"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 0.00012704062112334213
+        },
+        {
+          "id": "node:graph_1302_00029:4",
+          "annotation_kind": "box",
+          "annotation_label": "n1",
+          "source_ppt": {
+            "ppt_shape_id": "8",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              142.69784776902887,
+              105.73490813648294,
+              190.35727034120737,
+              153.3943307086614
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "n1"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 0.00010396708529469834
+        }
+      ]
+    },
+    {
+      "id": "graph_1302_00063",
+      "source_rgb_sha256": "4889e1b304787c0ab445c57d1503d770fe26367d6b75bb9cabaa8fc3e4360553",
+      "annotation_sha256": "81f1277630e0a6987d0519f3305d99a939c590ce0773d8c1aaf1824af29cc10c",
+      "source_ppt_sha256": "54843426353167f7ede2bf746c4012843dba7029a27a7bf6ad490a13ca51afb2",
+      "source_ppt": "C:\\vs\\ImageToEditablePPT\\workbench-ml\\ds-v13-soffice\\val\\graph_1302_00063.pptx",
+      "image_size": [
+        640,
+        360
+      ],
+      "slide_size_emu": [
+        6096000,
+        3429000
+      ],
+      "geometry_counts": {
+        "ellipse": 6
+      },
+      "annotation_kind_counts": {
+        "box": 6
+      },
+      "mismatch_count": 6,
+      "baseline_detection_metrics": {
+        "nodes": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "true_positive": 6,
+          "false_positive": 0,
+          "false_negative": 0,
+          "prediction_count": 6,
+          "reference_count": 6
+        },
+        "containers": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "true_positive": 1,
+          "false_positive": 0,
+          "false_negative": 0,
+          "prediction_count": 1,
+          "reference_count": 1
+        }
+      },
+      "nodes": [
+        {
+          "id": "node:graph_1302_00063:0",
+          "annotation_kind": "box",
+          "annotation_label": "n1",
+          "source_ppt": {
+            "ppt_shape_id": "3",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              316.62320209973757,
+              31.82740157480315,
+              372.07926509186353,
+              87.28346456692914
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "n1"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 0.00011604066907011656
+        },
+        {
+          "id": "node:graph_1302_00063:1",
+          "annotation_kind": "box",
+          "annotation_label": "q1",
+          "source_ppt": {
+            "ppt_shape_id": "4",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              489.5586351706037,
+              111.59149606299214,
+              545.0146981627297,
+              167.0475590551181
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "q1"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 5.0840874223467836e-05
+        },
+        {
+          "id": "node:graph_1302_00063:2",
+          "annotation_kind": "box",
+          "annotation_label": "S",
+          "source_ppt": {
+            "ppt_shape_id": "5",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              446.46288713910764,
+              229.7472965879265,
+              501.9189501312336,
+              285.2033595800525
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "S"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 8.730626342412506e-05
+        },
+        {
+          "id": "node:graph_1302_00063:3",
+          "annotation_kind": "box",
+          "annotation_label": "q0",
+          "source_ppt": {
+            "ppt_shape_id": "6",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              265.3120209973753,
+              262.3997900262467,
+              320.76808398950135,
+              317.8558530183727
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "q0"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 0.00011512270015145987
+        },
+        {
+          "id": "node:graph_1302_00063:4",
+          "annotation_kind": "box",
+          "annotation_label": "D",
+          "source_ppt": {
+            "ppt_shape_id": "7",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              98.04115485564304,
+              186.6,
+              153.49721784776904,
+              242.056062992126
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "D"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 9.424171025784744e-05
+        },
+        {
+          "id": "node:graph_1302_00063:5",
+          "annotation_kind": "box",
+          "annotation_label": "n2",
+          "source_ppt": {
+            "ppt_shape_id": "8",
+            "preset": "ellipse",
+            "bbox_pixels": [
+              133.74057742782153,
+              75.01679790026247,
+              189.19664041994753,
+              130.47286089238847
+            ],
+            "rotation": null,
+            "flipH": null,
+            "flipV": null,
+            "text": "n2"
+          },
+          "preset_vs_annotation_kind_mismatch": true,
+          "max_bbox_delta_pixels": 9.529424505672068e-05
+        }
+      ]
+    }
+  ]
+}
