@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "records": 672,
+  "passed": 672,
+  "failed": 0,
+  "prior_proposal_raster_valid_failures": 28,
+  "vetoes": 124,
+  "clean_records": 8,
+  "clean_selected": 8,
+  "file_open_denials": [],
+  "lock_sha256": "644d39ca8e02aa20e29882423343f6efe268f131fa65912f211bc6ab1bf27ff5",
+  "actual_15_executed": false,
+  "limitation": "Safety mechanisms on frozen V2 proposals, not a new D3 identity/PP recovery run",
+  "mechanism_tests": "41 passed",
+  "unnecessary_veto_relative_to_raster_contract": 96,
+  "before_selected": 248,
+  "after_selected": 124,
+  "results_path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v3-revision1-results\\results.json",
+  "results_sha256": "200a9c511fa035b4b055dd50b85524a48362fa26ce1a64c3f448187509b72481"
+}
