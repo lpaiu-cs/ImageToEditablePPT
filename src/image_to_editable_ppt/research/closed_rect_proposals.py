@@ -22,7 +22,7 @@ def _same_ink_band(rgb,inner,outer,scale):
     return bool(np.mean(contrast>=24)>=.90)
 
 
-def propose(rgb):
+def propose(rgb,*,inner_boundaries=False):
     if rgb.dtype!=np.uint8 or rgb.ndim!=3 or rgb.shape[2]!=3:raise ValueError('uint8 RGB required')
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);s=rgb.shape[0]/360
     arms=[]
@@ -49,13 +49,21 @@ def propose(rgb):
         same_outer=[c for c in competing if _same_ink_band(rgb,candidate,c,s)]
         stable=any(np.max(abs(np.array(box)-c['bbox']))<=1 for c in matches)
         unambiguous=not competing or (len(competing)==1 and len(same_outer)==1)
+        if inner_boundaries and competing:
+            # Keep an actual inner boundary; do not merge nearby outlines or
+            # infer whether their outer siblings were borders or shadows.
+            stable_competing=[c for c in competing if any(_iou(c['bbox'],other['bbox'])>=.98
+                and np.max(abs(np.array(c['bbox'])-other['bbox']))<=1 for other in arms[1])]
+            unambiguous=all(c['bbox'][0]<=box[0] and c['bbox'][1]<=box[1]
+                and c['bbox'][2]>=box[2] and c['bbox'][3]>=box[3]
+                and c['bbox']!=box for c in stable_competing)
         reason='closed_rectangle_agreement' if stable and unambiguous else 'ambiguous_or_threshold_unstable_boundary'
         records.append(dict(bbox=box,reason=reason))
         if reason=='closed_rectangle_agreement':selected.append(candidate)
-    return selected,dict(thresholds=[[20,60],[40,100]],candidates=records)
+    return selected,dict(thresholds=[[20,60],[40,100]],inner_boundaries=inner_boundaries,candidates=records)
 
 
-def observe_text(rgb,box,engine):
+def observe_text(rgb,box,engine,*,excluded=None):
     x0,y0,x1,y1=box
     crop=rgb[y0:y1,x0:x1]
     arms=[]
@@ -68,6 +76,10 @@ def observe_text(rgb,box,engine):
             p=np.asarray(polygon)/scale
             b=[float(p[:,0].min()),float(p[:,1].min()),float(p[:,0].max()),float(p[:,1].max())]
             if b[0]<0 or b[1]<0 or b[2]>crop.shape[1] or b[3]>crop.shape[0]:continue
+            if excluded is not None:
+                a,c=int(np.floor(b[0]))+x0,int(np.ceil(b[2]))+x0
+                d,e=int(np.floor(b[1]))+y0,int(np.ceil(b[3]))+y0
+                if excluded[d:e,a:c].any():continue
             found.append(dict(text=text.strip(),confidence=float(confidence),bbox=b))
         arms.append(found)
     lines=[]
@@ -81,8 +93,14 @@ def observe_text(rgb,box,engine):
                 g['bbox']=[min(g['bbox'][0],b[0]),min(g['bbox'][1],b[1]),max(g['bbox'][2],b[2]),max(g['bbox'][3],b[3])]
             else:groups.append(dict(words=[word],bbox=list(b)))
         for g in groups:
-            g['text']=' '.join(w['text'] for w in sorted(g['words'],key=lambda w:w['bbox'][0]))
+            ordered=sorted(g['words'],key=lambda w:w['bbox'][0])
+            g['text']=' '.join(w['text'] for w in ordered)
             g['confidence']=min(w['confidence'] for w in g['words'])
+            g['overlapping_words']=any(a['bbox'][2]-b['bbox'][0] > max(2,.1*min(
+                a['bbox'][2]-a['bbox'][0],b['bbox'][2]-b['bbox'][0])) for a,b in zip(ordered,ordered[1:]))
+            # Three agreeing OCR passes can repeat one glyph in overlapping
+            # recognition windows. Do not concatenate those windows into text.
+            if g['overlapping_words']:g['confidence']=0.
         lines.append(sorted(groups,key=lambda g:g['bbox'][1]))
     accepted=[]
     for index,line in enumerate(lines[0]):

@@ -51,3 +51,33 @@ def test_confident_title_kept_but_later_fragments_do_not_skip_unknown_line():
                 for y,text,confidence in [(5,'Title',.99),(30,'Unknown',.5),(55,'Fragment',.99)]],None
     label,audit=observe_text(np.full((100,100,3),255,np.uint8),[0,0,100,100],engine)
     assert label=='Title'
+
+
+def test_explicit_inner_boundary_policy_keeps_real_inner_without_merging():
+    rgb=np.full((360,640,3),255,np.uint8)
+    cv2.rectangle(rgb,(50,40),(270,140),(0,0,0),1)
+    cv2.rectangle(rgb,(54,44),(266,136),(0,0,0),1)
+    selected,audit=propose(rgb,inner_boundaries=True)
+    assert len(selected)==1
+    x,y,x1,y1=selected[0]['bbox']
+    assert x>=53 and y>=43 and x1<=268 and y1<=138
+    assert audit['inner_boundaries']
+
+
+def test_overlapping_ocr_windows_cannot_repeat_a_source_glyph():
+    def engine(image,**kwargs):
+        s=image.shape[0]/100
+        return [(np.array([[a,5],[b,5],[b,20],[a,20]])*s,text,.99)
+                for a,b,text in [(5,65,'Section 3'),(55,85,'3.4')]],None
+    label,audit=observe_text(np.full((100,100,3),255,np.uint8),[0,0,100,100],engine)
+    assert label is None
+    assert all(arm[0]['overlapping_words'] for arm in audit['lines'])
+
+
+def test_inner_boundary_policy_does_not_merge_overlapping_distinct_boxes():
+    rgb=np.full((360,640,3),255,np.uint8)
+    cv2.rectangle(rgb,(50,40),(270,140),(0,0,0),1)
+    cv2.rectangle(rgb,(57,45),(277,145),(0,0,0),1)
+    selected,_=propose(rgb,inner_boundaries=True)
+    # No selected boundary may pretend to encompass both original boxes.
+    assert all(c['bbox'] != [49,39,279,147] for c in selected)
