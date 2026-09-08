@@ -13,4 +13,8 @@ src/image_to_editable_ppt/research/ownership_guards.py -text
 tools/run_region_r7b.py -text
 docs/region_ownership_guards_r7b_spec.md -text
 tests/test_region_r7b.py -text
+benchmarks/region_r8_*.json -text
+src/image_to_editable_ppt/research/image_only_guard.py -text
+tools/run_region_rgb_baseline.py -text
+tools/evaluate_region_rgb_baseline.py -text
 src/image_to_editable_ppt/region/*.py -text

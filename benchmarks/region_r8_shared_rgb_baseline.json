@@ -1,0 +1,152 @@
+{
+  "schema": "r8_shared_rgb_baseline_v1",
+  "population": "shared synthetic validation diagnostic; not unseen acceptance",
+  "promotion": false,
+  "source_runtime": "R6, unchanged",
+  "metrics": {
+    "node": {
+      "tp": 63,
+      "fp": 5,
+      "fn": 28,
+      "predictions": 68,
+      "references": 91
+    },
+    "node_exact_kind": {
+      "tp": 32,
+      "fp": 36,
+      "fn": 59,
+      "predictions": 68,
+      "references": 91
+    },
+    "container": {
+      "tp": 4,
+      "fp": 3,
+      "fn": 7,
+      "predictions": 7,
+      "references": 11
+    },
+    "container_exact_kind": {
+      "tp": 1,
+      "fp": 6,
+      "fn": 10,
+      "predictions": 7,
+      "references": 11
+    },
+    "traced_edges": {
+      "tp": 22,
+      "fp": 8,
+      "fn": 45,
+      "predictions": 30,
+      "references": 67
+    },
+    "native_edges": {
+      "tp": 16,
+      "fp": 2,
+      "fn": 51,
+      "predictions": 18,
+      "references": 67
+    }
+  },
+  "labels_matched": {
+    "matched_nodes": 63,
+    "correct": 61,
+    "wrong": 0,
+    "blank": 2
+  },
+  "labels_on_unmatched_objects": 3,
+  "io_negative_control_passed": true,
+  "python_read_guard_denials": 0,
+  "native_decks": 15,
+  "blank_trees": [
+    "tree_1302_00036",
+    "tree_1302_00079",
+    "tree_1302_00149"
+  ],
+  "artifact_sha256": {
+    "artifacts\\region-image-only-r8\\shared-val-baseline\\lock.json": "0b52098f1be5066e04bd0ce51908a00f091c91ad16e4d876bde15061eace766f",
+    "artifacts\\region-image-only-r8\\shared-val-baseline\\results.json": "f21bdb5bfc47ea689e6ca32e41e97951f6374967d20cf7d5eb01b4160748b726",
+    "artifacts\\region-image-only-r8\\shared-val-baseline\\evaluation.json": "b3df22a66597d255ea99aa7d19b7d362e352971d5368757f02f90f2ca7e4b502",
+    "artifacts\\region-image-only-r8\\shared-val-baseline\\renders\\powerpoint_render_manifest.json": "aafe5be54523d2f3085de9ed9a3fb3097075da9f1188d2fdae6da6a2a8288fd5"
+  },
+  "implementation_sha256": {
+    "src/image_to_editable_ppt/research/image_only_guard.py": "b13ed1895caf7dbcacb40a3e6bf586b091cde82ec25dfd12ae32ac7482580cb6",
+    "tools/run_region_rgb_baseline.py": "5581e7aa7335b389f964adeb1409b10fcc68b45ced5dc19f6e3ee92bb7d1f47e",
+    "tools/evaluate_region_rgb_baseline.py": "6ee28d850960fe223172fdf86f662700c6a26e7faac50c41ebc3785bdc6ab366"
+  },
+  "input_identities": [
+    {
+      "id": "block_flow_1302_00054",
+      "sha256": "3119868e3b4e9cf1ffa11d1288d37b485fefa42d6721c722273c9cd4729f6570"
+    },
+    {
+      "id": "block_flow_1302_00083",
+      "sha256": "126846cab4f455c707be335d57ac71d8c5fce8865e510d45deb004be96de71bd"
+    },
+    {
+      "id": "block_flow_1302_00150",
+      "sha256": "5ffa6b7cd496c4ece9bc191c133c90b53bbc7d044466dae89fb41af0b8899672"
+    },
+    {
+      "id": "cycle_1302_00122",
+      "sha256": "2dfde60111f68cc0ea68c7b5f4b027872a5d279048d955310b06458bb4f2996a"
+    },
+    {
+      "id": "graph_1302_00029",
+      "sha256": "9b4396663b7ff886b32d1bd7be4827a89421283fe76b5dab52f9408bcc1548d0"
+    },
+    {
+      "id": "graph_1302_00063",
+      "sha256": "4889e1b304787c0ab445c57d1503d770fe26367d6b75bb9cabaa8fc3e4360553"
+    },
+    {
+      "id": "layered_stack_1302_00006",
+      "sha256": "268fdeff3617ea34e59166fa170c55f7d2cac98f4f49e80bac98f61f289534ba"
+    },
+    {
+      "id": "layered_stack_1302_00120",
+      "sha256": "e5a5de95e25ed66288e96400bf7fe9faf2225ff7532ed9f3bbd77a1684a06291"
+    },
+    {
+      "id": "layered_stack_1302_00154",
+      "sha256": "749f2d954de5786da2a9441f63a43bdb68cf7429dbdcee26a6c3882c768ac906"
+    },
+    {
+      "id": "orthogonal_flow_1302_00087",
+      "sha256": "ad7d724efc41b4151e277e7c0cb2b331855833d54fc7a35e19fbf38596080e09"
+    },
+    {
+      "id": "table_matrix_1302_00025",
+      "sha256": "65eb10f723989a6f9d3b7a7561a6a25d64b50b3e1482a5b1a6015284ac0e5dc2"
+    },
+    {
+      "id": "table_matrix_1302_00174",
+      "sha256": "035ea15fd77c0c970bcd218c93e97863cca326d2515086746c28fb2df5f62b0f"
+    },
+    {
+      "id": "tree_1302_00036",
+      "sha256": "42067ce8c8999b1c77785351a7c1dda8e5ca27e37ff6d8b078a27a30651a8b9a"
+    },
+    {
+      "id": "tree_1302_00079",
+      "sha256": "86c2e2a1822e1afd0076af4f31d4654a140e2c2bb2b53c19f8405f8af3556012"
+    },
+    {
+      "id": "tree_1302_00149",
+      "sha256": "fc6176d831e32ea74a3fc88fb13b4090700e5816b35eaa00f1f5e1edca802df8"
+    }
+  ],
+  "visual_review": {
+    "reviewed_all_15": true,
+    "sheets": {
+      "artifacts\\region-image-only-r8\\shared-val-baseline\\review\\contact-0.png": "fb0cf74f4b632e809dd1fc8964c278c4ba4ae6b787bfc257d55d98f452f2b43a",
+      "artifacts\\region-image-only-r8\\shared-val-baseline\\review\\contact-1.png": "29e702d3edfd15273461e27861ea232d6b6ab379875f7996f80a812638f9033b",
+      "artifacts\\region-image-only-r8\\shared-val-baseline\\review\\contact-2.png": "96af40175eb022ed7b8bf4da3f9a8f280094bd747dec0f469b4bac7cdd8da88c"
+    },
+    "findings": [
+      "Cycle: false large ellipse and merged labels",
+      "Graph: false owners and incorrect directions",
+      "Three text-only trees blank",
+      "Some simple chains useful; many connections omitted"
+    ]
+  }
+}
