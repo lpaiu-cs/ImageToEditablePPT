@@ -3,6 +3,7 @@ from dataclasses import replace
 import cv2
 import numpy as np
 import pytest
+from PIL import Image,ImageDraw
 
 from image_to_editable_ppt.research.box_terminals import observe_terminal,recover_box_terminals
 from image_to_editable_ppt.v3.core.enums import NodeKind,PortOwnerKind,ConnectorKind
@@ -69,3 +70,22 @@ def test_only_direction_flags_of_b_verified_edge_change():
     assert replace(changed,connectors=scene.connectors)==scene
     conflicting=replace(scene,connectors=(replace(edge,arrowhead_start=True),))
     assert recover_box_terminals(conflicting,rgb,{'connectors':{'e':{'decision':'refined'}}})[0]==conflicting
+
+
+@pytest.mark.parametrize('angle',[0,30,90])
+@pytest.mark.parametrize('scale',[.75,1,1.5])
+@pytest.mark.parametrize('aa',[1,4])
+def test_complete_compact_t_body_not_only_solid_tail(angle,scale,aa):
+    r=scale*aa;im=Image.new('RGB',(round(360*r),)*2,'white');d=ImageDraw.Draw(im)
+    theta=np.deg2rad(angle);u=np.array([np.cos(theta),np.sin(theta)]);v=np.array([-u[1],u[0]])
+    def point(x,y=0):return np.array([180,180])+x*u+y*v
+    def line(points):d.line([tuple(point(x,y)*r) for x,y in points],fill='black',width=max(1,round(2*r)))
+    inset=16/max(abs(u));lo,hi=-100+inset,100-inset
+    line([(lo,0),(hi,0)]);line([(hi-4,-4),(hi-4,4)]);line([(hi-7,-4),(hi-1,-4)])
+    boxes=[]
+    for t in [-100,100]:
+        center=point(t);box=[*(center-16),*(center+16)];boxes.append([x*scale for x in box])
+        d.rectangle(tuple(x*r for x in box),outline='black',width=max(1,round(2*r)))
+    if aa!=1:im=im.resize((round(360*scale),)*2,Image.Resampling.LANCZOS)
+    points=[(point(lo)*scale).tolist(),(point(hi)*scale).tolist()]
+    assert observe_terminal(np.asarray(im),points,boxes)[0] is None

@@ -9,7 +9,7 @@ from image_to_editable_ppt.research.source_rays import _head
 from image_to_editable_ppt.research.source_centerline_v2 import pixel_cell_support
 
 
-def _filled_triangle(t,v,length,width,scale,cell,reverse=False):
+def _filled_triangle(t,v,length,width,scale,cell,original_pixels,reverse=False):
     """A filled wedge may meet a border before its very last raster tip cell."""
     along=length-t if reverse else t
     across=-v if reverse else v
@@ -18,15 +18,24 @@ def _filled_triangle(t,v,length,width,scale,cell,reverse=False):
     if peak<2 or len(profile)-peak<3 or len(profile)-peak>12 or profile[peak]<max(1.6*width,width+2*scale):
         return False,dict(coarse,triangle_reason='no_wedge_base')
     left=float(along.max())-16*scale+peak*step
-    selected=along>=left-cell/2
-    points=np.column_stack([along[selected],across[selected]]).astype(np.float32)
-    hull=cv2.convexHull(points)
-    hull_area=float(cv2.contourArea(hull))
-    # Each original pixel has unit area. The convex hull is expanded by its
-    # physical half-cell boundary (Steiner bound), avoiding center-only >1 ratios.
-    physical_area=hull_area+cv2.arcLength(hull,True)/2+1
-    solidity=float(len(points)/max(1,physical_area))
-    if solidity<.80:return False,dict(coarse,triangle_reason='unfilled_terminal',solidity=solidity)
+    # Verify the WHOLE terminal enlargement, not just the tail after its widest
+    # bin. A T glyph can look solid if its earlier empty arms are cropped away.
+    body_start=peak
+    while body_start>0 and profile[body_start-1]>=max(1.6*width,width+2*scale):
+        body_start-=1
+    body_left=float(along.max())-16*scale+body_start*step
+    selected=along>=body_left-cell/2
+    points=original_pixels[selected].astype(np.int32)
+    points-=points.min(axis=0)
+    ink=np.zeros((points[:,1].max()+3,points[:,0].max()+3),np.uint8)
+    points+=1;ink[points[:,1],points[:,0]]=1
+    hull=np.zeros_like(ink)
+    cv2.fillConvexPoly(hull,cv2.convexHull(points),1)
+    core=cv2.erode(hull,np.ones((3,3),np.uint8))
+    core_pixels=int(core.sum())
+    solidity=float((core&ink).sum()/max(1,core_pixels))
+    if core_pixels<4 or solidity<.95:
+        return False,dict(coarse,triangle_reason='unfilled_terminal_core',solidity=solidity,core_pixels=core_pixels)
     rows=[]
     for x in np.arange(left,float(along.max())+.01,step):
         values=across[(along+cell/2>x)&(along-cell/2<x+step)]
@@ -40,7 +49,7 @@ def _filled_triangle(t,v,length,width,scale,cell,reverse=False):
     if low[0]<=.15 or high[0]>=-.15 or residual>max(1.,scale):
         return False,dict(coarse,triangle_reason='unsupported_triangle_sides',solidity=solidity,residual=residual)
     apex=float((high[1]-low[1])/(low[0]-high[0]));apex_v=float(low[0]*apex+low[1])
-    extension=apex-float(along.max())
+    extension=apex-(float(along.max())+cell/2)
     accepted=-cell<=extension<=4*scale and abs(apex_v)<=width/2+cell
     return accepted,dict(coarse,triangle_reason='supported_filled_wedge' if accepted else 'unsupported_apex',
         solidity=solidity,side_residual=residual,apex_extension=extension,apex_across=apex_v)
@@ -82,12 +91,13 @@ def observe_terminal(rgb,points,boxes):
     selected=inside&(ids==keys[0])
     if (inside&(abs(v)<=8*s)&(ids!=keys[0])).any():return None,dict(reason='separate_terminal_ink')
     if abs(v[selected]).max()>8*s or abs(v[mid]).max()>3*s:return None,dict(reason='branch_or_contact')
+    original_pixels=pixels[selected]
     t,v=t[selected],v[selected]
     coverage,gap=pixel_cell_support(t,axis)
     if coverage<.95 or gap>2*s:return None,dict(reason='unsupported_terminal_continuity')
     width=float(mid.sum()/max(1,length-32*s));cell=float(abs(axis).sum())
-    end,ea=_filled_triangle(t,v,length,width,s,cell)
-    start,sa=_filled_triangle(t,v,length,width,s,cell,reverse=True)
+    end,ea=_filled_triangle(t,v,length,width,s,cell,original_pixels)
+    start,sa=_filled_triangle(t,v,length,width,s,cell,original_pixels,reverse=True)
     audit=dict(start=sa,end=ea,shaft_width=width,coverage=coverage,max_gap=gap)
     if start==end:return None,dict(audit,reason='no_unique_observed_head')
     opposite=ea if start else sa

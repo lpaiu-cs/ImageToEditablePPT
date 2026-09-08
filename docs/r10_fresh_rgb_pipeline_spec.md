@@ -19,3 +19,5 @@ R10의현재44TP/2FP/23FN,87정답label/0오답/4공백은기존검출예측에�
 `tools/convert_source_evidence.py --image <RGB 파일> --checkpoint <7-class checkpoint> --output <새 출력 디렉터리> --acknowledge-legacy-research-model`로 검출부터 native PPT까지 새로 실행한다. 기존 15개 검증 묶음 제한은 기본 검출 명령에 유지하고, 명시적인 `--user-images` 경로만 다른 입력 수를 허용한다. 사용자 이미지 실행은 holdout으로 표시하지 않는다.
 
 원본 RGB를 묵시적으로 합성/색변환하지 않고, 기존 출력 디렉터리를 덮어쓰지 않는다. 기존 모델의 클래스 훈련 이력 미기록·ellipse 미지원은 그대로이며 위 플래그는 사용자가 해당 연구 모델을 선택했다는 뜻이지 제품 승인 표시가 아니다. 출력의 detector/에는 새 forward 실행 증거, native/에는 RGB·단계별 감사·PPT가 남는다. 평가용 주석이나 정답 PPT 경로는 이 명령에 없다.
+
+원본 윤곽/박스 연결 개선은 `--closed-nodes --box-centerlines --box-terminals`로 명시한다. 마지막 옵션은 B가 확인한 경로에서만 촉을 관측하므로 `--box-centerlines`가 필수다. 아직 연구 옵션이며 기존 제품 기본 동작은 바꾸지 않았다. `run_fresh_source_evidence_batch.py`는 같은 옵션으로 고정15 RGB manifest의 검출부터 전체 경로를 재실행한다.

@@ -40,12 +40,13 @@ def detector_scene(rgb,objects):
     return EmitScene(ImageSize(w,h),shapes=tuple(shapes),source='research:rgb_source_evidence')
 
 
-def reconstruct(rgb,objects,output,*,engine=None,closed_nodes=False):
+def reconstruct(rgb,objects,output,*,engine=None,closed_nodes=False,box_centerlines=False,box_terminals=False):
     """Create editable native PPT, returning full image-derived stage evidence.
 
     The caller runs the detector and supplies bound objects; this function never
     loads saved scene predictions, annotations, ground-truth text, or a source PPT.
     """
+    if box_terminals and not box_centerlines:raise ValueError('terminals require box centerline evidence')
     prediction=detector_scene(rgb,objects)
     engine=_load_engine() if engine is None else engine
     labeled,initial_text=recover_labels(prediction,rgb,engine=engine)
@@ -56,6 +57,13 @@ def reconstruct(rgb,objects,output,*,engine=None,closed_nodes=False):
     scene,_,trace=trace_with_centerlines(selected,rgb)
     scene,rays=add_source_rays(scene,rgb)
     scene,text=recover_spatial_text(scene,rgb,engine)
+    box_audit=None;terminal_audit=None
+    if box_centerlines:
+        from image_to_editable_ppt.research.box_centerline_b_v1 import refine_box_centerlines
+        scene,box_audit=refine_box_centerlines(scene,rgb)
+    if box_terminals:
+        from image_to_editable_ppt.research.box_terminals import recover_box_terminals
+        scene,terminal_audit=recover_box_terminals(scene,rgb,box_audit)
     closed_audit=None
     styles=sample_shape_styles(rgb,scene)
     if closed_nodes:
@@ -67,6 +75,7 @@ def reconstruct(rgb,objects,output,*,engine=None,closed_nodes=False):
         source_scene=asdict(scene),prediction_scene=asdict(prediction),emitted_scene=asdict(emitted),normalization_scale=scale,
         initial_text_audit=initial_text,anchor_text_audit=anchor_text,spatial_ocr=observations,
         owner_audit=owner_audit,tracing_audit=trace,source_ray_audit=rays,spatial_text_audit=text,closed_node_audit=closed_audit,emission=emission,
+        box_centerline_audit=box_audit,box_terminal_audit=terminal_audit,
         counts=dict(nodes=sum(s.owner_kind is PortOwnerKind.NODE for s in emitted.shapes),
             containers=sum(s.owner_kind is PortOwnerKind.CONTAINER for s in emitted.shapes),connectors=len(emitted.connectors),
             labels=sum(bool(s.label) for s in emitted.shapes),omitted_connectors=len(emission['rejected_connectors'])))
