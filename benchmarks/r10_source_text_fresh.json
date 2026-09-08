@@ -1,0 +1,21 @@
+{
+  "schema": "r10_source_text_fresh_results_v1",
+  "population": "previously exposed synthetic validation 15; not unseen acceptance",
+  "cached_arm": {
+    "root": "artifacts/region-image-only-r10/spatial-text-context",
+    "lock_sha256": "e6bb10b0a782cf0f2771b4803bb6334055279f59f058295b09f4824deb16111e",
+    "results_sha256": "fe2a679f260fc9711099a30d7f9ecc56e275b1879a1954b8a2df545dc6d7626e",
+    "evaluation_sha256": "6cc87fdfeef5ac1c9a8893214c32c4eded5a7138abf062843055e15919b2b051"
+  },
+  "fresh_arm": {
+    "root": "artifacts/region-image-only-r10/fresh-rgb-native",
+    "lock_sha256": "488ac482256c18bd28de679d64f8d662267e6f92bcb0ac0b9201fb0bac61b078",
+    "results_sha256": "041d350966fc28f5445dd0ffda4fb61709ae59b5bcab9fc4d555e360daa95828",
+    "evaluation_sha256": "7242cb8c8a09910256ded800b85fa55dee0d162931fc0453ddff19b77edd9298"
+  },
+  "powerpoint_render_byte_parity": {"equal": 15, "total": 15},
+  "native_edges": {"tp": 44, "fp": 2, "fn": 23},
+  "labels": {"correct": 87, "wrong": 0, "blank": 4},
+  "product_approval": false,
+  "remaining_work": ["closed RGB node shape/style verification", "box trace centerline and terminal evidence", "unseen image generalization", "human edit-time calibration"]
+}
