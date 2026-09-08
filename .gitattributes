@@ -32,3 +32,6 @@ tools/run_anchor_attachment_probe.py -text
 docs/label_anchor_attachment_r8a_spec.md -text
 benchmarks/region_r8a_*.json -text
 tools/diagnose_r8a_trace_fit.py -text
+src/image_to_editable_ppt/research/source_centerline.py -text
+tests/test_source_centerline.py -text
+benchmarks/r9_centerline_v1_controls.json -text

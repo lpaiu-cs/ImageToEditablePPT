@@ -1,0 +1,22 @@
+{
+  "phase": "R9-C v1",
+  "verdict": "fixture_gate_failed_do_not_run_real15",
+  "preregistration_commit": "c3fbbd9",
+  "implementation_and_fixture_lock_commit": "2188a91",
+  "code_sha256": "0eee907f002f4b8e15f7a5a4a78a292cd33ff0eb53863ca5e76fe03d95f02678",
+  "test_sha256": "9d1288fd4cefd9d03fc7914047c2026fefce6f823a6a0dab96915d657c7b31ea",
+  "positive_controls": {"total": 24, "passed": 18, "failed": 6},
+  "negative_controls": {"total": 10, "passed": 10, "failed": 0},
+  "helper_tests_passed": 1,
+  "pytest": {"passed": 29, "failed": 6},
+  "failures": {
+    "subpixel_bin_point_occupancy": {"count": 4, "scale": 0.75, "occupancy": 0.7552447552447552},
+    "raster_vs_continuous_expected_line": {"count": 2, "scale": 1.5, "endpoint_difference_px": 1}
+  },
+  "post_run_environment_snapshot": {"opencv": "5.0.0", "numpy": "2.5.2"},
+  "real15_run": false,
+  "candidate_ppt_emitted": false,
+  "wrapper_gate_completed": false,
+  "product_changed": false,
+  "parameters_changed_after_outcome": false
+}
