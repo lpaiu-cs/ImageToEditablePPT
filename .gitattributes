@@ -3,4 +3,14 @@
 benchmarks/region_complex_r5_inputs_v*.json -text
 benchmarks/region_complex_r5_evidence_v2.json -text
 benchmarks/region_r6_*.json -text
+benchmarks/region_r7_*.json -text
+benchmarks/region_r7_annotations/*.json -text
+src/image_to_editable_ppt/research/accepted_owners.py -text
+tools/run_region_r7.py -text
+docs/region_accepted_owners_r7_spec.md -text
+benchmarks/region_r7b_*.json -text
+src/image_to_editable_ppt/research/ownership_guards.py -text
+tools/run_region_r7b.py -text
+docs/region_ownership_guards_r7b_spec.md -text
+tests/test_region_r7b.py -text
 src/image_to_editable_ppt/region/*.py -text

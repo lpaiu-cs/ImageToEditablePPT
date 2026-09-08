@@ -1,0 +1,250 @@
+{
+  "schema": "r7_source_roles_v1",
+  "population": "consumed_development",
+  "id": "P084",
+  "source_path": "artifacts/phase16-sample-pool-v1/images/P084-blob_data_3400.png",
+  "source_sha256": "5ef6f2f495bdd86e362437459ef7adc29b6bef17033e0e61795062c030d7c0a9",
+  "source_size": [
+    702,
+    452
+  ],
+  "coordinate_space": "original_pixels",
+  "view_to_source": {
+    "scale": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "view_size": [
+      702,
+      452
+    ]
+  },
+  "scope": [
+    0,
+    0,
+    702,
+    452
+  ],
+  "coverage_note": "명시한 영역의 구조적 소유 객체 전체. 비구조 내부 그림은 제외.",
+  "objects": [
+    {
+      "id": "existing",
+      "role": "node",
+      "bbox": [
+        0,
+        1,
+        112,
+        102
+      ],
+      "parent": null,
+      "geometry": "cylinder",
+      "closed": true,
+      "label": "existing datasets"
+    },
+    {
+      "id": "labeled",
+      "role": "node",
+      "bbox": [
+        11,
+        180,
+        122,
+        280
+      ],
+      "parent": null,
+      "geometry": "cylinder",
+      "closed": true,
+      "label": "labeled tweets"
+    },
+    {
+      "id": "keywords",
+      "role": "node",
+      "bbox": [
+        534,
+        1,
+        646,
+        103
+      ],
+      "parent": null,
+      "geometry": "cylinder",
+      "closed": true,
+      "label": "keywords"
+    },
+    {
+      "id": "unlabeled",
+      "role": "node",
+      "bbox": [
+        531,
+        166,
+        702,
+        317
+      ],
+      "parent": null,
+      "geometry": "cylinder",
+      "closed": true,
+      "label": "Unlabeled tweets"
+    },
+    {
+      "id": "model",
+      "role": "node",
+      "bbox": [
+        241,
+        61,
+        432,
+        192
+      ],
+      "parent": null,
+      "geometry": "rounded_box",
+      "closed": true,
+      "label": "Deep learning models"
+    },
+    {
+      "id": "annotation",
+      "role": "node",
+      "bbox": [
+        138,
+        285,
+        299,
+        446
+      ],
+      "parent": null,
+      "geometry": "rounded_box",
+      "closed": true,
+      "label": "Annotation"
+    },
+    {
+      "id": "batch",
+      "role": "node",
+      "bbox": [
+        351,
+        285,
+        512,
+        446
+      ],
+      "parent": null,
+      "geometry": "rounded_box",
+      "closed": true,
+      "label": "Batch generation & tweet selection"
+    },
+    {
+      "id": "icon-existing",
+      "role": "nonstructural",
+      "bbox": [
+        39,
+        67,
+        74,
+        99
+      ],
+      "parent": "existing"
+    },
+    {
+      "id": "icon-labeled",
+      "role": "nonstructural",
+      "bbox": [
+        49,
+        243,
+        84,
+        277
+      ],
+      "parent": "labeled"
+    },
+    {
+      "id": "icon-unlabeled",
+      "role": "nonstructural",
+      "bbox": [
+        589,
+        252,
+        642,
+        308
+      ],
+      "parent": "unlabeled"
+    },
+    {
+      "id": "network-illustration",
+      "role": "nonstructural",
+      "bbox": [
+        268,
+        96,
+        405,
+        178
+      ],
+      "parent": "model"
+    },
+    {
+      "id": "person-illustration",
+      "role": "nonstructural",
+      "bbox": [
+        176,
+        343,
+        261,
+        430
+      ],
+      "parent": "annotation"
+    },
+    {
+      "id": "form-illustration",
+      "role": "nonstructural",
+      "bbox": [
+        393,
+        338,
+        470,
+        433
+      ],
+      "parent": "batch"
+    }
+  ],
+  "relations": [
+    {
+      "id": "existing-model",
+      "source": "existing",
+      "target": "model",
+      "style": "dashed",
+      "directed": true
+    },
+    {
+      "id": "labeled-model",
+      "source": "labeled",
+      "target": "model",
+      "style": "solid",
+      "directed": true
+    },
+    {
+      "id": "model-unlabeled",
+      "source": "model",
+      "target": "unlabeled",
+      "style": "solid",
+      "directed": true
+    },
+    {
+      "id": "keywords-unlabeled",
+      "source": "keywords",
+      "target": "unlabeled",
+      "style": "dashed",
+      "directed": true
+    },
+    {
+      "id": "unlabeled-batch",
+      "source": "unlabeled",
+      "target": "batch",
+      "style": "solid",
+      "directed": true
+    },
+    {
+      "id": "batch-annotation",
+      "source": "batch",
+      "target": "annotation",
+      "style": "solid",
+      "directed": true
+    },
+    {
+      "id": "annotation-labeled",
+      "source": "annotation",
+      "target": "labeled",
+      "style": "solid",
+      "directed": true
+    }
+  ]
+}

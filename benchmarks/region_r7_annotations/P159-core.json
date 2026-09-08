@@ -1,0 +1,195 @@
+{
+  "schema": "r7_source_roles_v1",
+  "population": "consumed_development",
+  "id": "P159-core",
+  "source_path": "artifacts/phase16-sample-pool-v1/images/P159-blob_data_4457.png",
+  "source_sha256": "3e30cdb26831f91113eab7a9776b36431b9c1dc4a65379db6d897df86baf1fdb",
+  "source_size": [
+    1098,
+    1087
+  ],
+  "coordinate_space": "original_pixels",
+  "view_to_source": {
+    "scale": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "view_size": [
+      1098,
+      1087
+    ]
+  },
+  "scope": [
+    480,
+    110,
+    1098,
+    1000
+  ],
+  "coverage_note": "오른쪽 닫힌 연산 노드와 직접 연결 5개만 주석. 열린 잔차 구획과 합산 기호는 소유 객체 미지원.",
+  "objects": [
+    {
+      "id": "pool",
+      "role": "node",
+      "bbox": [
+        620,
+        131,
+        863,
+        192
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": "Pooling"
+    },
+    {
+      "id": "linear",
+      "role": "node",
+      "bbox": [
+        620,
+        239,
+        863,
+        300
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": "Linear Layer"
+    },
+    {
+      "id": "attention",
+      "role": "node",
+      "bbox": [
+        505,
+        341,
+        978,
+        402
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": "Label Attention Layer"
+    },
+    {
+      "id": "wn-upper",
+      "role": "node",
+      "bbox": [
+        506,
+        567,
+        978,
+        627
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": "WeightNorm, ReLU, Dropout"
+    },
+    {
+      "id": "conv-upper",
+      "role": "node",
+      "bbox": [
+        506,
+        666,
+        978,
+        726
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": "Dilated Convolution Layer"
+    },
+    {
+      "id": "wn-lower",
+      "role": "node",
+      "bbox": [
+        505,
+        763,
+        978,
+        823
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": "WeightNorm, ReLU, Dropout"
+    },
+    {
+      "id": "conv-lower",
+      "role": "node",
+      "bbox": [
+        505,
+        859,
+        978,
+        920
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": "Dilated Convolution Layer"
+    },
+    {
+      "id": "residual",
+      "role": "node",
+      "bbox": [
+        989,
+        728,
+        1088,
+        819
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": "Res. Conn."
+    },
+    {
+      "id": "sum-junction",
+      "role": "unknown",
+      "bbox": [
+        1010,
+        573,
+        1061,
+        626
+      ],
+      "parent": null
+    }
+  ],
+  "relations": [
+    {
+      "id": "attention-linear",
+      "source": "attention",
+      "target": "linear",
+      "style": "solid",
+      "directed": true
+    },
+    {
+      "id": "linear-pool",
+      "source": "linear",
+      "target": "pool",
+      "style": "solid",
+      "directed": true
+    },
+    {
+      "id": "conv-lower-wn-lower",
+      "source": "conv-lower",
+      "target": "wn-lower",
+      "style": "solid",
+      "directed": true
+    },
+    {
+      "id": "wn-lower-conv-upper",
+      "source": "wn-lower",
+      "target": "conv-upper",
+      "style": "solid",
+      "directed": true
+    },
+    {
+      "id": "conv-upper-wn-upper",
+      "source": "conv-upper",
+      "target": "wn-upper",
+      "style": "solid",
+      "directed": true
+    }
+  ]
+}

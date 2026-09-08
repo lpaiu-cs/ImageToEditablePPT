@@ -1,0 +1,37 @@
+{
+  "schema": "r7_oracle_lock_v1",
+  "population": "consumed_development",
+  "promotion": false,
+  "baseline": "0b9c699",
+  "files": {
+    "benchmarks\\region_r7_annotations\\P009.json": "f5133d0a0f9e4638bd7e969a45d948a115f2edaaaa3177ea0cb093f1e0883496",
+    "benchmarks\\region_r7_annotations\\p058-llms.json": "97c75067e6bfb183a087c5eeece4f792a3963e455faf368c1fc547ff6ee92b43",
+    "benchmarks\\region_r7_annotations\\P084.json": "44149fef6711ca02fc5859deee14cb64252c2368d34decad5ab569605c556d5f",
+    "benchmarks\\region_r7_annotations\\P159-core.json": "4712296d0ef7ca59cafca340a910beb09e6d69be0af5057200afa631cde77aab",
+    "tools\\run_region_r7.py": "f0139ff2566d953e88a29b59093a4927b9ab4161db95ee8ce15d035124dfb538",
+    "src\\image_to_editable_ppt\\research\\accepted_owners.py": "812cd7526e04110d222064fd2a9b9c0f67f3e601658caba351f5fe840b5d794c",
+    "docs\\region_accepted_owners_r7_spec.md": "d161c83acd80172aa360b34226f7d6a065c84d7df479164c1a9b314833005fcc",
+    "artifacts\\region-accepted-owners-r7\\annotation-review\\P009.png": "3659612a0388eed89ad33c25f8883d336bbaa831f7688bab2fa5ab1f7c09d9d4",
+    "artifacts\\region-accepted-owners-r7\\annotation-review\\p058-llms.png": "86ccca3e76463aba6dab736ab41249222d34e65c9171edb0effd41d6e8cb6e22",
+    "artifacts\\region-accepted-owners-r7\\annotation-review\\P084.png": "25d8db3417bfa26f5b641e38afcaa5287e8ae616bb43578fcea7fc2190f501a0",
+    "artifacts\\region-accepted-owners-r7\\annotation-review\\P159-core.png": "dc664d69ede536f431e11fe5f7e647f0f54f8af758162e0557939edf40b7ac52"
+  },
+  "baseline_runtime": {
+    "runtime_sha256": {
+      "src\\image_to_editable_ppt\\region\\convert.py": "b46ac1e16cc427ec7a2a78f1564ba56325c079cc95c434a4fa3cfa39de195649",
+      "src\\image_to_editable_ppt\\region\\emitter.py": "91110891fa0273cc535a5dcf2496dd4b203bfa987ba710e673d843affb035e50",
+      "src\\image_to_editable_ppt\\region\\geometry.py": "bd45c584710bd905fc82de7dc99c34d4fd21f34b73a03cd86d746cda1ac1052f",
+      "src\\image_to_editable_ppt\\region\\identity.py": "26175f248181dfa94977eeef7213c664fc5e0acec8eafe814670fa2b61d805b1",
+      "src\\image_to_editable_ppt\\region\\proposals.py": "083ca9d9317e51fc1f2778b1154355ed7977b8d50716e1e1e8c4ec9bc9fb8558",
+      "src\\image_to_editable_ppt\\region\\strokes.py": "1b02221d6a985290d73d5e3f33a53d60d5e37f6f8ae5991f6959c56acaf20d9f",
+      "src\\image_to_editable_ppt\\region\\text.py": "0f9dcea9d120a5e9c78a79099b77adde238d5396e2e4b7e3f4db9a90b434fbd9",
+      "src\\image_to_editable_ppt\\region\\tracing.py": "11e2072da8b9f2cd8172609e0319c10112b21a31073394c6b9fc3cc8d350f11b",
+      "src\\image_to_editable_ppt\\region\\_native_geometry.py": "21010ea5a93cfac746621ab60bd14892c34e6754e9a139edb833d9ad601b64a4",
+      "src\\image_to_editable_ppt\\region\\_path_fit.py": "12864fba06c1538a486c7b46e60b0e904f87c9c59bd9974d7b82c3203fac1e44",
+      "src\\image_to_editable_ppt\\region\\_selection_base.py": "82858ed4240e496a3b856cebf32104d96e06cbf0fef24f86ece0c93a340459e6",
+      "src\\image_to_editable_ppt\\region\\_selection_local.py": "41d241112ad3b4c22f90b4d5b02bd04ee741a9ba73a4ed99010f8c91bb6c91c4",
+      "src\\image_to_editable_ppt\\region\\__init__.py": "daa97ae44e1472164682202b6d4bf986c2576eebeea508f24f341d7c8f95d1ad"
+    },
+    "cli_sha256": "ee7b3b2d2b48b599fe89c1ecae69e30aece143cefbb7c873eac4ecddc0acc2c3"
+  }
+}

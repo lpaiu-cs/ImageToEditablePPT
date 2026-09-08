@@ -1,0 +1,120 @@
+{
+  "schema": "r7_source_roles_v1",
+  "population": "consumed_development",
+  "id": "p058-llms",
+  "source_path": "data/phase16_dev_v1/phase16-dev-p058.png",
+  "source_sha256": "7fe4595a79760df391e9a2d472739ceb4bec615a57c83fbafd2e015611654c8e",
+  "source_size": [
+    1498,
+    1028
+  ],
+  "coordinate_space": "original_pixels",
+  "view_to_source": {
+    "scale": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "view_size": [
+      1498,
+      1028
+    ]
+  },
+  "scope": [
+    470,
+    190,
+    1015,
+    575
+  ],
+  "coverage_note": "명시한 영역의 구조적 소유 객체 전체. 비구조 내부 그림은 제외.",
+  "objects": [
+    {
+      "id": "llms",
+      "role": "container",
+      "bbox": [
+        486,
+        202,
+        1006,
+        563
+      ],
+      "parent": null,
+      "geometry": "box",
+      "closed": true,
+      "label": null
+    },
+    {
+      "id": "apis",
+      "role": "container",
+      "bbox": [
+        506,
+        282,
+        727,
+        543
+      ],
+      "parent": "llms",
+      "geometry": "box",
+      "closed": true,
+      "label": null
+    },
+    {
+      "id": "our-model",
+      "role": "container",
+      "bbox": [
+        766,
+        282,
+        986,
+        543
+      ],
+      "parent": "llms",
+      "geometry": "box",
+      "closed": true,
+      "label": null
+    },
+    {
+      "id": "gpt",
+      "role": "node",
+      "bbox": [
+        546,
+        382,
+        686,
+        443
+      ],
+      "parent": "apis",
+      "geometry": "rounded_box",
+      "closed": true,
+      "label": "GPT 4.0"
+    },
+    {
+      "id": "llama",
+      "role": "node",
+      "bbox": [
+        546,
+        462,
+        686,
+        523
+      ],
+      "parent": "apis",
+      "geometry": "rounded_box",
+      "closed": true,
+      "label": "LLaMA"
+    },
+    {
+      "id": "cfllm",
+      "role": "node",
+      "bbox": [
+        786,
+        372,
+        966,
+        533
+      ],
+      "parent": "our-model",
+      "geometry": "rounded_box",
+      "closed": true,
+      "label": "CFLLM-ins-7B"
+    }
+  ],
+  "relations": []
+}

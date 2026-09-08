@@ -1,0 +1,1823 @@
+{
+  "schema": "r7_oracle_evidence_v1",
+  "population": "consumed_development",
+  "promotion": false,
+  "lock_sha256": "a9bd24138965f3ceb90a20dc76f8a43a8001784695230b1e9691dfa2a2a635d4",
+  "results_sha256": "424e8d37645897d31161b4d584bf34902ce70d26a339bdf1c26100db33b9e3c6",
+  "render_manifest_sha256": "f39d7f07c076ee6d0fd01e20cf0feb8d6d6a3297e66806c3defe7c93e196ddc3",
+  "records": [
+    {
+      "id": "P009",
+      "source_sha256": "f9b9571896da52627a7e974e3b5397192010d26ff9a9c60a0f10a3eb03cc6ab7",
+      "annotation_sha256": "f5133d0a0f9e4638bd7e969a45d948a115f2edaaaa3177ea0cb093f1e0883496",
+      "global_proposals": {
+        "candidates": 3,
+        "total_targets": 0,
+        "matched": 0,
+        "supported_targets": 0,
+        "supported_matched": 0,
+        "missing": [],
+        "unmatched_candidates": 3,
+        "role_errors": [],
+        "excluded_candidates": [
+          "node:region:0",
+          "node:region:1",
+          "node:region:2"
+        ]
+      },
+      "local_proposals": {
+        "candidates": 5,
+        "total_targets": 0,
+        "matched": 0,
+        "supported_targets": 0,
+        "supported_matched": 0,
+        "missing": [],
+        "unmatched_candidates": 5,
+        "role_errors": [],
+        "excluded_candidates": [
+          "node:region:0",
+          "node:region:1",
+          "node:region:2",
+          "local:3",
+          "local:4"
+        ]
+      },
+      "native": {
+        "r6": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "b2151f1e28e7178ce8a882914c66cf59d41a67d363e62d578de8d30bd0d8669d",
+          "render_sha256": "e34c0ab4d312d71625a90350edbac4ffb5e6bb572a7ac3bc527807584223a5e0",
+          "traced": {
+            "nodes": 3,
+            "containers": 0,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [],
+            "correct_labels": 0,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 3,
+            "containers": 0,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [],
+            "correct_labels": 0,
+            "wrong_labels": 0
+          }
+        },
+        "global-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "eb56d202c340293bbc557115ecf688e6bca7ff4aee5319311548b90215497ab2",
+          "render_sha256": "496f1a959837b0caef9df26ee557a09e42eb5e8e1cc23c522a6b557e5b45a47b",
+          "traced": {
+            "nodes": 0,
+            "containers": 0,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [],
+            "correct_labels": 0,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 0,
+            "containers": 0,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [],
+            "correct_labels": 0,
+            "wrong_labels": 0
+          }
+        },
+        "local-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "eb56d202c340293bbc557115ecf688e6bca7ff4aee5319311548b90215497ab2",
+          "render_sha256": "496f1a959837b0caef9df26ee557a09e42eb5e8e1cc23c522a6b557e5b45a47b",
+          "traced": {
+            "nodes": 0,
+            "containers": 0,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [],
+            "correct_labels": 0,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 0,
+            "containers": 0,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [],
+            "correct_labels": 0,
+            "wrong_labels": 0
+          }
+        },
+        "geometry-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "eb56d202c340293bbc557115ecf688e6bca7ff4aee5319311548b90215497ab2",
+          "render_sha256": "496f1a959837b0caef9df26ee557a09e42eb5e8e1cc23c522a6b557e5b45a47b",
+          "traced": {
+            "nodes": 0,
+            "containers": 0,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [],
+            "correct_labels": 0,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 0,
+            "containers": 0,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [],
+            "correct_labels": 0,
+            "wrong_labels": 0
+          }
+        }
+      },
+      "sheet_sha256": "872b02bf378e859c532915ad864462a8da71ea9dc9fe40f463c26643df32bef8",
+      "trace_sheet_sha256": "7139e88cf5eab08c527ffc9819f6653bc224aa311fe5e6a6f4fe07547b021482"
+    },
+    {
+      "id": "p058-llms",
+      "source_sha256": "7fe4595a79760df391e9a2d472739ceb4bec615a57c83fbafd2e015611654c8e",
+      "annotation_sha256": "97c75067e6bfb183a087c5eeece4f792a3963e455faf368c1fc547ff6ee92b43",
+      "global_proposals": {
+        "candidates": 6,
+        "total_targets": 6,
+        "matched": 6,
+        "supported_targets": 6,
+        "supported_matched": 6,
+        "missing": [],
+        "unmatched_candidates": 0,
+        "role_errors": [],
+        "excluded_candidates": []
+      },
+      "local_proposals": {
+        "candidates": 6,
+        "total_targets": 6,
+        "matched": 6,
+        "supported_targets": 6,
+        "supported_matched": 6,
+        "missing": [],
+        "unmatched_candidates": 0,
+        "role_errors": [],
+        "excluded_candidates": []
+      },
+      "native": {
+        "r6": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "7311f57bc36acf31b61e3a55cc34497d03d9c3f5c72ba8e84ad145a6d8f1df7e",
+          "render_sha256": "af1ebcee091358d170dad2c27b25ad882d14350593e58cef42dbb83f4c8d361b",
+          "traced": {
+            "nodes": 3,
+            "containers": 3,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "cfllm",
+                "expected": "CFLLM-ins-7B",
+                "actual": "CFLLM-\nins-7B",
+                "exact": true
+              },
+              {
+                "id": "gpt",
+                "expected": "GPT 4.0",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "llama",
+                "expected": "LLaMA",
+                "actual": "LLaMA",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 3,
+            "containers": 3,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "cfllm",
+                "expected": "CFLLM-ins-7B",
+                "actual": "CFLLM-\nins-7B",
+                "exact": true
+              },
+              {
+                "id": "gpt",
+                "expected": "GPT 4.0",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "llama",
+                "expected": "LLaMA",
+                "actual": "LLaMA",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          }
+        },
+        "global-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "5f174a0bf24398095564ce866d874d6624ae07c9ef0b9220d84a5ad4d6943f67",
+          "render_sha256": "4b17df8887521e2747288ee63af476d5e3681bb1e22b2beeb5ee82b8c7557942",
+          "traced": {
+            "nodes": 3,
+            "containers": 3,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "cfllm",
+                "expected": "CFLLM-ins-7B",
+                "actual": "CFLLM-\nins-7B",
+                "exact": true
+              },
+              {
+                "id": "gpt",
+                "expected": "GPT 4.0",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "llama",
+                "expected": "LLaMA",
+                "actual": "LLaMA",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 3,
+            "containers": 3,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "cfllm",
+                "expected": "CFLLM-ins-7B",
+                "actual": "CFLLM-\nins-7B",
+                "exact": true
+              },
+              {
+                "id": "gpt",
+                "expected": "GPT 4.0",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "llama",
+                "expected": "LLaMA",
+                "actual": "LLaMA",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          }
+        },
+        "local-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "355159dcf0f4b26d93ecfc0904ca3ee6ef584f93803c8df2788c6492684ced83",
+          "render_sha256": "4b17df8887521e2747288ee63af476d5e3681bb1e22b2beeb5ee82b8c7557942",
+          "traced": {
+            "nodes": 3,
+            "containers": 3,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "cfllm",
+                "expected": "CFLLM-ins-7B",
+                "actual": "CFLLM-\nins-7B",
+                "exact": true
+              },
+              {
+                "id": "gpt",
+                "expected": "GPT 4.0",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "llama",
+                "expected": "LLaMA",
+                "actual": "LLaMA",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 3,
+            "containers": 3,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "cfllm",
+                "expected": "CFLLM-ins-7B",
+                "actual": "CFLLM-\nins-7B",
+                "exact": true
+              },
+              {
+                "id": "gpt",
+                "expected": "GPT 4.0",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "llama",
+                "expected": "LLaMA",
+                "actual": "LLaMA",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          }
+        },
+        "geometry-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "77472c7905e92f48691f1c41e37a3c6ed2585376811fb3312fbced9e236bcb1e",
+          "render_sha256": "f2ed1ebe53190ecdb9804cf1953f44f21caae5c5fe2bae263022aa7f2c294bc4",
+          "traced": {
+            "nodes": 3,
+            "containers": 3,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "gpt",
+                "expected": "GPT 4.0",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "llama",
+                "expected": "LLaMA",
+                "actual": "LLaMA",
+                "exact": true
+              },
+              {
+                "id": "cfllm",
+                "expected": "CFLLM-ins-7B",
+                "actual": "CFLLM-\nins-7B",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 3,
+            "containers": 3,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "gpt",
+                "expected": "GPT 4.0",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "llama",
+                "expected": "LLaMA",
+                "actual": "LLaMA",
+                "exact": true
+              },
+              {
+                "id": "cfllm",
+                "expected": "CFLLM-ins-7B",
+                "actual": "CFLLM-\nins-7B",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          }
+        }
+      },
+      "sheet_sha256": "abcdbce061dfe9883d1338b8ca11d47463329f8434600515cfbc1feafba90814",
+      "trace_sheet_sha256": "f3e36d63a3277adb5c43fb4ca409081370889fee34f1507a6166e01a0d0e3bb3"
+    },
+    {
+      "id": "P084",
+      "source_sha256": "5ef6f2f495bdd86e362437459ef7adc29b6bef17033e0e61795062c030d7c0a9",
+      "annotation_sha256": "44149fef6711ca02fc5859deee14cb64252c2368d34decad5ab569605c556d5f",
+      "global_proposals": {
+        "candidates": 11,
+        "total_targets": 7,
+        "matched": 3,
+        "supported_targets": 3,
+        "supported_matched": 3,
+        "missing": [
+          "existing",
+          "keywords",
+          "labeled",
+          "unlabeled"
+        ],
+        "unmatched_candidates": 8,
+        "role_errors": [
+          "container:region:0"
+        ],
+        "excluded_candidates": [
+          "node:region:7",
+          "container:region:1"
+        ]
+      },
+      "local_proposals": {
+        "candidates": 12,
+        "total_targets": 7,
+        "matched": 3,
+        "supported_targets": 3,
+        "supported_matched": 3,
+        "missing": [
+          "existing",
+          "keywords",
+          "labeled",
+          "unlabeled"
+        ],
+        "unmatched_candidates": 9,
+        "role_errors": [
+          "container:region:0"
+        ],
+        "excluded_candidates": [
+          "node:region:7",
+          "container:region:1",
+          "local:11"
+        ]
+      },
+      "native": {
+        "r6": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "9eceed711af9deeb0981e208c31c4c6dcc4f74cb66434d07548aed32b650d57a",
+          "render_sha256": "dc542886712daa0b7d2b55e8518d4259267ee9c810c313e8eaac5cd75cafd8b9",
+          "traced": {
+            "nodes": 9,
+            "containers": 2,
+            "directed_tp": [],
+            "directed_fp": [
+              [
+                "model",
+                "node:region:5"
+              ],
+              [
+                "node:region:6",
+                "annotation"
+              ],
+              [
+                "node:region:6",
+                "model"
+              ]
+            ],
+            "directed_fn": [
+              [
+                "annotation",
+                "labeled"
+              ],
+              [
+                "batch",
+                "annotation"
+              ],
+              [
+                "existing",
+                "model"
+              ],
+              [
+                "keywords",
+                "unlabeled"
+              ],
+              [
+                "labeled",
+                "model"
+              ],
+              [
+                "model",
+                "unlabeled"
+              ],
+              [
+                "unlabeled",
+                "batch"
+              ]
+            ],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "model",
+                "expected": "Deep learning models",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "annotation",
+                "expected": "Annotation",
+                "actual": "Annotation",
+                "exact": true
+              },
+              {
+                "id": "batch",
+                "expected": "Batch generation & tweet selection",
+                "actual": null,
+                "exact": false
+              }
+            ],
+            "correct_labels": 1,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 9,
+            "containers": 2,
+            "directed_tp": [],
+            "directed_fp": [],
+            "directed_fn": [
+              [
+                "annotation",
+                "labeled"
+              ],
+              [
+                "batch",
+                "annotation"
+              ],
+              [
+                "existing",
+                "model"
+              ],
+              [
+                "keywords",
+                "unlabeled"
+              ],
+              [
+                "labeled",
+                "model"
+              ],
+              [
+                "model",
+                "unlabeled"
+              ],
+              [
+                "unlabeled",
+                "batch"
+              ]
+            ],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "model",
+                "expected": "Deep learning models",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "annotation",
+                "expected": "Annotation",
+                "actual": "Annotation",
+                "exact": true
+              },
+              {
+                "id": "batch",
+                "expected": "Batch generation & tweet selection",
+                "actual": null,
+                "exact": false
+              }
+            ],
+            "correct_labels": 1,
+            "wrong_labels": 0
+          }
+        },
+        "global-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "2bcda371c9d1d07d9ce21cc66414c8b2fd47b8d64e9c0b2162313f203c4d3c8a",
+          "render_sha256": "8172ba41735842c3f2cc6df76969d57e366c39915b6b44e5a0677b36fe2fe7cc",
+          "traced": {
+            "nodes": 3,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "batch",
+                "annotation"
+              ]
+            ],
+            "directed_fp": [
+              [
+                "annotation",
+                "model"
+              ],
+              [
+                "model",
+                "batch"
+              ]
+            ],
+            "directed_fn": [
+              [
+                "annotation",
+                "labeled"
+              ],
+              [
+                "existing",
+                "model"
+              ],
+              [
+                "keywords",
+                "unlabeled"
+              ],
+              [
+                "labeled",
+                "model"
+              ],
+              [
+                "model",
+                "unlabeled"
+              ],
+              [
+                "unlabeled",
+                "batch"
+              ]
+            ],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "model",
+                "expected": "Deep learning models",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "annotation",
+                "expected": "Annotation",
+                "actual": "Annotation",
+                "exact": true
+              },
+              {
+                "id": "batch",
+                "expected": "Batch generation & tweet selection",
+                "actual": "Batchgeneration&\ntweetselection",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 3,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "batch",
+                "annotation"
+              ]
+            ],
+            "directed_fp": [],
+            "directed_fn": [
+              [
+                "annotation",
+                "labeled"
+              ],
+              [
+                "existing",
+                "model"
+              ],
+              [
+                "keywords",
+                "unlabeled"
+              ],
+              [
+                "labeled",
+                "model"
+              ],
+              [
+                "model",
+                "unlabeled"
+              ],
+              [
+                "unlabeled",
+                "batch"
+              ]
+            ],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "model",
+                "expected": "Deep learning models",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "annotation",
+                "expected": "Annotation",
+                "actual": "Annotation",
+                "exact": true
+              },
+              {
+                "id": "batch",
+                "expected": "Batch generation & tweet selection",
+                "actual": "Batchgeneration&\ntweetselection",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          }
+        },
+        "local-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "2bcda371c9d1d07d9ce21cc66414c8b2fd47b8d64e9c0b2162313f203c4d3c8a",
+          "render_sha256": "8172ba41735842c3f2cc6df76969d57e366c39915b6b44e5a0677b36fe2fe7cc",
+          "traced": {
+            "nodes": 3,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "batch",
+                "annotation"
+              ]
+            ],
+            "directed_fp": [
+              [
+                "annotation",
+                "model"
+              ],
+              [
+                "model",
+                "batch"
+              ]
+            ],
+            "directed_fn": [
+              [
+                "annotation",
+                "labeled"
+              ],
+              [
+                "existing",
+                "model"
+              ],
+              [
+                "keywords",
+                "unlabeled"
+              ],
+              [
+                "labeled",
+                "model"
+              ],
+              [
+                "model",
+                "unlabeled"
+              ],
+              [
+                "unlabeled",
+                "batch"
+              ]
+            ],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "model",
+                "expected": "Deep learning models",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "annotation",
+                "expected": "Annotation",
+                "actual": "Annotation",
+                "exact": true
+              },
+              {
+                "id": "batch",
+                "expected": "Batch generation & tweet selection",
+                "actual": "Batchgeneration&\ntweetselection",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 3,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "batch",
+                "annotation"
+              ]
+            ],
+            "directed_fp": [],
+            "directed_fn": [
+              [
+                "annotation",
+                "labeled"
+              ],
+              [
+                "existing",
+                "model"
+              ],
+              [
+                "keywords",
+                "unlabeled"
+              ],
+              [
+                "labeled",
+                "model"
+              ],
+              [
+                "model",
+                "unlabeled"
+              ],
+              [
+                "unlabeled",
+                "batch"
+              ]
+            ],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "model",
+                "expected": "Deep learning models",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "annotation",
+                "expected": "Annotation",
+                "actual": "Annotation",
+                "exact": true
+              },
+              {
+                "id": "batch",
+                "expected": "Batch generation & tweet selection",
+                "actual": "Batchgeneration&\ntweetselection",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          }
+        },
+        "geometry-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "bb42882e904eb874685623194316e8bab939133b821dff2528f15d4944e90808",
+          "render_sha256": "8172ba41735842c3f2cc6df76969d57e366c39915b6b44e5a0677b36fe2fe7cc",
+          "traced": {
+            "nodes": 3,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "batch",
+                "annotation"
+              ]
+            ],
+            "directed_fp": [
+              [
+                "annotation",
+                "model"
+              ],
+              [
+                "model",
+                "batch"
+              ]
+            ],
+            "directed_fn": [
+              [
+                "annotation",
+                "labeled"
+              ],
+              [
+                "existing",
+                "model"
+              ],
+              [
+                "keywords",
+                "unlabeled"
+              ],
+              [
+                "labeled",
+                "model"
+              ],
+              [
+                "model",
+                "unlabeled"
+              ],
+              [
+                "unlabeled",
+                "batch"
+              ]
+            ],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "model",
+                "expected": "Deep learning models",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "annotation",
+                "expected": "Annotation",
+                "actual": "Annotation",
+                "exact": true
+              },
+              {
+                "id": "batch",
+                "expected": "Batch generation & tweet selection",
+                "actual": "Batchgeneration&\ntweetselection",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 3,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "batch",
+                "annotation"
+              ]
+            ],
+            "directed_fp": [],
+            "directed_fn": [
+              [
+                "annotation",
+                "labeled"
+              ],
+              [
+                "existing",
+                "model"
+              ],
+              [
+                "keywords",
+                "unlabeled"
+              ],
+              [
+                "labeled",
+                "model"
+              ],
+              [
+                "model",
+                "unlabeled"
+              ],
+              [
+                "unlabeled",
+                "batch"
+              ]
+            ],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "model",
+                "expected": "Deep learning models",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "annotation",
+                "expected": "Annotation",
+                "actual": "Annotation",
+                "exact": true
+              },
+              {
+                "id": "batch",
+                "expected": "Batch generation & tweet selection",
+                "actual": "Batchgeneration&\ntweetselection",
+                "exact": true
+              }
+            ],
+            "correct_labels": 2,
+            "wrong_labels": 0
+          }
+        }
+      },
+      "sheet_sha256": "e94947d77561d1ebd98a8d619c401eae7dda587a2f6cb5248f5a866c2e8f5115",
+      "trace_sheet_sha256": "6652a15c3c4dfdcb56504d69cd686db40ee00b510c7a840234113a5236e3b41a"
+    },
+    {
+      "id": "P159-core",
+      "source_sha256": "3e30cdb26831f91113eab7a9776b36431b9c1dc4a65379db6d897df86baf1fdb",
+      "annotation_sha256": "4712296d0ef7ca59cafca340a910beb09e6d69be0af5057200afa631cde77aab",
+      "global_proposals": {
+        "candidates": 8,
+        "total_targets": 8,
+        "matched": 8,
+        "supported_targets": 8,
+        "supported_matched": 8,
+        "missing": [],
+        "unmatched_candidates": 0,
+        "role_errors": [],
+        "excluded_candidates": []
+      },
+      "local_proposals": {
+        "candidates": 8,
+        "total_targets": 8,
+        "matched": 8,
+        "supported_targets": 8,
+        "supported_matched": 8,
+        "missing": [],
+        "unmatched_candidates": 0,
+        "role_errors": [],
+        "excluded_candidates": []
+      },
+      "native": {
+        "r6": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "330fac1fc8101ed89891ad0851c049c82a6a182d848f397ecec5dd2a384b8070",
+          "render_sha256": "5e4c5cec11ea56e305c89871654bf6fb49ce7492b47e6956b2875ff08fdd81d5",
+          "traced": {
+            "nodes": 8,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "attention",
+                "linear"
+              ],
+              [
+                "conv-lower",
+                "wn-lower"
+              ],
+              [
+                "conv-upper",
+                "wn-upper"
+              ],
+              [
+                "linear",
+                "pool"
+              ],
+              [
+                "wn-lower",
+                "conv-upper"
+              ]
+            ],
+            "directed_fp": [
+              [
+                "residual",
+                "conv-lower"
+              ]
+            ],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "pool",
+                "expected": "Pooling",
+                "actual": "Pooling",
+                "exact": true
+              },
+              {
+                "id": "linear",
+                "expected": "Linear Layer",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "attention",
+                "expected": "Label Attention Layer",
+                "actual": "Label Attention Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-upper",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, R ReLU, Dropout",
+                "exact": false
+              },
+              {
+                "id": "conv-upper",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "residual",
+                "expected": "Res. Conn.",
+                "actual": "Res.\nConn.",
+                "exact": true
+              },
+              {
+                "id": "wn-lower",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-lower",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              }
+            ],
+            "correct_labels": 6,
+            "wrong_labels": 1
+          },
+          "emitted": {
+            "nodes": 8,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "attention",
+                "linear"
+              ],
+              [
+                "conv-lower",
+                "wn-lower"
+              ],
+              [
+                "conv-upper",
+                "wn-upper"
+              ],
+              [
+                "linear",
+                "pool"
+              ],
+              [
+                "wn-lower",
+                "conv-upper"
+              ]
+            ],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "pool",
+                "expected": "Pooling",
+                "actual": "Pooling",
+                "exact": true
+              },
+              {
+                "id": "linear",
+                "expected": "Linear Layer",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "attention",
+                "expected": "Label Attention Layer",
+                "actual": "Label Attention Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-upper",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, R ReLU, Dropout",
+                "exact": false
+              },
+              {
+                "id": "conv-upper",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "residual",
+                "expected": "Res. Conn.",
+                "actual": "Res.\nConn.",
+                "exact": true
+              },
+              {
+                "id": "wn-lower",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-lower",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              }
+            ],
+            "correct_labels": 6,
+            "wrong_labels": 1
+          }
+        },
+        "global-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "dd2c0c2e2f3fddc33291175c62bad1b6ed18553cb6edc2ac8aa2c8efdc67d52c",
+          "render_sha256": "5e4c5cec11ea56e305c89871654bf6fb49ce7492b47e6956b2875ff08fdd81d5",
+          "traced": {
+            "nodes": 8,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "attention",
+                "linear"
+              ],
+              [
+                "conv-lower",
+                "wn-lower"
+              ],
+              [
+                "conv-upper",
+                "wn-upper"
+              ],
+              [
+                "linear",
+                "pool"
+              ],
+              [
+                "wn-lower",
+                "conv-upper"
+              ]
+            ],
+            "directed_fp": [
+              [
+                "residual",
+                "conv-lower"
+              ]
+            ],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "pool",
+                "expected": "Pooling",
+                "actual": "Pooling",
+                "exact": true
+              },
+              {
+                "id": "linear",
+                "expected": "Linear Layer",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "attention",
+                "expected": "Label Attention Layer",
+                "actual": "Label Attention Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-upper",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, R ReLU, Dropout",
+                "exact": false
+              },
+              {
+                "id": "conv-upper",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "residual",
+                "expected": "Res. Conn.",
+                "actual": "Res.\nConn.",
+                "exact": true
+              },
+              {
+                "id": "wn-lower",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-lower",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              }
+            ],
+            "correct_labels": 6,
+            "wrong_labels": 1
+          },
+          "emitted": {
+            "nodes": 8,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "attention",
+                "linear"
+              ],
+              [
+                "conv-lower",
+                "wn-lower"
+              ],
+              [
+                "conv-upper",
+                "wn-upper"
+              ],
+              [
+                "linear",
+                "pool"
+              ],
+              [
+                "wn-lower",
+                "conv-upper"
+              ]
+            ],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "pool",
+                "expected": "Pooling",
+                "actual": "Pooling",
+                "exact": true
+              },
+              {
+                "id": "linear",
+                "expected": "Linear Layer",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "attention",
+                "expected": "Label Attention Layer",
+                "actual": "Label Attention Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-upper",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, R ReLU, Dropout",
+                "exact": false
+              },
+              {
+                "id": "conv-upper",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "residual",
+                "expected": "Res. Conn.",
+                "actual": "Res.\nConn.",
+                "exact": true
+              },
+              {
+                "id": "wn-lower",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-lower",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              }
+            ],
+            "correct_labels": 6,
+            "wrong_labels": 1
+          }
+        },
+        "local-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "e2f87be341d07578dc4ccb70e30327d1ab8eee7e8871801f0c7224d8276ba168",
+          "render_sha256": "5e4c5cec11ea56e305c89871654bf6fb49ce7492b47e6956b2875ff08fdd81d5",
+          "traced": {
+            "nodes": 8,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "attention",
+                "linear"
+              ],
+              [
+                "conv-lower",
+                "wn-lower"
+              ],
+              [
+                "conv-upper",
+                "wn-upper"
+              ],
+              [
+                "linear",
+                "pool"
+              ],
+              [
+                "wn-lower",
+                "conv-upper"
+              ]
+            ],
+            "directed_fp": [
+              [
+                "residual",
+                "conv-lower"
+              ]
+            ],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "pool",
+                "expected": "Pooling",
+                "actual": "Pooling",
+                "exact": true
+              },
+              {
+                "id": "linear",
+                "expected": "Linear Layer",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "attention",
+                "expected": "Label Attention Layer",
+                "actual": "Label Attention Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-upper",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, R ReLU, Dropout",
+                "exact": false
+              },
+              {
+                "id": "conv-upper",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "residual",
+                "expected": "Res. Conn.",
+                "actual": "Res.\nConn.",
+                "exact": true
+              },
+              {
+                "id": "wn-lower",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-lower",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              }
+            ],
+            "correct_labels": 6,
+            "wrong_labels": 1
+          },
+          "emitted": {
+            "nodes": 8,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "attention",
+                "linear"
+              ],
+              [
+                "conv-lower",
+                "wn-lower"
+              ],
+              [
+                "conv-upper",
+                "wn-upper"
+              ],
+              [
+                "linear",
+                "pool"
+              ],
+              [
+                "wn-lower",
+                "conv-upper"
+              ]
+            ],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "pool",
+                "expected": "Pooling",
+                "actual": "Pooling",
+                "exact": true
+              },
+              {
+                "id": "linear",
+                "expected": "Linear Layer",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "attention",
+                "expected": "Label Attention Layer",
+                "actual": "Label Attention Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-upper",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, R ReLU, Dropout",
+                "exact": false
+              },
+              {
+                "id": "conv-upper",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "residual",
+                "expected": "Res. Conn.",
+                "actual": "Res.\nConn.",
+                "exact": true
+              },
+              {
+                "id": "wn-lower",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-lower",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              }
+            ],
+            "correct_labels": 6,
+            "wrong_labels": 1
+          }
+        },
+        "geometry-oracle": {
+          "ids_exact": true,
+          "owner_bindings": true,
+          "raster_count": 0,
+          "pptx_sha256": "8cb7d0b8e150efab191d187a45eed9a8665397552ece1106d394bf7a91a0176f",
+          "render_sha256": "84a81ebf2fc90cbf70e01bae3ec9199a9326ed1e60f560c8b37de017d876375f",
+          "traced": {
+            "nodes": 8,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "attention",
+                "linear"
+              ],
+              [
+                "conv-lower",
+                "wn-lower"
+              ],
+              [
+                "conv-upper",
+                "wn-upper"
+              ],
+              [
+                "linear",
+                "pool"
+              ],
+              [
+                "wn-lower",
+                "conv-upper"
+              ]
+            ],
+            "directed_fp": [
+              [
+                "residual",
+                "conv-lower"
+              ]
+            ],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "pool",
+                "expected": "Pooling",
+                "actual": "Pooling",
+                "exact": true
+              },
+              {
+                "id": "linear",
+                "expected": "Linear Layer",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "attention",
+                "expected": "Label Attention Layer",
+                "actual": "Label Attention Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-upper",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-upper",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-lower",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-lower",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "residual",
+                "expected": "Res. Conn.",
+                "actual": "Res.\nConn.",
+                "exact": true
+              }
+            ],
+            "correct_labels": 7,
+            "wrong_labels": 0
+          },
+          "emitted": {
+            "nodes": 8,
+            "containers": 0,
+            "directed_tp": [
+              [
+                "attention",
+                "linear"
+              ],
+              [
+                "conv-lower",
+                "wn-lower"
+              ],
+              [
+                "conv-upper",
+                "wn-upper"
+              ],
+              [
+                "linear",
+                "pool"
+              ],
+              [
+                "wn-lower",
+                "conv-upper"
+              ]
+            ],
+            "directed_fp": [],
+            "directed_fn": [],
+            "duplicate_directed": 0,
+            "undirected": [],
+            "labels": [
+              {
+                "id": "pool",
+                "expected": "Pooling",
+                "actual": "Pooling",
+                "exact": true
+              },
+              {
+                "id": "linear",
+                "expected": "Linear Layer",
+                "actual": null,
+                "exact": false
+              },
+              {
+                "id": "attention",
+                "expected": "Label Attention Layer",
+                "actual": "Label Attention Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-upper",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-upper",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "wn-lower",
+                "expected": "WeightNorm, ReLU, Dropout",
+                "actual": "WeightNorm, ReLU, Dropout",
+                "exact": true
+              },
+              {
+                "id": "conv-lower",
+                "expected": "Dilated Convolution Layer",
+                "actual": "Dilated Convolution Layer",
+                "exact": true
+              },
+              {
+                "id": "residual",
+                "expected": "Res. Conn.",
+                "actual": "Res.\nConn.",
+                "exact": true
+              }
+            ],
+            "correct_labels": 7,
+            "wrong_labels": 0
+          }
+        }
+      },
+      "sheet_sha256": "30bde765675dd49933911ec0cc84249879ff1491b736985cfb03b8fa4604c44a",
+      "trace_sheet_sha256": "182ee83f13d864917c439c77374ad68f2ddcee1bc72c460f534ddd4623f584d2"
+    }
+  ]
+}

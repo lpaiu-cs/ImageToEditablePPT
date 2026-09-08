@@ -1,0 +1,13 @@
+{
+  "schema": "r7b_diagnostic_lock_v1",
+  "population": "consumed_development",
+  "promotion": false,
+  "files": {
+    "benchmarks\\region_r7_lock.json": "a9bd24138965f3ceb90a20dc76f8a43a8001784695230b1e9691dfa2a2a635d4",
+    "tools\\run_region_r7b.py": "e66028c4370c5a60b38f3b5c3b8b95bfdeb859921808bf18535ecdea01af2130",
+    "src\\image_to_editable_ppt\\research\\ownership_guards.py": "49bca847f35ce1fa4991e165abeb804b052ee8d2be44799ee3ea68f678a1ccc7",
+    "docs\\region_ownership_guards_r7b_spec.md": "4e75dcd7cd0898a6eba750ad5df1c2b38bc98bd47245399859960bae6b7cb39e",
+    "tests\\test_region_r7b.py": "ffdecd1071497ce81d28b80b677c07e1c1732042926a0ca9fb8375b1ece5f861",
+    "benchmarks\\region_r7_evidence.json": "f7b03d25155dcfb76d22f3c13bbe09aaa0e1c0f0470d0339df373e487c4ecd85"
+  }
+}

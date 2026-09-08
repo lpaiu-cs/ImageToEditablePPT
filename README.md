@@ -1,7 +1,9 @@
 # ImageToEditablePPT
 
-현재 `codex/region-generalization-r6`는 **미승격 연구 후보**다. R6의 색상/테두리 개선은
-일반화 검증을 통과하지 못했고 방향 회귀가 남았다. 승인된 v0.3은
+현재 `codex/accepted-owners-r7`는 **미승격 연구선**이다. R7/R7b는 정답 역할을 공급한
+복원 한계 및 경로 차단·소유 영역 채움 실험이며 자동 일반화 검증이 아니다.
+[한글 결과 보고서](docs/region_accepted_owners_r7_results.md)를 참고한다.
+기반 R6의 색상/테두리 개선은 일반화 검증을 통과하지 못했고 방향 회귀가 남았다. 승인된 v0.3은
 `codex/region-first-diagnostics`의 `80b0937` 및 기존 설치 패키지다.
 [R6 실험 판정](docs/region_generalization_r6_results.md)을 참고한다.
 

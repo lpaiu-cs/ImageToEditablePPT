@@ -1,0 +1,992 @@
+{
+  "schema": "r7b_diagnostic_evidence_v1",
+  "population": "consumed_development",
+  "promotion": false,
+  "lock_sha256": "ecdb9b53452d1314ec2f4f7571bd2f45cf3b155aacd9c136f72233ae56814415",
+  "results_sha256": "aa06fe14967e3ab347292a02369b1858ee5566c29ad4b9fe5b0fdd116ed46503",
+  "render_manifest_sha256": "700634da27228b63f1c1504a5cda451aca38f0d7fe30534c58215531ed1a85d1",
+  "records": [
+    {
+      "id": "P009",
+      "source_sha256": "f9b9571896da52627a7e974e3b5397192010d26ff9a9c60a0f10a3eb03cc6ab7",
+      "before": {
+        "nodes": 0,
+        "containers": 0,
+        "directed_tp": [],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [],
+        "correct_labels": 0,
+        "wrong_labels": 0
+      },
+      "after_blockers": {
+        "nodes": 0,
+        "containers": 0,
+        "directed_tp": [],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [],
+        "correct_labels": 0,
+        "wrong_labels": 0
+      },
+      "after_boundary": {
+        "nodes": 0,
+        "containers": 0,
+        "directed_tp": [],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [],
+        "correct_labels": 0,
+        "wrong_labels": 0
+      },
+      "emitted": {
+        "nodes": 0,
+        "containers": 0,
+        "directed_tp": [],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [],
+        "correct_labels": 0,
+        "wrong_labels": 0
+      },
+      "style_audit": {},
+      "rejected_boundary": {},
+      "pptx_sha256": "80d155bbb602c736b5508ba5ad1901fd681c8dfe82dc36a74c925e31e95c8f16",
+      "render_sha256": "496f1a959837b0caef9df26ee557a09e42eb5e8e1cc23c522a6b557e5b45a47b",
+      "sheet_sha256": "e2538d2bafbdf589b3210836581031a2c4a1c5fb895468facabc423cea3ac424",
+      "native_ids_bindings_fill_verified": true,
+      "raster_count": 0
+    },
+    {
+      "id": "p058-llms",
+      "source_sha256": "7fe4595a79760df391e9a2d472739ceb4bec615a57c83fbafd2e015611654c8e",
+      "before": {
+        "nodes": 3,
+        "containers": 3,
+        "directed_tp": [],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "cfllm",
+            "expected": "CFLLM-ins-7B",
+            "actual": "CFLLM-\nins-7B",
+            "exact": true
+          },
+          {
+            "id": "gpt",
+            "expected": "GPT 4.0",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "llama",
+            "expected": "LLaMA",
+            "actual": "LLaMA",
+            "exact": true
+          }
+        ],
+        "correct_labels": 2,
+        "wrong_labels": 0
+      },
+      "after_blockers": {
+        "nodes": 3,
+        "containers": 3,
+        "directed_tp": [],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "cfllm",
+            "expected": "CFLLM-ins-7B",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "gpt",
+            "expected": "GPT 4.0",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "llama",
+            "expected": "LLaMA",
+            "actual": null,
+            "exact": false
+          }
+        ],
+        "correct_labels": 0,
+        "wrong_labels": 0
+      },
+      "after_boundary": {
+        "nodes": 3,
+        "containers": 3,
+        "directed_tp": [],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "cfllm",
+            "expected": "CFLLM-ins-7B",
+            "actual": "CFLLM-\nins-7B",
+            "exact": true
+          },
+          {
+            "id": "gpt",
+            "expected": "GPT 4.0",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "llama",
+            "expected": "LLaMA",
+            "actual": "LLaMA",
+            "exact": true
+          }
+        ],
+        "correct_labels": 2,
+        "wrong_labels": 0
+      },
+      "emitted": {
+        "nodes": 3,
+        "containers": 3,
+        "directed_tp": [],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "cfllm",
+            "expected": "CFLLM-ins-7B",
+            "actual": "CFLLM-\nins-7B",
+            "exact": true
+          },
+          {
+            "id": "gpt",
+            "expected": "GPT 4.0",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "llama",
+            "expected": "LLaMA",
+            "actual": "LLaMA",
+            "exact": true
+          }
+        ],
+        "correct_labels": 2,
+        "wrong_labels": 0
+      },
+      "style_audit": {
+        "cfllm": {
+          "owned_pixels": 22260,
+          "modal_support": 0.9168014375561545,
+          "fill": [
+            245,
+            245,
+            245
+          ],
+          "reason": "owned_interior"
+        },
+        "gpt": {
+          "owned_pixels": 6864,
+          "modal_support": 0.8595571095571095,
+          "fill": [
+            245,
+            245,
+            245
+          ],
+          "reason": "owned_interior"
+        },
+        "llama": {
+          "owned_pixels": 6864,
+          "modal_support": 0.8496503496503497,
+          "fill": [
+            245,
+            245,
+            245
+          ],
+          "reason": "owned_interior"
+        },
+        "llms": {
+          "owned_pixels": 50454,
+          "modal_support": 0.9747294565346653,
+          "fill": [
+            248,
+            206,
+            204
+          ],
+          "reason": "owned_interior"
+        },
+        "apis": {
+          "owned_pixels": 27393,
+          "modal_support": 0.9320994414631475,
+          "fill": [
+            255,
+            242,
+            204
+          ],
+          "reason": "owned_interior"
+        },
+        "our-model": {
+          "owned_pixels": 16493,
+          "modal_support": 0.8707936700418359,
+          "fill": [
+            255,
+            242,
+            204
+          ],
+          "reason": "owned_interior"
+        }
+      },
+      "rejected_boundary": {},
+      "pptx_sha256": "c65ff35776be6dce27f9562d8b4a2d3a3d126f09dd25a67b7a84968f8c7d1d0c",
+      "render_sha256": "7f8e399d28b56a05db2a905b66ebfdbbcb12cc7a4efbcb36cd580372252feed0",
+      "sheet_sha256": "6f81c093ca7a61e0580019b74928d6c00b4278a81f4cb80984a638a107fa6941",
+      "native_ids_bindings_fill_verified": true,
+      "raster_count": 0
+    },
+    {
+      "id": "P084",
+      "source_sha256": "5ef6f2f495bdd86e362437459ef7adc29b6bef17033e0e61795062c030d7c0a9",
+      "before": {
+        "nodes": 3,
+        "containers": 0,
+        "directed_tp": [
+          [
+            "batch",
+            "annotation"
+          ]
+        ],
+        "directed_fp": [
+          [
+            "annotation",
+            "model"
+          ],
+          [
+            "model",
+            "batch"
+          ]
+        ],
+        "directed_fn": [
+          [
+            "annotation",
+            "labeled"
+          ],
+          [
+            "existing",
+            "model"
+          ],
+          [
+            "keywords",
+            "unlabeled"
+          ],
+          [
+            "labeled",
+            "model"
+          ],
+          [
+            "model",
+            "unlabeled"
+          ],
+          [
+            "unlabeled",
+            "batch"
+          ]
+        ],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "model",
+            "expected": "Deep learning models",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "annotation",
+            "expected": "Annotation",
+            "actual": "Annotation",
+            "exact": true
+          },
+          {
+            "id": "batch",
+            "expected": "Batch generation & tweet selection",
+            "actual": "Batchgeneration&\ntweetselection",
+            "exact": true
+          }
+        ],
+        "correct_labels": 2,
+        "wrong_labels": 0
+      },
+      "after_blockers": {
+        "nodes": 3,
+        "containers": 0,
+        "directed_tp": [
+          [
+            "batch",
+            "annotation"
+          ]
+        ],
+        "directed_fp": [],
+        "directed_fn": [
+          [
+            "annotation",
+            "labeled"
+          ],
+          [
+            "existing",
+            "model"
+          ],
+          [
+            "keywords",
+            "unlabeled"
+          ],
+          [
+            "labeled",
+            "model"
+          ],
+          [
+            "model",
+            "unlabeled"
+          ],
+          [
+            "unlabeled",
+            "batch"
+          ]
+        ],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "model",
+            "expected": "Deep learning models",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "annotation",
+            "expected": "Annotation",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "batch",
+            "expected": "Batch generation & tweet selection",
+            "actual": null,
+            "exact": false
+          }
+        ],
+        "correct_labels": 0,
+        "wrong_labels": 0
+      },
+      "after_boundary": {
+        "nodes": 3,
+        "containers": 0,
+        "directed_tp": [
+          [
+            "batch",
+            "annotation"
+          ]
+        ],
+        "directed_fp": [],
+        "directed_fn": [
+          [
+            "annotation",
+            "labeled"
+          ],
+          [
+            "existing",
+            "model"
+          ],
+          [
+            "keywords",
+            "unlabeled"
+          ],
+          [
+            "labeled",
+            "model"
+          ],
+          [
+            "model",
+            "unlabeled"
+          ],
+          [
+            "unlabeled",
+            "batch"
+          ]
+        ],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "model",
+            "expected": "Deep learning models",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "annotation",
+            "expected": "Annotation",
+            "actual": "Annotation",
+            "exact": true
+          },
+          {
+            "id": "batch",
+            "expected": "Batch generation & tweet selection",
+            "actual": "Batchgeneration&\ntweetselection",
+            "exact": true
+          }
+        ],
+        "correct_labels": 2,
+        "wrong_labels": 0
+      },
+      "emitted": {
+        "nodes": 3,
+        "containers": 0,
+        "directed_tp": [
+          [
+            "batch",
+            "annotation"
+          ]
+        ],
+        "directed_fp": [],
+        "directed_fn": [
+          [
+            "annotation",
+            "labeled"
+          ],
+          [
+            "existing",
+            "model"
+          ],
+          [
+            "keywords",
+            "unlabeled"
+          ],
+          [
+            "labeled",
+            "model"
+          ],
+          [
+            "model",
+            "unlabeled"
+          ],
+          [
+            "unlabeled",
+            "batch"
+          ]
+        ],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "model",
+            "expected": "Deep learning models",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "annotation",
+            "expected": "Annotation",
+            "actual": "Annotation",
+            "exact": true
+          },
+          {
+            "id": "batch",
+            "expected": "Batch generation & tweet selection",
+            "actual": "Batchgeneration&\ntweetselection",
+            "exact": true
+          }
+        ],
+        "correct_labels": 2,
+        "wrong_labels": 0
+      },
+      "style_audit": {
+        "model": {
+          "owned_pixels": 8891,
+          "modal_support": 0.8975368350016871,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "annotation": {
+          "owned_pixels": 12486,
+          "modal_support": 0.9617972128784238,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "batch": {
+          "owned_pixels": 12566,
+          "modal_support": 0.8847684227279962,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        }
+      },
+      "rejected_boundary": {},
+      "pptx_sha256": "26ab704e497f05ad7771330f3ad1c96f83e6723bb69202362293360d1215d538",
+      "render_sha256": "ecc434af9c6a889c1188d5969b9e5888ad90c0f368742f5ab6d129b47ea64d9d",
+      "sheet_sha256": "18e0cadfebb00b62153bcdfd46af98356c3393c58cf20e8f7593d4916803343a",
+      "native_ids_bindings_fill_verified": true,
+      "raster_count": 0
+    },
+    {
+      "id": "P159-core",
+      "source_sha256": "3e30cdb26831f91113eab7a9776b36431b9c1dc4a65379db6d897df86baf1fdb",
+      "before": {
+        "nodes": 8,
+        "containers": 0,
+        "directed_tp": [
+          [
+            "attention",
+            "linear"
+          ],
+          [
+            "conv-lower",
+            "wn-lower"
+          ],
+          [
+            "conv-upper",
+            "wn-upper"
+          ],
+          [
+            "linear",
+            "pool"
+          ],
+          [
+            "wn-lower",
+            "conv-upper"
+          ]
+        ],
+        "directed_fp": [
+          [
+            "residual",
+            "conv-lower"
+          ]
+        ],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "pool",
+            "expected": "Pooling",
+            "actual": "Pooling",
+            "exact": true
+          },
+          {
+            "id": "linear",
+            "expected": "Linear Layer",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "attention",
+            "expected": "Label Attention Layer",
+            "actual": "Label Attention Layer",
+            "exact": true
+          },
+          {
+            "id": "wn-upper",
+            "expected": "WeightNorm, ReLU, Dropout",
+            "actual": "WeightNorm, R ReLU, Dropout",
+            "exact": false
+          },
+          {
+            "id": "conv-upper",
+            "expected": "Dilated Convolution Layer",
+            "actual": "Dilated Convolution Layer",
+            "exact": true
+          },
+          {
+            "id": "residual",
+            "expected": "Res. Conn.",
+            "actual": "Res.\nConn.",
+            "exact": true
+          },
+          {
+            "id": "wn-lower",
+            "expected": "WeightNorm, ReLU, Dropout",
+            "actual": "WeightNorm, ReLU, Dropout",
+            "exact": true
+          },
+          {
+            "id": "conv-lower",
+            "expected": "Dilated Convolution Layer",
+            "actual": "Dilated Convolution Layer",
+            "exact": true
+          }
+        ],
+        "correct_labels": 6,
+        "wrong_labels": 1
+      },
+      "after_blockers": {
+        "nodes": 8,
+        "containers": 0,
+        "directed_tp": [
+          [
+            "attention",
+            "linear"
+          ],
+          [
+            "conv-lower",
+            "wn-lower"
+          ],
+          [
+            "conv-upper",
+            "wn-upper"
+          ],
+          [
+            "linear",
+            "pool"
+          ],
+          [
+            "wn-lower",
+            "conv-upper"
+          ]
+        ],
+        "directed_fp": [
+          [
+            "residual",
+            "conv-lower"
+          ]
+        ],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "pool",
+            "expected": "Pooling",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "linear",
+            "expected": "Linear Layer",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "attention",
+            "expected": "Label Attention Layer",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "wn-upper",
+            "expected": "WeightNorm, ReLU, Dropout",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "conv-upper",
+            "expected": "Dilated Convolution Layer",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "residual",
+            "expected": "Res. Conn.",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "wn-lower",
+            "expected": "WeightNorm, ReLU, Dropout",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "conv-lower",
+            "expected": "Dilated Convolution Layer",
+            "actual": null,
+            "exact": false
+          }
+        ],
+        "correct_labels": 0,
+        "wrong_labels": 0
+      },
+      "after_boundary": {
+        "nodes": 8,
+        "containers": 0,
+        "directed_tp": [
+          [
+            "attention",
+            "linear"
+          ],
+          [
+            "conv-lower",
+            "wn-lower"
+          ],
+          [
+            "conv-upper",
+            "wn-upper"
+          ],
+          [
+            "linear",
+            "pool"
+          ],
+          [
+            "wn-lower",
+            "conv-upper"
+          ]
+        ],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "pool",
+            "expected": "Pooling",
+            "actual": "Pooling",
+            "exact": true
+          },
+          {
+            "id": "linear",
+            "expected": "Linear Layer",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "attention",
+            "expected": "Label Attention Layer",
+            "actual": "Label Attention Layer",
+            "exact": true
+          },
+          {
+            "id": "wn-upper",
+            "expected": "WeightNorm, ReLU, Dropout",
+            "actual": "WeightNorm, R ReLU, Dropout",
+            "exact": false
+          },
+          {
+            "id": "conv-upper",
+            "expected": "Dilated Convolution Layer",
+            "actual": "Dilated Convolution Layer",
+            "exact": true
+          },
+          {
+            "id": "residual",
+            "expected": "Res. Conn.",
+            "actual": "Res.\nConn.",
+            "exact": true
+          },
+          {
+            "id": "wn-lower",
+            "expected": "WeightNorm, ReLU, Dropout",
+            "actual": "WeightNorm, ReLU, Dropout",
+            "exact": true
+          },
+          {
+            "id": "conv-lower",
+            "expected": "Dilated Convolution Layer",
+            "actual": "Dilated Convolution Layer",
+            "exact": true
+          }
+        ],
+        "correct_labels": 6,
+        "wrong_labels": 1
+      },
+      "emitted": {
+        "nodes": 8,
+        "containers": 0,
+        "directed_tp": [
+          [
+            "attention",
+            "linear"
+          ],
+          [
+            "conv-lower",
+            "wn-lower"
+          ],
+          [
+            "conv-upper",
+            "wn-upper"
+          ],
+          [
+            "linear",
+            "pool"
+          ],
+          [
+            "wn-lower",
+            "conv-upper"
+          ]
+        ],
+        "directed_fp": [],
+        "directed_fn": [],
+        "duplicate_directed": 0,
+        "undirected": [],
+        "labels": [
+          {
+            "id": "pool",
+            "expected": "Pooling",
+            "actual": "Pooling",
+            "exact": true
+          },
+          {
+            "id": "linear",
+            "expected": "Linear Layer",
+            "actual": null,
+            "exact": false
+          },
+          {
+            "id": "attention",
+            "expected": "Label Attention Layer",
+            "actual": "Label Attention Layer",
+            "exact": true
+          },
+          {
+            "id": "wn-upper",
+            "expected": "WeightNorm, ReLU, Dropout",
+            "actual": "WeightNorm, R ReLU, Dropout",
+            "exact": false
+          },
+          {
+            "id": "conv-upper",
+            "expected": "Dilated Convolution Layer",
+            "actual": "Dilated Convolution Layer",
+            "exact": true
+          },
+          {
+            "id": "residual",
+            "expected": "Res. Conn.",
+            "actual": "Res.\nConn.",
+            "exact": true
+          },
+          {
+            "id": "wn-lower",
+            "expected": "WeightNorm, ReLU, Dropout",
+            "actual": "WeightNorm, ReLU, Dropout",
+            "exact": true
+          },
+          {
+            "id": "conv-lower",
+            "expected": "Dilated Convolution Layer",
+            "actual": "Dilated Convolution Layer",
+            "exact": true
+          }
+        ],
+        "correct_labels": 6,
+        "wrong_labels": 1
+      },
+      "style_audit": {
+        "pool": {
+          "owned_pixels": 11832,
+          "modal_support": 0.9144692359702502,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "linear": {
+          "owned_pixels": 11781,
+          "modal_support": 0.8821831763008233,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "attention": {
+          "owned_pixels": 24180,
+          "modal_support": 0.8972291149710504,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "wn-upper": {
+          "owned_pixels": 23613,
+          "modal_support": 0.8491508914580951,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "conv-upper": {
+          "owned_pixels": 23613,
+          "modal_support": 0.8698174734256554,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "residual": {
+          "owned_pixels": 6942,
+          "modal_support": 0.8415442235666954,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "wn-lower": {
+          "owned_pixels": 23613,
+          "modal_support": 0.8491508914580951,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        },
+        "conv-lower": {
+          "owned_pixels": 23613,
+          "modal_support": 0.8698174734256554,
+          "fill": [
+            255,
+            255,
+            255
+          ],
+          "reason": "owned_interior"
+        }
+      },
+      "rejected_boundary": {
+        "connector:r3:4": "component_touches_scope_boundary"
+      },
+      "pptx_sha256": "84af90f7e605670f76300341a005d5775911b87d6f63319bfdbd419aed4c212b",
+      "render_sha256": "5e4c5cec11ea56e305c89871654bf6fb49ce7492b47e6956b2875ff08fdd81d5",
+      "sheet_sha256": "23b0a3bf15d4a9c17fbd585cad2635a15b511c0f6e3fba6f9c763244a06183e6",
+      "native_ids_bindings_fill_verified": true,
+      "raster_count": 0
+    }
+  ]
+}

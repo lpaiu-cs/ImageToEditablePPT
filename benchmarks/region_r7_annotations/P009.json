@@ -1,0 +1,47 @@
+{
+  "schema": "r7_source_roles_v1",
+  "population": "consumed_development",
+  "id": "P009",
+  "source_path": "artifacts/phase16-sample-pool-v1/images/P009-blob_data_6216.png",
+  "source_sha256": "f9b9571896da52627a7e974e3b5397192010d26ff9a9c60a0f10a3eb03cc6ab7",
+  "source_size": [
+    1203,
+    455
+  ],
+  "coordinate_space": "original_pixels",
+  "view_to_source": {
+    "scale": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "view_size": [
+      1203,
+      455
+    ]
+  },
+  "scope": [
+    0,
+    0,
+    1203,
+    455
+  ],
+  "coverage_note": "명시한 영역의 구조적 소유 객체 전체. 비구조 내부 그림은 제외.",
+  "objects": [
+    {
+      "id": "non-diagram-figure",
+      "role": "nonstructural",
+      "bbox": [
+        0,
+        0,
+        1203,
+        455
+      ],
+      "parent": null
+    }
+  ],
+  "relations": []
+}
