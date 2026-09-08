@@ -9,6 +9,8 @@ Bounded follow-up, before execution: derive a per-owner mask extent from observe
 border coverage outside each side. Scan at most max(4, min(12, round(.03*ROI-short-side)))
 pixels; only bands covering >=60% of the central 80% of that side count as border.
 Take largest supported outward offset +1, never less than the original base pad.
+Scan each side contiguously; stop on the first bright band after support, or after the
+base search distance without support. Never jump a bright gap to a nearby parallel line.
 No attachment-tolerance, grayscale, direction or ambiguous-owner cutoff changes.
 Container masking remains border-only. Record each inferred pad. This masks observed
 owner ink, not arbitrary space between owners. If no band support exists, keep base pad.

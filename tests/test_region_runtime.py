@@ -157,3 +157,23 @@ def test_runtime_has_no_research_imports():
     for file in directory.glob('*.py'):
         for node in ast.walk(ast.parse(file.read_text())):
             if isinstance(node,ast.ImportFrom): assert '.research' not in (node.module or '')
+
+
+def test_observed_thick_border_pad_and_disconnected_mark():
+    from image_to_editable_ppt.region.tracing import observed_border_pad
+    raw=np.zeros((200,300),np.uint8)
+    cv2.rectangle(raw,(40,40),(260,160),1,5)
+    assert observed_border_pad(raw,(43,43,257,157),2)>=6
+    raw[:]=0; raw[70,35:50]=1
+    assert observed_border_pad(raw,(43,43,257,157),2)==2
+    raw[:]=0; raw[35,43:257]=1; raw[43,43:257]=1
+    assert observed_border_pad(raw,(43,43,257,157),2)==2
+
+
+def test_large_roi_rejected_before_output(tmp_path):
+    from PIL import Image
+    from image_to_editable_ppt.region.convert import convert_region
+    source=tmp_path/'large.png'; Image.new('RGB',(2100,2100),'white').save(source)
+    with pytest.raises(ValueError,match='4 megapixels'):
+        convert_region(source,tmp_path/'large.pptx',region=(0,0,1,1),recover_text=False)
+    assert not (tmp_path/'large.pptx').exists()

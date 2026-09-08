@@ -53,6 +53,26 @@ def direction(mask,path):
     return result,dict(shaft_width=shaft,start_max_width=first,end_max_width=last)
 
 
+def observed_border_pad(raw,box,base):
+    """Cover observed outer owner ink, without increasing generic gap-repair tolerance."""
+    h,w=raw.shape; a,b,c,d=box
+    cap=max(4,min(12,round(.03*min(h,w))))
+    tx,ty=max(1,round((c-a)*.1)),max(1,round((d-b)*.1))
+    pad=base
+    for side in range(4):
+        seen=False
+        for offset in range(cap+1):
+            index=(b-offset,d+offset,a-offset,c+offset)[side]
+            limit=h if side<2 else w
+            if not 0<=index<limit: break
+            t=raw[index,max(0,a+tx):min(w,c-tx)] if side<2 else raw[max(0,b+ty):min(h,d-ty),index]
+            if t.size and float(t.mean())>=.60:
+                seen=True; pad=max(pad,offset+1)
+            elif seen or offset>=base:
+                break  # Do not jump a bright gap to a distinct parallel structure.
+    return pad
+
+
 def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
     scope=pixel_box(roi,(scene.image_size.width,scene.image_size.height))
     x0,y0,x1,y1=scope
@@ -61,7 +81,7 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
     p=max(2,round(.005*min(h,w)))
     raw=(cv2.cvtColor(crop,cv2.COLOR_RGB2GRAY)<110).astype('uint8')
     mask=raw.copy()
-    eligible=[]; transparent=[]
+    eligible=[]; transparent=[]; owner_pads={}
     for s in scene.shapes:
         if s.owner_kind is PortOwnerKind.NODE:
             f=source_features(rgb,s,scope)
@@ -70,11 +90,14 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
             eligible.append(s)
         a,b,c,d=[round(z) for z in bounds(s)]
         a,b,c,d=a-x0,b-y0,c-x0,d-y0
+        owner_pad=observed_border_pad(raw,(a,b,c,d),p)
+        owner_pads[s.id]=owner_pad
         if s.owner_kind is PortOwnerKind.NODE:
-            mask[max(0,b-p):min(h,d+p+1),max(0,a-p):min(w,c+p+1)]=0
+            mask[max(0,b-owner_pad):min(h,d+owner_pad+1),max(0,a-owner_pad):min(w,c+owner_pad+1)]=0
         else:
-            for left,top,right,bottom in ((a-p,b-p,c+p,b+p),(a-p,d-p,c+p,d+p),
-                (a-p,b-p,a+p,d+p),(c-p,b-p,c+p,d+p)):
+            q=owner_pad
+            for left,top,right,bottom in ((a-q,b-q,c+q,b+q),(a-q,d-q,c+q,d+q),
+                (a-q,b-q,a+q,d+q),(c-q,b-q,c+q,d+q)):
                 mask[max(0,top):min(h,bottom+1),max(0,left):min(w,right+1)]=0
     k=min(9,2*p+3)
     mask=np.maximum(cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((1,k),'uint8')),
@@ -127,4 +150,4 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
         r.update(connector_id=cid,directed=bool(sign),path_points=points,raw_path_length=len(path))
         records.append(r)
     return replace(scene,connectors=tuple(edges)),dict(transparent_owners=transparent,mask_pad=p,
-        attachment_tolerance=tolerance,components=records),mask
+        owner_mask_pads=owner_pads,attachment_tolerance=tolerance,components=records),mask
