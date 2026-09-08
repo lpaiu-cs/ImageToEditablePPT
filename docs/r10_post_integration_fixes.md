@@ -17,3 +17,11 @@
 실패한 실제 COM 입력 두 개에 `--nested-owners`를 적용해 RGB만으로 다시 실행했다. `train-base0-native`와 `eval-base1-diagram_picture` 둘 다 native4도형/4라벨을 유지하면서 내부 연결이0→2개로 복원됐다. 후자의 parent 라벨에 붙었던 `Check`가 없어지고 실제 child 한 곳에만 남았다. 실제 COM 비교 두 장을 직접 봤고 native 객체/connector 양종점/입력과 렌더 SHA 감사도 통과했다. 자료는 `nested-owners-v1` 및 `nested-owners-v1-review`다.
 
 이는 알려진 실패 두 개의 수정 증거다. `Process overview`의 띄어쓰기 손실(`Processoverview`)은 남는다. 모든 중첩 도식·사진을 해결했다거나 일반화 성능이 확보됐다고 결론내리지 않는다. 이어서 독립20개 통합 회귀와 기존 복잡7개를 검사한다.
+
+## 독립 회귀와1픽셀 계약 수정 후
+
+독립20개에서 nested 적용 후 총연결0→20, 다시 pixel agreement 적용 후24개가 됐다. 양성12개 모두 실제 `Read–Build`, `Build–Check` 두 native 연결이 생겼고 자식 Build의 부모 전이는 사라졌다. 음성사진8개는 모두 빈 결과다. native/raster 보존 차이·일부 parent 기권·띄어쓰기 손실은 남는다. 정확한 독립 결과는 `r10_nested_owner_integration_audit.md`, `r10_pixel_agreement_independent_audit.md` 참조.
+
+기존 복잡7개에도 각 arm을 RGB부터 다시 실행했다. `nested-complex-v1`의6개 실제 COM PNG는 이전 v1과 byte-identical이며 원본1개만 괄호 suffix 생략으로 달라졌다(해당 새 렌더 직접 확인). 이어 `pixel-complex-v1`의7개 COM PNG는 nested군과 전부 byte-identical이었다. 기존 육안 검토와 같은 픽셀이라는 검증이지 이미지별 새 정답률을 산정한 것이 아니다. 각 review 디렉터리의 `audit.json`에 입력/PPT/native연결/COM SHA가 있다.
+
+세로 처리를 RGB 통합한 `portrait-integrated-v1/reasoning-full`은 native24도형/23라벨/18연결이다. 실제 COM을 다시 직접 확인해 Input/Encoder/Text Embedding의 방향과 색상이 정상인 것을 확인했다. Mixture-of-Experts는 기권을 유지했다. frozen scene을 쓰던 표현 prototype과 달리 이 실행은 RGB부터 수행했다. 이 수정들을 고정 CLI `closed-native-v2`로 연결했다. 추가 사진 caption 반례는 별도로 진행하며 production 승인은 내리지 않는다.

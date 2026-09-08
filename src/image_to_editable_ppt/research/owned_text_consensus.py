@@ -40,7 +40,19 @@ def select_label(db_label,db_audit,row_label,row_audit):
         method=method,reason=reason,spatial_ocr=db_audit,source_rows=row_audit)
 
 
-def observe_owned_label(rgb,candidate,owned,excluded,engine):
+def observe_owned_label(rgb,candidate,owned,excluded,engine,*,portrait_text=False):
+    portrait_audit=None
+    if portrait_text:
+        from image_to_editable_ppt.research.portrait_text import observe_portrait,source_line
+        selected,portrait_audit=observe_portrait(rgb,candidate['bbox'],excluded,engine)
+        if selected is not None:
+            x0,y0,x1,y1=candidate['bbox'];line=source_line(selected,x1-x0,y1-y0)
+            accepted=balanced_prefix([line])
+            if accepted:
+                return line['text'],dict(accepted=accepted,observed_accepted=accepted,withheld_incomplete_lines=[],
+                    orientation=selected['orientation'],method='portrait_source_ocr',reason='unique_source_orientation',portrait_audit=portrait_audit)
     db_label,db_audit=observe_text(rgb,candidate['bbox'],engine,excluded=excluded,whole_lines=True)
     row_label,row_audit=observe_rows(rgb,candidate,owned,engine)
-    return select_label(db_label,db_audit,row_label,row_audit)
+    label,audit=select_label(db_label,db_audit,row_label,row_audit)
+    if portrait_text:audit['portrait_audit']=portrait_audit
+    return label,audit

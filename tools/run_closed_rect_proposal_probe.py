@@ -24,18 +24,19 @@ from image_to_editable_ppt.v3.emit.style import ShapeVisualStyle
 from dataclasses import replace
 
 
-def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole_lines=False,source_rows=False,dark_boundaries=False,portrait_boxes=False,boundary_union=False,texture_guard=False,owned_text=False,nested_owners=False,pixel_agreement=False):
+def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole_lines=False,source_rows=False,dark_boundaries=False,portrait_boxes=False,boundary_union=False,texture_guard=False,owned_text=False,nested_owners=False,pixel_agreement=False,portrait_text=False):
     if source_rows and whole_lines:raise ValueError('source-rows and whole-lines are separate experiment arms')
     if boundary_union and (inner_boundaries or dark_boundaries):raise ValueError('boundary-union fixes both component proposal contracts')
     if texture_guard and content_gate:raise ValueError('texture and flat-content gates are separate experiments')
     if owned_text and (source_rows or whole_lines):raise ValueError('owned-text fixes both OCR observation contracts')
+    if portrait_text and not owned_text:raise ValueError('portrait-text requires owned-text')
     image=image.resolve();output=output.resolve();output.mkdir(parents=True,exist_ok=False)
     with Image.open(image) as im:
         if im.mode!='RGB':raise ValueError('RGB required')
         rgb=np.asarray(im)
     source=digest(image)
     files=[Path(__file__).resolve(),ROOT/'docs/r10_closed_rectangle_proposal_spec.md',
-        ROOT/'docs/r10_owned_rectangle_spec.md',ROOT/'docs/r10_closed_content_gate_spec.md',ROOT/'docs/r10_source_texture_spec.md',ROOT/'docs/r10_nested_owner_spec.md',ROOT/'docs/r10_pixel_cell_boundary_spec.md']
+        ROOT/'docs/r10_owned_rectangle_spec.md',ROOT/'docs/r10_closed_content_gate_spec.md',ROOT/'docs/r10_source_texture_spec.md',ROOT/'docs/r10_nested_owner_spec.md',ROOT/'docs/r10_pixel_cell_boundary_spec.md',ROOT/'docs/r10_portrait_text_spec.md']
     for directory in ('research','region','v3/emit','v3/core','v3/text'):
         files.extend((ROOT/'src/image_to_editable_ppt'/directory).glob('*.py'))
     code={str(f):digest(f) for f in files}
@@ -43,7 +44,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     models={str(f):digest(f) for f in (Path(rapidocr_onnxruntime.__file__).parent/'models').glob('*.onnx')}
     font=Path('C:/Windows/Fonts/arial.ttf');code[str(font)]=digest(font)
     save(output/'lock.json',dict(source_path=str(image),source_sha256=source,code_sha256=code,ocr_models_sha256=models,
-        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,pixel_agreement=pixel_agreement,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
+        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,pixel_agreement=pixel_agreement,portrait_text=portrait_text,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
     candidates,proposal_audit=propose_union(rgb,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement) if boundary_union else propose(rgb,inner_boundaries=inner_boundaries,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement)
     engine=_load_engine();objects=[];styles={};text_audit={};region_audit={};content_audit={}
     regions=closed_regions(rgb)
@@ -54,7 +55,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
         identity=f'closed:{i}';box=c['bbox']
         objects.append(dict(id=identity,role='node',semantic_kind='box',bbox_xyxy=box,confidence=.9))
         own,excluded,fill,ownership=owner_region(rgb,c,regions);region_audit[identity]=ownership
-        if owned_text:label,audit=observe_owned_label(rgb,c,own,excluded,engine)
+        if owned_text:label,audit=observe_owned_label(rgb,c,own,excluded,engine,portrait_text=portrait_text)
         elif source_rows:label,audit=observe_rows(rgb,c,own,engine)
         else:label,audit=observe_text(rgb,box,engine,excluded=excluded,whole_lines=whole_lines)
         text_audit[identity]=dict(label=label,**audit)
@@ -113,4 +114,5 @@ if __name__=='__main__':
     p.add_argument('--owned-text',action='store_true')
     p.add_argument('--nested-owners',action='store_true')
     p.add_argument('--pixel-agreement',action='store_true')
-    a=p.parse_args();run(a.image,a.output,a.trace,a.inner_boundaries,a.content_gate,a.whole_lines,a.source_rows,a.dark_boundaries,a.portrait_boxes,a.boundary_union,a.texture_guard,a.owned_text,a.nested_owners,a.pixel_agreement)
+    p.add_argument('--portrait-text',action='store_true')
+    a=p.parse_args();run(a.image,a.output,a.trace,a.inner_boundaries,a.content_gate,a.whole_lines,a.source_rows,a.dark_boundaries,a.portrait_boxes,a.boundary_union,a.texture_guard,a.owned_text,a.nested_owners,a.pixel_agreement,a.portrait_text)

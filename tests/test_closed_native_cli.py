@@ -14,7 +14,8 @@ def cli(monkeypatch):
     spec=importlib.util.spec_from_file_location('closed_cli_under_test',tools/'convert_closed_native.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     def fake_run(source,output,**kwargs):
-        assert kwargs==dict(trace=True,boundary_union=True,owned_text=True,portrait_boxes=True,texture_guard=True)
+        assert kwargs==dict(trace=True,boundary_union=True,owned_text=True,portrait_boxes=True,texture_guard=True,
+            nested_owners=True,pixel_agreement=True,portrait_text=True)
         assert Image.open(source).mode=='RGB'
         output.mkdir()
         pptx=output/'result.pptx';pptx.write_bytes(b'unit-test-boundary-only-not-real-ppt')
@@ -32,6 +33,7 @@ def test_opaque_alpha_conversion_preserves_original_and_pixel_values(cli,tmp_pat
     assert source.read_bytes()==before
     assert np.array_equal(np.array(Image.open(out/'input-rgb.png')),rgb[:,:,:3])
     assert not result['production_approved']
+    assert result['configuration']=='closed-native-v2'
     assert result['input_mode']=='RGBA'
     assert result['input_sha256']==cli.digest(source)
 

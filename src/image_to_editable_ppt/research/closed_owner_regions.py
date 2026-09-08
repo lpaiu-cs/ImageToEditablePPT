@@ -77,6 +77,11 @@ def place_owned_text(pptx, scene, text_audit, scale):
         lines = text_audit[owner.id]['accepted']
         if not lines:
             continue
+        orientation=text_audit[owner.id].get('orientation')
+        if orientation:
+            from image_to_editable_ppt.research.portrait_text import place_portrait
+            audit.append(place_portrait(objects[owner.id],lines[0],owner.bbox.width,owner.bbox.height,orientation,scale))
+            continue
         frame = objects[owner.id].text_frame
         bx = [min(l['bbox'][0] for l in lines), min(l['bbox'][1] for l in lines),
               max(l['bbox'][2] for l in lines), max(l['bbox'][3] for l in lines)]

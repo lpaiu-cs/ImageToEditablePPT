@@ -20,11 +20,11 @@ def convert(image,output):
     if mode=='RGBA':
         source=output/'input-rgb.png';prepare(image,source)
     run(source,output/'native',trace=True,boundary_union=True,owned_text=True,
-        portrait_boxes=True,texture_guard=True)
+        portrait_boxes=True,texture_guard=True,nested_owners=True,pixel_agreement=True,portrait_text=True)
     assert digest(image)==original_sha and digest(Path(__file__))==cli_sha
     result=json.loads((output/'native/result.json').read_text(encoding='utf-8'))
     handoff=dict(status='partial_research_draft_requires_review' if result['nodes'] else 'no_confident_structure',
-        production_approved=False,input_path=str(image),input_sha256=original_sha,input_mode=mode,
+        production_approved=False,configuration='closed-native-v2',input_path=str(image),input_sha256=original_sha,input_mode=mode,
         rgb_sha256=digest(source),cli_sha256=cli_sha,
         pptx=str(output/'native/result.pptx'),pptx_sha256=result['pptx_sha256'],
         nodes=result['nodes'],labels=result['labels'],native_edges=len(result['emitted_scene']['connectors']),
