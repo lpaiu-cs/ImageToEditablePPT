@@ -21,7 +21,12 @@ def main():
         output=out/f'{sample}--region_native.pptx'
         command=[sys.executable,'-m','image_to_editable_ppt.ml.convert_to_pptx',str(source),'-o',str(output),'--region',*map(str,item['roi'])]
         run=subprocess.run(command,cwd=root,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=180)
-        if run.returncode: raise RuntimeError(run.stdout+run.stderr)
+        if run.returncode:
+            result['records'].append(dict(sample=sample,status='cli_rejected',source_sha256=item['source_sha256'],roi=item['roi'],
+                command=command,returncode=run.returncode,stdout=run.stdout,stderr=run.stderr))
+            (out/'results.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+            print(sample,'REJECTED',run.stderr.strip(),flush=True)
+            continue
         report_path=output.with_suffix('.region.json'); report=json.loads(report_path.read_text(encoding='utf-8'))
         sp=out/f'{sample}.json'; sp.write_text(json.dumps(report['source_scene'],indent=2),encoding='utf-8')
         scene=load_scene(sp); metrics=evaluate(scene,targets[sample])
