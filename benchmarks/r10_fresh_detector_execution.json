@@ -1,0 +1,40 @@
+{
+  "payload": {
+    "schema": "fresh_rgb_detector_handoff_v1",
+    "artifacts": {
+      "predictions.json": {
+        "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r10-fresh-detector-v2\\predictions.json",
+        "sha256": "2567fd57c142377f93e1c3eb23f3419e780922409951e83a8d634f97c4b0cb66"
+      },
+      "execution-lock.json": {
+        "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r10-fresh-detector-v2\\execution-lock.json",
+        "sha256": "7e89defda1c871e44f99163b53d54c89757d36122441c860cb59cd4776dc4320"
+      },
+      "execution.json": {
+        "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r10-fresh-detector-v2\\execution.json",
+        "sha256": "b2228e0d2966aad90c31f2e657ee0f25f5c7fb752fb03c2481b0998fa916a676"
+      },
+      "reads.json": {
+        "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r10-fresh-detector-v2\\reads.json",
+        "sha256": "233dcc747891cb29d58eacf08eae3acf6e7ac1657e63382fd9a01c005db9f7a5"
+      }
+    },
+    "run_git_commit": "b807c8ffaa0dd816f07d90c58cff650af7617797",
+    "checkpoint_sha256": "e6a6926ef4e65e11288d61d3b12723b19322ee0d44e6e94b9075cba11a1a6f58",
+    "sample_count": 15,
+    "raw_object_count": 154,
+    "class_map": {
+      "1": 1,
+      "2": 2,
+      "3": 4,
+      "4": 5,
+      "5": 6,
+      "6": 7
+    },
+    "execution_attested": true,
+    "training_class_provenance": "legacy_inferred",
+    "research_only": true,
+    "validation": "15 unique RGB inputs; finite boxes within image; matching label adapter; all guarded opens allowed; no GT metrics"
+  },
+  "payload_sha256": "070a53fae1e021bee8b66f7a0f8442f65f4c0dbc4ac5cbd547605b4c8450b2a7"
+}
