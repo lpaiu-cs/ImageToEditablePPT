@@ -2,3 +2,5 @@
 # across Windows/Linux checkouts rather than applying newline normalization.
 benchmarks/region_complex_r5_inputs_v*.json -text
 benchmarks/region_complex_r5_evidence_v2.json -text
+benchmarks/region_r6_*.json -text
+src/image_to_editable_ppt/region/*.py -text

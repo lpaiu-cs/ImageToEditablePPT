@@ -1,5 +1,10 @@
 # ImageToEditablePPT
 
+현재 `codex/region-generalization-r6`는 **미승격 연구 후보**다. R6의 색상/테두리 개선은
+일반화 검증을 통과하지 못했고 방향 회귀가 남았다. 승인된 v0.3은
+`codex/region-first-diagnostics`의 `80b0937` 및 기존 설치 패키지다.
+[R6 실험 판정](docs/region_generalization_r6_results.md)을 참고한다.
+
 이 저장소는 현재 **v3 아키텍처 재구성 중**이다. 목표는 논문용 구조적 다이어그램을 generic reconstruction이 아니라 **family-constrained parsing + editable primitive scene**으로 정규화하는 것이다.
 
 ## v0.3: 선택 영역을 native PPTX로 변환

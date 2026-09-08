@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from image_to_editable_ppt.region._selection_base import bounds,gap_owners,source_features
 from image_to_editable_ppt.region.geometry import pixel_box
+from image_to_editable_ppt.region.strokes import stroke_mask
 from image_to_editable_ppt.v3.core.enums import PortOwnerKind,ConnectorKind
 from image_to_editable_ppt.v3.core.types import Point
 from image_to_editable_ppt.v3.emit.models import EmitConnectorPrimitive
@@ -46,9 +47,18 @@ def direction(mask,path):
         widths.append(float(np.count_nonzero(values)))
     if len(widths)<6: return 0,dict(reason='short_path')
     shaft=float(np.percentile(widths,25))
+    radius=max(20,min(80,round(3*shaft)))
+    if radius>20:
+        widths=[]
+        for i,(x,y) in enumerate(path):
+            a=path[max(0,i-3)]; b=path[min(len(path)-1,i+3)]
+            horizontal=abs(b[0]-a[0])>=abs(b[1]-a[1])
+            values=mask[max(0,y-radius):min(mask.shape[0],y+radius+1),x] if horizontal else mask[y,max(0,x-radius):min(mask.shape[1],x+radius+1)]
+            widths.append(float(np.count_nonzero(values)))
+        shaft=float(np.percentile(widths,25))
     # Arrowheads are local endpoint evidence. A fractional window on a long
     # elbow can include the corner, whose transverse shaft mimics a wide head.
-    band=max(2,min(40,round(len(widths)*.20)))
+    band=min(len(widths)//2,max(2,min(40,round(len(widths)*.20)),min(80,round(3*shaft))))
     first,last=max(widths[:band]),max(widths[-band:])
     def head(a,b): return a>=1.6*shaft and a>=shaft+2 and a>=1.35*b
     result=1 if head(last,first) else (-1 if head(first,last) else 0)
@@ -116,7 +126,7 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
     crop=rgb[y0:y1,x0:x1]
     h,w=crop.shape[:2]
     p=max(2,round(.005*min(h,w)))
-    raw=(cv2.cvtColor(crop,cv2.COLOR_RGB2GRAY)<110).astype('uint8')
+    raw=stroke_mask(crop)
     mask=raw.copy()
     eligible=[]; transparent=[]; owner_pads={}
     for s in scene.shapes:

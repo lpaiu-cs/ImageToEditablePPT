@@ -1,0 +1,24 @@
+{
+  "method": "Direct agent inspection of native source/baseline/candidate sheets after candidate freeze; no post-transfer tuning",
+  "verdict": "GENERALIZATION_NOT_ESTABLISHED; do not promote candidate over approved v0.3",
+  "development": {
+    "reasoning-full": "24 real nodes, 24 labels and 24 solid relations retained",
+    "blue-flow": "Five emitted relations now have correct observed direction. Two traced routes remain rejected by native preset fit; many labels absent.",
+    "nested-panels": "Several formerly invisible colored child outlines restored. Hierarchy/fill mistakes and LLMAPIs/GPT/LLaMA merged ownership, duplicate PDF text persist.",
+    "dark-transformer": "First geometry-polarity arm wrongly classified 11 nodes as containers; continuous-edge divider test restores 11 nodes and two local links, but both formerly directed arrows become undirected lines. This is a direction regression and independently blocks promotion.",
+    "original-body": "Additional outlines do not establish correct semantic role; database-cap ellipses and icon/label errors remain"
+  },
+  "transfer": {
+    "P146": "Source is a diagram; 4MP rejection in both arms. No quality success.",
+    "P144": "Both arms fail mixed medical/network diagram. Candidate adds interior block-face outlines/containers while missing almost all links and captions. No acceptance improvement.",
+    "P137": "Candidate recovers some colored region boundaries and the full normalization box, but almost all topology and lower-panel objects remain absent. Narrow geometry gain only.",
+    "P104": "Source is a dense diagram; 16MP rejection in both arms. No quality success.",
+    "P088": "Mixed-polarity flow still missing decision diamonds and topology; simulator icon becomes an extra circle. No generalization gain.",
+    "P159": "Useful right-column partial chain is retained, not improved. Left tensor/grid structure and residual links remain absent.",
+    "P057": "Both arms turn interior tensor patterns into false colored blocks and omit graph links. Fails structure identity.",
+    "P084": "Cylinder caps become ellipses; logo/illustration fragments become primitives. Curved and dashed links absent. Fails semantic exclusion and compound-object identity.",
+    "P114": "Non-diagram microscopy/plot source rejected by 4MP bound. Not a negative-classification pass.",
+    "P009": "Three photo-derived false rectangles remain; roles change from containers to nodes. Non-diagram exclusion fails in both arms."
+  },
+  "population": "8 caption-suggested diagrams + 2 available non-diagrams; source groups disjoint from Phase16 splits, >4-bit perceptual distance; historical source-sheet exposure; not formal holdout"
+}

@@ -2,6 +2,8 @@
 
 최종 업데이트: 2026-09-08
 
+R6 검증 종료·미승격: [일반화 결과](docs/region_generalization_r6_results.md). `codex/region-generalization-r6`에서 파란 선 5관계·색 있는 하위 테두리 복구 및 30개 대조군 테스트를 추가했다(전체 309 passed). 그러나 동결 후 별도 10표본 비교에서 광범위한 일반화는 확보하지 못했고, dark-transformer의 화살표 2개가 무방향 선으로 바뀌는 회귀를 육안으로 확인했다. 승인 baseline `80b0937`과 v0.3 패키지는 보존하며 R6를 제품 승인으로 승격하지 않는다. 다음 [설계 실험](docs/region_generalization_next_spec.md)은 구조/비구조 역할·객체 소유 검증을 OCR/선 마스킹보다 앞에 분리하는 것이다. 구현 또는 학습 완료를 의미하지 않는다. 기존 Phase16 holdout은 건드리지 않았다.
+
 완료: [R5 / v0.3 결과](docs/region_complex_r5_results.md). 전체 reasoning 그림에서 실제 노드 24개·정확 라벨 24개·정확 실선 관계 24개를 원본/PowerPoint 육안으로 확인했다. 거짓 큰 박스 5개 제거, 역방향 elbow 수정, 직선 fanout 6개 복구. 점선 합류 5개·배경 구획은 생략한다. 작은 ROI 23객체/15관계·합성 11계약·전체 테스트 279개와 native edit/reopen 및 설치 wheel을 검증했다. 정확한 부분복원으로 코드 통합하되 범용 복잡 도식·사람 시간·holdout 승인은 하지 않는다. v0.2와 실패한 R5 중간 실험도 보존한다. 다음은 점선/색상 선의 독립된 근거 모델과 nested-panel 라벨 소유이며 현재 판정을 넘어 승인하지 않는다.
 
 현재 연구선: `codex/region-first-diagnostics`. 사용자 승인 [R4 및 프로덕션 계획](docs/region_first_r4_production_plan.md)을 실행해 **v0.2 명시적 ROI 변환 CLI 통합**을 완료했다. [최종 결과](docs/region_native_production_results.md): 실제 이미지→CLI의 다이어그램 5개에서 객체 23/23·방향 관계 15/15·오검출 0, 큰 비도식 1개는 자원 제한 거절. 합성 11개 개수/기권 계약 및 native edit/reopen·설치 wheel을 검증했다. OCR은 12개 일치·1개 공백 오류·4개 생략이며 reroute/겹침 한계가 남는다. 배율 실패 및 컨테이너 회귀를 별도 기록하고 역할별 mask로 해결했다. 다음은 독립적으로 고른 ROI와 사람 보정 비용 검증이다. 기존 기본 ML/v3 경로와 Phase15/16 판정은 보존한다. ROI 제공 조건을 전체 이미지 자동 성능, 사람 시간 절약 또는 holdout 승인으로 세지 않는다.

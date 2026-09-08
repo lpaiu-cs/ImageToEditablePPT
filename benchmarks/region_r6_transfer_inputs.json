@@ -1,0 +1,288 @@
+{
+  "baseline": "80b0937",
+  "pool_sha256": "629c0db9326f72b25043df9f6043c241e1c32a85819e55c8ba86e7f01a128f0c",
+  "population": "Unused by Phase16 split evaluation; historical source-sheet exposure; R6-reserved transfer, NOT formal holdout",
+  "rule": "SHA-sorted 8 caption-suggested diagrams + 4 non-diagrams, excluded split source groups and <=4-bit perceptual neighbors; no output-based replacement",
+  "samples": [
+    {
+      "selection_index": 1052,
+      "caption": "An overview of the proposed framework. The framework is composed of three steps: (1) computing the influence scores between training data points; (2) constructing the influence graph according to the scores; and (3) extracting the maximum average sub-graph. $\\varepsilon N$ is the pre-given number of poisoned training examples, and $\\varepsilon$ is the attack ratio.",
+      "file_name": "figures/2111.14309_overview.png",
+      "suggestion": "diagram_candidate",
+      "width": 2667,
+      "height": 1500,
+      "sha256": "018c5676fcdfd7830eb0f73968a918c6c0c44b7534cd9013268716e2dfb3d91a",
+      "perceptual_hash": "000088b4a4000000",
+      "source_group": "arxiv:2111.14309",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "blob_data_7213.parquet",
+        "row": 0,
+        "sha256": "c7b0b69753da156aaa7476eab6c5ccec57879281b6f87e2ef73b0a85354400b2",
+        "size": 152529
+      },
+      "pool_id": "P146",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P146-blob_data_7213.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 1036,
+      "caption": "Framework and data flow of the proposed L2T-KT framework. Stage (1), train the student model with knowledge transfer loss; Stage (2), update the student model with textbook pool data using binary cross entropy loss;  Stage (3), train the teacher model with quiz pool data using binary cross entropy loss.",
+      "file_name": "figures/2007.11355_paper1013_figure_fig1.png",
+      "suggestion": "diagram_candidate",
+      "width": 1693,
+      "height": 875,
+      "sha256": "1bc32f9dc23b54048ead3494030182dc75b19280af5bd1cbf64e4403236b45a9",
+      "perceptual_hash": "0014003196c4569e",
+      "source_group": "arxiv:2007.11355",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "blob_data_4188.parquet",
+        "row": 0,
+        "sha256": "7f62bb12f4672aa303b20145a89fe220b007f37ee7f1201a0fc1e61130e8a78d",
+        "size": 193263
+      },
+      "pool_id": "P144",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P144-blob_data_4188.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 983,
+      "caption": "Overview of our TCPNet for video recognition. Its core is a Temporal-attentive Covariance Pooling (TCP) integrated at the end of deep recognition architectures to produce powerful video representations. Specifically, our TCP consists of a temporal attention module for adaptively calibrating spatio-temporal features, a temporal covariance pooling to characterize intra-frame correlations and inter-frame cross-correlations of the calibrated features in a temporal manner, and a fast matrix power normalization for use of geometry of covariances. Refer to Section~\\ref{Sec:TCP",
+      "file_name": "figures/2110.14381_arch_new-eps-converted-to.png",
+      "suggestion": "diagram_candidate",
+      "width": 1470,
+      "height": 570,
+      "sha256": "26817370c01a7443f3d915f1dbf5ed490858bea1d030396f6257d94698e769c0",
+      "perceptual_hash": "543430181a5818ce",
+      "source_group": "arxiv:2110.14381",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "blob_data_6971.parquet",
+        "row": 0,
+        "sha256": "37ff6b6c6eacbe292f93f80d81a635d0c60a4465c8e918dfa7b5fca59aa24dc0",
+        "size": 163366
+      },
+      "pool_id": "P137",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P137-blob_data_6971.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 779,
+      "caption": "Network architecture used in this study. C, B and R stand for convolution, batch norm and ReLU layers; RPN for region proposal network;  DPS (ROI) for deformable position sensitive ROI; and OHEM~\\cite{shrivastava2016training",
+      "file_name": "figures/1902.07323_pdf_architecture2.png",
+      "suggestion": "diagram_candidate",
+      "width": 11023,
+      "height": 3148,
+      "sha256": "2f9a1419fbeb2fe903c29cc664cdb9733ea1dc5f6560356193f20ecd88c3e6e4",
+      "perceptual_hash": "d43e0c94f5951e5d",
+      "source_group": "arxiv:1902.07323",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "subdir/blob_data_2429.parquet",
+        "row": 0,
+        "sha256": "883aa98c36922946be4cb5b7977677b396fe69c967e2ffb8ed13b07058d048ea",
+        "size": 627347
+      },
+      "pool_id": "P104",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P104-blob_data_2429.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 667,
+      "caption": "The workflow of adopting RTLLM for completely automated design RTL generation and evaluation. The user only needs to provide their LLM as input. It evaluates whether each generated design satisfies the syntax goal, functionality goal, and quality goal.",
+      "file_name": "figures/2308.05345__fig_bench.png",
+      "suggestion": "diagram_candidate",
+      "width": 1494,
+      "height": 1290,
+      "sha256": "3230c87676e968b8cfeb0cf39cec15839e2d54feaf04a75b473876d172f67603",
+      "perceptual_hash": "3a2f215c646e42ee",
+      "source_group": "arxiv:2308.05345",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "subdir/blob_data_20627.parquet",
+        "row": 0,
+        "sha256": "0bf3eb279dda9eeb76e85d1254ce0725ac132a1c0e6c13d901cdabb34926cb8f",
+        "size": 164531
+      },
+      "pool_id": "P088",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P088-blob_data_20627.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 1154,
+      "caption": "Model architecture of dilated convolutional attention network",
+      "file_name": "figures/2009.14578_dcan.png",
+      "suggestion": "diagram_candidate",
+      "width": 1098,
+      "height": 1087,
+      "sha256": "3e30cdb26831f91113eab7a9776b36431b9c1dc4a65379db6d897df86baf1fdb",
+      "perceptual_hash": "4c1cc86c98c98c8c",
+      "source_group": "arxiv:2009.14578",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "blob_data_4457.parquet",
+        "row": 0,
+        "sha256": "71f68164f3f2885b473f34aedfc3f213c7499102ecf6f432833ab4a3224123b5",
+        "size": 124970
+      },
+      "pool_id": "P159",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P159-blob_data_4457.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 451,
+      "caption": "The MapReduce framework.",
+      "file_name": "figures/2310.05789_mapReduce.png",
+      "suggestion": "diagram_candidate",
+      "width": 1837,
+      "height": 837,
+      "sha256": "587b19666f24e2497ba7bf431eadc5e521a47a1a910fae06aa124e290eb50404",
+      "perceptual_hash": "e46575756165e471",
+      "source_group": "arxiv:2310.05789",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "subdir/blob_data_24803.parquet",
+        "row": 0,
+        "sha256": "8756e1c58a72e0eb00b43a8163684dd361933a2b9a79649ab20fd8258b6c4934",
+        "size": 236013
+      },
+      "pool_id": "P057",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P057-blob_data_24803.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 641,
+      "caption": "A schematic representation of the annotation process (dotted arrows used only for the initial sampling stage)",
+      "file_name": "figures/1912.04106_images_annotation_process.png",
+      "suggestion": "diagram_candidate",
+      "width": 702,
+      "height": 452,
+      "sha256": "5ef6f2f495bdd86e362437459ef7adc29b6bef17033e0e61795062c030d7c0a9",
+      "perceptual_hash": "0632f637061ac849",
+      "source_group": "arxiv:1912.04106",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "blob_data_3400.parquet",
+        "row": 0,
+        "sha256": "344efc5ab540e63d9f6c4049077bb6180b30b695b8f294518bf71d043ef1ee16",
+        "size": 68451
+      },
+      "pool_id": "P084",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P084-blob_data_3400.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 863,
+      "caption": "Screenshots of a raw GMOS longslit spectroscopic observation (top-left), a 2-D spectrum from a corrected and stacked 4-frame sequence with spatial and wavelength offsets (top-right), and the final extracted spectrum of the central source (bottom). The source is a DB white dwarf candidate.",
+      "file_name": "figures/2310.03048_spectro.png",
+      "suggestion": "non_diagram_candidate",
+      "width": 2670,
+      "height": 1895,
+      "sha256": "b833d156a4e74dc91e7010b42dee3cb5c991229aede46b18fa11efd578c8dcc9",
+      "perceptual_hash": "eaeaead840c0f0d0",
+      "source_group": "arxiv:2310.03048",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "subdir/blob_data_24210.parquet",
+        "row": 0,
+        "sha256": "428ee82ccadc2cb1e05db7d6126bc64cbcef12b41187d87c339e29e5763d1a4e",
+        "size": 2179244
+      },
+      "pool_id": "P114",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P114-blob_data_24210.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "selection_index": 91,
+      "caption": "Exemplary illustration of the proposed full distribution training. In orange, the normal approach with one image to one class is shown. In pink, the combination of multiple images to one and the ground truth adaption is shown.",
+      "file_name": "figures/2109.02345_exampledia.jpeg",
+      "suggestion": "non_diagram_candidate",
+      "width": 1203,
+      "height": 455,
+      "sha256": "f9b9571896da52627a7e974e3b5397192010d26ff9a9c60a0f10a3eb03cc6ab7",
+      "perceptual_hash": "69a9294949a9ac0c",
+      "source_group": "arxiv:2109.02345",
+      "source": {
+        "type": "huggingface_parquet",
+        "dataset": "yousefg-codes/research-paper-figures",
+        "revision": "3e8a1a190f814b48a358e5be60e69de28e886110",
+        "shard": "blob_data_6216.parquet",
+        "row": 0,
+        "sha256": "3063c58bf4c17974d773abefa01bf77aec7b50532078dc4508fc05ff1ae71ae8",
+        "size": 157434
+      },
+      "pool_id": "P009",
+      "path": "artifacts\\phase16-sample-pool-v1\\images\\P009-blob_data_6216.png",
+      "roi": [
+        0,
+        0,
+        1,
+        1
+      ]
+    }
+  ]
+}
