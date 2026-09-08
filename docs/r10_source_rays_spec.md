@@ -35,3 +35,7 @@ O+C까지 실제 PPT 육안 확인: 중복 3개 제거와 무방향 트리 6개 
 통합 경계 대조는 추가로 owner bbox 안의 반대 화살촉을 제외하거나 제3 bbox로 접촉 획을 지워 관측이 부당하게 확정되는 결함을 찾았다. 원본 raw mask에서 owner 내부를 더 이상 지우지 않는다. 중앙 shaft와 동일 원본 CC가 어느 owner의 깊은 내부로 이어지면 기권한다. 깊이는 bbox 경계에서 원본1pixel보다 안쪽이다. 최초 경계 접촉 veto는 기본 대조8개를 추가기권했지만, 실제 침범은 1~3pixel의 중심이 경계 안으로 .10~.51px 들어간 경우였다. 이를 숨은 화살촉 본체나 글자 손실로 분류하지 않는다. 1pixel band는 경계 양자화로 별도 취급하고 연결된 내부 본체는 계속 보호한다. 기존 결과를 다시 써서 PASS로 바꾸지 않는다.
 
 좌표 일관성: S의 TLS/물리cell 투영과 같은 정수 raster 좌표를 owner contact에도 사용한다. 초기 contact만 +.5를 더한 혼용을 제거했다. D-v3 bbox pixel-center convention을 다른 모듈에 그대로 이식하지 않는다. 1pixel 경계 band는 이 정수 좌표에서도 유지한다.
+
+### 분기 근처 혼합 관측 수정
+
+실제 첫 S-v1/v2는 모두35TP/2FP/32FN으로014의대각선2개를 추가 복원했지만012는 그대로였다. 폭 corridor 안의 모든 획을 한 화살촉 폭으로 세면, 원본에서는 떨어져 있는 다른 가지/글자도 같은 획처럼 섞인다. 임시 반대끝 gate를 느슨하게 만들지 않고, shaft 중앙을 구성하는 **원본 8-connected component가 정확히 하나일 때 그 전체 component만** terminal 관측 대상으로 삼는다. 원본에서 붙어 있는 contact/double은 계속 같은 component로 남아 보호된다. 분리된 shaft 조각/경쟁 component는 이 경로에서 기권한다. 이 변경은 새로운 source SHA와 같은 독립/통합 대조로 재검증한다.

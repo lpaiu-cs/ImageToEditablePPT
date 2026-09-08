@@ -22,6 +22,15 @@ def _axis(points, forward):
     return center, axis
 
 
+def _component_ids(pixels):
+    q = pixels.astype(int)
+    q = q-q.min(axis=0)
+    mask = np.zeros((q[:,1].max()+1,q[:,0].max()+1),np.uint8)
+    mask[q[:,1],q[:,0]] = 1
+    _, labels = cv2.connectedComponents(mask,connectivity=8)
+    return labels[q[:,1],q[:,0]]
+
+
 def _head(along, across, length, shaft_width, scale, cell_extent, reverse=False):
     t = length-along if reverse else along
     # Integer cells projected on the actual axis, no dilated mask widths.
@@ -112,7 +121,8 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
     t = (pixels-centers[0]) @ axis
     normal = np.array([-axis[1], axis[0]])
     v = (pixels-centers[0]) @ normal
-    shaft = pixels[(t > .2*length) & (t < .8*length) & (np.abs(v) <= 8*scale)]
+    shaft_selection = (t > .2*length) & (t < .8*length) & (np.abs(v) <= 8*scale)
+    shaft = pixels[shaft_selection]
     if len(shaft) < 12:
         return reject('insufficient_shaft')
     center, axis = _axis(shaft, axis)
@@ -121,6 +131,14 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
     audit.update(p95=float(np.percentile(residual, 95)), maximum=float(residual.max()))
     if audit['p95'] > 3*scale or audit['maximum'] > 3*scale:
         return reject('nonlinear_or_competing_shaft')
+    ids = _component_ids(pixels)
+    shaft_ids = np.unique(ids[shaft_selection])
+    if len(shaft_ids) != 1:
+        return reject('disconnected_or_competing_source_components')
+    # Observe this actual source component, not all nearby pixels in a corridor.
+    # Other branches/glyphs separated in the RGB are not its arrowhead width.
+    audit['excluded_other_component_pixels'] = int(np.count_nonzero(ids != shaft_ids[0]))
+    pixels = pixels[ids == shaft_ids[0]]
     hits = [line_box_hits(center, axis, b) for b in boxes]
     if not all(hits):
         return reject('axis_misses_owner')
