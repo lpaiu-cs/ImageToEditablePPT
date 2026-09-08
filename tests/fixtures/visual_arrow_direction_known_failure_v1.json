@@ -1,0 +1,34 @@
+{
+  "schema_version": "visual_arrow_direction_known_failure_v1",
+  "purpose": "GT-free characterization of an existing failure, not approved direction behavior",
+  "source_rgb_sha256": "3119868e3b4e9cf1ffa11d1288d37b485fefa42d6721c722273c9cd4729f6570",
+  "source_record_id": "block_flow_1302_00054",
+  "observation_reference_commit": "8328219996f2ebf965853b30b021775540d1eee7",
+  "observed_visual_connectors_code_sha256": "717d3e8a4a561ab93ada844739a4d16cac297c356a401fa8b4958f5756c8d32b",
+  "profile_origin": "Width profiles measured from visual_connectors._arrow_direction input after rule removal and axial closing; no GT supplied to recovery",
+  "limitation": "Profiles preserve transverse widths only, not original RGB, lateral placement, color, or complete arrowhead geometry",
+  "axis": "vertical",
+  "mask_width": 15,
+  "cases": [
+    {
+      "id": "vertical_gap_a",
+      "gap_axis_bounds_from_rgb_owners": [94, 152],
+      "gap_cross_bounds_from_rgb_owners": [269, 372],
+      "width_profile_rle": [[11, 3], [8, 1], [7, 39], [8, 2], [9, 2], [11, 3]],
+      "observed_current_direction": -1,
+      "observed_image_direction": 1,
+      "acceptable_future_directions": [0, 1],
+      "observed_after_removing_first_four_rows": 1
+    },
+    {
+      "id": "vertical_gap_b",
+      "gap_axis_bounds_from_rgb_owners": [209, 267],
+      "gap_cross_bounds_from_rgb_owners": [109, 212],
+      "width_profile_rle": [[9, 4], [7, 39], [8, 2], [9, 2], [10, 1], [11, 2]],
+      "observed_current_direction": -1,
+      "observed_image_direction": 1,
+      "acceptable_future_directions": [0, 1],
+      "observed_after_removing_first_four_rows": 0
+    }
+  ]
+}
