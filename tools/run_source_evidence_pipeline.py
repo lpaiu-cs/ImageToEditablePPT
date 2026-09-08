@@ -20,6 +20,8 @@ def verified_inputs(handoff_path):
     if payload['execution_attested'] is not True or payload['research_only'] is not True:
         raise ValueError('fresh execution research contract required')
     loaded={}
+    if set(payload['artifacts'])!={'predictions.json','execution-lock.json','execution.json','reads.json'}:
+        raise ValueError('exact fresh execution artifacts required')
     for name,ref in payload['artifacts'].items():
         path=Path(ref['path'])
         if path.name!=name or digest(path)!=ref['sha256']:
@@ -30,7 +32,7 @@ def verified_inputs(handoff_path):
         raise ValueError('fresh execution did not finish within its read contract')
     if pred['schema']!='fresh_rgb_detector_predictions_v1' or pred['execution_attested'] is not True:
         raise ValueError('not fresh predictions')
-    if pred['label_adapter']!=LEGACY_ADAPTER or lock['class_map']!=LEGACY_ADAPTER:
+    if pred['label_adapter']!=LEGACY_ADAPTER or lock['class_map']!=LEGACY_ADAPTER or payload['class_map']!=LEGACY_ADAPTER:
         raise ValueError('explicit legacy class map differs')
     if pred['run_git_commit']!=payload['run_git_commit'] or pred['run_git_commit']!=lock['git_commit']:
         raise ValueError('inference Git attestation mismatch')
@@ -38,11 +40,18 @@ def verified_inputs(handoff_path):
         raise ValueError('inference code lock mismatch')
     for path,sha in lock['code_sha256'].items():
         if digest(path)!=sha:raise ValueError('inference source changed: '+path)
-    if digest(lock['checkpoint']['path'])!=lock['checkpoint']['sha256'] or pred['checkpoint_sha256']!=lock['checkpoint']['sha256']:
+    if digest(lock['checkpoint']['path'])!=lock['checkpoint']['sha256'] or pred['checkpoint_sha256']!=lock['checkpoint']['sha256'] or payload['checkpoint_sha256']!=lock['checkpoint']['sha256']:
         raise ValueError('checkpoint identity mismatch')
+    if pred['inputs_sha256']!=lock['inputs_sha256']:
+        raise ValueError('RGB input manifest identity mismatch')
     rows=lock['inputs'];by_id={r['id']:r for r in rows}
-    if len(by_id)!=len(rows) or len(pred['predictions'])!=len(rows) or len(rows)!=payload['sample_count']:
+    if not rows or any(set(r)!={'id','image','image_sha256'} for r in rows):
+        raise ValueError('RGB-only input rows required')
+    if len(by_id)!=len(rows) or len(pred['predictions'])!=len(rows) or len(rows)!=payload['sample_count'] or execution['samples']!=len(rows):
         raise ValueError('input sample identity mismatch')
+    raw_count=sum(len(p['source_labels']) for p in pred['predictions'])
+    if raw_count!=payload['raw_object_count'] or raw_count!=execution['raw_objects']:
+        raise ValueError('raw detection count mismatch')
     import torch
     from image_to_editable_ppt.ml.detection_postprocess import select_detection_indices
     from image_to_editable_ppt.research.source_evidence_pipeline import detector_scene
@@ -107,7 +116,7 @@ def run(handoff,out):
     import rapidocr_onnxruntime
     models={str(p):digest(p) for p in (Path(rapidocr_onnxruntime.__file__).parent/'models').glob('*.onnx')}
     save(out/'lock.json',dict(provenance=provenance,code_sha256=code,models_sha256=models,
-        mode='fresh_detector_to_native',population='previously exposed synthetic validation; not unseen acceptance'))
+        mode='fresh_detector_to_native',population=provenance['inference_lock'].get('population','previously exposed synthetic validation; not unseen acceptance')))
     records=[]
     for index,sample in enumerate(samples):
         slot=f'{index:03d}';image=out/'rgb'/f'{slot}.png';output=out/'pptx'/f'{slot}.pptx'

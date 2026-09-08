@@ -28,6 +28,7 @@ def write(path,value):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--inputs',type=Path,required=True)
+    p.add_argument('--user-images',action='store_true',help='Explicit research run on user-supplied RGBs, not a validation or holdout claim')
     p.add_argument('--checkpoint',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
     a=p.parse_args();a.out=a.out.resolve();a.inputs=a.inputs.resolve();a.checkpoint=a.checkpoint.resolve()
     a.out.mkdir(parents=True,exist_ok=False)
@@ -42,9 +43,9 @@ def main():
     from image_to_editable_ppt.ml.dataset import to_rgb_chw_tensor,label_to_kind
     Image.init();torch.set_num_threads(8);torch.manual_seed(1303)
     inputs=json.loads(a.inputs.read_text())
-    if len(inputs)!=15 or any(set(r)!={'id','image','image_sha256'} for r in inputs):
-        raise ValueError('Exactly the 15 locked RGB entries required')
-    if len({r['id'] for r in inputs})!=15:raise ValueError('Duplicate image ID')
+    if not isinstance(inputs,list) or not inputs or (not a.user_images and len(inputs)!=15) or any(set(r)!={'id','image','image_sha256'} for r in inputs):
+        raise ValueError('RGB-only entries required; non-15 runs need --user-images')
+    if len({r['id'] for r in inputs})!=len(inputs):raise ValueError('Duplicate image ID')
     adapter={1:1,2:2,3:4,4:5,5:6,6:7}
     names=['box','rounded_box','section','label_anchor','flow_cluster','panel']
     assert [str(label_to_kind(adapter[i])) for i in range(1,7)]==names
@@ -61,8 +62,9 @@ def main():
     lock=dict(schema='fresh_rgb_detector_execution_v1',git_commit=git,code_sha256=code_hashes,
         checkpoint=dict(path=str(a.checkpoint),sha256=sha(a.checkpoint)),inputs_sha256=sha(a.inputs),
         inputs=inputs,class_map=adapter,class_names=names,class_map_provenance='legacy_inferred_from_a00d61c_enum_and_3ae7caf_insertion',
+        population='user-supplied research images, no holdout claim' if a.user_images else 'previously exposed synthetic validation 15',
         limitations=['Training checkpoint does not attest its class names or training code SHA.',
-                    'These 15 validation images were previously exposed; not an unseen holdout.'],
+                    'This execution does not attest unseen generalization or production acceptance.'],
         environment=dict(python=sys.version,torch=torch.__version__,torchvision=torchvision.__version__,
                          lightning=lightning.__version__,numpy=np.__version__,pillow=Image.__version__,device='cpu',threads=8),
         inference=dict(checkpoint_load='torch.load(weights_only=True), strict state_dict',batch_size=1,model_eval=True,
@@ -88,7 +90,9 @@ def main():
         with torch.inference_mode():
             for row in inputs:
                 if sha(row['image'])!=row['image_sha256']:raise ValueError('RGB SHA changed')
-                with Image.open(row['image']) as im:tensor=to_rgb_chw_tensor(np.asarray(im.convert('RGB')))
+                with Image.open(row['image']) as im:
+                    if im.mode!='RGB':raise ValueError('Original RGB mode required')
+                    tensor=to_rgb_chw_tensor(np.asarray(im))
                 result=model([tensor])[0]
                 source_labels=result['labels'].tolist()
                 labels=torch.tensor([adapter[int(v)] for v in source_labels],dtype=torch.int64)
