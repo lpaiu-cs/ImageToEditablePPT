@@ -15,13 +15,13 @@ def cli(monkeypatch):
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     def fake_run(source,output,**kwargs):
         assert kwargs==dict(trace=True,boundary_union=True,owned_text=True,portrait_boxes=True,texture_guard=True,
-            nested_owners=True,pixel_agreement=True,portrait_text=True,spatial_texture=True)
+            nested_owners=True,pixel_agreement=True,portrait_text=True,spatial_texture=True,compact_boxes=True,flow_frames=True)
         assert Image.open(source).mode=='RGB'
         output.mkdir()
         pptx=output/'result.pptx';pptx.write_bytes(b'unit-test-boundary-only-not-real-ppt')
         (output/'lock.json').write_text('{}')
         (output/'result.json').write_text(json.dumps(dict(pptx_sha256=module.digest(pptx),
-            nodes=1,labels=1,emitted_scene=dict(connectors=[]))))
+            nodes=1,labels=1,emitted_scene=dict(connectors=[]),flow_frame_audit=dict(retained=[]))))
     monkeypatch.setattr(module,'run',fake_run)
     return module
 
@@ -33,7 +33,7 @@ def test_opaque_alpha_conversion_preserves_original_and_pixel_values(cli,tmp_pat
     assert source.read_bytes()==before
     assert np.array_equal(np.array(Image.open(out/'input-rgb.png')),rgb[:,:,:3])
     assert not result['production_approved']
-    assert result['configuration']=='closed-native-v3'
+    assert result['configuration']=='closed-native-v4' and result['blank_frame_ids']==[]
     assert result['input_mode']=='RGBA'
     assert result['input_sha256']==cli.digest(source)
 

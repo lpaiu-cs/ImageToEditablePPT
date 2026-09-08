@@ -20,19 +20,23 @@ def convert(image,output):
     if mode=='RGBA':
         source=output/'input-rgb.png';prepare(image,source)
     run(source,output/'native',trace=True,boundary_union=True,owned_text=True,
-        portrait_boxes=True,texture_guard=True,nested_owners=True,pixel_agreement=True,portrait_text=True,spatial_texture=True)
+        portrait_boxes=True,texture_guard=True,nested_owners=True,pixel_agreement=True,portrait_text=True,spatial_texture=True,
+        compact_boxes=True,flow_frames=True)
     assert digest(image)==original_sha and digest(Path(__file__))==cli_sha
     result=json.loads((output/'native/result.json').read_text(encoding='utf-8'))
     handoff=dict(status='partial_research_draft_requires_review' if result['nodes'] else 'no_confident_structure',
-        production_approved=False,configuration='closed-native-v3',input_path=str(image),input_sha256=original_sha,input_mode=mode,
+        production_approved=False,configuration='closed-native-v4',input_path=str(image),input_sha256=original_sha,input_mode=mode,
         rgb_sha256=digest(source),cli_sha256=cli_sha,
         pptx=str(output/'native/result.pptx'),pptx_sha256=result['pptx_sha256'],
         nodes=result['nodes'],labels=result['labels'],native_edges=len(result['emitted_scene']['connectors']),
+        blank_frame_ids=result['flow_frame_audit']['retained'],
         native_lock_sha256=digest(output/'native/lock.json'),
         limitations=['Missing structures and labels are intentional when uncertain.',
             'Texture veto is not a general diagram-versus-photo classifier.',
             'OCR whitespace and omitted connections still require review.',
             'Conservative texture rejection can omit genuine diagram boxes.',
+            'Externally supported frames may intentionally omit all internal content and text.',
+            'Thick borders and unrecognized internal text can still cause conservative label omission.',
             'Inspect the actual PowerPoint render before using the draft.'])
     save(output/'handoff.json',handoff)
     print(json.dumps(handoff,ensure_ascii=False,indent=2))

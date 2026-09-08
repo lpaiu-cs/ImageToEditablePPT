@@ -4,7 +4,9 @@
 
 이 명령은 정답 annotation이나 기존 검출 캐시 없이 이미지에서 직접 부분 native PPT를 만든다. production 승인 명령은 아니다. 닫힌 박스·확실한 라벨·원본 근거가 있는 연결만 남으며 나머지는 생략될 수 있다. 사진/아이콘 일반 분류와 모든 복잡 관계의 복원은 아직 보장하지 않는다.
 
-현재 고정 구성은 `closed-native-v3`다. 중첩 parent 내부 연결 마스크, union 자식의 OCR 제외, 원본1픽셀 경계 대응, 확실한 세로 라벨의 native 방향, R11 공간 texture 거부를 포함한다. `handoff.json`에 구성명을 기록한다. 이전 v1/v2 산출물과 실패를 덮어쓰지 않는다. v2에서 실제 사진 caption12개 중9개가 잘못 출력됐고, v3에서 이 반례는 모두 거부됐다. 사진 원본은2개라 일반화 증명이 아니며 정상 복잡7개의 실제 owner3개도 추가 생략된다. 자세한 근거와 손실은 `r11_release_candidate_report.md`에 있다. 실패한 소형 CNN은 사용하지 않는다.
+현재 고정 구성은 `closed-native-v4`다. 기존 v3의 중첩 owner·원본1픽셀 대응·세로 라벨·공간 texture 거부에 compact 박스와 사용자 승인된 빈 흐름 테두리 정책(R14 실험 v4)을 추가했다. 입력은 여전히 RGB뿐이며 정답 annotation이나 source PPT를 추론에 넣지 않는다. `handoff.json`의 `blank_frame_ids`는 내부 그림·라벨을 의도적으로 비운 owner다.
+
+사진/아이콘 카드는 고정된 외부 seed와 실제 독립 입출력 연결을 가진 경우에만 빈 테두리로 보완한다. 이것은 사진을 diagram으로 분류했다는 뜻이 아니다. 실제 라벨/연결 근거가 있는 내부 구조와 반복 내부 후보는 보호한다. 두꺼운 테두리나 읽지 못한 글자를 내부 내용으로 보아 라벨이 생략될 수 있다. 사진 원본2개와 파생/아이콘 대조군의 개발 검증이며 일반화·production 보장이 아니다. 이전 실패는 덮어쓰지 않는다. 근거는 `r14_flow_frame_results.md`, 기존 texture 한계는 `r11_release_candidate_report.md`에 있다. 실패한 소형 CNN과 R12 raw-branches는 사용하지 않는다.
 
 ## 실행
 
