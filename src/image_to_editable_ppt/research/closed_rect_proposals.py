@@ -22,7 +22,12 @@ def _same_ink_band(rgb,inner,outer,scale):
     return bool(np.mean(contrast>=24)>=.90)
 
 
-def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=False):
+def pixel_cell_agreement(a,b):
+    """Absolute original-pixel boundary uncertainty, independent of box area."""
+    return bool(np.max(abs(np.asarray(a,dtype=float)-np.asarray(b,dtype=float)))<=1)
+
+
+def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=False,pixel_agreement=False):
     if rgb.dtype!=np.uint8 or rgb.ndim!=3 or rgb.shape[2]!=3:raise ValueError('uint8 RGB required')
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);s=rgb.shape[0]/360
     arms=[]
@@ -47,7 +52,8 @@ def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=Fa
     selected=[];records=[]
     for candidate in arms[0]:
         box=candidate['bbox']
-        matches=[c for c in arms[1] if _iou(box,c['bbox'])>=.98]
+        matches=[c for c in arms[1] if (pixel_cell_agreement(box,c['bbox'])
+            if pixel_agreement else _iou(box,c['bbox'])>=.98)]
         competing=[c for c in arms[0] if c is not candidate and _iou(box,c['bbox'])>=.85]
         same_outer=[c for c in competing if _same_ink_band(rgb,candidate,c,s)]
         stable=any(np.max(abs(np.array(box)-c['bbox']))<=1 for c in matches)
@@ -55,21 +61,21 @@ def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=Fa
         if inner_boundaries and competing:
             # Keep an actual inner boundary; do not merge nearby outlines or
             # infer whether their outer siblings were borders or shadows.
-            stable_competing=[c for c in competing if any(_iou(c['bbox'],other['bbox'])>=.98
-                and np.max(abs(np.array(c['bbox'])-other['bbox']))<=1 for other in arms[1])]
+            stable_competing=[c for c in competing if any((pixel_agreement or _iou(c['bbox'],other['bbox'])>=.98)
+                and pixel_cell_agreement(c['bbox'],other['bbox']) for other in arms[1])]
             unambiguous=all(c['bbox'][0]<=box[0] and c['bbox'][1]<=box[1]
                 and c['bbox'][2]>=box[2] and c['bbox'][3]>=box[3]
                 and c['bbox']!=box for c in stable_competing)
         reason='closed_rectangle_agreement' if stable and unambiguous else 'ambiguous_or_threshold_unstable_boundary'
         records.append(dict(bbox=box,reason=reason))
         if reason=='closed_rectangle_agreement':selected.append(candidate)
-    return selected,dict(thresholds=[130,170] if dark_boundaries else [[20,60],[40,100]],dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,inner_boundaries=inner_boundaries,candidates=records)
+    return selected,dict(thresholds=[130,170] if dark_boundaries else [[20,60],[40,100]],dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,inner_boundaries=inner_boundaries,pixel_agreement=pixel_agreement,candidates=records)
 
 
-def propose_union(rgb,*,portrait_boxes=False):
+def propose_union(rgb,*,portrait_boxes=False,pixel_agreement=False):
     """Union independently closed boundaries; suppress duplicates, never fit a new box."""
-    canny,canny_audit=propose(rgb,inner_boundaries=True,portrait_boxes=portrait_boxes)
-    dark,dark_audit=propose(rgb,dark_boundaries=True,portrait_boxes=portrait_boxes)
+    canny,canny_audit=propose(rgb,inner_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement)
+    dark,dark_audit=propose(rgb,dark_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement)
     ordered=sorted([dict(c,method=method) for method,items in [('canny',canny),('dark',dark)] for c in items],
                    key=lambda c:((c['bbox'][2]-c['bbox'][0])*(c['bbox'][3]-c['bbox'][1]),c['method']))
     selected=[];duplicates=[]

@@ -24,7 +24,7 @@ from image_to_editable_ppt.v3.emit.style import ShapeVisualStyle
 from dataclasses import replace
 
 
-def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole_lines=False,source_rows=False,dark_boundaries=False,portrait_boxes=False,boundary_union=False,texture_guard=False,owned_text=False,nested_owners=False):
+def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole_lines=False,source_rows=False,dark_boundaries=False,portrait_boxes=False,boundary_union=False,texture_guard=False,owned_text=False,nested_owners=False,pixel_agreement=False):
     if source_rows and whole_lines:raise ValueError('source-rows and whole-lines are separate experiment arms')
     if boundary_union and (inner_boundaries or dark_boundaries):raise ValueError('boundary-union fixes both component proposal contracts')
     if texture_guard and content_gate:raise ValueError('texture and flat-content gates are separate experiments')
@@ -35,7 +35,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
         rgb=np.asarray(im)
     source=digest(image)
     files=[Path(__file__).resolve(),ROOT/'docs/r10_closed_rectangle_proposal_spec.md',
-        ROOT/'docs/r10_owned_rectangle_spec.md',ROOT/'docs/r10_closed_content_gate_spec.md',ROOT/'docs/r10_source_texture_spec.md',ROOT/'docs/r10_nested_owner_spec.md']
+        ROOT/'docs/r10_owned_rectangle_spec.md',ROOT/'docs/r10_closed_content_gate_spec.md',ROOT/'docs/r10_source_texture_spec.md',ROOT/'docs/r10_nested_owner_spec.md',ROOT/'docs/r10_pixel_cell_boundary_spec.md']
     for directory in ('research','region','v3/emit','v3/core','v3/text'):
         files.extend((ROOT/'src/image_to_editable_ppt'/directory).glob('*.py'))
     code={str(f):digest(f) for f in files}
@@ -43,8 +43,8 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     models={str(f):digest(f) for f in (Path(rapidocr_onnxruntime.__file__).parent/'models').glob('*.onnx')}
     font=Path('C:/Windows/Fonts/arial.ttf');code[str(font)]=digest(font)
     save(output/'lock.json',dict(source_path=str(image),source_sha256=source,code_sha256=code,ocr_models_sha256=models,
-        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
-    candidates,proposal_audit=propose_union(rgb,portrait_boxes=portrait_boxes) if boundary_union else propose(rgb,inner_boundaries=inner_boundaries,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes)
+        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,pixel_agreement=pixel_agreement,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
+    candidates,proposal_audit=propose_union(rgb,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement) if boundary_union else propose(rgb,inner_boundaries=inner_boundaries,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement)
     engine=_load_engine();objects=[];styles={};text_audit={};region_audit={};content_audit={}
     regions=closed_regions(rgb)
     if nested_owners:
@@ -112,4 +112,5 @@ if __name__=='__main__':
     p.add_argument('--texture-guard',action='store_true')
     p.add_argument('--owned-text',action='store_true')
     p.add_argument('--nested-owners',action='store_true')
-    a=p.parse_args();run(a.image,a.output,a.trace,a.inner_boundaries,a.content_gate,a.whole_lines,a.source_rows,a.dark_boundaries,a.portrait_boxes,a.boundary_union,a.texture_guard,a.owned_text,a.nested_owners)
+    p.add_argument('--pixel-agreement',action='store_true')
+    a=p.parse_args();run(a.image,a.output,a.trace,a.inner_boundaries,a.content_gate,a.whole_lines,a.source_rows,a.dark_boundaries,a.portrait_boxes,a.boundary_union,a.texture_guard,a.owned_text,a.nested_owners,a.pixel_agreement)

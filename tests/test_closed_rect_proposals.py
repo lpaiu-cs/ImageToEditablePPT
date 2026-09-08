@@ -3,6 +3,17 @@ import numpy as np
 import pytest
 
 from image_to_editable_ppt.research.closed_rect_proposals import propose,propose_union,observe_text
+from image_to_editable_ppt.research.closed_rect_proposals import pixel_cell_agreement
+
+
+@pytest.mark.parametrize('a,b,expected',[
+    ([313,169,403,229],[313,169,402,228],True),
+    ([0,0,30,50],[1,1,29,49],True),
+    ([0,0,1000,1000],[0,0,1002,1000],False),
+    ([0,0,30,50],[0,0,28,50],False),
+])
+def test_boundary_cell_error_does_not_depend_on_object_area(a,b,expected):
+    assert pixel_cell_agreement(a,b)==expected
 
 
 @pytest.mark.parametrize('scale',[1,2,3])
