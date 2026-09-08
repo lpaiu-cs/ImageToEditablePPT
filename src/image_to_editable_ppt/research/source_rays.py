@@ -144,6 +144,7 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
     # Observe this actual source component, not all nearby pixels in a corridor.
     # Other branches/glyphs separated in the RGB are not its arrowhead width.
     audit['excluded_other_component_pixels'] = int(np.count_nonzero(ids != shaft_ids[0]))
+    original_pixels = pixels
     pixels = pixels[ids == shaft_ids[0]]
     hits = [line_box_hits(center, axis, b) for b in boxes]
     if not all(hits):
@@ -178,6 +179,16 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
     audit.update(start_head=start_audit, end_head=end_audit)
     if end_head == start_head:
         return reject('no_unique_arrowhead')
+    # Excluded components are not positive direction evidence, but a separately
+    # visible opposing head must remain a veto (e.g. a small gap at its base).
+    original_t=(original_pixels-a)@axis
+    original_v=(original_pixels-a)@normal
+    window=(original_t>=0)&(original_t<=length)&(np.abs(original_v)<=8*scale)
+    competing,competition_audit=_head(original_t[window],original_v[window] if start_head else -original_v[window],
+        length,shaft_width,scale,cell_extent,reverse=not start_head)
+    audit['opposite_all_source_head']=competition_audit
+    if competing:
+        return reject('opposite_head_in_original_source')
     opposite = end_audit if start_head else start_audit
     if max(opposite['profile']) >= max(1.6*shaft_width,shaft_width+2*scale):
         return reject('opposite_terminal_unresolved')
