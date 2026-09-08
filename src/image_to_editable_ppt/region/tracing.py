@@ -126,7 +126,9 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False,raw_components=False):
     crop=rgb[y0:y1,x0:x1]
     h,w=crop.shape[:2]
     p=max(2,round(.005*min(h,w)))
-    raw=stroke_mask(crop)
+    # R12 raw components must preserve the same original ink as B-v1/H.
+    # The legacy local-contrast mask can discard a gray crossing before fitting.
+    raw=(crop.astype(np.int64)@np.array([2126,7152,722])<1300000).astype(np.uint8) if raw_components else stroke_mask(crop)
     mask=raw.copy()
     eligible=[]; transparent=[]; owner_pads={}
     for s in scene.shapes:
