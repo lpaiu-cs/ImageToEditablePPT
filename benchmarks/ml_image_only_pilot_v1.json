@@ -1,0 +1,267 @@
+{
+  "schema": "ml_image_only_pilot_v1",
+  "base_git": "d5373b1",
+  "code_sha256": "3e8f9218eb99d68456b6c49a584c40361c426c54a9b2f3888548580bdcea4da7",
+  "class_map": {
+    "1": 1,
+    "2": 2,
+    "3": 4,
+    "4": 5,
+    "5": 6,
+    "6": 7
+  },
+  "class_map_sha256": "510d1547021f981ed951df57fdb63dfc05240609e1f73a790393effae8628275",
+  "class_map_provenance": "inferred from a00d61c enum and 3ae7caf insertion; checkpoint lacks explicit class names/code SHA",
+  "artifact_root": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\ml-image-only-v1",
+  "artifacts": {
+    "rgb_inputs.json": "adc63e976286f174c914ea49f532bbe113923b571323063973a5ebb30318eaba",
+    "evaluator_inputs.json": "296284a40b8d1ae3ee2732625d7a51f6f0499bfd78ba218d717760054314076f",
+    "audit.json": "849e2e3168d9dcd4c83e836065be06bdb6ce10d5c8c6a87aea6cf4427dc2e6f4",
+    "baseline_legacy_predictions.json": "c6ed36cfc81dc1ff38d2bddb4a90489b24b2a0a75c2fb617ac249412faebeb4a",
+    "baseline_legacy_metrics.json": "2fabab7d0e5852d1adfa7fee43c1b7293465a5bd67062ea385f9266637dd7652",
+    "candidate_predictions.json": "9abcba10a829d3ff9a1919afb241388d5a146f18c484862d86025b383a59e329",
+    "candidate_metrics.json": "23db601df5686f6757d102b23cf86b57e57123be50168043cfa5f250cdf42f99",
+    "pilot-legacy/run.json": "08d4a405662360b7acc4f52848f7cd233c220ea9e5cd7ff97cb26b4cfd35c239",
+    "native-render.json": "268aa9bd820bbd17b5886aee71afdf9b76b816042cff79852a0247a4110d42f0",
+    "native_contact.png": "11f6275e6754ee03385be0ee5a54d96019344e85a40bb5fd45d1a1ef4b9800b4"
+  },
+  "sources": [
+    {
+      "source": {
+        "manifest": "../ds-v13-pil/dataset_manifest.json",
+        "sha256": "665db9aefe3e3196be52aa9b08f4e27c25def1423534a3a5d9488cbf995fffb0",
+        "renderer": "pil_raster_v1",
+        "seed": 1301,
+        "count": 350
+      },
+      "actual_sha256": "665db9aefe3e3196be52aa9b08f4e27c25def1423534a3a5d9488cbf995fffb0",
+      "matches": true
+    },
+    {
+      "source": {
+        "manifest": "../ds-v13-soffice/dataset_manifest.json",
+        "sha256": "671c4fe856c5d6393ba19b4255020304642929797cfdadcb75d102f6ed224557",
+        "renderer": "soffice_png_v1",
+        "seed": 1302,
+        "count": 210
+      },
+      "actual_sha256": "671c4fe856c5d6393ba19b4255020304642929797cfdadcb75d102f6ed224557",
+      "matches": true
+    }
+  ],
+  "split_counts": {
+    "train": 448,
+    "val": 56,
+    "test": 56
+  },
+  "exact_cross_split": {
+    "rgb": [],
+    "geometry": [
+      [
+        {
+          "id": "block_flow_1301_00012",
+          "split": "val"
+        },
+        {
+          "id": "block_flow_1301_00338",
+          "split": "train"
+        }
+      ],
+      [
+        {
+          "id": "block_flow_1301_00123",
+          "split": "train"
+        },
+        {
+          "id": "block_flow_1301_00202",
+          "split": "val"
+        },
+        {
+          "id": "block_flow_1301_00265",
+          "split": "train"
+        },
+        {
+          "id": "block_flow_1301_00270",
+          "split": "train"
+        },
+        {
+          "id": "block_flow_1302_00009",
+          "split": "train"
+        },
+        {
+          "id": "block_flow_1302_00068",
+          "split": "train"
+        }
+      ],
+      [
+        {
+          "id": "block_flow_1301_00136",
+          "split": "train"
+        },
+        {
+          "id": "block_flow_1301_00259",
+          "split": "train"
+        },
+        {
+          "id": "block_flow_1301_00282",
+          "split": "train"
+        },
+        {
+          "id": "block_flow_1302_00059",
+          "split": "test"
+        }
+      ],
+      [
+        {
+          "id": "block_flow_1301_00137",
+          "split": "val"
+        },
+        {
+          "id": "block_flow_1301_00144",
+          "split": "train"
+        },
+        {
+          "id": "block_flow_1301_00269",
+          "split": "train"
+        }
+      ]
+    ]
+  },
+  "near_candidate_count": 105,
+  "baseline": {
+    "nodes": {
+      "precision": 0.9680851063829787,
+      "recall": 1.0,
+      "f1": 0.9837837837837838,
+      "true_positive": 91,
+      "false_positive": 3,
+      "false_negative": 0,
+      "prediction_count": 94,
+      "reference_count": 91
+    },
+    "containers": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "true_positive": 11,
+      "false_positive": 0,
+      "false_negative": 0,
+      "prediction_count": 11,
+      "reference_count": 11
+    }
+  },
+  "candidate": {
+    "nodes": {
+      "precision": 0.9680851063829787,
+      "recall": 1.0,
+      "f1": 0.9837837837837838,
+      "true_positive": 91,
+      "false_positive": 3,
+      "false_negative": 0,
+      "prediction_count": 94,
+      "reference_count": 91
+    },
+    "containers": {
+      "precision": 0.9166666666666666,
+      "recall": 1.0,
+      "f1": 0.9565217391304348,
+      "true_positive": 11,
+      "false_positive": 1,
+      "false_negative": 0,
+      "prediction_count": 12,
+      "reference_count": 11
+    }
+  },
+  "native": [
+    {
+      "path": "artifacts\\ml-image-only-v1\\native-baseline\\000.pptx",
+      "sha256": "5fa2b6f06ed604f7d85e1606e758ffea298eb47906c69be44a631ec446e87993",
+      "shapes": 7,
+      "picture_shapes": 0,
+      "texts": [
+        "Deploy",
+        "Release",
+        "Audit",
+        "Verify",
+        "Input"
+      ],
+      "empty_text_frames": 0
+    },
+    {
+      "path": "artifacts\\ml-image-only-v1\\native-baseline\\006.pptx",
+      "sha256": "af49e60163701a3c5d2348f4d0d011c04fc1fb775ddd5a542e987703170a1c81",
+      "shapes": 12,
+      "picture_shapes": 0,
+      "texts": [
+        "Dropout",
+        "Embed",
+        "ReLU",
+        "Pool",
+        "nput"
+      ],
+      "empty_text_frames": 3
+    },
+    {
+      "path": "artifacts\\ml-image-only-v1\\native-baseline\\012.pptx",
+      "sha256": "a9e288979047c4a47985f99f3b0ce74a8745878748db1060a4aacc2b3a6647c4",
+      "shapes": 14,
+      "picture_shapes": 0,
+      "texts": [
+        "Adj",
+        "CP",
+        "PP",
+        "dos",
+        "PP",
+        "CP"
+      ],
+      "empty_text_frames": 2
+    },
+    {
+      "path": "artifacts\\ml-image-only-v1\\native-candidate\\000.pptx",
+      "sha256": "7dcf0071ada60b22c14d484d30455d8009a792ec6b28d4cc3ccac1a70df483a9",
+      "shapes": 7,
+      "picture_shapes": 0,
+      "texts": [
+        "Deploy",
+        "Release",
+        "Audit",
+        "Verify",
+        "Input"
+      ],
+      "empty_text_frames": 0
+    },
+    {
+      "path": "artifacts\\ml-image-only-v1\\native-candidate\\006.pptx",
+      "sha256": "ebf18f68badb87459111636ca7fd81bac484ac5da8c76e84977259166de8a663",
+      "shapes": 12,
+      "picture_shapes": 0,
+      "texts": [
+        "Dropout",
+        "Embed",
+        "ReLU",
+        "Pool",
+        "nput"
+      ],
+      "empty_text_frames": 3
+    },
+    {
+      "path": "artifacts\\ml-image-only-v1\\native-candidate\\012.pptx",
+      "sha256": "a22f02d7f0a92dbb1ea9e14100fcd6947d64121f30b1d4a4bc8b07da0585d1eb",
+      "shapes": 14,
+      "picture_shapes": 0,
+      "texts": [
+        "Adj",
+        "CP",
+        "PP",
+        "PP",
+        "CP"
+      ],
+      "empty_text_frames": 3
+    }
+  ],
+  "verdict": "candidate not adopted; synthetic validation diagnosis only",
+  "invalid_outputs": [
+    "baseline_predictions.json",
+    "baseline_metrics.json"
+  ]
+}
