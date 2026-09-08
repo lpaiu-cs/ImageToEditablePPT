@@ -111,8 +111,8 @@ def fit_observed_line(pixels, boxes, endpoints, *, scale, other_boxes=()):
     return tuple(Point(float(p[0]), float(p[1])) for p in result), dict(record, decision='refined', reason='supported_raw_centerline')
 
 
-def trace_with_centerlines(scene, rgb):
-    traced, original_audit, mask = trace_scene(scene, rgb, (0, 0, 1, 1), transparent_gaps=True)
+def trace_with_centerlines(scene, rgb, *, directed_fanout=False):
+    traced, original_audit, mask = trace_scene(scene, rgb, (0, 0, 1, 1), transparent_gaps=True, **({'directed_fanout':True} if directed_fanout else {}))
     _, labels = cv2.connectedComponents(mask, connectivity=8)
     raw = stroke_mask(rgb)
     owners = {s.id: s for s in scene.shapes}

@@ -29,7 +29,7 @@ def panel_children(scene):
     return result
 
 
-def trace_nested(scene,rgb,*,raw_branches=False):
+def trace_nested(scene,rgb,*,raw_branches=False,directed_fanout=False):
     from image_to_editable_ppt.research.source_centerline_v2 import trace_with_centerlines
     from image_to_editable_ppt.research.box_centerline_b_v1 import refine_box_centerlines
     from image_to_editable_ppt.research.box_terminals import recover_box_terminals
@@ -37,7 +37,7 @@ def trace_nested(scene,rgb,*,raw_branches=False):
     # This is a temporary mask role, not a new semantic classification or shape.
     mask_scene=replace(scene,shapes=tuple(replace(s,owner_kind=PortOwnerKind.CONTAINER,
         shape_kind=ContainerKind.PANEL) if s.id in parents else s for s in scene.shapes))
-    traced,_,trace=trace_with_centerlines(mask_scene,rgb)
+    traced,_,trace=trace_with_centerlines(mask_scene,rgb,**({'directed_fanout':True} if directed_fanout else {}))
     traced,box=refine_box_centerlines(traced,rgb)
     traced,terminals=recover_box_terminals(traced,rgb,box)
     if raw_branches:

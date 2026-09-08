@@ -85,7 +85,7 @@ def observed_border_pad(raw,box,base):
     return pad
 
 
-def straight_fanout(component,contacts,tolerance):
+def straight_fanout(component,contacts,tolerance,*,directed_search=False):
     """Unique straight-ray hub with independently arrowed leaf terminals.
 
     This does not solve general junction topology. Bent branches, crossings,
@@ -98,7 +98,9 @@ def straight_fanout(component,contacts,tolerance):
         arms=[]
         for j in range(len(contacts)):
             if i==j: continue
-            key=tuple(sorted((i,j)))
+            # BFS grid ties are directional: a reversed leaf-first path is not
+            # the hub-first observation. Keep the frozen unordered arm opt-out.
+            key=(i,j) if directed_search else tuple(sorted((i,j)))
             if key not in cache:
                 path=shortest(component,contacts[key[0]][1],contacts[key[1]][1])
                 if len(path)<60:
@@ -112,7 +114,7 @@ def straight_fanout(component,contacts,tolerance):
                         and max(float(residual[0]),float(residual[-1]))<=min(10,3*tolerance)) else None
             path=cache[key]
             if path is None: break
-            path=path if i<j else list(reversed(path))
+            path=path if directed_search or i<j else list(reversed(path))
             sign,arrow=direction(component,path[len(path)//3:])
             if sign!=1: break
             arms.append((contacts[i][0],contacts[j][0],path,arrow))
@@ -120,7 +122,7 @@ def straight_fanout(component,contacts,tolerance):
     return hubs[0] if len(hubs)==1 else None
 
 
-def trace_scene(scene,rgb,roi,*,transparent_gaps=False,raw_components=False):
+def trace_scene(scene,rgb,roi,*,transparent_gaps=False,raw_components=False,directed_fanout=False):
     scope=pixel_box(roi,(scene.image_size.width,scene.image_size.height))
     x0,y0,x1,y1=scope
     crop=rgb[y0:y1,x0:x1]
@@ -178,7 +180,7 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False,raw_components=False):
         r=dict(component=index,owners=[s.id for s,_ in contacts],pixel_area=area)
         component=labels[by:by+bh,bx:bx+bw]==index
         if len(contacts)!=2:
-            fan=straight_fanout(component,contacts,max(2,.003*min(h,w)))
+            fan=straight_fanout(component,contacts,max(2,.003*min(h,w)),directed_search=True) if directed_fanout else straight_fanout(component,contacts,max(2,.003*min(h,w)))
             if fan is None:
                 r['rejected']='ambiguous_multi_owner'; records.append(r); continue
             for a,b,path,arrow in fan:
@@ -188,7 +190,7 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False,raw_components=False):
                 edges.append(EmitConnectorPrimitive(cid,ConnectorKind.ARROW,.8,
                     a.id,a.owner_kind,b.id,b.owner_kind,cid+':start',cid+':end',
                     path_points=tuple(Point(*q) for q in points),arrowhead_end=True,
-                    source='r5_straight_fanout',provenance=('r5:unique_straight_hub','r5:terminal_arrow_evidence')))
+                    source='r5_straight_fanout',provenance=('r5:unique_straight_hub','r5:terminal_arrow_evidence')+ (('r15:hub_first_search',) if directed_fanout else ())))
                 records.append(dict(r,connector_id=cid,directed=True,path_points=points,
                     raw_path_length=len(path),arrow=arrow,method='unique_straight_fanout'))
             continue
