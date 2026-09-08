@@ -52,3 +52,11 @@ blue/original 두 새 비교를 직접 육안으로 확인했다. 나머지5개�
 현재 자료로 확인하지 않은 사진/아이콘 유형의 안전성과 실제 사용자 수정시간은 미검증이다. 자동 COM에서 도형·텍스트를 바꾸고 연결 부착이 유지되는 것은 확인했지만, 이를 사람의 작업시간 감소로 대신하지 않는다. 기존 Phase16 operation calibration도 별도 실제 인간 측정 경계이며 그 동결 결과를 소급 변경하지 않았다.
 
 따라서 이 산출물은 **검토 후 사용할 편집 가능한 부분 초안**이다. 원본 전체 복원, 새 holdout 통과, 실제 생산성 실측, production 완료라는 표현은 사용하지 않는다. 실제 사람이 PowerPoint에서 이 초안을 보완하는 시간과 처음부터 재작도하는 시간을 같은 작업 범위로 비교해야 사용자 시간 절약을 확정할 수 있다.
+
+## 이어서 수행한 R12/R13
+
+R12에서는 morphology 없는 원본 성분 보완과 회색 교차선 증거 불일치를 검사·수정했다. 독립 반례 수정 후 복잡7개의 추가 성과는 방향 없는 선1개뿐이므로 기본 경로에 넣지 않았다. R13에서는 거의 정사각형인 카드 후보의 종횡비 공백을 보완했지만, 원본의 OCR 신뢰도와 icon 위치 texture veto 때문에 최종7도형/7라벨/2연결은 그대로였다. 실제 COM 결과도 R11과 byte-identical이다. 두 옵션 모두 기본 false로 유지하며 이 보고서의 R11 성능에 합산하지 않는다.
+
+상세 실패·수정·육안 검증은 `r12_raw_branch_results.md`, `r13_compact_rectangle_results.md`에 있다. 최종 코드 회귀는1346 passed/기존2 xfailed다. 추가 실험이 기본 경로를 개선하지 못했다는 사실과 이미 검증한 R11 수정은 별도로 판단한다.
+
+마지막으로 현재 코드의 기본 CLI를 `input.png`에서 다시 실행했다(`artifacts/region-image-only-r13/default-cli/original`). `closed-native-v3`/production=false/7도형·7라벨·2native연결을 확인했고, 실제 COM PNG는 R11과 byte-identical이다. 새 감사는 `artifacts/region-image-only-r13/default-cli-review/audit.json`, PPT SHA는 `1c9a73d16358e2277b71a4fcef7adf50315055c2b6d190ffff6e5bbd99840549`다. 최종 옵션 추가가 기본 실행에 들어가지 않았다는 fresh smoke 근거다.
