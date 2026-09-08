@@ -43,7 +43,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     models={str(f):digest(f) for f in (Path(rapidocr_onnxruntime.__file__).parent/'models').glob('*.onnx')}
     font=Path('C:/Windows/Fonts/arial.ttf');code[str(font)]=digest(font)
     save(output/'lock.json',dict(source_path=str(image),source_sha256=source,code_sha256=code,ocr_models_sha256=models,
-        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,population='previously exposed original complex development image; not unseen acceptance',mode='RGB-only closed rectangle proposal, no detector or GT'))
+        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
     candidates,proposal_audit=propose_union(rgb,portrait_boxes=portrait_boxes) if boundary_union else propose(rgb,inner_boundaries=inner_boundaries,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes)
     engine=_load_engine();objects=[];styles={};text_audit={};region_audit={};content_audit={}
     regions=closed_regions(rgb)
