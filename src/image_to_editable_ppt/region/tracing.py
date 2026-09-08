@@ -120,7 +120,7 @@ def straight_fanout(component,contacts,tolerance):
     return hubs[0] if len(hubs)==1 else None
 
 
-def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
+def trace_scene(scene,rgb,roi,*,transparent_gaps=False,raw_components=False):
     scope=pixel_box(roi,(scene.image_size.width,scene.image_size.height))
     x0,y0,x1,y1=scope
     crop=rgb[y0:y1,x0:x1]
@@ -147,9 +147,10 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
                 (a-q,b-q,a+q,d+q),(c-q,b-q,c+q,d+q)):
                 mask[max(0,top):min(h,bottom+1),max(0,left):min(w,right+1)]=0
     k=min(9,2*p+3)
-    mask=np.maximum(cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((1,k),'uint8')),
-        cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((k,1),'uint8')))
-    mask=cv2.dilate(mask,np.ones((3,3),'uint8'))
+    if not raw_components:
+        mask=np.maximum(cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((1,k),'uint8')),
+            cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((k,1),'uint8')))
+        mask=cv2.dilate(mask,np.ones((3,3),'uint8'))
     count,labels,stats,_=cv2.connectedComponentsWithStats(mask,connectivity=8)
     tolerance=max(5,3*p)
     records=[]; edges=[]

@@ -29,7 +29,7 @@ def panel_children(scene):
     return result
 
 
-def trace_nested(scene,rgb):
+def trace_nested(scene,rgb,*,raw_branches=False):
     from image_to_editable_ppt.research.source_centerline_v2 import trace_with_centerlines
     from image_to_editable_ppt.research.box_centerline_b_v1 import refine_box_centerlines
     from image_to_editable_ppt.research.box_terminals import recover_box_terminals
@@ -40,6 +40,9 @@ def trace_nested(scene,rgb):
     traced,_,trace=trace_with_centerlines(mask_scene,rgb)
     traced,box=refine_box_centerlines(traced,rgb)
     traced,terminals=recover_box_terminals(traced,rgb,box)
+    if raw_branches:
+        from image_to_editable_ppt.research.raw_branch_completion import add_raw_branches
+        traced,trace['raw_branches']=add_raw_branches(traced,rgb)
     assert all(e.source_owner_id not in parents and e.target_owner_id not in parents for e in traced.connectors)
     return replace(traced,shapes=scene.shapes),trace,box,terminals,dict(border_only_parents=parents,
         policy='strict enclosure of two spatially separate closed owners; temporary tracing role only; parent endpoint links abstain')

@@ -41,8 +41,6 @@ blue/original 두 새 비교를 직접 육안으로 확인했다. 나머지5개�
 4. 세로 글자는 원본 crop 양방향을 관측해 유일하게 승인된 방향만 쓰고 native text-frame을 회전한다. 도형 자체를 회전하거나 래스터로 대체하지 않는다.
 5. 고립된 무라벨 경계는 남기지 않으며, texture의 no-veto를 일반 semantic 승인이라고 부르지 않는다.
 
-## 아직 필요한 승인 근거
-
 ## 최종 고정 CLI 재검증
 
 `cfa3193`의 CLI로 원본·blue-flow·사진 음성대조를 각각 새 디렉터리에서 실행했다. 결과는 각각7/7/2,6/6/4,0/0/0(도형/라벨/연결)이며 native·SHA 감사를 통과했다. 원본과 blue-flow의 실제 COM PNG는 앞선 R11 fresh 결과와 byte-identical이다. 사진 PNG는 palette 모드이므로 RGB로 변환하여 모든 채널255를 확인했다. 자료: `artifacts/region-image-only-r11/closed-native-v3-cli`와 `closed-native-v3-cli-review`.
