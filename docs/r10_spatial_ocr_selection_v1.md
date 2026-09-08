@@ -52,3 +52,13 @@ core/weak/coverage/직선성임계값은변경하지않는다. 최초구현은�
 반례구현전 보수적추가조건: owner가관측word core의80%미만만소유하면부분단어후보로
 기권한다. word밖owner영역의weak성분이glyph/stroke의1px근접지원으로설명되지않으면
 weak_orphan_outside_word로기권한다. 단순히OCR가못봤다는이유로별도약한획을버리지않는다.
+
+## build3: 옅은 arrowhead와 전체 선 context
+
+build2는세개실제cluster모두weak orphan으로기권했다. 진단좌표를원본과대조하면CP/Adj는
+긴선경계,PP는word위쪽의옅은incoming arrowhead였다. 핵심shaft가bbox밖에서끝나는경우
+word/owner안core만조회해서는설명할수없었다. 전체원본에서동일한span/TLS기준의긴core선을
+찾고그선에이어진weakcomponent의word밖부분을stroke fringe로설명한다. weak연결성으로
+owner를합치지않으며,word core100%/weak98%보존및별도core veto는유지한다. seedcore와
+shaft core가직접8이웃접촉하면여전히기권한다. stroke에붙은약한글자와AA를완전판별한다는
+주장은하지않으며별도실제RGB반례및결과육안검증으로남은위험을확인한다.

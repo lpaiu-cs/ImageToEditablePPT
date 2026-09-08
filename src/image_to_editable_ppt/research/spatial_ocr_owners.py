@@ -83,6 +83,15 @@ def select_cluster(rgb,cluster):
                 strokes|=pixels
             if not (snippet&core).any():return reject('unexplained_extra_snippet')
     if seed.sum()<4:return reject('insufficient_core')
+    # A faint arrowhead can enter an owner while its dark shaft stops outside
+    # the OCR/owner window. Identify long core strokes in the original frame.
+    for label,stat in enumerate(stats):
+        if label==0 or max(stat[2:4])<3*h or (labels[seed]==label).any():continue
+        pixels=labels==label;py,px=np.where(pixels)
+        xy=np.column_stack((px+.5,py+.5));centered=xy-xy.mean(0)
+        _,vec=np.linalg.eigh(centered.T@centered/len(xy));axis=vec[:,-1]
+        if np.ptp(centered@axis)>=3*h and np.percentile(abs(centered@np.array([-axis[1],axis[0]])),95)<=2.5*s:
+            strokes|=pixels
     grown=cv2.dilate(seed.astype('uint8'),np.ones((3,3),np.uint8)).astype(bool)
     if (grown&strokes).any():return reject('shaft_glyph_contact')
     support=grown&weak&window&~strokes
@@ -99,8 +108,14 @@ def select_cluster(rgb,cluster):
         outside_core|=own&core&~window&~strokes
     explained=cv2.dilate((seed|strokes).astype('uint8'),np.ones((3,3),np.uint8)).astype(bool)
     unexplained_weak=weak&owner_union&~window&~explained
+    stroke_weak_ids=np.unique(weak_labels[strokes&weak])
+    # Weak connectivity is only used to account for stroke fringe; it never
+    # merges owners or changes the word's retained core/support requirements.
+    stroke_fringe=np.isin(weak_labels,stroke_weak_ids[stroke_weak_ids!=0])
+    unexplained_weak&=~stroke_fringe
     audit.update(text=first['text'],word_box=box,core_pixels=int(seed.sum()),weak_pixels=int(support.sum()),
-                 coverage=coverage,strokes=stroke_records,background_luminance_x2=bg2)
+                 coverage=coverage,strokes=stroke_records,background_luminance_x2=bg2,
+                 weak_orphan_pixels_xy=np.column_stack(np.where(unexplained_weak)[::-1]).tolist())
     if outside_core.any():return reject('independent_core_outside_word')
     if unexplained_weak.any():return reject('weak_orphan_outside_word')
     if any(r['polygon']<.5 for r in coverage):return reject('insufficient_shared_location')
