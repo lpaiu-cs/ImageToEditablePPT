@@ -145,6 +145,7 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
     # Other branches/glyphs separated in the RGB are not its arrowhead width.
     audit['excluded_other_component_pixels'] = int(np.count_nonzero(ids != shaft_ids[0]))
     original_pixels = pixels
+    excluded_pixels = pixels[ids != shaft_ids[0]]
     pixels = pixels[ids == shaft_ids[0]]
     hits = [line_box_hits(center, axis, b) for b in boxes]
     if not all(hits):
@@ -189,6 +190,18 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
     audit['opposite_all_source_head']=competition_audit
     if competing:
         return reject('opposite_head_in_original_source')
+    if len(excluded_pixels):
+        ex_t=(excluded_pixels-a)@axis
+        ex_v=(excluded_pixels-a)@normal
+        ex_distance=length-ex_t if start_head else ex_t
+        terminal=(ex_distance>=0)&(ex_distance<=16*scale)&(np.abs(ex_v)<=8*scale)
+        if terminal.any():
+            ex_ids=_component_ids(excluded_pixels)
+            for key in np.unique(ex_ids[terminal]):
+                selected=terminal&(ex_ids==key)
+                across=ex_v[selected]
+                if selected.sum()>=3 and across.min()<=-shaft_width/2 and across.max()>=shaft_width/2:
+                    return reject('separate_opposite_terminal_support_uncertain')
     opposite = end_audit if start_head else start_audit
     if max(opposite['profile']) >= max(1.6*shaft_width,shaft_width+2*scale):
         return reject('opposite_terminal_unresolved')
