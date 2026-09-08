@@ -1,0 +1,668 @@
+{
+  "status": "FAIL",
+  "count": 3656,
+  "passed": 3280,
+  "failed": 376,
+  "clean_positive_successes": 4,
+  "denied_file_opens": [],
+  "failure_counts": {
+    "false_suppression": 376
+  },
+  "reason_counts": {
+    "threshold_instability": 340,
+    "partial_glyph": 880,
+    "representative_ambiguous": 160,
+    "different_ink_ownership": 1196,
+    "background_unsupported": 384,
+    "shaft_touch_uncertain": 60,
+    "overlap_chain": 288,
+    "crop_clipped": 96,
+    "crop_too_large": 4
+  },
+  "by_base": {
+    "baseline_2": {
+      "total": 96,
+      "failed": 0
+    },
+    "baseline_4": {
+      "total": 96,
+      "failed": 0
+    },
+    "baseline_8": {
+      "total": 96,
+      "failed": 0
+    },
+    "blank": {
+      "total": 96,
+      "failed": 0
+    },
+    "chain": {
+      "total": 288,
+      "failed": 0
+    },
+    "clipped": {
+      "total": 96,
+      "failed": 0
+    },
+    "color_background": {
+      "total": 96,
+      "failed": 0
+    },
+    "contact_0": {
+      "total": 96,
+      "failed": 0
+    },
+    "contact_1": {
+      "total": 96,
+      "failed": 0
+    },
+    "contact_3": {
+      "total": 96,
+      "failed": 0
+    },
+    "fanout": {
+      "total": 96,
+      "failed": 0
+    },
+    "gradient": {
+      "total": 96,
+      "failed": 0
+    },
+    "gray_background": {
+      "total": 96,
+      "failed": 0
+    },
+    "joined_labels": {
+      "total": 96,
+      "failed": 0
+    },
+    "near_different": {
+      "total": 96,
+      "failed": 0
+    },
+    "near_same": {
+      "total": 96,
+      "failed": 0
+    },
+    "parallel_i": {
+      "total": 96,
+      "failed": 0
+    },
+    "partial_il": {
+      "total": 96,
+      "failed": 16
+    },
+    "partial_root": {
+      "total": 96,
+      "failed": 0
+    },
+    "positive_bitmap": {
+      "total": 96,
+      "failed": 0
+    },
+    "positive_font": {
+      "total": 96,
+      "failed": 0
+    },
+    "positive_shaft": {
+      "total": 96,
+      "failed": 0
+    },
+    "pp_real": {
+      "total": 8,
+      "failed": 0
+    },
+    "punctuation": {
+      "total": 96,
+      "failed": 80
+    },
+    "repeat_CP": {
+      "total": 96,
+      "failed": 0
+    },
+    "repeat_PP": {
+      "total": 96,
+      "failed": 0
+    },
+    "repeat_cat": {
+      "total": 96,
+      "failed": 0
+    },
+    "repeat_runs": {
+      "total": 96,
+      "failed": 0
+    },
+    "rotation_90": {
+      "total": 96,
+      "failed": 72
+    },
+    "rotation_m15": {
+      "total": 96,
+      "failed": 72
+    },
+    "rotation_p15": {
+      "total": 96,
+      "failed": 64
+    },
+    "superscript": {
+      "total": 96,
+      "failed": 0
+    },
+    "texture": {
+      "total": 96,
+      "failed": 0
+    },
+    "tie": {
+      "total": 96,
+      "failed": 0
+    },
+    "tradeoff": {
+      "total": 96,
+      "failed": 0
+    },
+    "underline": {
+      "total": 96,
+      "failed": 0
+    },
+    "vertical": {
+      "total": 96,
+      "failed": 72
+    }
+  },
+  "fixture_lock_sha256": "1787ef8177772f9f8893e3838d40080d5682e3827cc8726a702575f0e7348d25",
+  "execution_lock_sha256": "42b9bffa9d44218f35a5fb6b9642eae5abd721f7526dc85e981691ae6160dac8",
+  "actual_15_image_arm_executed": false,
+  "actual_geometry_execution": "runtime-ready",
+  "unit_tests": "12 passed",
+  "fixture_rgb_paths": 866,
+  "fixture_unique_rgb_sha256": 498,
+  "failed_geometry_groups": 94,
+  "examples": {
+    "positive_bitmap": {
+      "result": {
+        "id": "positive_bitmap-s1.0-g0-c0-aa0-o0-swap0",
+        "base": "positive_bitmap",
+        "passed": true,
+        "failures": [],
+        "kept_ids": [
+          "a"
+        ],
+        "proposed_suppressed_ids": [
+          "b"
+        ],
+        "reasons": []
+      },
+      "audit_path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v1-controls-runtime-ready\\audits\\positive_bitmap-s1.0-g0-c0-aa0-o0-swap0.json",
+      "audit_sha256": "fe0905738ce96ec70ae7446dbce09d0dc482918b1f9abe5833f26287a8e4df32"
+    },
+    "rotation_90": {
+      "result": {
+        "id": "rotation_90-s0.75-g0-c0-aa0-o0-swap0",
+        "base": "rotation_90",
+        "passed": false,
+        "failures": [
+          "false_suppression"
+        ],
+        "kept_ids": [
+          "a"
+        ],
+        "proposed_suppressed_ids": [
+          "b"
+        ],
+        "reasons": []
+      },
+      "audit_path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v1-controls-runtime-ready\\audits\\rotation_90-s0.75-g0-c0-aa0-o0-swap0.json",
+      "audit_sha256": "8e0827d607c2f04be6047c861b72e3681a81a421a85ee07b3f9f996d5b7ce66a"
+    },
+    "partial_il": {
+      "result": {
+        "id": "partial_il-s0.75-g0-c0-aa0-o0-swap0",
+        "base": "partial_il",
+        "passed": false,
+        "failures": [
+          "false_suppression"
+        ],
+        "kept_ids": [
+          "b"
+        ],
+        "proposed_suppressed_ids": [
+          "a"
+        ],
+        "reasons": []
+      },
+      "audit_path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v1-controls-runtime-ready\\audits\\partial_il-s0.75-g0-c0-aa0-o0-swap0.json",
+      "audit_sha256": "0053e9225aff093e333f2311ed633e083659fd5208d04978a0f00059e5f6d537"
+    },
+    "punctuation": {
+      "result": {
+        "id": "punctuation-s0.75-g0-c0-aa1-o0-swap0",
+        "base": "punctuation",
+        "passed": false,
+        "failures": [
+          "false_suppression"
+        ],
+        "kept_ids": [
+          "a"
+        ],
+        "proposed_suppressed_ids": [
+          "b"
+        ],
+        "reasons": []
+      },
+      "audit_path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v1-controls-runtime-ready\\audits\\punctuation-s0.75-g0-c0-aa1-o0-swap0.json",
+      "audit_sha256": "dfd5aeb5ce8d284dece7f25d68b5fbb0afddcd8661f6d9e2c79fd099926f35f6"
+    },
+    "pp_real": {
+      "result": {
+        "id": "pp-real-full-o0-swap0",
+        "base": "pp_real",
+        "passed": true,
+        "failures": [],
+        "kept_ids": [
+          "det11",
+          "det9"
+        ],
+        "proposed_suppressed_ids": [],
+        "reasons": [
+          "threshold_instability"
+        ]
+      },
+      "audit_path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v1-controls-runtime-ready\\audits\\pp-real-full-o0-swap0.json",
+      "audit_sha256": "fa79a6ce3dfd6666afc5f87b2b78084ae044e149436f2f9ab950e93abc8386d4"
+    }
+  },
+  "failed_ids": [
+    "rotation_m15-s0.75-g0-c0-aa0-o0-swap0",
+    "rotation_m15-s0.75-g0-c0-aa0-o0-swap1",
+    "rotation_m15-s0.75-g0-c0-aa0-o1-swap0",
+    "rotation_m15-s0.75-g0-c0-aa0-o1-swap1",
+    "rotation_m15-s0.75-g0-c0-aa1-o0-swap0",
+    "rotation_m15-s0.75-g0-c0-aa1-o0-swap1",
+    "rotation_m15-s0.75-g0-c0-aa1-o1-swap0",
+    "rotation_m15-s0.75-g0-c0-aa1-o1-swap1",
+    "rotation_m15-s0.75-g0-c100-aa0-o0-swap0",
+    "rotation_m15-s0.75-g0-c100-aa0-o0-swap1",
+    "rotation_m15-s0.75-g0-c100-aa0-o1-swap0",
+    "rotation_m15-s0.75-g0-c100-aa0-o1-swap1",
+    "rotation_m15-s0.75-g1-c0-aa0-o0-swap0",
+    "rotation_m15-s0.75-g1-c0-aa0-o0-swap1",
+    "rotation_m15-s0.75-g1-c0-aa0-o1-swap0",
+    "rotation_m15-s0.75-g1-c0-aa0-o1-swap1",
+    "rotation_m15-s0.75-g1-c0-aa1-o0-swap0",
+    "rotation_m15-s0.75-g1-c0-aa1-o0-swap1",
+    "rotation_m15-s0.75-g1-c0-aa1-o1-swap0",
+    "rotation_m15-s0.75-g1-c0-aa1-o1-swap1",
+    "rotation_m15-s0.75-g1-c100-aa0-o0-swap0",
+    "rotation_m15-s0.75-g1-c100-aa0-o0-swap1",
+    "rotation_m15-s0.75-g1-c100-aa0-o1-swap0",
+    "rotation_m15-s0.75-g1-c100-aa0-o1-swap1",
+    "rotation_m15-s1.0-g0-c0-aa0-o0-swap0",
+    "rotation_m15-s1.0-g0-c0-aa0-o0-swap1",
+    "rotation_m15-s1.0-g0-c0-aa0-o1-swap0",
+    "rotation_m15-s1.0-g0-c0-aa0-o1-swap1",
+    "rotation_m15-s1.0-g0-c0-aa1-o0-swap0",
+    "rotation_m15-s1.0-g0-c0-aa1-o0-swap1",
+    "rotation_m15-s1.0-g0-c0-aa1-o1-swap0",
+    "rotation_m15-s1.0-g0-c0-aa1-o1-swap1",
+    "rotation_m15-s1.0-g0-c100-aa0-o0-swap0",
+    "rotation_m15-s1.0-g0-c100-aa0-o0-swap1",
+    "rotation_m15-s1.0-g0-c100-aa0-o1-swap0",
+    "rotation_m15-s1.0-g0-c100-aa0-o1-swap1",
+    "rotation_m15-s1.0-g0-c100-aa1-o0-swap0",
+    "rotation_m15-s1.0-g0-c100-aa1-o0-swap1",
+    "rotation_m15-s1.0-g0-c100-aa1-o1-swap0",
+    "rotation_m15-s1.0-g0-c100-aa1-o1-swap1",
+    "rotation_m15-s1.0-g1-c0-aa0-o0-swap0",
+    "rotation_m15-s1.0-g1-c0-aa0-o0-swap1",
+    "rotation_m15-s1.0-g1-c0-aa0-o1-swap0",
+    "rotation_m15-s1.0-g1-c0-aa0-o1-swap1",
+    "rotation_m15-s1.0-g1-c0-aa1-o0-swap0",
+    "rotation_m15-s1.0-g1-c0-aa1-o0-swap1",
+    "rotation_m15-s1.0-g1-c0-aa1-o1-swap0",
+    "rotation_m15-s1.0-g1-c0-aa1-o1-swap1",
+    "rotation_m15-s1.0-g1-c100-aa0-o0-swap0",
+    "rotation_m15-s1.0-g1-c100-aa0-o0-swap1",
+    "rotation_m15-s1.0-g1-c100-aa0-o1-swap0",
+    "rotation_m15-s1.0-g1-c100-aa0-o1-swap1",
+    "rotation_m15-s1.0-g1-c100-aa1-o0-swap0",
+    "rotation_m15-s1.0-g1-c100-aa1-o0-swap1",
+    "rotation_m15-s1.0-g1-c100-aa1-o1-swap0",
+    "rotation_m15-s1.0-g1-c100-aa1-o1-swap1",
+    "rotation_m15-s1.5-g0-c0-aa0-o0-swap0",
+    "rotation_m15-s1.5-g0-c0-aa0-o0-swap1",
+    "rotation_m15-s1.5-g0-c0-aa0-o1-swap0",
+    "rotation_m15-s1.5-g0-c0-aa0-o1-swap1",
+    "rotation_m15-s1.5-g0-c100-aa0-o0-swap0",
+    "rotation_m15-s1.5-g0-c100-aa0-o0-swap1",
+    "rotation_m15-s1.5-g0-c100-aa0-o1-swap0",
+    "rotation_m15-s1.5-g0-c100-aa0-o1-swap1",
+    "rotation_m15-s1.5-g1-c0-aa0-o0-swap0",
+    "rotation_m15-s1.5-g1-c0-aa0-o0-swap1",
+    "rotation_m15-s1.5-g1-c0-aa0-o1-swap0",
+    "rotation_m15-s1.5-g1-c0-aa0-o1-swap1",
+    "rotation_m15-s1.5-g1-c100-aa0-o0-swap0",
+    "rotation_m15-s1.5-g1-c100-aa0-o0-swap1",
+    "rotation_m15-s1.5-g1-c100-aa0-o1-swap0",
+    "rotation_m15-s1.5-g1-c100-aa0-o1-swap1",
+    "rotation_p15-s0.75-g0-c0-aa0-o0-swap0",
+    "rotation_p15-s0.75-g0-c0-aa0-o0-swap1",
+    "rotation_p15-s0.75-g0-c0-aa0-o1-swap0",
+    "rotation_p15-s0.75-g0-c0-aa0-o1-swap1",
+    "rotation_p15-s0.75-g0-c100-aa0-o0-swap0",
+    "rotation_p15-s0.75-g0-c100-aa0-o0-swap1",
+    "rotation_p15-s0.75-g0-c100-aa0-o1-swap0",
+    "rotation_p15-s0.75-g0-c100-aa0-o1-swap1",
+    "rotation_p15-s0.75-g1-c0-aa0-o0-swap0",
+    "rotation_p15-s0.75-g1-c0-aa0-o0-swap1",
+    "rotation_p15-s0.75-g1-c0-aa0-o1-swap0",
+    "rotation_p15-s0.75-g1-c0-aa0-o1-swap1",
+    "rotation_p15-s0.75-g1-c100-aa0-o0-swap0",
+    "rotation_p15-s0.75-g1-c100-aa0-o0-swap1",
+    "rotation_p15-s0.75-g1-c100-aa0-o1-swap0",
+    "rotation_p15-s0.75-g1-c100-aa0-o1-swap1",
+    "rotation_p15-s1.0-g0-c0-aa0-o0-swap0",
+    "rotation_p15-s1.0-g0-c0-aa0-o0-swap1",
+    "rotation_p15-s1.0-g0-c0-aa0-o1-swap0",
+    "rotation_p15-s1.0-g0-c0-aa0-o1-swap1",
+    "rotation_p15-s1.0-g0-c0-aa1-o0-swap0",
+    "rotation_p15-s1.0-g0-c0-aa1-o0-swap1",
+    "rotation_p15-s1.0-g0-c0-aa1-o1-swap0",
+    "rotation_p15-s1.0-g0-c0-aa1-o1-swap1",
+    "rotation_p15-s1.0-g0-c100-aa0-o0-swap0",
+    "rotation_p15-s1.0-g0-c100-aa0-o0-swap1",
+    "rotation_p15-s1.0-g0-c100-aa0-o1-swap0",
+    "rotation_p15-s1.0-g0-c100-aa0-o1-swap1",
+    "rotation_p15-s1.0-g0-c100-aa1-o0-swap0",
+    "rotation_p15-s1.0-g0-c100-aa1-o0-swap1",
+    "rotation_p15-s1.0-g0-c100-aa1-o1-swap0",
+    "rotation_p15-s1.0-g0-c100-aa1-o1-swap1",
+    "rotation_p15-s1.0-g1-c0-aa0-o0-swap0",
+    "rotation_p15-s1.0-g1-c0-aa0-o0-swap1",
+    "rotation_p15-s1.0-g1-c0-aa0-o1-swap0",
+    "rotation_p15-s1.0-g1-c0-aa0-o1-swap1",
+    "rotation_p15-s1.0-g1-c0-aa1-o0-swap0",
+    "rotation_p15-s1.0-g1-c0-aa1-o0-swap1",
+    "rotation_p15-s1.0-g1-c0-aa1-o1-swap0",
+    "rotation_p15-s1.0-g1-c0-aa1-o1-swap1",
+    "rotation_p15-s1.0-g1-c100-aa0-o0-swap0",
+    "rotation_p15-s1.0-g1-c100-aa0-o0-swap1",
+    "rotation_p15-s1.0-g1-c100-aa0-o1-swap0",
+    "rotation_p15-s1.0-g1-c100-aa0-o1-swap1",
+    "rotation_p15-s1.0-g1-c100-aa1-o0-swap0",
+    "rotation_p15-s1.0-g1-c100-aa1-o0-swap1",
+    "rotation_p15-s1.0-g1-c100-aa1-o1-swap0",
+    "rotation_p15-s1.0-g1-c100-aa1-o1-swap1",
+    "rotation_p15-s1.5-g0-c0-aa0-o0-swap0",
+    "rotation_p15-s1.5-g0-c0-aa0-o0-swap1",
+    "rotation_p15-s1.5-g0-c0-aa0-o1-swap0",
+    "rotation_p15-s1.5-g0-c0-aa0-o1-swap1",
+    "rotation_p15-s1.5-g0-c100-aa0-o0-swap0",
+    "rotation_p15-s1.5-g0-c100-aa0-o0-swap1",
+    "rotation_p15-s1.5-g0-c100-aa0-o1-swap0",
+    "rotation_p15-s1.5-g0-c100-aa0-o1-swap1",
+    "rotation_p15-s1.5-g1-c0-aa0-o0-swap0",
+    "rotation_p15-s1.5-g1-c0-aa0-o0-swap1",
+    "rotation_p15-s1.5-g1-c0-aa0-o1-swap0",
+    "rotation_p15-s1.5-g1-c0-aa0-o1-swap1",
+    "rotation_p15-s1.5-g1-c100-aa0-o0-swap0",
+    "rotation_p15-s1.5-g1-c100-aa0-o0-swap1",
+    "rotation_p15-s1.5-g1-c100-aa0-o1-swap0",
+    "rotation_p15-s1.5-g1-c100-aa0-o1-swap1",
+    "rotation_90-s0.75-g0-c0-aa0-o0-swap0",
+    "rotation_90-s0.75-g0-c0-aa0-o0-swap1",
+    "rotation_90-s0.75-g0-c0-aa0-o1-swap0",
+    "rotation_90-s0.75-g0-c0-aa0-o1-swap1",
+    "rotation_90-s0.75-g0-c0-aa1-o0-swap0",
+    "rotation_90-s0.75-g0-c0-aa1-o0-swap1",
+    "rotation_90-s0.75-g0-c0-aa1-o1-swap0",
+    "rotation_90-s0.75-g0-c0-aa1-o1-swap1",
+    "rotation_90-s0.75-g0-c100-aa0-o0-swap0",
+    "rotation_90-s0.75-g0-c100-aa0-o0-swap1",
+    "rotation_90-s0.75-g0-c100-aa0-o1-swap0",
+    "rotation_90-s0.75-g0-c100-aa0-o1-swap1",
+    "rotation_90-s0.75-g1-c0-aa0-o0-swap0",
+    "rotation_90-s0.75-g1-c0-aa0-o0-swap1",
+    "rotation_90-s0.75-g1-c0-aa0-o1-swap0",
+    "rotation_90-s0.75-g1-c0-aa0-o1-swap1",
+    "rotation_90-s0.75-g1-c0-aa1-o0-swap0",
+    "rotation_90-s0.75-g1-c0-aa1-o0-swap1",
+    "rotation_90-s0.75-g1-c0-aa1-o1-swap0",
+    "rotation_90-s0.75-g1-c0-aa1-o1-swap1",
+    "rotation_90-s0.75-g1-c100-aa0-o0-swap0",
+    "rotation_90-s0.75-g1-c100-aa0-o0-swap1",
+    "rotation_90-s0.75-g1-c100-aa0-o1-swap0",
+    "rotation_90-s0.75-g1-c100-aa0-o1-swap1",
+    "rotation_90-s1.0-g0-c0-aa0-o0-swap0",
+    "rotation_90-s1.0-g0-c0-aa0-o0-swap1",
+    "rotation_90-s1.0-g0-c0-aa0-o1-swap0",
+    "rotation_90-s1.0-g0-c0-aa0-o1-swap1",
+    "rotation_90-s1.0-g0-c0-aa1-o0-swap0",
+    "rotation_90-s1.0-g0-c0-aa1-o0-swap1",
+    "rotation_90-s1.0-g0-c0-aa1-o1-swap0",
+    "rotation_90-s1.0-g0-c0-aa1-o1-swap1",
+    "rotation_90-s1.0-g0-c100-aa0-o0-swap0",
+    "rotation_90-s1.0-g0-c100-aa0-o0-swap1",
+    "rotation_90-s1.0-g0-c100-aa0-o1-swap0",
+    "rotation_90-s1.0-g0-c100-aa0-o1-swap1",
+    "rotation_90-s1.0-g1-c0-aa0-o0-swap0",
+    "rotation_90-s1.0-g1-c0-aa0-o0-swap1",
+    "rotation_90-s1.0-g1-c0-aa0-o1-swap0",
+    "rotation_90-s1.0-g1-c0-aa0-o1-swap1",
+    "rotation_90-s1.0-g1-c0-aa1-o0-swap0",
+    "rotation_90-s1.0-g1-c0-aa1-o0-swap1",
+    "rotation_90-s1.0-g1-c0-aa1-o1-swap0",
+    "rotation_90-s1.0-g1-c0-aa1-o1-swap1",
+    "rotation_90-s1.0-g1-c100-aa0-o0-swap0",
+    "rotation_90-s1.0-g1-c100-aa0-o0-swap1",
+    "rotation_90-s1.0-g1-c100-aa0-o1-swap0",
+    "rotation_90-s1.0-g1-c100-aa0-o1-swap1",
+    "rotation_90-s1.5-g0-c0-aa0-o0-swap0",
+    "rotation_90-s1.5-g0-c0-aa0-o0-swap1",
+    "rotation_90-s1.5-g0-c0-aa0-o1-swap0",
+    "rotation_90-s1.5-g0-c0-aa0-o1-swap1",
+    "rotation_90-s1.5-g0-c0-aa1-o0-swap0",
+    "rotation_90-s1.5-g0-c0-aa1-o0-swap1",
+    "rotation_90-s1.5-g0-c0-aa1-o1-swap0",
+    "rotation_90-s1.5-g0-c0-aa1-o1-swap1",
+    "rotation_90-s1.5-g0-c100-aa0-o0-swap0",
+    "rotation_90-s1.5-g0-c100-aa0-o0-swap1",
+    "rotation_90-s1.5-g0-c100-aa0-o1-swap0",
+    "rotation_90-s1.5-g0-c100-aa0-o1-swap1",
+    "rotation_90-s1.5-g1-c0-aa0-o0-swap0",
+    "rotation_90-s1.5-g1-c0-aa0-o0-swap1",
+    "rotation_90-s1.5-g1-c0-aa0-o1-swap0",
+    "rotation_90-s1.5-g1-c0-aa0-o1-swap1",
+    "rotation_90-s1.5-g1-c0-aa1-o0-swap0",
+    "rotation_90-s1.5-g1-c0-aa1-o0-swap1",
+    "rotation_90-s1.5-g1-c0-aa1-o1-swap0",
+    "rotation_90-s1.5-g1-c0-aa1-o1-swap1",
+    "rotation_90-s1.5-g1-c100-aa0-o0-swap0",
+    "rotation_90-s1.5-g1-c100-aa0-o0-swap1",
+    "rotation_90-s1.5-g1-c100-aa0-o1-swap0",
+    "rotation_90-s1.5-g1-c100-aa0-o1-swap1",
+    "vertical-s0.75-g0-c0-aa0-o0-swap0",
+    "vertical-s0.75-g0-c0-aa0-o0-swap1",
+    "vertical-s0.75-g0-c0-aa0-o1-swap0",
+    "vertical-s0.75-g0-c0-aa0-o1-swap1",
+    "vertical-s0.75-g0-c0-aa1-o0-swap0",
+    "vertical-s0.75-g0-c0-aa1-o0-swap1",
+    "vertical-s0.75-g0-c0-aa1-o1-swap0",
+    "vertical-s0.75-g0-c0-aa1-o1-swap1",
+    "vertical-s0.75-g0-c100-aa0-o0-swap0",
+    "vertical-s0.75-g0-c100-aa0-o0-swap1",
+    "vertical-s0.75-g0-c100-aa0-o1-swap0",
+    "vertical-s0.75-g0-c100-aa0-o1-swap1",
+    "vertical-s0.75-g1-c0-aa0-o0-swap0",
+    "vertical-s0.75-g1-c0-aa0-o0-swap1",
+    "vertical-s0.75-g1-c0-aa0-o1-swap0",
+    "vertical-s0.75-g1-c0-aa0-o1-swap1",
+    "vertical-s0.75-g1-c0-aa1-o0-swap0",
+    "vertical-s0.75-g1-c0-aa1-o0-swap1",
+    "vertical-s0.75-g1-c0-aa1-o1-swap0",
+    "vertical-s0.75-g1-c0-aa1-o1-swap1",
+    "vertical-s0.75-g1-c100-aa0-o0-swap0",
+    "vertical-s0.75-g1-c100-aa0-o0-swap1",
+    "vertical-s0.75-g1-c100-aa0-o1-swap0",
+    "vertical-s0.75-g1-c100-aa0-o1-swap1",
+    "vertical-s1.0-g0-c0-aa0-o0-swap0",
+    "vertical-s1.0-g0-c0-aa0-o0-swap1",
+    "vertical-s1.0-g0-c0-aa0-o1-swap0",
+    "vertical-s1.0-g0-c0-aa0-o1-swap1",
+    "vertical-s1.0-g0-c0-aa1-o0-swap0",
+    "vertical-s1.0-g0-c0-aa1-o0-swap1",
+    "vertical-s1.0-g0-c0-aa1-o1-swap0",
+    "vertical-s1.0-g0-c0-aa1-o1-swap1",
+    "vertical-s1.0-g0-c100-aa0-o0-swap0",
+    "vertical-s1.0-g0-c100-aa0-o0-swap1",
+    "vertical-s1.0-g0-c100-aa0-o1-swap0",
+    "vertical-s1.0-g0-c100-aa0-o1-swap1",
+    "vertical-s1.0-g1-c0-aa0-o0-swap0",
+    "vertical-s1.0-g1-c0-aa0-o0-swap1",
+    "vertical-s1.0-g1-c0-aa0-o1-swap0",
+    "vertical-s1.0-g1-c0-aa0-o1-swap1",
+    "vertical-s1.0-g1-c0-aa1-o0-swap0",
+    "vertical-s1.0-g1-c0-aa1-o0-swap1",
+    "vertical-s1.0-g1-c0-aa1-o1-swap0",
+    "vertical-s1.0-g1-c0-aa1-o1-swap1",
+    "vertical-s1.0-g1-c100-aa0-o0-swap0",
+    "vertical-s1.0-g1-c100-aa0-o0-swap1",
+    "vertical-s1.0-g1-c100-aa0-o1-swap0",
+    "vertical-s1.0-g1-c100-aa0-o1-swap1",
+    "vertical-s1.5-g0-c0-aa0-o0-swap0",
+    "vertical-s1.5-g0-c0-aa0-o0-swap1",
+    "vertical-s1.5-g0-c0-aa0-o1-swap0",
+    "vertical-s1.5-g0-c0-aa0-o1-swap1",
+    "vertical-s1.5-g0-c0-aa1-o0-swap0",
+    "vertical-s1.5-g0-c0-aa1-o0-swap1",
+    "vertical-s1.5-g0-c0-aa1-o1-swap0",
+    "vertical-s1.5-g0-c0-aa1-o1-swap1",
+    "vertical-s1.5-g0-c100-aa0-o0-swap0",
+    "vertical-s1.5-g0-c100-aa0-o0-swap1",
+    "vertical-s1.5-g0-c100-aa0-o1-swap0",
+    "vertical-s1.5-g0-c100-aa0-o1-swap1",
+    "vertical-s1.5-g1-c0-aa0-o0-swap0",
+    "vertical-s1.5-g1-c0-aa0-o0-swap1",
+    "vertical-s1.5-g1-c0-aa0-o1-swap0",
+    "vertical-s1.5-g1-c0-aa0-o1-swap1",
+    "vertical-s1.5-g1-c0-aa1-o0-swap0",
+    "vertical-s1.5-g1-c0-aa1-o0-swap1",
+    "vertical-s1.5-g1-c0-aa1-o1-swap0",
+    "vertical-s1.5-g1-c0-aa1-o1-swap1",
+    "vertical-s1.5-g1-c100-aa0-o0-swap0",
+    "vertical-s1.5-g1-c100-aa0-o0-swap1",
+    "vertical-s1.5-g1-c100-aa0-o1-swap0",
+    "vertical-s1.5-g1-c100-aa0-o1-swap1",
+    "partial_il-s0.75-g0-c0-aa0-o0-swap0",
+    "partial_il-s0.75-g0-c0-aa0-o0-swap1",
+    "partial_il-s0.75-g0-c0-aa0-o1-swap0",
+    "partial_il-s0.75-g0-c0-aa0-o1-swap1",
+    "partial_il-s0.75-g0-c100-aa0-o0-swap0",
+    "partial_il-s0.75-g0-c100-aa0-o0-swap1",
+    "partial_il-s0.75-g0-c100-aa0-o1-swap0",
+    "partial_il-s0.75-g0-c100-aa0-o1-swap1",
+    "partial_il-s0.75-g1-c0-aa0-o0-swap0",
+    "partial_il-s0.75-g1-c0-aa0-o0-swap1",
+    "partial_il-s0.75-g1-c0-aa0-o1-swap0",
+    "partial_il-s0.75-g1-c0-aa0-o1-swap1",
+    "partial_il-s0.75-g1-c100-aa0-o0-swap0",
+    "partial_il-s0.75-g1-c100-aa0-o0-swap1",
+    "partial_il-s0.75-g1-c100-aa0-o1-swap0",
+    "partial_il-s0.75-g1-c100-aa0-o1-swap1",
+    "punctuation-s0.75-g0-c0-aa1-o0-swap0",
+    "punctuation-s0.75-g0-c0-aa1-o0-swap1",
+    "punctuation-s0.75-g0-c0-aa1-o1-swap0",
+    "punctuation-s0.75-g0-c0-aa1-o1-swap1",
+    "punctuation-s0.75-g0-c100-aa1-o0-swap0",
+    "punctuation-s0.75-g0-c100-aa1-o0-swap1",
+    "punctuation-s0.75-g0-c100-aa1-o1-swap0",
+    "punctuation-s0.75-g0-c100-aa1-o1-swap1",
+    "punctuation-s0.75-g1-c0-aa1-o0-swap0",
+    "punctuation-s0.75-g1-c0-aa1-o0-swap1",
+    "punctuation-s0.75-g1-c0-aa1-o1-swap0",
+    "punctuation-s0.75-g1-c0-aa1-o1-swap1",
+    "punctuation-s0.75-g1-c100-aa1-o0-swap0",
+    "punctuation-s0.75-g1-c100-aa1-o0-swap1",
+    "punctuation-s0.75-g1-c100-aa1-o1-swap0",
+    "punctuation-s0.75-g1-c100-aa1-o1-swap1",
+    "punctuation-s1.0-g0-c0-aa0-o0-swap0",
+    "punctuation-s1.0-g0-c0-aa0-o0-swap1",
+    "punctuation-s1.0-g0-c0-aa0-o1-swap0",
+    "punctuation-s1.0-g0-c0-aa0-o1-swap1",
+    "punctuation-s1.0-g0-c0-aa1-o0-swap0",
+    "punctuation-s1.0-g0-c0-aa1-o0-swap1",
+    "punctuation-s1.0-g0-c0-aa1-o1-swap0",
+    "punctuation-s1.0-g0-c0-aa1-o1-swap1",
+    "punctuation-s1.0-g0-c100-aa0-o0-swap0",
+    "punctuation-s1.0-g0-c100-aa0-o0-swap1",
+    "punctuation-s1.0-g0-c100-aa0-o1-swap0",
+    "punctuation-s1.0-g0-c100-aa0-o1-swap1",
+    "punctuation-s1.0-g0-c100-aa1-o0-swap0",
+    "punctuation-s1.0-g0-c100-aa1-o0-swap1",
+    "punctuation-s1.0-g0-c100-aa1-o1-swap0",
+    "punctuation-s1.0-g0-c100-aa1-o1-swap1",
+    "punctuation-s1.0-g1-c0-aa0-o0-swap0",
+    "punctuation-s1.0-g1-c0-aa0-o0-swap1",
+    "punctuation-s1.0-g1-c0-aa0-o1-swap0",
+    "punctuation-s1.0-g1-c0-aa0-o1-swap1",
+    "punctuation-s1.0-g1-c0-aa1-o0-swap0",
+    "punctuation-s1.0-g1-c0-aa1-o0-swap1",
+    "punctuation-s1.0-g1-c0-aa1-o1-swap0",
+    "punctuation-s1.0-g1-c0-aa1-o1-swap1",
+    "punctuation-s1.0-g1-c100-aa0-o0-swap0",
+    "punctuation-s1.0-g1-c100-aa0-o0-swap1",
+    "punctuation-s1.0-g1-c100-aa0-o1-swap0",
+    "punctuation-s1.0-g1-c100-aa0-o1-swap1",
+    "punctuation-s1.0-g1-c100-aa1-o0-swap0",
+    "punctuation-s1.0-g1-c100-aa1-o0-swap1",
+    "punctuation-s1.0-g1-c100-aa1-o1-swap0",
+    "punctuation-s1.0-g1-c100-aa1-o1-swap1",
+    "punctuation-s1.5-g0-c0-aa0-o0-swap0",
+    "punctuation-s1.5-g0-c0-aa0-o0-swap1",
+    "punctuation-s1.5-g0-c0-aa0-o1-swap0",
+    "punctuation-s1.5-g0-c0-aa0-o1-swap1",
+    "punctuation-s1.5-g0-c0-aa1-o0-swap0",
+    "punctuation-s1.5-g0-c0-aa1-o0-swap1",
+    "punctuation-s1.5-g0-c0-aa1-o1-swap0",
+    "punctuation-s1.5-g0-c0-aa1-o1-swap1",
+    "punctuation-s1.5-g0-c100-aa0-o0-swap0",
+    "punctuation-s1.5-g0-c100-aa0-o0-swap1",
+    "punctuation-s1.5-g0-c100-aa0-o1-swap0",
+    "punctuation-s1.5-g0-c100-aa0-o1-swap1",
+    "punctuation-s1.5-g0-c100-aa1-o0-swap0",
+    "punctuation-s1.5-g0-c100-aa1-o0-swap1",
+    "punctuation-s1.5-g0-c100-aa1-o1-swap0",
+    "punctuation-s1.5-g0-c100-aa1-o1-swap1",
+    "punctuation-s1.5-g1-c0-aa0-o0-swap0",
+    "punctuation-s1.5-g1-c0-aa0-o0-swap1",
+    "punctuation-s1.5-g1-c0-aa0-o1-swap0",
+    "punctuation-s1.5-g1-c0-aa0-o1-swap1",
+    "punctuation-s1.5-g1-c0-aa1-o0-swap0",
+    "punctuation-s1.5-g1-c0-aa1-o0-swap1",
+    "punctuation-s1.5-g1-c0-aa1-o1-swap0",
+    "punctuation-s1.5-g1-c0-aa1-o1-swap1",
+    "punctuation-s1.5-g1-c100-aa0-o0-swap0",
+    "punctuation-s1.5-g1-c100-aa0-o0-swap1",
+    "punctuation-s1.5-g1-c100-aa0-o1-swap0",
+    "punctuation-s1.5-g1-c100-aa0-o1-swap1",
+    "punctuation-s1.5-g1-c100-aa1-o0-swap0",
+    "punctuation-s1.5-g1-c100-aa1-o0-swap1",
+    "punctuation-s1.5-g1-c100-aa1-o1-swap0",
+    "punctuation-s1.5-g1-c100-aa1-o1-swap1"
+  ],
+  "results_path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v1-controls-runtime-ready\\results.json",
+  "results_sha256": "ea3743ce11318fd7fcb7a3fded2751461538177e93a274c76e2786d52cca1928",
+  "prior_execution_failure": {
+    "stage": "NumPy lazy import blocked before geometry observations",
+    "passed_noop": 864,
+    "permission_errors": 2792,
+    "results_path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v1-controls-build2\\results.json",
+    "results_sha256": "f1efd5edd5d6830a38f17c43c8d281fc4e2da98574d51bfa94f233eb3ecfa24b"
+  },
+  "fanout_tracer_checks": {
+    "count": 96,
+    "unchanged": 96,
+    "normal_two_edges": 82,
+    "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v1-controls-runtime-ready\\fanout-checks.json",
+    "sha256": "a1c647108a0322ee935029bb11efbfa23e236aa1faf17c13b64d44c2aed21578"
+  }
+}
