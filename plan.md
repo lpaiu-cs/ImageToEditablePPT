@@ -1,5 +1,9 @@
 # ImageToEditablePPT v3 아키텍처 계획서
 
+> **2026-09-09 프로젝트 종료.** 사용자 결정으로 추가 연구·학습·개발을 중단한다.
+> 마감 사유와 최종 연구 브랜치는 [README](README.md)에 정리했다.
+> 아래 계획과 “다음 단계”는 역사 기록이며 자동 재개 지시가 아니다.
+
 최종 업데이트: 2026-06-11  
 상태: `Phase 7: ML experiment bootstrap 완료 (generate -> train -> infer -> eval 루프 동작). 다음: 본 학습 수렴 확인 또는 Phase 8 family 확장`
 
