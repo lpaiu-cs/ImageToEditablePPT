@@ -21,6 +21,15 @@ def test_gray_and_rgb_noise_are_both_dense(channels):
     rng=np.random.default_rng(1911);rgb=rng.integers(30,230,(40,40,channels),dtype=np.uint8)
     if channels==1:rgb=np.repeat(rgb,3,axis=2)
     assert spatial_tile(rgb,np.ones((40,40),np.uint8),1)['dense']
+    assert spatial_tile(rgb,np.ones((40,40),np.uint8),1,palette_guard=True)['dense']
+
+
+def test_palette_guard_explains_concentrated_ink_and_background_without_changing_v1():
+    rng=np.random.default_rng(1912);gray=np.full((40,40),255,np.uint8)
+    gray.ravel()[::5]=rng.integers(10,230,320,dtype=np.uint8)
+    rgb=np.repeat(gray[:,:,None],3,axis=2);mask=np.ones(gray.shape,np.uint8)
+    assert spatial_tile(rgb,mask,1)['dense']
+    assert not spatial_tile(rgb,mask,1,palette_guard=True)['dense']
 
 
 def test_trusted_word_mask_is_not_replaced_by_whole_child_exclusion():

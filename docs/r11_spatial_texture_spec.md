@@ -11,3 +11,7 @@ closed-native-v2의 실제 사진 caption12개에서9개가 native 박스/라벨
 각 tile의 원본 RGB를 정수 luminance로 바꾸되 이미지를 resize/blur하지 않는다. (1)휘도//8 level≥12, (2)휘도 표준편차≥8, (3)x/y 각각의 원본 인접 차이 평균 합을2×표준편차로 나눈 roughness≥.15, (4)두 축 평균 차이의 작은 값/큰 값≥.1이면 공간 고밀도 tile이다. 인접 간격은 max(1,round(image_height/360)) 원본 픽셀이다. 유효 mask끼리의 pair만 계산한다. 이는 단순1차원 gradient/희소 경계와 달리 두 방향으로 변화하는 내용을 거부하는 보조 증거다. 기존 컬러 dense tile과의 합집합으로 tile을 센다.
 
 단색·단순 gradient·native 박스/신뢰 텍스트 양성 대조와 noise/사진 회색·컬러 음성을 구분해 기록한다. 고정 후 caption12/기존사진8/복잡7을 평가하고, 과잉 기권과 새 오출력을 각각 보고한다. soft-focus 사진·halftone·사진과 다이어그램의 의미 구분을 일반적으로 해결한다고 주장하지 않는다. 실패하면 이 결과 자체를 보존하며 같은 arm의 cutoff를 바꿔 구제하지 않는다.
+
+## 별도 v2: 두 주색 집중 관측
+
+첫 arm은 정상 도식의 글자 AA에서 과잉 기권하여 미채택했다. 새 palette-guard arm은 휘도//8 histogram의 가장 큰 두 bin이 유효 pixel의75% 이상을 차지하면 해당 tile을 **새 공간 dense**에서 제외한다. 기존 컬러 texture veto는 해제하지 않는다. 주된 잉크색/배경색에 집중되고 경계에만 중간색이 있는 표현을 연속 색조 사진과 분리하려는 모델이다. 다른 v1 수치·tile·분모·원본 mask 조건은 유지한다. 두 색 photo/halftone은 여전히 사각지대이며 semantic 승인을 주장하지 않는다. 기존 v1 실행과 별도 flag/출력으로 고정·검사한다.
