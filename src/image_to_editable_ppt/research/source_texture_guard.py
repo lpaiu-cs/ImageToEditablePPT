@@ -11,7 +11,7 @@ def inspect_texture(rgb,candidate,text_audit=None):
     # Verified text is explained structure, not photographic texture. Never
     # remove an entire descendant: the PHOTOID caption counterexample relies
     # on leaving its photographic child available to this veto.
-    for line in (text_audit or {}).get('accepted',[]):
+    for line in (text_audit or {}).get('observed_accepted',(text_audit or {}).get('accepted',[])):
         for word in line['words']:
             a,b,c,d=word['bbox'];pad=max(1,round(scale))
             mask[max(0,y0+int(b)-pad):y0+int(np.ceil(d))+pad,

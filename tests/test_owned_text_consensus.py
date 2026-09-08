@@ -1,5 +1,5 @@
 import pytest
-from image_to_editable_ppt.research.owned_text_consensus import select_label
+from image_to_editable_ppt.research.owned_text_consensus import select_label,balanced_prefix
 
 
 def audit(label):
@@ -14,3 +14,13 @@ def audit(label):
 def test_complete_prefix_and_conflict_contract(db,row,expected):
     label,info=select_label(db,audit(db),row,audit(row))
     assert label==expected
+
+
+@pytest.mark.parametrize('text,expected',[
+    ('Title\n(incomplete,','Title'),('Title\n(full body)','Title\n(full body)'),
+    ('Title\n[first\nsecond]','Title\n[first\nsecond]'),('<EOS>','<EOS>'),
+    ('Title\nbad closing)','Title'),('x=f(a',None)])
+def test_incomplete_explanation_is_not_exported_as_a_finished_label(text,expected):
+    label,info=select_label(text,audit(text),None,audit(None))
+    assert label==expected
+    assert info['observed_accepted']==audit(text)['accepted']
