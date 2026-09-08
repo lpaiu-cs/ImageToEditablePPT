@@ -42,13 +42,13 @@ shaft 분리는 v1의 긴 외부 성분 TLS 조건을 유지하되 core/weak 양
 
 shaft를 제외한 core-containing weak atom 중 높이 3s~24s, 면적≥2s²의 후보에서 중심점들을 구한다. 최소 3개 atom과 중심점 주축 span≥2×median atom 높이를 요구한다. 부족하면 `orientation_unobservable`로 유지한다. 단일 connected word처럼 한 atom으로 합쳐진 글자도 초기 범위에서는 유지한다.
 
-중심점 TLS 주축의 가로축 대비 각도 θ를 구한다. 각 atom 중심은 pixel quantization 불확실성으로 x/y 각각 ±.5 원본 px 범위를 가진다고 보고, 양끝 중심의 최대 상대 변위 √2 px에 따른 보수적 각도 여유 `δ=atan2(sqrt(2), span)`을 사용한다. 이는 의미 오차 허용치가 아니라 방향 판정의 불확실성 한계다.
+중심점 TLS 주축의 가로축 대비 각도 θ를 구한다. 중심점 covariance 고유값 λmax/λmin을 기록하고 λmax>0 및 λmax≥4×max(λmin,1e-12)를 요구한다. 미달하면 `orientation_eigen_gap_insufficient`로 기권한다. 중심점의 ±.5 원본 px는 pixel-cell 양자화의 단순 모형일 뿐, segmentation으로 atom 중심이 바뀌는 오차까지 보장하지 않는다. `δ=atan2(sqrt(2), span)`은 두 끝점 모형에서 빌린 **미보장 휴리스틱 guard**이며 전체 atom TLS의 엄밀한 interval/confidence bound가 아니다. 고유값 분리 조건을 통과해도 보장으로 격상하지 않는다.
 
 - `|θ|+δ≤5°`이고 중심점의 TLS 수직 잔차 max≤.25×median 높이일 때만 horizontal evidence 통과.
 - `|θ|−δ>5°`이면 `unsupported_orientation`.
 - 경계가 겹치면 `orientation_ambiguous`.
 
-세로 배열은 각도 조건에 걸리며 ±15° 행도 관측으로 거부해야 한다. 최소 atom 수를 채우려고 punctuation을 큰 글자 atom으로 승격하지 않는다. 글자 각각만 회전하고 중심 행은 수평인 경우 이 조건만으로는 완전 판별할 수 없다. 이 추가 반례도 필수이며 잘못 승인하면 v2 실패로 남긴다. 사후 각도 heuristic을 추가해 같은 버전을 구제하지 않는다.
+세로 배열은 각도 조건에 걸리며 ±15° 행도 관측으로 거부해야 한다. 최소 atom 수를 채우려고 punctuation을 큰 글자 atom으로 승격하지 않는다. **v2가 지원 판정하는 것은 atom 중심의 가로 행이지 개별 glyph의 자세가 아니다.** 중심 행이 수평이고 각 glyph만 회전한 입력은 자세 미검증 대조로 유지한다. 회전 자체만으로 semantic failure 또는 가로 행 계약 위반으로 세지 않는다. 별도 owner 삭제/실제 support 손실이 있으면 정보·구조 손실로 판정한다. v1의 280개 scope violation 기록은 이 v2 범위 변경으로 소급 수정하지 않는다.
 
 ## 5. 작은 차이와 가능한 정보 손실
 
@@ -89,7 +89,8 @@ fanout 14건의 baseline 0관계도 그대로 둔다. owner 보존 96건과 base
 | 군 | 구성 | 기준 |
 |---|---|---|
 | 방향이 관측되는 clean positive | 가로 행 3~5개 분리 atom, 동일 전체 glyph를 감싼 tight/loose bbox, 추가 정보 없음 | 적어도 한 clean 기본 장면에서 올바른 suppression. 전부 기권은 no-benefit |
-| unsupported orientation | 위 동일 RGB/owner를 ±15°,90° 회전; single atom; 중심은 수평이나 glyph 각각 회전 | suppression 금지. 방향 확인 불가를 성공으로 해석하지 않음 |
+| unsupported row orientation | 위 동일 RGB/owner의 행 전체를 ±15°,90° 회전; single atom | suppression 금지. 행 방향 확인 불가를 성공으로 해석하지 않음 |
+| 개별 glyph 자세 미검증 | 중심은 수평이나 glyph 각각 회전, bbox가 동일 support를 포함하는 경우와 일부를 잃는 경우 | 회전 자체는 실패 아님. 독립 owner/실제 support 손실은 실패. 자세 검증 성공 주장은 금지 |
 | 밝은 독립 획 | v1 Il 원본 + 밝기 D=12/24/32/64인 별도 획, core와 분리/접촉 각각 | 획을 잃는 bbox 선택 금지, 또는 ambiguous |
 | punctuation | 1px/2px/4px 고대비 점, 마침표·콜론·첨자 위치, glyph 행 가까이 배치 | 점 전체를 잃는 선택 금지. 면적 비율로 합격시키지 않음 |
 | 배경 speck | 위 glyph에서 먼 낮은 contrast 단일 점, 행 band 밖, 두 bbox 중 하나만 포함 | 점 때문에 무조건 의미 손실 선언하지 않음. 조건 충족 clean duplicate에서는 선택 가능해야 함 |
