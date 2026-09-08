@@ -50,19 +50,20 @@ def build(out):
     (out/'lock.json').write_text(json.dumps(lock,indent=2));print(json.dumps(lock))
 
 
-def run(fixtures,source,out):
+def run(fixtures,source,out,inner_boundaries=False):
     out.mkdir(parents=True,exist_ok=False);lock=json.loads((fixtures/'lock.json').read_text());assert sha(fixtures/'manifest.json')==lock['manifest_sha256']
     snap=out/'closed_rect_snapshot.py';snap.write_bytes(source.read_bytes());sys.path.insert(0,str(source.parents[2]))
     spec=importlib.util.spec_from_file_location('locked_p',snap);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);rows=[]
     for c in json.loads((fixtures/'manifest.json').read_text()):
-        p=fixtures/c['rgb'];assert sha(p)==c['sha256'];rgb=np.array(Image.open(p));original=rgb.copy();selected,audit=m.propose(rgb);assert np.array_equal(original,rgb)
+        p=fixtures/c['rgb'];assert sha(p)==c['sha256'];rgb=np.array(Image.open(p));original=rgb.copy();selected,audit=m.propose(rgb,**({'inner_boundaries':True} if inner_boundaries else {}));assert np.array_equal(original,rgb)
         count=len(selected);expected=c['expected'];passed=count==1 if expected=='one' else count==2 if expected=='two' else count!=1 if expected=='not_single' else count==0 if expected=='none' else None
         rows.append(dict(id=c['id'],mode=c['mode'],expected=expected,passed=passed,selected=[{k:v for k,v in x.items() if k!='contour'} for x in selected],audit=audit))
     summary=dict(count=len(rows),passed=sum(r['passed'] is True for r in rows),failed=sum(r['passed'] is False for r in rows),diagnostic=sum(r['passed'] is None for r in rows),failed_by_mode={mode:sum(r['passed'] is False for r in rows if r['mode']==mode) for mode in sorted({r['mode'] for r in rows})},source_sha256=sha(snap),fixture_lock_sha256=sha(fixtures/'lock.json'),runner_sha256=sha(__file__))
+    summary['inner_boundaries']=inner_boundaries
     (out/'results.json').write_text(json.dumps(dict(summary=summary,rows=rows),indent=2));print(json.dumps(summary))
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('mode',choices=['build','run']);p.add_argument('--out',type=Path,required=True);p.add_argument('--source',type=Path);p.add_argument('--fixtures',type=Path);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('mode',choices=['build','run']);p.add_argument('--out',type=Path,required=True);p.add_argument('--source',type=Path);p.add_argument('--fixtures',type=Path);p.add_argument('--inner-boundaries',action='store_true');a=p.parse_args()
     if a.mode=='build':build(a.out)
-    else:run(a.fixtures,a.source,a.out)
+    else:run(a.fixtures,a.source,a.out,a.inner_boundaries)
