@@ -23,6 +23,7 @@ def worker(image, output):
     from image_to_editable_ppt.v3.emit import sample_shape_styles
     from image_to_editable_ppt.research.source_centerline_v2 import trace_with_centerlines
     from image_to_editable_ppt.research.spatial_ocr_owners import apply_observations
+    from image_to_editable_ppt.research.source_rays import add_source_rays
     from image_to_editable_ppt.region.tracing import trace_scene
     from image_to_editable_ppt.v3.text.ocr import _load_engine
     from diagnose_spatial_ocr_owners import observe
@@ -53,12 +54,16 @@ def worker(image, output):
         scene, _, tracing_audit=trace_with_centerlines(selected,rgb)
     else:
         scene, tracing_audit, _=trace_scene(selected,rgb,(0,0,1,1),transparent_gaps=True)
+    ray_audit = None
+    if identity['source_rays']:
+        scene, ray_audit = add_source_rays(scene,rgb)
     normalized, scale = normalize_scene(scene)
     emitted, emission = write_label_anchor_native(normalized, output, styles=sample_shape_styles(rgb, scene))
     report = dict(schema='research_spatial_ocr_owners_v1', mode='image_derived_spatial_ocr',
         source_sha256=identity['image_sha256'], source_size=[scene.image_size.width, scene.image_size.height],
         source_scene=asdict(scene), emitted_scene=asdict(emitted), normalization_scale=scale,
         emission=emission, owner_audit=owner_audit, spatial_ocr=observed, tracing_audit=tracing_audit, centerline_enabled=identity['centerline'],
+        source_ray_audit=ray_audit,
         counts=dict(nodes=sum(s.owner_kind.value == 'node' for s in emitted.shapes),
                     containers=sum(s.owner_kind.value == 'container' for s in emitted.shapes),
                     connectors=len(emitted.connectors), labels=sum(bool(s.label) for s in emitted.shapes),
@@ -69,7 +74,7 @@ def worker(image, output):
     print(json.dumps(report['counts']))
 
 
-def run(out, centerline=False):
+def run(out, centerline=False, source_rays=False):
     reference_path = ROOT / 'benchmarks/region_r8a_attachment.json'
     reference = json.loads(reference_path.read_text())['arms']['t']
     baseline = ROOT / reference['artifact_root']
@@ -82,15 +87,16 @@ def run(out, centerline=False):
     files = list((ROOT / 'src/image_to_editable_ppt/region').glob('*.py'))
     files += list((ROOT / 'src/image_to_editable_ppt/v3/emit').glob('*.py'))
     files += [ROOT / 'src/image_to_editable_ppt/research' / name for name in
-              ('native_emit.py', 'image_only_guard.py', 'label_anchor_native.py', 'source_centerline_v2.py', 'spatial_ocr_owners.py', 'duplicate_owner_observations.py')]
+              ('native_emit.py', 'image_only_guard.py', 'label_anchor_native.py', 'source_centerline_v2.py', 'spatial_ocr_owners.py', 'duplicate_owner_observations.py', 'source_rays.py')]
     files += [Path(__file__).resolve(), ROOT / 'docs/r10_spatial_ocr_owner_spec.md', ROOT / 'docs/r10_spatial_ocr_selection_v1.md', ROOT / 'tools/diagnose_spatial_ocr_owners.py', ROOT / 'tests/test_spatial_ocr_owners.py']
+    files += [ROOT / 'docs/r10_source_rays_spec.md', ROOT / 'tests/test_source_rays.py']
     code = {str(p.relative_to(ROOT)): digest(p) for p in files}
     import rapidocr_onnxruntime
     package=Path(rapidocr_onnxruntime.__file__).parent
     models={str(p):digest(p) for p in (package/'models').glob('*.onnx')}
-    save(out / 'lock.json', dict(source_arm='frozen_A-T', models_sha256=models, centerline_enabled=centerline,
+    save(out / 'lock.json', dict(source_arm='frozen_A-T', models_sha256=models, centerline_enabled=centerline, source_rays_enabled=source_rays,
         source_manifest_sha256=digest(reference_path), source_results_sha256=digest(baseline / 'results.json'),
-        runtime_sha256=code, intervention='spatial_OCR_owner_selection'+('_plus_C_v2' if centerline else '_only'),
+        runtime_sha256=code, intervention='spatial_OCR_owner_selection'+('_plus_C_v2' if centerline else '_only')+('_plus_source_rays' if source_rays else ''),
         population='cached shared synthetic validation diagnostic; not unseen acceptance'))
     records = []
     for previous in prior['records']:
@@ -107,7 +113,7 @@ def run(out, centerline=False):
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')
         proc = subprocess.run([sys.executable, str(Path(__file__).resolve()), 'worker', '--image',
             str(image.resolve()), '--output', str(output.resolve())], cwd=ROOT, env=env, timeout=180,
-            input=json.dumps(dict(image_sha256=previous['source_sha256'], scene_sha256=digest(input_scene),centerline=centerline)),
+            input=json.dumps(dict(image_sha256=previous['source_sha256'], scene_sha256=digest(input_scene),centerline=centerline,source_rays=source_rays)),
             capture_output=True, text=True, encoding='utf-8', errors='replace')
         record = dict(id=previous['id'], slot=slot, source_sha256=previous['source_sha256'],
                       returncode=proc.returncode, stdout=proc.stdout, stderr=proc.stderr)
@@ -129,13 +135,13 @@ if __name__ == '__main__':
     parser.add_argument('mode', choices=['run', 'worker'])
     parser.add_argument('--image', type=Path)
     parser.add_argument('--centerline', action='store_true')
+    parser.add_argument('--source-rays', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     if args.mode == 'worker':
         worker(args.image, args.output)
     else:
-        run(args.output,args.centerline)
-
+        run(args.output,args.centerline,args.source_rays)
 
 
 
