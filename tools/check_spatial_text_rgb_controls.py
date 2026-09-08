@@ -1,5 +1,6 @@
 """Real OCR from generated RGB; expectations locked before recognition."""
 from pathlib import Path
+import argparse
 import cv2
 import numpy as np
 from PIL import Image,ImageDraw,ImageFont
@@ -8,8 +9,8 @@ from image_to_editable_ppt.research.spatial_text import observe_box,select_text
 from image_to_editable_ppt.v3.text.ocr import _load_engine
 
 
-def main():
-    out=ROOT/'artifacts/region-image-only-r10/spatial-text-controls'
+def main(args):
+    out=args.output
     out.mkdir(parents=True,exist_ok=False)
     font=ImageFont.truetype('C:/Windows/Fonts/arial.ttf',16)
     cases=[]
@@ -30,11 +31,12 @@ def main():
     cv2.setNumThreads(1);engine=_load_engine();rows=[]
     for c in cases:
         rgb=np.array(Image.open(out/c['image']))
-        observed=observe_box(rgb,c['box'],engine);label,audit=select_text(rgb,c['box'],observed)
+        observed=observe_box(rgb,c['box'],engine,context=args.context);label,audit=select_text(rgb,c['box'],observed)
         rows.append(dict(id=c['id'],label=label,audit=audit,observations=observed,passed=label in c['allowed']))
         print(c['id'],label,audit['reason'],flush=True)
     save(out/'results.json',dict(rows=rows,passed=all(r['passed'] for r in rows),selected=sum(r['label'] is not None for r in rows)))
     assert all(r['passed'] for r in rows) and sum(r['label'] is not None for r in rows)>=3
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--context',action='store_true');main(p.parse_args())

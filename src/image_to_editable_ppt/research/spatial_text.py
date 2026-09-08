@@ -5,12 +5,13 @@ import cv2
 import numpy as np
 from image_to_editable_ppt.region.strokes import stroke_mask
 from image_to_editable_ppt.research.spatial_ocr_owners import envelope, intersection, area
-from image_to_editable_ppt.v3.core.enums import PortOwnerKind
+from image_to_editable_ppt.v3.core.enums import PortOwnerKind,NodeKind
 
 
-def observe_box(rgb, box, engine):
-    x0=max(0,math.floor(box[0])-2);y0=max(0,math.floor(box[1])-2)
-    x1=min(rgb.shape[1],math.ceil(box[2])+2);y1=min(rgb.shape[0],math.ceil(box[3])+2)
+def observe_box(rgb, box, engine, *, context=False):
+    margin=max(2,math.ceil(box[3]-box[1])) if context else 2
+    x0=max(0,math.floor(box[0])-margin);y0=max(0,math.floor(box[1])-margin)
+    x1=min(rgb.shape[1],math.ceil(box[2])+margin);y1=min(rgb.shape[0],math.ceil(box[3])+margin)
     if x0>=x1 or y0>=y1 or (x1-x0)*(y1-y0)>40000:
         return []
     crop=rgb[y0:y1,x0:x1]
@@ -18,9 +19,17 @@ def observe_box(rgb, box, engine):
     padded=cv2.copyMakeBorder(crop,16,16,16,16,cv2.BORDER_CONSTANT,value=color)
     observations=[]
     for scale in (3.,4.5):
-        found,_=engine(cv2.resize(padded,None,fx=scale,fy=scale,interpolation=cv2.INTER_CUBIC))
-        observations.append(dict(scale=scale,words=[dict(text=w[1],confidence=float(w[2]),
-            polygon=[[float(p[0])/scale-16+x0,float(p[1])/scale-16+y0] for p in w[0]]) for w in found or []]))
+        enlarged=cv2.resize(padded,None,fx=scale,fy=scale,interpolation=cv2.INTER_CUBIC)
+        found,_=engine(enlarged)
+        upright,_=engine(enlarged,use_cls=False)
+        words=[]
+        for w in found or []:
+            same=[z for z in upright or [] if np.allclose(z[0],w[0])]
+            words.append(dict(text=w[1],confidence=float(w[2]),
+                upright_text=same[0][1] if len(same)==1 else None,
+                upright_confidence=float(same[0][2]) if len(same)==1 else None,
+                polygon=[[float(p[0])/scale-16+x0,float(p[1])/scale-16+y0] for p in w[0]]))
+        observations.append(dict(scale=scale,words=words,crop=[x0,y0,x1,y1],context=context))
     return observations
 
 
@@ -39,6 +48,8 @@ def select_text(rgb, box, observations):
         if len(major)!=1:return reject('not_single_confident_owned_word')
         chosen.append(major[0]);extras.extend(w for w in inside if w is not major[0])
     first,second=chosen
+    if any(w.get('upright_text')!=w['text'] or (w.get('upright_confidence') or 0)<.95 for w in chosen):
+        return reject('upright_orientation_unconfirmed')
     if first['text'].strip()!=second['text'].strip():return reject('text_scale_disagreement')
     a,b=map(envelope,chosen)
     inter=intersection(a,b)
@@ -78,7 +89,7 @@ def recover_spatial_text(scene,rgb,engine):
         if shape.owner_kind is not PortOwnerKind.NODE:
             shapes.append(shape);continue
         b=shape.bbox;box=[b.x0,b.y0,b.x1,b.y1]
-        observations=observe_box(rgb,box,engine)
+        observations=observe_box(rgb,box,engine,context=shape.shape_kind is NodeKind.LABEL_ANCHOR)
         label,record=select_text(rgb,box,observations)
         audit[shape.id]=dict(record,observations=observations,previous_label=shape.label,
             changed=label is not None and label!=shape.label)
