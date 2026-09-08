@@ -38,7 +38,12 @@ def select_cluster(rgb,cluster):
     for w in (first,second):
         p=np.array(w['polygon']);d=p[1]-p[0]
         if abs(math.degrees(math.atan2(d[1],d[0])))>10:return reject('word_orientation_unsupported')
-    x0,y0,x1,y1=cluster['crop'];local=rgb[y0:y1,x0:x1].astype(np.int64)
+    # Observe real surrounding background, not the OCR crop's stroke-crossed edge
+    # and not its artificial median padding.
+    x0,y0,x1,y1=cluster['crop'];pad=math.ceil(3*h)
+    x0,y0=max(0,x0-pad),max(0,y0-pad)
+    x1,y1=min(rgb.shape[1],x1+pad),min(rgb.shape[0],y1+pad)
+    local=rgb[y0:y1,x0:x1].astype(np.int64)
     lum=local@np.array([2126,7152,722],dtype=np.int64)
     ring=np.ones(lum.shape,bool);ring[2:-2,2:-2]=False
     values=np.sort(lum[ring]);n=len(values)
@@ -51,7 +56,9 @@ def select_cluster(rgb,cluster):
     _,labels,stats,_=cv2.connectedComponentsWithStats(core.astype('uint8'),connectivity=8)
     seed=np.zeros_like(core);strokes=np.zeros_like(core);outside_core=np.zeros_like(core)
     stroke_records=[]
-    for label in np.unique(labels[window]):
+    owner_union=np.zeros_like(core)
+    for owner in cluster['owners']:owner_union|=inside(xx,yy,owner['bbox'])
+    for label in np.unique(labels[window|owner_union]):
         if label==0:continue
         pixels=labels==label
         if not (pixels&~window).any():seed|=pixels;continue
@@ -90,10 +97,14 @@ def select_cluster(rgb,cluster):
             weak=float((support&own).sum()/support.sum()),
             polygon=float(intersection(owner['bbox'],box)/area(box))))
         outside_core|=own&core&~window&~strokes
+    explained=cv2.dilate((seed|strokes).astype('uint8'),np.ones((3,3),np.uint8)).astype(bool)
+    unexplained_weak=weak&owner_union&~window&~explained
     audit.update(text=first['text'],word_box=box,core_pixels=int(seed.sum()),weak_pixels=int(support.sum()),
                  coverage=coverage,strokes=stroke_records,background_luminance_x2=bg2)
     if outside_core.any():return reject('independent_core_outside_word')
+    if unexplained_weak.any():return reject('weak_orphan_outside_word')
     if any(r['polygon']<.5 for r in coverage):return reject('insufficient_shared_location')
+    if any(r['core']<.8 for r in coverage):return reject('partial_word_owner')
     winners=[r['id'] for r in coverage if r['core']==1. and r['weak']>=.98]
     if len(winners)!=1:return reject('no_unique_complete_owner')
     return winners[0],dict(audit,decision='select',reason='unique_complete_spatial_word',winner=winners[0])

@@ -40,3 +40,15 @@
 gates통과후A-T15장O-only추적재실행/native렌더와별도GT평가를실행한다. 이단계의효과가
 보이면C+O를별도run으로생성한다. 새FP/독립node손실은실패로기록하고수정한다.
 명백한code/fixture bug는revisionbuild로이력을보존하고수정하며,실패기록만남기고중단하지않는다.
+
+## build2 진단 수정
+
+build1 실제3cluster는OCR용좁은crop의ring을배경으로썼고선이ring을가로질러3개모두
+background_unsupported였다. 배경은합성padding이아닌실제원본의3word-height주변ring에서
+관측하도록수정한다. 또한원래owner가추가로포함하는word밖core도전체성분을검사해야
+선과별도글자를구분할수있으므로component query를word+owner union으로정정한다.
+core/weak/coverage/직선성임계값은변경하지않는다. 최초구현은별도커밋보존한다.
+
+반례구현전 보수적추가조건: owner가관측word core의80%미만만소유하면부분단어후보로
+기권한다. word밖owner영역의weak성분이glyph/stroke의1px근접지원으로설명되지않으면
+weak_orphan_outside_word로기권한다. 단순히OCR가못봤다는이유로별도약한획을버리지않는다.
