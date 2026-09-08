@@ -24,7 +24,7 @@ from image_to_editable_ppt.v3.emit.style import ShapeVisualStyle
 from dataclasses import replace
 
 
-def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole_lines=False,source_rows=False,dark_boundaries=False,portrait_boxes=False,boundary_union=False,texture_guard=False,owned_text=False,nested_owners=False,pixel_agreement=False,portrait_text=False,spatial_texture=False,raw_branches=False,compact_boxes=False):
+def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole_lines=False,source_rows=False,dark_boundaries=False,portrait_boxes=False,boundary_union=False,texture_guard=False,owned_text=False,nested_owners=False,pixel_agreement=False,portrait_text=False,spatial_texture=False,raw_branches=False,compact_boxes=False,flow_frames=False):
     if source_rows and whole_lines:raise ValueError('source-rows and whole-lines are separate experiment arms')
     if boundary_union and (inner_boundaries or dark_boundaries):raise ValueError('boundary-union fixes both component proposal contracts')
     if texture_guard and content_gate:raise ValueError('texture and flat-content gates are separate experiments')
@@ -32,6 +32,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     if portrait_text and not owned_text:raise ValueError('portrait-text requires owned-text')
     if spatial_texture and not texture_guard:raise ValueError('spatial-texture requires texture-guard')
     if raw_branches and not (trace and nested_owners):raise ValueError('raw-branches requires trace and nested-owners')
+    if flow_frames and (not (trace and nested_owners and compact_boxes and spatial_texture) or raw_branches):raise ValueError('flow-frames requires nested compact spatial configuration without raw-branches')
     image=image.resolve();output=output.resolve();output.mkdir(parents=True,exist_ok=False)
     with Image.open(image) as im:
         if im.mode!='RGB':raise ValueError('RGB required')
@@ -46,11 +47,13 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
         spec=ROOT/'docs/r12_raw_branch_spec.md';code[str(spec)]=digest(spec)
     if compact_boxes:
         spec=ROOT/'docs/r13_compact_rectangle_spec.md';code[str(spec)]=digest(spec)
+    if flow_frames:
+        spec=ROOT/'docs/r14_flow_frame_spec.md';code[str(spec)]=digest(spec)
     import rapidocr_onnxruntime
     models={str(f):digest(f) for f in (Path(rapidocr_onnxruntime.__file__).parent/'models').glob('*.onnx')}
     font=Path('C:/Windows/Fonts/arial.ttf');code[str(font)]=digest(font)
     save(output/'lock.json',dict(source_path=str(image),source_sha256=source,code_sha256=code,ocr_models_sha256=models,
-        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,pixel_agreement=pixel_agreement,portrait_text=portrait_text,spatial_texture=spatial_texture,raw_branches=raw_branches,compact_boxes=compact_boxes,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
+        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,pixel_agreement=pixel_agreement,portrait_text=portrait_text,spatial_texture=spatial_texture,raw_branches=raw_branches,compact_boxes=compact_boxes,flow_frames=flow_frames,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
     candidates,proposal_audit=propose_union(rgb,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes) if boundary_union else propose(rgb,inner_boundaries=inner_boundaries,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes)
     engine=_load_engine();objects=[];styles={};text_audit={};region_audit={};content_audit={}
     regions=closed_regions(rgb)
@@ -87,22 +90,30 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
         scene,box_audit=refine_box_centerlines(scene,rgb)
         scene,terminal_audit=recover_box_terminals(scene,rgb,box_audit)
     proposed_scene=scene
+    frames={}
+    if flow_frames:
+        from image_to_editable_ppt.research.flow_frames import frame_witnesses,surviving_frames
+        frames=frame_witnesses(scene,content_audit)
+        scene=replace(scene,shapes=tuple(replace(s,label=None) if s.id in frames else s for s in scene.shapes))
+        styles.update({key:replace(styles[key],fill=None) for key in frames})
     if content_gate or texture_guard:
-        keep=admitted_ids(scene,content_audit)
+        keep=admitted_ids(scene,content_audit)|frames.keys()
         scene=replace(scene,shapes=tuple(s for s in scene.shapes if s.id in keep),
             connectors=tuple(c for c in scene.connectors if c.source_owner_id in keep and c.target_owner_id in keep))
     normalized,scale=normalize_scene(scene);pptx=output/'result.pptx'
     emitted,emission=write_label_anchor_native(normalized,pptx,styles=styles)
     if content_gate or texture_guard:
-        keep=admitted_ids(emitted,content_audit)
+        keep=admitted_ids(emitted,content_audit)|(surviving_frames(frames,emitted) if flow_frames else set())
         if keep!={s.id for s in emitted.shapes}:
             scene=replace(scene,shapes=tuple(s for s in scene.shapes if s.id in keep),
                 connectors=tuple(c for c in scene.connectors if c.source_owner_id in keep and c.target_owner_id in keep))
             normalized,scale=normalize_scene(scene)
             emitted,emission=write_label_anchor_native(normalized,pptx,styles=styles)
-    placement=place_owned_text(pptx,scene,text_audit,scale)
+    placement=place_owned_text(pptx,scene,{k:dict(v,accepted=[]) if k in frames else v for k,v in text_audit.items()},scale)
+    if flow_frames and set(frames)&{s.id for s in emitted.shapes}!=surviving_frames(frames,emitted):raise ValueError('frame lost its source attachment witnesses')
     save(output/'result.json',dict(source_sha256=source,source_scene=asdict(scene),emitted_scene=asdict(emitted),styles={k:asdict(v) for k,v in styles.items()},
         proposal_audit=proposal_audit,text_audit=text_audit,region_audit=region_audit,content_audit=content_audit,proposed_scene=asdict(proposed_scene),text_placement=placement,tracing_audit=trace_audit,box_audit=box_audit,terminal_audit=terminal_audit,nested_audit=nested_audit,
+        flow_frame_audit=dict(witnesses=frames,retained=sorted(set(frames)&{s.id for s in emitted.shapes}),policy='user-approved blank frame; texture verdict unchanged; no content or label endorsement'),
         emission=emission,pptx_sha256=digest(pptx),nodes=len(scene.shapes),labels=sum(bool(s.label) for s in scene.shapes),
         provenance='direct RGB-only research execution; no cached detector/scene/GT inputs; Python IO not sandboxed'))
     if digest(image)!=source or any(digest(p)!=sha for p,sha in code.items()):raise ValueError('source/runtime changed during execution')
@@ -127,4 +138,5 @@ if __name__=='__main__':
     p.add_argument('--spatial-texture',action='store_true')
     p.add_argument('--raw-branches',action='store_true')
     p.add_argument('--compact-boxes',action='store_true')
-    a=p.parse_args();run(a.image,a.output,a.trace,a.inner_boundaries,a.content_gate,a.whole_lines,a.source_rows,a.dark_boundaries,a.portrait_boxes,a.boundary_union,a.texture_guard,a.owned_text,a.nested_owners,a.pixel_agreement,a.portrait_text,a.spatial_texture,a.raw_branches,a.compact_boxes)
+    p.add_argument('--flow-frames',action='store_true')
+    a=p.parse_args();run(a.image,a.output,a.trace,a.inner_boundaries,a.content_gate,a.whole_lines,a.source_rows,a.dark_boundaries,a.portrait_boxes,a.boundary_union,a.texture_guard,a.owned_text,a.nested_owners,a.pixel_agreement,a.portrait_text,a.spatial_texture,a.raw_branches,a.compact_boxes,a.flow_frames)
