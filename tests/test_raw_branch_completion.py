@@ -9,12 +9,13 @@ from image_to_editable_ppt.v3.core.types import BBox,ImageSize
 from image_to_editable_ppt.v3.emit.models import EmitScene,EmitShapePrimitive
 
 
-@pytest.mark.parametrize('defect',['none','gap','curve','crossing','owner','parallel'])
+@pytest.mark.parametrize('defect',['none','gap','curve','crossing','gray_crossing','owner','parallel'])
 def test_source_component_guard_and_no_duplicate(defect):
     rgb=np.full((360,600,3),255,np.uint8)
     boxes=[(20,120,100,240),(490,120,580,240)]
     if defect=='owner':boxes.append((270,160,330,200))
     for box in boxes:cv2.rectangle(rgb,box[:2],box[2:],(0,0,0),2)
+    if defect=='gray_crossing':cv2.line(rgb,(290,130),(290,230),(120,120,120),2)
     if defect=='curve':cv2.polylines(rgb,[np.array([(100,180),(260,120),(490,180)])],False,(0,0,0),2)
     else:cv2.line(rgb,(100,180),(490,180),(0,0,0),2)
     if defect=='gap':rgb[176:185,270:280]=255
