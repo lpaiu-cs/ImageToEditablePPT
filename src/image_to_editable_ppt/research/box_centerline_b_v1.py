@@ -86,7 +86,9 @@ def _fit(raw,boxes,path,other_boxes,scale):
     selected=exterior&(ids==seed_ids[0])
     nearby=exterior&(abs(v)<=8*scale)&(ids!=seed_ids[0])
     if nearby.any():return reject('disconnected_competing_ink')
-    middle=selected&(t>=8*scale)&(t<=length-8*scale)
+    # A cell touching the terminal band is terminal evidence, not shaft width.
+    half_cell=float(np.abs(axis).sum())/2
+    middle=selected&(t-half_cell>8*scale)&(t+half_cell<length-8*scale)
     if not middle.any():return reject('missing_interior_support')
     audit.update(interior_max=float(abs(v[middle]).max()),whole_component_max=float(abs(v[selected]).max()),
                  original_component_pixels=int(selected.sum()))
