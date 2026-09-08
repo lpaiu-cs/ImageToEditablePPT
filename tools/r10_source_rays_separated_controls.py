@@ -24,18 +24,19 @@ def build(out):
     out.mkdir(parents=True,exist_ok=False)
     records=[]
     for mode,angle,s,aa in itertools.product(
-        ['clean','nearby','bridged','detached_tip','detached_opposite','central_neighbor'],
+        ['clean','nearby','bridged','detached_tip','detached_opposite','short_opposite','central_neighbor'],
         [0,30,60,90,135],[.75,1,1.5],[1,4]):
         r=s*aa;im=Image.new('RGB',(round(360*r),)*2,'white');draw=ImageDraw.Draw(im)
         theta=np.deg2rad(angle);u=np.array([np.cos(theta),np.sin(theta)]);v=np.array([-u[1],u[0]])
         def p(x,y=0):return tuple((np.array([180,180])+x*u+y*v)*r)
         def line(points):draw.line([p(*q) for q in points],fill='black',width=max(1,round(2*r)))
         def poly(points):draw.polygon([p(*q) for q in points],fill='black')
-        start=-88 if mode=='detached_opposite' else -100
+        start=-88 if mode=='detached_opposite' else (-94 if mode=='short_opposite' else -100)
         end=88 if mode=='detached_tip' else 100
         line([(start,0),(end,0)])
         poly([(100,0),(92,5),(92,-5)])
         if mode=='detached_opposite':poly([(-100,0),(-92,5),(-92,-5)])
+        if mode=='short_opposite':poly([(-100,0),(-96,5),(-96,-5)])
         if mode in ('nearby','bridged'):
             line([(-94,5),(-94,20)]);line([(-98,20),(-90,20)])
             if mode=='bridged':line([(-94,0),(-94,5)])
@@ -45,7 +46,7 @@ def build(out):
         mask=ink(np.array(im));n,labels,stats,_=cv2.connectedComponentsWithStats(mask,8)
         expected_cc=1 if mode in ('clean','bridged') else 2
         boxes=[]
-        for t in [-112,112]:
+        for t in [-109 if mode=='short_opposite' else -112,112]:
             c=(np.array([180,180])+t*u)*s;boxes.append([*(c-8*s),*(c+8*s)])
         # This validity gate is recorded before observer import or execution.
         records.append(dict(id=key,mode=mode,scale=s,boxes=boxes,rgb=path.name,sha256=sha(path),
