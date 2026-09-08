@@ -43,6 +43,12 @@ def _head(along, across, length, shaft_width, scale, cell_extent, reverse=False)
         profile.append(float(np.ptp(values)+cell_extent) if len(values) else 0.)
     widths = np.asarray(profile)
     peak = int(np.argmax(widths))
+    peak_width = float(widths[peak])
+    # Rasterized flat bases can differ by a fraction of one pixel across bins.
+    # Use the start of the contiguous physical half-cell peak band, not a later
+    # arbitrary maximum that hides the base's actual width increase.
+    while peak > 0 and widths[peak-1] >= peak_width-cell_extent/2:
+        peak -= 1
     taper = widths[peak:]
     record = dict(profile=profile, peak=peak, shaft_width=shaft_width)
     if len(taper) < 3 or len(taper) > 12 or widths[peak] < max(1.6*shaft_width, shaft_width+2*scale):
