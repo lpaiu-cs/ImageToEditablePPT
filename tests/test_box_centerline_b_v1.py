@@ -87,3 +87,39 @@ def test_original_coordinate_contract():
     scene,rgb=fixture()
     with pytest.raises(ValueError):refine_box_centerlines(scene,rgb.astype(float))
     with pytest.raises(ValueError):refine_box_centerlines(replace(scene,image_size=ImageSize(720,720)),rgb)
+
+
+@pytest.mark.parametrize('start_arrow,end_arrow',[(False,False),(True,False),(False,True),(True,True)])
+def test_visible_terminal_ink_does_not_choose_direction(start_arrow,end_arrow):
+    scene,rgb=fixture()
+    im=Image.fromarray(rgb);draw=ImageDraw.Draw(im)
+    # Visible tip is independent of flags: this stage must not infer direction.
+    draw.polygon([(268,180),(260,175),(260,185)],fill='black')
+    scene=replace(scene,connectors=(replace(scene.connectors[0],arrowhead_start=start_arrow,arrowhead_end=end_arrow),))
+    result,audit=refine_box_centerlines(scene,np.array(im))
+    assert audit['connectors']['edge']['decision']=='refined',audit
+    assert (result.connectors[0].arrowhead_start,result.connectors[0].arrowhead_end)==(start_arrow,end_arrow)
+
+
+def test_unobserved_endpoint_extension_is_not_repaired():
+    scene,rgb=fixture()
+    rgb[176:185,92:105]=255
+    result,audit=refine_box_centerlines(scene,rgb)
+    assert result==scene
+    assert audit['connectors']['edge']['reason']=='unsupported_extension'
+
+
+def test_disconnected_nearby_ink_cannot_be_discarded():
+    scene,rgb=fixture()
+    rgb[184:187,130:134]=0
+    result,audit=refine_box_centerlines(scene,rgb)
+    assert result==scene,audit
+
+
+def test_third_owner_near_axis_without_intersection_abstains():
+    scene,rgb=fixture()
+    owner=EmitShapePrimitive('near',PortOwnerKind.NODE,NodeKind.BOX,BBox(170,181,190,190),.9)
+    scene=replace(scene,shapes=(*scene.shapes,owner))
+    result,audit=refine_box_centerlines(scene,rgb)
+    assert result==scene
+    assert audit['connectors']['edge']['reason']=='third_owner_near_route'
