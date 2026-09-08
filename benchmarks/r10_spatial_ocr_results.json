@@ -1,0 +1,24 @@
+{
+  "population": "seen synthetic validation development, not unseen acceptance",
+  "status": "duplicate owner issue resolved on 15 diagnostics; remaining trace and text work active",
+  "arms": {
+    "O": {
+      "root": "artifacts/region-image-only-r10/spatial-owners-v1",
+      "lock_sha256": "90931c3fe6efa646ded1afce8b48dd4bce9af3b3ae8359876e601cfe43134234",
+      "results_sha256": "70505a48b1da58f83a2427cb51806fcc151371ab39fd574ccbbb0d172bd45d85",
+      "evaluation_sha256": "988833f04f20224de1a21a356470919a0f15887ca96098190fb09803b1dfc5f0",
+      "native_tp_fp_fn": [27, 2, 40]
+    },
+    "O+C": {
+      "root": "artifacts/region-image-only-r10/spatial-owners-centerline-v1",
+      "lock_sha256": "2b00ef54fc37b10996c581e81b4f9a003f1674338024a6fe1bf94c93dc9d090b",
+      "results_sha256": "64b4deca7be14b006b55170069eb8564c634a72398d38cea8d29e9a74e7eee32",
+      "evaluation_sha256": "8dac1cc135305a4bb360ab4553861c2de4f335e938cd1e04fad7909f0d048897",
+      "native_tp_fp_fn": [33, 2, 34]
+    }
+  },
+  "both_node_tp_fp_fn": [91, 0, 0],
+  "both_label_correct_wrong_blank": [82, 1, 8],
+  "human_edit_time_measured": false,
+  "production_approved": false
+}
