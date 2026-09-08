@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-08",
+  "method": "Assistant directly viewed five source/R3/native comparison PNGs, two move/reopen/reroute sheets, and the eleven-case synthetic source/native contact sheet, all based on PowerPoint 16 renders.",
+  "verdict": "Useful conservative region feature, not general reconstruction or human-time acceptance.",
+  "attention": "Four separate upright arrows, no shadow. False gap faces removed, including after moving the target. Text and outlines remain simplified; exact source styling is not claimed.",
+  "perceive": "False fill fragment removed. Two short paths remain close to source attachment positions, but the final mask/fit simplifies bends and the left route is slightly oblique. The two unstable lower-node labels are blank. Do not claim exact L-path preservation or visually complete text.",
+  "hevc": "Third label now reads in correct word order; all four node labels remain. Fonts and external Decoding label differ/are missing. Structure is readily recognizable.",
+  "blip": "Five nodes and three scoped connections persist with thinner lines. Text is small, source outlines are not faithfully retained; one label still merges textdecoder despite two-scale agreement.",
+  "reasoning": "Four nodes and three links persist, but Decoder and Executor labels are omitted due to scale disagreement. This trades coverage for conservatism, not guaranteed edit-time savings.",
+  "ordinary_edit": "Endpoints follow resized/moved owners and hidden false gap faces no longer appear. Prescribed downward moves still create overlaps and oblique lines, so the edited layout is not an automatic-layout success.",
+  "reroute": "Explicit native reroute visibly changes attachment positions in both cases. Owner identity remains, but recovered site arrangement is lost.",
+  "synthetic": "Three chain scales, vertical chain and elbow retain expected box/link counts in final run; near-white box survives; blank, scatter and unowned arrow outputs are blank; three-way branch retains boxes and abstains on links; neighboring unconnected boxes remain unconnected. Arrow rendering is small at contact-sheet scale. This review and the 11-count contracts do not establish general arrow-direction accuracy.",
+  "negative_natural_sample": "The large natural plot ROI is rejected by the 4MP resource bound, not classified as a blank successful negative. R4 frozen-scene negative did render blank, which is a separate condition."
+}

@@ -1,0 +1,87 @@
+{
+  "git_commit": "13aa0c8ff1e17d8c7f11f7d5aa13dc5be4deb433",
+  "wheel_path": "artifacts\\region-native-production\\package-v2\\dist\\image_to_editable_ppt-0.2.0-py3-none-any.whl",
+  "wheel_sha256": "2ff0f3406882545f530482983e9b539f54704e7837d349ba6b2fc11f072854b5",
+  "runtime_sha256": {
+    "src\\image_to_editable_ppt\\region\\convert.py": "b46ac1e16cc427ec7a2a78f1564ba56325c079cc95c434a4fa3cfa39de195649",
+    "src\\image_to_editable_ppt\\region\\emitter.py": "8c8264ea5c016775271db7a849db72913f9429f744f228604cda41269cbbf588",
+    "src\\image_to_editable_ppt\\region\\geometry.py": "5f8467c109047aa07734af40ed851d95fa9d64c2268e2f0fdbfe6c854fd9388a",
+    "src\\image_to_editable_ppt\\region\\identity.py": "26175f248181dfa94977eeef7213c664fc5e0acec8eafe814670fa2b61d805b1",
+    "src\\image_to_editable_ppt\\region\\text.py": "20732d8d02fd106560dbe0e30f5df8e92dd47aa308cf4b62e8d5110309119b67",
+    "src\\image_to_editable_ppt\\region\\tracing.py": "06016ccc9568eb30339cb776fe0c21dc4649177dec3615f912cbfbd1424400df",
+    "src\\image_to_editable_ppt\\region\\_native_geometry.py": "21010ea5a93cfac746621ab60bd14892c34e6754e9a139edb833d9ad601b64a4",
+    "src\\image_to_editable_ppt\\region\\_path_fit.py": "12864fba06c1538a486c7b46e60b0e904f87c9c59bd9974d7b82c3203fac1e44",
+    "src\\image_to_editable_ppt\\region\\_selection_base.py": "82858ed4240e496a3b856cebf32104d96e06cbf0fef24f86ece0c93a340459e6",
+    "src\\image_to_editable_ppt\\region\\_selection_local.py": "41d241112ad3b4c22f90b4d5b02bd04ee741a9ba73a4ed99010f8c91bb6c91c4",
+    "src\\image_to_editable_ppt\\region\\__init__.py": "daa97ae44e1472164682202b6d4bf986c2576eebeea508f24f341d7c8f95d1ad"
+  },
+  "installed_runtime_matches_source": true,
+  "output_sha256": "69ee9bde00d88260d7bb32dc981817ba40fd045034ef58268b123a2983ff6ff3",
+  "report_sha256": "c1482084a1b3d30a470d8ea1dddd7caad2d914407c01e366578dd7bfbe197282",
+  "commands": [
+    {
+      "command": [
+        "C:\\vs\\ImageToEditablePPT\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "wheel",
+        ".",
+        "--no-deps",
+        "--no-build-isolation",
+        "-w",
+        "C:\\vs\\ImageToEditablePPT\\artifacts\\region-native-production\\package-v2\\dist"
+      ],
+      "returncode": 0,
+      "stdout": "Processing .\\.\n  Preparing metadata (pyproject.toml): started\n  Preparing metadata (pyproject.toml): finished with status 'done'\nBuilding wheels for collected packages: image-to-editable-ppt\n  Building wheel for image-to-editable-ppt (pyproject.toml): started\n  Building wheel for image-to-editable-ppt (pyproject.toml): finished with status 'done'\n  Created wheel for image-to-editable-ppt: filename=image_to_editable_ppt-0.2.0-py3-none-any.whl size=245353 sha256=2ff0f3406882545f530482983e9b539f54704e7837d349ba6b2fc11f072854b5\n  Stored in directory: C:\\Users\\lpaiu\\AppData\\Local\\Temp\\pip-ephem-wheel-cache-2qntuaji\\wheels\\cd\\9e\\79\\d50eafa7a7e18b41e3f180a1b1260b2e88a7cd93b5f7db71e3\nSuccessfully built image-to-editable-ppt\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\vs\\ImageToEditablePPT\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "install",
+        "--no-deps",
+        "--target",
+        "C:\\vs\\ImageToEditablePPT\\artifacts\\region-native-production\\package-v2\\installed",
+        "C:\\vs\\ImageToEditablePPT\\artifacts\\region-native-production\\package-v2\\dist\\image_to_editable_ppt-0.2.0-py3-none-any.whl"
+      ],
+      "returncode": 0,
+      "stdout": "Processing .\\artifacts\\region-native-production\\package-v2\\dist\\image_to_editable_ppt-0.2.0-py3-none-any.whl\nInstalling collected packages: image-to-editable-ppt\nSuccessfully installed image-to-editable-ppt-0.2.0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\vs\\ImageToEditablePPT\\.venv\\Scripts\\python.exe",
+        "-I",
+        "-c",
+        "import sys,json; from pathlib import Path\ntarget=Path('C:\\\\vs\\\\ImageToEditablePPT\\\\artifacts\\\\region-native-production\\\\package-v2\\\\installed').resolve(); sys.path.insert(0,str(target))\nimport image_to_editable_ppt.region.convert as runtime\nassert Path(runtime.__file__).is_relative_to(target)\nfrom image_to_editable_ppt.ml.convert_to_pptx import main\nassert main(['C:\\\\vs\\\\ImageToEditablePPT\\\\artifacts\\\\region-native-production\\\\synthetic-v3\\\\chain-1.5.png', '-o', 'C:\\\\vs\\\\ImageToEditablePPT\\\\artifacts\\\\region-native-production\\\\package-v2\\\\smoke.pptx', '--region', '0', '0', '1', '1', '--no-ocr'])==0\nassert 'torch' not in sys.modules\nr=json.loads(Path('C:\\\\vs\\\\ImageToEditablePPT\\\\artifacts\\\\region-native-production\\\\package-v2\\\\smoke.region.json').read_text())\nassert r['counts']['nodes']==3 and r['counts']['connectors']==2\nprint('verified installed wheel without loading torch:',runtime.__file__)"
+      ],
+      "returncode": 0,
+      "stdout": "[OK] C:\\vs\\ImageToEditablePPT\\artifacts\\region-native-production\\synthetic-v3\\chain-1.5.png -> C:\\vs\\ImageToEditablePPT\\artifacts\\region-native-production\\package-v2\\smoke.pptx family=user_scoped_region nodes=3 containers=0 connectors=2 texts=0/3\n[REPORT] C:\\vs\\ImageToEditablePPT\\artifacts\\region-native-production\\package-v2\\smoke.region.json omitted_connectors=0\nverified installed wheel without loading torch: C:\\vs\\ImageToEditablePPT\\artifacts\\region-native-production\\package-v2\\installed\\image_to_editable_ppt\\region\\convert.py\n",
+      "stderr": "region mode: user-selected scope, partial reconstruction; OCR and edit-layout limits remain. Existing outputs are never overwritten.\n"
+    },
+    {
+      "command": [
+        "C:\\vs\\ImageToEditablePPT\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "returncode": 0,
+      "stdout": "........................................................................ [ 26%]\n........................................................................ [ 53%]\n........................................................................ [ 80%]\n....................................................                     [100%]\n============================== warnings summary ===============================\ntests/test_v3_phase7_training.py::test_train_infer_eval_loop_produces_valid_artifacts\ntests/test_v3_phase8_connector_segmenter.py::test_train_and_segment_smoke\ntests/test_v3_phase8_family_classifier.py::test_train_and_classify_smoke\n  C:\\vs\\ImageToEditablePPT\\.venv\\Lib\\site-packages\\lightning\\pytorch\\utilities\\_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.\n\ntests/test_v3_phase7_training.py::test_train_infer_eval_loop_produces_valid_artifacts\ntests/test_v3_phase8_connector_segmenter.py::test_train_and_segment_smoke\ntests/test_v3_phase8_family_classifier.py::test_train_and_classify_smoke\n  C:\\vs\\ImageToEditablePPT\\.venv\\Lib\\site-packages\\lightning\\pytorch\\trainer\\connectors\\data_connector.py:434: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=15` in the `DataLoader` to improve performance.\n\ntests/test_v3_phase7_training.py::test_train_infer_eval_loop_produces_valid_artifacts\ntests/test_v3_phase8_connector_segmenter.py::test_train_and_segment_smoke\ntests/test_v3_phase8_family_classifier.py::test_train_and_classify_smoke\n  C:\\vs\\ImageToEditablePPT\\.venv\\Lib\\site-packages\\lightning\\pytorch\\trainer\\connectors\\data_connector.py:434: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=15` in the `DataLoader` to improve performance.\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n268 passed, 9 warnings in 12.24s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "13aa0c8ff1e17d8c7f11f7d5aa13dc5be4deb433\n",
+      "stderr": ""
+    }
+  ],
+  "verifier_sha256": "b7ffe3a36e48fd736a8a3fa97bba54201ede3fe628062b4d53e187bdad3f4dcf"
+}

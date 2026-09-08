@@ -2,6 +2,44 @@
 
 이 저장소는 현재 **v3 아키텍처 재구성 중**이다. 목표는 논문용 구조적 다이어그램을 generic reconstruction이 아니라 **family-constrained parsing + editable primitive scene**으로 정규화하는 것이다.
 
+## v0.2: 선택 영역을 native PPTX로 변환
+
+실제 사용 진입점에 **명시적 ROI 변환**을 추가했다. 전체 그림에서 구조적 다이어그램
+영역을 지정하면 보수적으로 박스·연결선·확신 가능한 텍스트를 추출한다. 별도 모델이나
+PowerPoint 설치 없이 변환할 수 있고, 결과는 native shape/connector다. PowerPoint 설치는
+실제 렌더 및 편집 검증을 실행할 때만 필요하다. 기존 기본 ML/v3 경로는 변경하지 않았다.
+
+```bash
+python -m pip install -e ".[ocr]"
+image-to-editable-ppt-convert figure.png -o output/figure.pptx --region 0.1 0.2 0.9 0.8
+# 전체 입력이 이미 잘라낸 구조적 다이어그램일 때
+image-to-editable-ppt-convert diagram-crop.png -o output/crop.pptx --region 0 0 1 1
+# OCR 없이 구조만; OCR 패키지가 없어도 이 경로는 동작한다
+image-to-editable-ppt-convert diagram-crop.png -o output/structure.pptx --region 0 0 1 1 --no-ocr
+```
+
+`--region`은 원본 이미지 기준 `x0 y0 x1 y1`이며 각각 0~1이다. 같은 ROI가 배치의 모든
+입력에 적용되므로 서로 다른 레이아웃은 개별 실행한다. 기존 `tools/convert_to_pptx.py`
+래퍼나 `python -m image_to_editable_ppt.ml.convert_to_pptx`에서도 동일하게 사용할 수 있다.
+
+- 결과 옆 `figure.region.json`에 출처 SHA, 선택 영역, 객체/연결선, 생략 사유와 한계를 기록한다.
+  PPTX나 진단 파일이 이미 있으면 덮어쓰지 않는다. 재실행은 새 출력 이름을 사용한다.
+- 입력 파일 최대 64MiB, 원본 최대 16MP, ROI 최대 4MP·최소 16×16px, 객체 후보 최대 300개다. 초과 시 명시적으로
+  거절하며 조용히 입력을 축소하지 않는다. 출력만 긴 변 768 단위로 정규화한다.
+  투명 배경은 흰색 위에 합성한다. 안전한 파일 게시는 같은 파일시스템의 hard-link 지원을 필요로 한다.
+- 비도식/모호한 요소는 생략한다. 지원할 수 없는 연결 경로는 개별 생략하고 보고서에 남긴다.
+- OCR은 같은 줄의 가로 순서를 정렬하고 두 배율 결과가 일치할 때만 내보낸다. 그래도
+  공백/단어 오류가 남을 수 있다. 정확한 라벨이 중요한 경우 원본과 대조하거나 `--no-ocr`를 쓴다.
+- 일반 이동·크기 변경·재열기에서 연결점 유지가 검증됐지만, 겹침을 자동 정리하지 않으며
+  PowerPoint의 명시적 **연결선 다시 연결**은 부착 위치를 바꿀 수 있다.
+- `--region`은 ML bundle/게이트를 자동 우회하는 옵션이 아니라 별도 명시적 영역 모드다.
+  `--bundle`, `--allow-candidate-bundle`, `--no-gate`와 함께 쓸 수 없다. `--width`/모델 학습
+  옵션은 기존 ML/v3 경로용이며 영역 분석 해상도를 바꾸지 않는다.
+
+이는 **프로덕션 코드에 통합된 제한적 기능**이다. 사람의 ROI 지정 조건을 자동 영역 탐지
+성능으로 세지 않는다. 기존 ML 모델의 candidate/NO-GO 판정, 독립 holdout 및 사람 편집시간
+검증 경계는 유지한다. [연구 및 통합 결과](docs/region_native_production_results.md)를 참고한다.
+
 현재 기준 문서는 [plan.md](plan.md)다. 큰 구조 판단, 현재 단계, 다음 단계, legacy 보존 정책은 모두 이 문서를 source of truth로 본다.
 
 ## 현재 상태
