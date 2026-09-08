@@ -3,7 +3,7 @@ import pytest
 import torch
 from pptx import Presentation
 from image_to_editable_ppt.research.ppt_primitive_learning import (
-    PrimitiveUNet,PALETTE,palette_target,components,object_counts,write_shapes)
+    PrimitiveUNet,PALETTE,palette_target,components,object_counts,select_threshold,write_shapes)
 
 
 def test_palette_antialias_and_rgb_boundary():
@@ -34,3 +34,13 @@ def test_object_matching_maximizes_valid_count(monkeypatch):
     monkeypatch.setattr(closed_rect_proposals,'_iou',lambda a,b:scores[a[0]][b[0]])
     a=[dict(kind=1,bbox=[i]) for i in range(2)]
     assert object_counts(a,a)==dict(tp=2,fp=0,fn=0)
+
+
+def test_calibration_abstention_is_not_a_precision_pass():
+    checks={str(t):dict(tp=0,fp=0,recall=0.) for t in (.5,.7,.85,.95)}
+    assert select_threshold(checks)==(.95,False)
+    checks['0.5']=dict(tp=8,fp=0,recall=1/6)
+    checks['0.7']=dict(tp=8,fp=0,recall=1/6)
+    assert select_threshold(checks)==(.7,True)
+    checks['0.7']['fp']=1
+    assert select_threshold(checks)==(.5,True)

@@ -63,6 +63,11 @@ def object_counts(predicted, expected):
     return dict(tp=tp,fp=len(predicted)-tp,fn=len(expected)-tp)
 
 
+def select_threshold(checks):
+    eligible=[float(t) for t,c in checks.items() if c['fp']==0 and c['tp']>0]
+    return (max(eligible,key=lambda t:(checks[str(t)]['recall'],t)),True) if eligible else (.95,False)
+
+
 def write_shapes(predicted, size, output):
     output=Path(output)
     if output.exists():raise FileExistsError(output)

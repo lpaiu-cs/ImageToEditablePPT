@@ -14,7 +14,7 @@ from torch.nn import functional as F
 from run_region_rgb_baseline import ROOT,digest,save
 sys.path.insert(0,str(ROOT/'src'))
 from image_to_editable_ppt.research.ppt_primitive_learning import (
-    PrimitiveUNet,SIZE,PALETTE,KINDS,palette_target,components,object_counts,write_shapes)
+    PrimitiveUNet,SIZE,PALETTE,KINDS,palette_target,components,object_counts,select_threshold,write_shapes)
 
 
 def image_tensor(path):
@@ -137,9 +137,8 @@ def evaluate(manifest,trained,output):
     for arm in ('scratch80','pretrain80_scene80','scene80_scene80'):
         model=load_model(trained/(arm+'.pt'));observed=[(r,*infer_probabilities(model,r['image'])) for r in calibration]
         checks={str(t):summary([object_counts(components(p,size,t),r['objects']) for r,p,size in observed]) for t in (.5,.7,.85,.95)}
-        eligible=[float(t) for t,c in checks.items() if c['fp']==0]
-        threshold=max(eligible,key=lambda t:(checks[str(t)]['recall'],t)) if eligible else .95
-        calibration_results[arm]=dict(threshold=threshold,checks=checks,gate_pass=bool(eligible))
+        threshold,gate_pass=select_threshold(checks)
+        calibration_results[arm]=dict(threshold=threshold,checks=checks,gate_pass=gate_pass)
     save(output/'calibration.json',calibration_results)
     for arm in calibration_results:
         model=load_model(trained/(arm+'.pt'));threshold=calibration_results[arm]['threshold'];rows=[]
