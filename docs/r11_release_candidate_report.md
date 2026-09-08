@@ -37,9 +37,17 @@ blue/original 두 새 비교를 직접 육안으로 확인했다. 나머지5개�
 
 1. source proposal에는 실제 폐윤곽만 사용한다.1픽셀 허용은 원본 좌표 오차이며 bbox를 정답에 맞추는 최적화가 아니다.
 2. parent 내부선을 보존하기 위해 tracing 중에만 경계 마스크 역할을 바꾼다. 최종 shape의 의미 역할·bbox는 바꾸지 않는다.
-3. texture의 공간 변화와 두 주색 집중을 함께 관측한다. 신뢰할 수 있는 실제 후행 OCR word는 texture mask로만 사용하고, 완결된 출력 라벨 prefix에는 임의 추가하지 않는다.
+3. texture의 공간 변화와 두 주색 집중을 함께 관측한다. 고정 confidence/기준-arm 위치 일치 조건을 통과한 후행 OCR 관측창은 texture mask로만 사용하고, 완결된 출력 라벨 prefix에는 임의 추가하지 않는다. 반복 OCR 일치를 실제 문자의 정답 보장으로 부르지 않는다.
 4. 세로 글자는 원본 crop 양방향을 관측해 유일하게 승인된 방향만 쓰고 native text-frame을 회전한다. 도형 자체를 회전하거나 래스터로 대체하지 않는다.
 5. 고립된 무라벨 경계는 남기지 않으며, texture의 no-veto를 일반 semantic 승인이라고 부르지 않는다.
+
+## 아직 필요한 승인 근거
+
+## 최종 고정 CLI 재검증
+
+`cfa3193`의 CLI로 원본·blue-flow·사진 음성대조를 각각 새 디렉터리에서 실행했다. 결과는 각각7/7/2,6/6/4,0/0/0(도형/라벨/연결)이며 native·SHA 감사를 통과했다. 원본과 blue-flow의 실제 COM PNG는 앞선 R11 fresh 결과와 byte-identical이다. 사진 PNG는 palette 모드이므로 RGB로 변환하여 모든 채널255를 확인했다. 자료: `artifacts/region-image-only-r11/closed-native-v3-cli`와 `closed-native-v3-cli-review`.
+
+`closed-native-v3-edit`에서는 blue-flow PPT의 복사본에서 Pruned Space를12pt/8pt 이동하고 텍스트를 변경했다. 실제 PowerPoint의 연결3개가 같은 owner에 붙은 채 위치를 갱신했고 원본 SHA는 불변이다. 이것은 자동 편집 가능성 검사이며 인간 작업시간 측정이 아니다. 최종 회귀는1330 passed/기존2 xfailed다. 역사적으로 별도 동결한 `test_source_centerline.py` 제외 경계는 유지한다. 기록: `artifacts/region-image-only-r11/closed-native-v3-regression.xml`.
 
 ## 아직 필요한 승인 근거
 
