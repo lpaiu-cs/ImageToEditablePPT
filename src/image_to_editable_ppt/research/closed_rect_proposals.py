@@ -27,12 +27,17 @@ def pixel_cell_agreement(a,b):
     return bool(np.max(abs(np.asarray(a,dtype=float)-np.asarray(b,dtype=float)))<=1)
 
 
-def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=False,pixel_agreement=False,compact_boxes=False):
+def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=False,pixel_agreement=False,compact_boxes=False,boundary_gaps=False):
     if rgb.dtype!=np.uint8 or rgb.ndim!=3 or rgb.shape[2]!=3:raise ValueError('uint8 RGB required')
+    if boundary_gaps and dark_boundaries:raise ValueError('gap arm uses Canny observations only')
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);s=rgb.shape[0]/360
     arms=[]
     for index,(low,high) in enumerate([(20,60),(40,100)]):
         raw=(gray<[130,170][index]).astype(np.uint8) if dark_boundaries else cv2.Canny(gray,low,high)
+        edge_distance=None
+        if boundary_gaps:
+            edge_distance=cv2.distanceTransform((raw==0).astype(np.uint8),cv2.DIST_L2,cv2.DIST_MASK_PRECISE)
+            raw=cv2.morphologyEx(raw,cv2.MORPH_CLOSE,cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3)))
         contours,hierarchy=cv2.findContours(raw,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
         candidates=[]
         if hierarchy is not None:
@@ -45,10 +50,12 @@ def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=Fa
                     compact_boxes and min(w,height)>=32*s and 1/1.15<=w/height<=1.15)
                 if not (dimensions and .90*w*height<=area<=.25*gray.size):continue
                 points=contour[:,0,:]
+                if edge_distance is not None and float(edge_distance[points[:,1],points[:,0]].max())>np.sqrt(2)+1e-6:continue
                 distance=np.minimum(np.minimum(points[:,0]-x,x+w-1-points[:,0])/w,
                                     np.minimum(points[:,1]-y,y+height-1-points[:,1])/height)
                 if np.percentile(distance,95)>.12:continue
-                candidates.append(dict(bbox=[x,y,x+w,y+height],contour=contour,area=float(area)))
+                candidates.append(dict(bbox=[x,y,x+w,y+height],contour=contour,area=float(area),
+                    **(dict(raw_support_max_distance=float(edge_distance[points[:,1],points[:,0]].max())) if edge_distance is not None else {})))
         arms.append(candidates)
     selected=[];records=[]
     for candidate in arms[0]:
@@ -73,7 +80,7 @@ def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=Fa
     return selected,dict(thresholds=[130,170] if dark_boundaries else [[20,60],[40,100]],dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,inner_boundaries=inner_boundaries,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes,candidates=records)
 
 
-def propose_union(rgb,*,portrait_boxes=False,pixel_agreement=False,compact_boxes=False):
+def propose_union(rgb,*,portrait_boxes=False,pixel_agreement=False,compact_boxes=False,boundary_gaps=False):
     """Union independently closed boundaries; suppress duplicates, never fit a new box."""
     canny,canny_audit=propose(rgb,inner_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes)
     dark,dark_audit=propose(rgb,dark_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes)
@@ -85,9 +92,15 @@ def propose_union(rgb,*,portrait_boxes=False,pixel_agreement=False,compact_boxes
         if matching:
             duplicates.append(dict(bbox=candidate['bbox'],method=candidate['method'],retained=matching[0]['bbox']))
         else:selected.append(candidate)
+    gap_audit=None
+    if boundary_gaps:
+        gaps,gap_audit=propose(rgb,inner_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes,boundary_gaps=True)
+        for c in gaps:
+            if not any(_iou(c['bbox'],old['bbox'])>=.85 for old in selected):selected.append(dict(c,method='canny_one_pixel_gap'))
     return selected,dict(mode='union_of_individually_verified_closed_boundaries',
         canny=canny_audit,dark=dark_audit,suppressed=duplicates,
-        selected=[dict(bbox=c['bbox'],method=c['method']) for c in selected])
+        selected=[dict(bbox=c['bbox'],method=c['method'],**({k:c[k] for k in ('raw_support_max_distance',) if k in c})) for c in selected],
+        **(dict(boundary_gap_audit=gap_audit) if boundary_gaps else {}))
 
 
 def observe_text(rgb,box,engine,*,excluded=None,whole_lines=False):

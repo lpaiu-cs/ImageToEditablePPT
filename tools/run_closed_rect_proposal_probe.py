@@ -24,7 +24,7 @@ from image_to_editable_ppt.v3.emit.style import ShapeVisualStyle
 from dataclasses import replace
 
 
-def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole_lines=False,source_rows=False,dark_boundaries=False,portrait_boxes=False,boundary_union=False,texture_guard=False,owned_text=False,nested_owners=False,pixel_agreement=False,portrait_text=False,spatial_texture=False,raw_branches=False,compact_boxes=False,flow_frames=False):
+def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole_lines=False,source_rows=False,dark_boundaries=False,portrait_boxes=False,boundary_union=False,texture_guard=False,owned_text=False,nested_owners=False,pixel_agreement=False,portrait_text=False,spatial_texture=False,raw_branches=False,compact_boxes=False,flow_frames=False,boundary_gaps=False):
     if source_rows and whole_lines:raise ValueError('source-rows and whole-lines are separate experiment arms')
     if boundary_union and (inner_boundaries or dark_boundaries):raise ValueError('boundary-union fixes both component proposal contracts')
     if texture_guard and content_gate:raise ValueError('texture and flat-content gates are separate experiments')
@@ -32,6 +32,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     if portrait_text and not owned_text:raise ValueError('portrait-text requires owned-text')
     if spatial_texture and not texture_guard:raise ValueError('spatial-texture requires texture-guard')
     if raw_branches and not (trace and nested_owners):raise ValueError('raw-branches requires trace and nested-owners')
+    if boundary_gaps and not boundary_union:raise ValueError('boundary-gaps requires boundary-union')
     if flow_frames and (not (trace and nested_owners and compact_boxes and spatial_texture) or raw_branches):raise ValueError('flow-frames requires nested compact spatial configuration without raw-branches')
     image=image.resolve();output=output.resolve();output.mkdir(parents=True,exist_ok=False)
     with Image.open(image) as im:
@@ -49,12 +50,14 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
         spec=ROOT/'docs/r13_compact_rectangle_spec.md';code[str(spec)]=digest(spec)
     if flow_frames:
         spec=ROOT/'docs/r14_flow_frame_spec.md';code[str(spec)]=digest(spec)
+    if boundary_gaps:
+        spec=ROOT/'docs/r15_boundary_gap_spec.md';code[str(spec)]=digest(spec)
     import rapidocr_onnxruntime
     models={str(f):digest(f) for f in (Path(rapidocr_onnxruntime.__file__).parent/'models').glob('*.onnx')}
     font=Path('C:/Windows/Fonts/arial.ttf');code[str(font)]=digest(font)
     save(output/'lock.json',dict(source_path=str(image),source_sha256=source,code_sha256=code,ocr_models_sha256=models,
-        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,pixel_agreement=pixel_agreement,portrait_text=portrait_text,spatial_texture=spatial_texture,raw_branches=raw_branches,compact_boxes=compact_boxes,flow_frames=flow_frames,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
-    candidates,proposal_audit=propose_union(rgb,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes) if boundary_union else propose(rgb,inner_boundaries=inner_boundaries,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes)
+        trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,pixel_agreement=pixel_agreement,portrait_text=portrait_text,spatial_texture=spatial_texture,raw_branches=raw_branches,compact_boxes=compact_boxes,flow_frames=flow_frames,boundary_gaps=boundary_gaps,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
+    candidates,proposal_audit=propose_union(rgb,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes,boundary_gaps=boundary_gaps) if boundary_union else propose(rgb,inner_boundaries=inner_boundaries,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes)
     engine=_load_engine();objects=[];styles={};text_audit={};region_audit={};content_audit={};frame_content={}
     regions=closed_regions(rgb)
     if nested_owners:
@@ -143,4 +146,5 @@ if __name__=='__main__':
     p.add_argument('--raw-branches',action='store_true')
     p.add_argument('--compact-boxes',action='store_true')
     p.add_argument('--flow-frames',action='store_true')
-    a=p.parse_args();run(a.image,a.output,a.trace,a.inner_boundaries,a.content_gate,a.whole_lines,a.source_rows,a.dark_boundaries,a.portrait_boxes,a.boundary_union,a.texture_guard,a.owned_text,a.nested_owners,a.pixel_agreement,a.portrait_text,a.spatial_texture,a.raw_branches,a.compact_boxes,a.flow_frames)
+    p.add_argument('--boundary-gaps',action='store_true')
+    a=p.parse_args();run(a.image,a.output,a.trace,a.inner_boundaries,a.content_gate,a.whole_lines,a.source_rows,a.dark_boundaries,a.portrait_boxes,a.boundary_union,a.texture_guard,a.owned_text,a.nested_owners,a.pixel_agreement,a.portrait_text,a.spatial_texture,a.raw_branches,a.compact_boxes,a.flow_frames,a.boundary_gaps)
