@@ -27,3 +27,7 @@ src/image_to_editable_ppt/research/text_only_ocr.py -text
 tools/run_text_only_ocr_probe.py -text
 docs/text_only_ocr_r8t_spec.md -text
 benchmarks/region_r8t_*.json -text
+src/image_to_editable_ppt/research/label_anchor_native.py -text
+tools/run_anchor_attachment_probe.py -text
+docs/label_anchor_attachment_r8a_spec.md -text
+benchmarks/region_r8a_*.json -text

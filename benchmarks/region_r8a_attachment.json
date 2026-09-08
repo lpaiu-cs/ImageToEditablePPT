@@ -1,0 +1,43 @@
+{
+  "phase": "R8-A",
+  "verdict": "native_attachment_supported_reconstruction_not_adopted",
+  "adapter_commit": "6a9d974e4539facc8fef668628fd68561f14352b",
+  "integration_commit": "fe1930c",
+  "population": "15 cached shared validation scenes in two native-only arms; not unseen acceptance",
+  "arms": {
+    "p": {
+      "artifact_root": "artifacts/region-image-only-r8/attachment-p-v1",
+      "files": {
+        "lock.json": "bbda6bbd34764ce13e2c2406fc0786edc8bcdac445e919960f471eb2fcc4276d",
+        "results.json": "3811078a7c55fa3f2a9a3621761e1f884a423d24496ab484169fb725f067b09c",
+        "evaluation.json": "833cd323a6bbf5dd3c02f67d7e851440188493d4400410591a5d2de33d2ebe28",
+        "renders/powerpoint_render_manifest.json": "1951a9d03825f9d0b6503ad25d15c1196256d9cd035118dfaf6730ac3b8d743c",
+        "review/contact-2.png": "5539750c311a76d655270ce2f4eacb78837e9558adb67187d29a98e920274569"
+      },
+      "matched_labels_correct_wrong_blank": [62, 0, 29],
+      "native_relation_tp_fp_fn": [26, 5, 41]
+    },
+    "t": {
+      "artifact_root": "artifacts/region-image-only-r8/attachment-t-v1",
+      "files": {
+        "lock.json": "13eda6a6e7c33af373b2009d6be976939f489be2f3b370a01128e12557eb8660",
+        "results.json": "2709b03a5b55579e89cce6ca6f8c4fc511f7ea79874c2b8001ad69c3c6d6a409",
+        "evaluation.json": "ab452df205d19ead63c56aa807f35fc60d1b704807f628151dec1de3360b050b",
+        "renders/powerpoint_render_manifest.json": "86f6007989d97c954536da40bf260f12b26c2a2fffbc032e6b29a538383310dc",
+        "review/contact-2.png": "bb29cf88f751bd375efd19bf25f55910b1abf51eb7d5b07dd480ad0a200fc3a1"
+      },
+      "matched_labels_correct_wrong_blank": [82, 1, 8],
+      "native_relation_tp_fp_fn": [26, 5, 41]
+    }
+  },
+  "new_native_connections_per_arm": {"total": 7, "tp": 4, "fp": 3},
+  "new_fp_boundary": "At least one unmatched duplicate detected owner ID in every new FP; not newly reversed arrows",
+  "remaining_fit_rejections_per_arm": 20,
+  "native_renders_and_direct_visual_reviews": 30,
+  "unchanged_non_tree_render_hashes": 24,
+  "python_open_denials": 0,
+  "tests_passed": 458,
+  "known_failures_xfailed": 2,
+  "warnings": 9,
+  "human_edit_cost_measured": false
+}
