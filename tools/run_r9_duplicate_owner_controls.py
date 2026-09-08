@@ -9,6 +9,7 @@ import sys
 
 import cv2
 import numpy as np
+import numpy.ma  # Preload NumPy's lazy percentile dependency before the no-file-IO boundary.
 from PIL import Image
 
 from image_to_editable_ppt.research.duplicate_owner_observations import observe_owners, digest
@@ -87,7 +88,7 @@ def main(args):
         fixture_lock_sha256=sha(root/'lock.json'),execution_lock_sha256=sha(out/'execution-lock.json'),
         actual_15_image_arm_executed=False,results=results)
     save(out/'results.json',summary)
-    print(json.dumps({k:v for k,v in summary.items() if k!='results'},ensure_ascii=False))
+    print(json.dumps({k:v for k,v in summary.items() if k not in ('results','denied_file_opens')},ensure_ascii=False))
     return 0 if summary['status']=='PASS' else 1
 
 
