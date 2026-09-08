@@ -72,3 +72,14 @@ def test_overlapping_vertical_ocr_windows_do_not_expand_paragraph_height(tmp_pat
     frame=Presentation(path).slides[0].shapes[0].text_frame
     assert [round(p.line_spacing.pt/(scale*.75)) for p in frame.paragraphs]==[40,37,44]
     assert all(r.font.name=='Arial' for p in frame.paragraphs for r in p.runs)
+
+
+@pytest.mark.parametrize('color,expected',[((210,50,50),True),((240,240,240),False)])
+def test_small_colored_badge_is_excluded_but_gray_counter_is_not(color,expected):
+    rgb=np.full((720,1280,3),255,np.uint8)
+    cv2.rectangle(rgb,(100,80),(600,440),(0,0,0),2)
+    cv2.rectangle(rgb,(160,160),(210,175),color,-1)
+    regions=closed_regions(rgb)
+    parent=max(regions,key=lambda r:cv2.contourArea(r['contour']))
+    own,excluded,fill,audit=owner_region(rgb,parent,regions)
+    assert bool(excluded[168,180])==expected

@@ -22,19 +22,22 @@ def _same_ink_band(rgb,inner,outer,scale):
     return bool(np.mean(contrast>=24)>=.90)
 
 
-def propose(rgb,*,inner_boundaries=False):
+def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=False):
     if rgb.dtype!=np.uint8 or rgb.ndim!=3 or rgb.shape[2]!=3:raise ValueError('uint8 RGB required')
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);s=rgb.shape[0]/360
     arms=[]
-    for low,high in [(20,60),(40,100)]:
-        contours,hierarchy=cv2.findContours(cv2.Canny(gray,low,high),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
+    for index,(low,high) in enumerate([(20,60),(40,100)]):
+        raw=(gray<[130,170][index]).astype(np.uint8) if dark_boundaries else cv2.Canny(gray,low,high)
+        contours,hierarchy=cv2.findContours(raw,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
         candidates=[]
         if hierarchy is not None:
             for contour,h in zip(contours,hierarchy[0]):
                 if h[3]<0:continue
                 x,y,w,height=cv2.boundingRect(contour)
                 area=cv2.contourArea(contour)
-                if not (w>=32*s and height>=16*s and 1.15<=w/height<=15 and .90*w*height<=area<=.25*gray.size):continue
+                dimensions=(w>=32*s and height>=16*s and 1.15<=w/height<=15) or (
+                    portrait_boxes and height>=32*s and w>=16*s and 1.15<=height/w<=15)
+                if not (dimensions and .90*w*height<=area<=.25*gray.size):continue
                 points=contour[:,0,:]
                 distance=np.minimum(np.minimum(points[:,0]-x,x+w-1-points[:,0])/w,
                                     np.minimum(points[:,1]-y,y+height-1-points[:,1])/height)
@@ -60,7 +63,24 @@ def propose(rgb,*,inner_boundaries=False):
         reason='closed_rectangle_agreement' if stable and unambiguous else 'ambiguous_or_threshold_unstable_boundary'
         records.append(dict(bbox=box,reason=reason))
         if reason=='closed_rectangle_agreement':selected.append(candidate)
-    return selected,dict(thresholds=[[20,60],[40,100]],inner_boundaries=inner_boundaries,candidates=records)
+    return selected,dict(thresholds=[130,170] if dark_boundaries else [[20,60],[40,100]],dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,inner_boundaries=inner_boundaries,candidates=records)
+
+
+def propose_union(rgb,*,portrait_boxes=False):
+    """Union independently closed boundaries; suppress duplicates, never fit a new box."""
+    canny,canny_audit=propose(rgb,inner_boundaries=True,portrait_boxes=portrait_boxes)
+    dark,dark_audit=propose(rgb,dark_boundaries=True,portrait_boxes=portrait_boxes)
+    ordered=sorted([dict(c,method=method) for method,items in [('canny',canny),('dark',dark)] for c in items],
+                   key=lambda c:((c['bbox'][2]-c['bbox'][0])*(c['bbox'][3]-c['bbox'][1]),c['method']))
+    selected=[];duplicates=[]
+    for candidate in ordered:
+        matching=[c for c in selected if _iou(c['bbox'],candidate['bbox'])>=.85]
+        if matching:
+            duplicates.append(dict(bbox=candidate['bbox'],method=candidate['method'],retained=matching[0]['bbox']))
+        else:selected.append(candidate)
+    return selected,dict(mode='union_of_individually_verified_closed_boundaries',
+        canny=canny_audit,dark=dark_audit,suppressed=duplicates,
+        selected=[dict(bbox=c['bbox'],method=c['method']) for c in selected])
 
 
 def observe_text(rgb,box,engine,*,excluded=None,whole_lines=False):

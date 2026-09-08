@@ -20,11 +20,11 @@ def observe_rows(rgb,candidate,owned,engine):
     for band in bands:
         top,bottom=band[0],band[-1]+1
         xs=np.flatnonzero(crop_ink[top:bottom].any(axis=0))
-        if bottom-top<max(5,3*scale) or not len(xs):continue
+        if not len(xs):continue
         left,right=int(xs.min()),int(xs.max()+1)
         box=[left,top,right,bottom]
         reason='candidate_source_row'
-        if bottom-top>.5*(y1-y0) or right-left<max(8,6*scale):reason='non_text_row_geometry'
+        if bottom-top<max(5,3*scale) or bottom-top>.5*(y1-y0) or right-left<max(8,6*scale):reason='non_text_row_geometry'
         observations=[]
         if reason=='candidate_source_row':
             # Padding is source pixels, clipped to the actual owner bbox.

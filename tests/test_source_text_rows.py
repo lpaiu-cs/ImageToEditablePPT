@@ -39,3 +39,12 @@ def test_excluded_child_text_does_not_become_parent_row():
     label,audit=observe_rows(rgb,c,owned,engine)
     assert label=='First'
     assert len(audit['bands'])==1
+
+
+def test_small_leading_accent_is_not_silently_dropped_to_approve_plain_letter():
+    rgb,owned,c=fixture()
+    rgb[45:48,80:100]=0
+    def engine(image,**kwargs):return [['First',.999]],None
+    label,audit=observe_rows(rgb,c,owned,engine)
+    assert label is None
+    assert audit['bands'][0]['reason']=='non_text_row_geometry'

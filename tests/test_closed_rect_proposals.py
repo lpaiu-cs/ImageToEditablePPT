@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import pytest
 
-from image_to_editable_ppt.research.closed_rect_proposals import propose,observe_text
+from image_to_editable_ppt.research.closed_rect_proposals import propose,propose_union,observe_text
 
 
 @pytest.mark.parametrize('scale',[1,2,3])
@@ -104,3 +104,38 @@ def test_inner_boundary_policy_does_not_merge_overlapping_distinct_boxes():
     selected,_=propose(rgb,inner_boundaries=True)
     # No selected boundary may pretend to encompass both original boxes.
     assert all(c['bbox'] != [49,39,279,147] for c in selected)
+
+
+@pytest.mark.parametrize('scale',[1,2,3])
+def test_dark_closed_boundary_alternative_preserves_observed_hole(scale):
+    rgb=np.full((360*scale,640*scale,3),255,np.uint8)
+    cv2.rectangle(rgb,(50*scale,40*scale),(270*scale,140*scale),(195,220,180),-1)
+    cv2.rectangle(rgb,(50*scale,40*scale),(270*scale,140*scale),(0,0,0),scale)
+    selected,audit=propose(rgb,dark_boundaries=True)
+    assert len(selected)==1
+    assert audit['thresholds']==[130,170]
+    rgb[35*scale:45*scale,130*scale:150*scale]=255
+    assert not propose(rgb,dark_boundaries=True)[0]
+
+
+@pytest.mark.parametrize('scale',[1,2,3])
+def test_portrait_closed_box_uses_same_rotated_size_contract(scale):
+    rgb=np.full((360*scale,640*scale,3),255,np.uint8)
+    cv2.rectangle(rgb,(50*scale,40*scale),(90*scale,300*scale),(0,0,0),scale)
+    assert not propose(rgb,dark_boundaries=True)[0]
+    selected,audit=propose(rgb,dark_boundaries=True,portrait_boxes=True)
+    assert len(selected)==1
+    assert audit['portrait_boxes']
+    rgb[150*scale:160*scale,45*scale:55*scale]=255
+    assert not propose(rgb,dark_boundaries=True,portrait_boxes=True)[0]
+
+
+def test_union_returns_observed_boxes_and_not_a_new_average_geometry():
+    rgb=np.full((360,640,3),255,np.uint8)
+    cv2.rectangle(rgb,(50,40),(270,140),(0,0,0),2)
+    cv2.rectangle(rgb,(350,40),(550,140),(190,190,190),1)
+    selected,audit=propose_union(rgb)
+    observed=propose(rgb,inner_boundaries=True)[0]+propose(rgb,dark_boundaries=True)[0]
+    assert len(selected)==2
+    assert all(any(c['bbox']==o['bbox'] and np.array_equal(c['contour'],o['contour']) for o in observed) for c in selected)
+    assert len({tuple(c['bbox']) for c in selected})==len(selected)

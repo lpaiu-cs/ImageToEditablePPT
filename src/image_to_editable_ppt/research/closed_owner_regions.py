@@ -16,6 +16,15 @@ def closed_regions(rgb):
         # This is an exclusion, not a new node proposal or semantic approval.
         size_ok = (min(w, h) >= 12 * scale and max(w, h) >= 20 * scale) or (
             min(w, h) >= 6 * scale and max(w, h) >= 40 * scale)
+        if not size_ok and min(w,h)>=4*scale and max(w,h)>=12*scale and cv2.contourArea(contour)>=.85*w*h:
+            local=np.zeros((h,w),np.uint8)
+            cv2.drawContours(local,[contour-np.array([[[x,y]]])],-1,1,cv2.FILLED)
+            local=cv2.erode(local,np.ones((3,3),np.uint8))
+            if local.any():
+                fill=np.median(rgb[y:y+h,x:x+w][local!=0],axis=0)
+                # Small chromatic badges have their own text. Do not confuse
+                # white/gray character counters with this exclusion exception.
+                size_ok=bool(fill.max()-fill.min()>=40)
         if size_ok and cv2.contourArea(contour) >= .85 * w * h:
             regions.append(dict(bbox=[x, y, x+w, y+h], contour=contour))
     return regions
