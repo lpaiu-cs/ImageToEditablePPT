@@ -21,7 +21,7 @@ def build(out):
     rows=[]
     modes=['clean','tip_outside','double_source_hidden','contact_unmasked',
            'contact_other_masked','head_other_masked','glyph_owner_contact']
-    for mode,s,aa,offset in itertools.product(modes,[.75,1,1.5],[1,4],[.1,.5,.9,1.1]):
+    for mode,s,aa,offset in itertools.product(modes,[.75,1,1.5],[1,4],[.1,.5,.9,1.1,2,3,4,6]):
         r=s*aa
         im=Image.new('RGB',(round(360*r),)*2,'white');d=ImageDraw.Draw(im)
         def line(points): d.line([(x*r,y*r) for x,y in points],fill='black',width=max(1,round(2*r)))
