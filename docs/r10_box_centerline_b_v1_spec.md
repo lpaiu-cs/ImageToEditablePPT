@@ -20,3 +20,5 @@ Pillow 독립 RGB 양성은 box/rounded_box 두 개와 직선,방향 flag 양쪽
 원본에서 서로 구분할 수 없는 윤곽-connector 접촉과3s띠 내부 구조는 초기 범위 한계다. 방향은 기존 flags를 보존하므로 잘못된 방향을 수정하지 않으며,기존 무방향선을 화살표로 바꾸지 않는다. 실제15는 root의 별도 승인된 실행으로 검증한다. 이 module은 GT/annotation/OCR/PPT 파일을 읽지 않는다.
 
 개발 기록: 최초115대조 통과 후 terminal/extension/nearby 추가7대조 중 visible tip의4개 flag조합이 기권했다(118pass/4fail, commit96649bb). 길이8pixel 촉의 base 셀을 중앙과terminal 양쪽으로 분류한 경계 문제였다. 물리셀 전체 포함 규칙으로 중간 구간을 정합화했고 기존 폭/갭/연장/native 문턱은 유지한다. 이전 결과는 소급 PASS로 변경하지 않는다.
+
+최종 검증(구현2ade9ed): B-v1 122개와 D3 공유41개, 총163개 통과. module SHA `d61c075b7f8b97823027938d3fd69ad4bd0148fe928d5f0e06a50ae3a756b5d9`, test SHA `eb48582957662faa7a5fd2bc393becfd82a347622d446b5339021e54d7c35df9`. 실제15/PPT 실행은 worker가 하지 않았다. `artifacts/r10-box-centerline-b-v1/validation.json`에 실행 요약을 보존한다.
