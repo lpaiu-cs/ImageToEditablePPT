@@ -133,7 +133,7 @@ def main(args):
                    matching='IoU >= 0.5; emitted objects without an additional detector NMS; kind-specific and role-only separated',
                    totals=totals, labels=dict(matched_nodes=len(labels), correct=sum(l['correct'] for l in labels),
                    wrong=sum(bool(l['actual']) and not l['correct'] for l in labels), blank=sum(not l['actual'] for l in labels)), records=reports)
-    save(args.run / 'evaluation.json', summary)
+    save(args.run / getattr(args,'evaluation_name','evaluation.json'), summary)
     print(json.dumps(dict(totals=totals, labels=summary['labels']), ensure_ascii=False))
 
 
@@ -145,4 +145,5 @@ if __name__ == '__main__':
     parser.add_argument('--render-label', default='R6 이미지 단독 → 실제 PPT 렌더')
     parser.add_argument('--allow-unmonitored-replay',action='store_true')
     parser.add_argument('--review-name',default='review')
+    parser.add_argument('--evaluation-name',default='evaluation.json')
     main(parser.parse_args())
