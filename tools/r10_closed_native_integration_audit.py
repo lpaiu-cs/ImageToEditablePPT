@@ -39,11 +39,12 @@ def prepare(root,pilot,out):
     (out/'lock.json').write_text(json.dumps(result,indent=2));print(len(records),sha(out/'lock.json'))
 
 
-def run(out,nested=False,pixel=False,spatial=False,raw=False,flow=False,gaps=False):
+def run(out,nested=False,pixel=False,spatial=False,raw=False,flow=False,gaps=False,directed=False):
     if spatial and not (nested and pixel):raise ValueError('spatial audit requires nested owners and pixel agreement')
     if raw and not spatial:raise ValueError('raw branch audit requires the fixed spatial arm')
     if flow and (not spatial or raw):raise ValueError('flow audit requires spatial arm without raw branches')
     if gaps and not flow:raise ValueError('boundary gaps audit requires the fixed flow arm')
+    if directed and (not flow or gaps):raise ValueError('directed fanout audit requires fixed flow without gaps')
     lock=json.loads((out/'lock.json').read_text());root=Path(lock['root']);results=[]
     def verify():
         assert all(sha(Path(p))==v for p,v in lock['code_sha256'].items())
@@ -58,6 +59,7 @@ def run(out,nested=False,pixel=False,spatial=False,raw=False,flow=False,gaps=Fal
         if raw:cmd.append('--raw-branches')
         if flow:cmd.extend(['--compact-boxes','--flow-frames'])
         if gaps:cmd.append('--boundary-gaps')
+        if directed:cmd.append('--directed-fanout')
         process=subprocess.run(cmd,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120)
         target.mkdir(parents=True,exist_ok=True);(target/'stdout.txt').write_text(process.stdout);(target/'stderr.txt').write_text(process.stderr)
         result=dict(**r,exit=process.returncode,command=cmd)
@@ -77,6 +79,6 @@ def run(out,nested=False,pixel=False,spatial=False,raw=False,flow=False,gaps=Fal
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('mode',choices=['prepare','run']);p.add_argument('--out',type=Path,required=True);p.add_argument('--root',type=Path);p.add_argument('--pilot',type=Path);p.add_argument('--nested-owners',action='store_true');p.add_argument('--pixel-agreement',action='store_true');p.add_argument('--spatial-texture',action='store_true');p.add_argument('--raw-branches',action='store_true');p.add_argument('--flow-frames',action='store_true');p.add_argument('--boundary-gaps',action='store_true');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('mode',choices=['prepare','run']);p.add_argument('--out',type=Path,required=True);p.add_argument('--root',type=Path);p.add_argument('--pilot',type=Path);p.add_argument('--nested-owners',action='store_true');p.add_argument('--pixel-agreement',action='store_true');p.add_argument('--spatial-texture',action='store_true');p.add_argument('--raw-branches',action='store_true');p.add_argument('--flow-frames',action='store_true');p.add_argument('--boundary-gaps',action='store_true');p.add_argument('--directed-fanout',action='store_true');a=p.parse_args()
     if a.mode=='prepare':prepare(a.root,a.pilot,a.out)
-    else:run(a.out,a.nested_owners,a.pixel_agreement,a.spatial_texture,a.raw_branches,a.flow_frames,a.boundary_gaps)
+    else:run(a.out,a.nested_owners,a.pixel_agreement,a.spatial_texture,a.raw_branches,a.flow_frames,a.boundary_gaps,a.directed_fanout)
