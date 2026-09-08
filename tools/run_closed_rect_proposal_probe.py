@@ -55,7 +55,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     save(output/'lock.json',dict(source_path=str(image),source_sha256=source,code_sha256=code,ocr_models_sha256=models,
         trace=trace,inner_boundaries=inner_boundaries,content_gate=content_gate,whole_lines=whole_lines,source_rows=source_rows,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,boundary_union=boundary_union,texture_guard=texture_guard,owned_text=owned_text,nested_owners=nested_owners,pixel_agreement=pixel_agreement,portrait_text=portrait_text,spatial_texture=spatial_texture,raw_branches=raw_branches,compact_boxes=compact_boxes,flow_frames=flow_frames,population='research RGB input; exposure status is recorded separately by the caller, not inferred by runtime',mode='RGB-only closed rectangle proposal, no detector or GT'))
     candidates,proposal_audit=propose_union(rgb,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes) if boundary_union else propose(rgb,inner_boundaries=inner_boundaries,dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes)
-    engine=_load_engine();objects=[];styles={};text_audit={};region_audit={};content_audit={}
+    engine=_load_engine();objects=[];styles={};text_audit={};region_audit={};content_audit={};frame_content={}
     regions=closed_regions(rgb)
     if nested_owners:
         from image_to_editable_ppt.research.nested_owner_evidence import exclusion_regions
@@ -68,6 +68,10 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
         elif source_rows:label,audit=observe_rows(rgb,c,own,engine)
         else:label,audit=observe_text(rgb,box,engine,excluded=excluded,whole_lines=whole_lines)
         text_audit[identity]=dict(label=label,**audit)
+        if flow_frames:
+            whole=np.zeros(rgb.shape[:2],np.uint8)
+            cv2.drawContours(whole,[c['contour']],-1,1,cv2.FILLED)
+            frame_content[identity]=inspect_content(rgb,c,whole,text_audit[identity])
         if spatial_texture:
             from image_to_editable_ppt.research.spatial_texture_guard import inspect_spatial_texture
             content_audit[identity]=inspect_spatial_texture(rgb,c,text_audit[identity],palette_guard=True,all_text_regions=True)
@@ -93,7 +97,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     frames={}
     if flow_frames:
         from image_to_editable_ppt.research.flow_frames import frame_witnesses,surviving_frames
-        frames=frame_witnesses(scene,content_audit)
+        frames=frame_witnesses(scene,content_audit,frame_content)
         scene=replace(scene,shapes=tuple(replace(s,label=None) if s.id in frames else s for s in scene.shapes))
         styles.update({key:replace(styles[key],fill=None) for key in frames})
     if content_gate or texture_guard:
@@ -113,7 +117,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     if flow_frames and set(frames)&{s.id for s in emitted.shapes}!=surviving_frames(frames,emitted):raise ValueError('frame lost its source attachment witnesses')
     save(output/'result.json',dict(source_sha256=source,source_scene=asdict(scene),emitted_scene=asdict(emitted),styles={k:asdict(v) for k,v in styles.items()},
         proposal_audit=proposal_audit,text_audit=text_audit,region_audit=region_audit,content_audit=content_audit,proposed_scene=asdict(proposed_scene),text_placement=placement,tracing_audit=trace_audit,box_audit=box_audit,terminal_audit=terminal_audit,nested_audit=nested_audit,
-        flow_frame_audit=dict(witnesses=frames,retained=sorted(set(frames)&{s.id for s in emitted.shapes}),policy='user-approved blank frame; texture verdict unchanged; no content or label endorsement'),
+        flow_frame_audit=dict(witnesses=frames,retained=sorted(set(frames)&{s.id for s in emitted.shapes}),nontext_content=frame_content,policy='user-approved blank frame; texture verdict unchanged; no content or label endorsement'),
         emission=emission,pptx_sha256=digest(pptx),nodes=len(scene.shapes),labels=sum(bool(s.label) for s in scene.shapes),
         provenance='direct RGB-only research execution; no cached detector/scene/GT inputs; Python IO not sandboxed'))
     if digest(image)!=source or any(digest(p)!=sha for p,sha in code.items()):raise ValueError('source/runtime changed during execution')

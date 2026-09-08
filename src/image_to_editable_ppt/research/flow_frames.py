@@ -6,7 +6,7 @@ from image_to_editable_ppt.research.source_centerline_v2 import segment_hits_box
 from image_to_editable_ppt.v3.core.enums import NodeKind,PortOwnerKind
 
 
-def frame_witnesses(scene,content):
+def frame_witnesses(scene,content,nontext=None):
     owners={s.id:s for s in scene.shapes}
     seeds={s.id for s in scene.shapes if content[s.id]['eligible'] and s.label}
     native,_,_=supported_scene(normalize_scene(scene)[0])
@@ -22,15 +22,18 @@ def frame_witnesses(scene,content):
         for identity,other,point,direction in ((edge.source_owner_id,edge.target_owner_id,a,'out'),
                 (edge.target_owner_id,edge.source_owner_id,b,'in')):
             s=owners[identity];o=owners[other];p=s.bbox;q=o.bbox
-            if content[identity]['eligible'] or other not in seeds:continue
+            target=(not content[identity]['eligible'] if nontext is None else
+                nontext[identity]['reason']=='unexplained_interior_content')
+            if not target or other not in seeds:continue
             if s.source!='raw_closed_rectangle_proposal':continue
             if any(v.owner_kind is not PortOwnerKind.NODE or v.shape_kind not in (NodeKind.BOX,NodeKind.ROUNDED_BOX) for v in (s,o)):continue
             if max(p.x0,q.x0)<=min(p.x1,q.x1) and max(p.y0,q.y0)<=min(p.y1,q.y1):continue
             if any(p.x0<=v.bbox.x0 and p.y0<=v.bbox.y0 and v.bbox.x1<=p.x1 and v.bbox.y1<=p.y1 for v in scene.shapes if v.id!=identity):continue
             witnesses.setdefault(identity,[]).append(dict(edge=edge.id,seed=other,direction=direction,port=[point.x,point.y]))
-    return {identity:rows for identity,rows in witnesses.items() if any(
+    accepted={identity:rows for identity,rows in witnesses.items() if any(
         a['direction']!=b['direction'] and math.dist(a['port'],b['port'])>=8*scene.image_size.height/360
         for i,a in enumerate(rows) for b in rows[i+1:])}
+    return {identity:rows for identity,rows in accepted.items() if all(r['seed'] not in accepted for r in rows)}
 
 
 def surviving_frames(witnesses,emitted):

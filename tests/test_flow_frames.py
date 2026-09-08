@@ -36,3 +36,15 @@ def test_only_fixed_external_independent_flow_admits_frame(case):
         assert surviving_frames(witnesses,scene)=={'frame'}
         assert not surviving_frames(witnesses,replace(scene,connectors=(a,)))
         assert not surviving_frames(witnesses,replace(scene,connectors=(a,replace(b,arrowhead_end=False))))
+
+
+def test_nontext_policy_covers_texture_pass_without_mutual_endorsement():
+    scene,content=scene_pair();content['frame']['eligible']=True
+    nontext={'frame':{'reason':'unexplained_interior_content'},'seed':{'reason':'flat_owned_interior'}}
+    assert not frame_witnesses(scene,content)
+    assert set(frame_witnesses(scene,content,nontext))=={'frame'}
+    nontext['seed']['reason']='unexplained_interior_content'
+    assert not frame_witnesses(scene,content,nontext)
+    nontext['frame']['reason']='insufficient_unexplained_interior'
+    nontext['seed']['reason']='flat_owned_interior'
+    assert not frame_witnesses(scene,content,nontext)
