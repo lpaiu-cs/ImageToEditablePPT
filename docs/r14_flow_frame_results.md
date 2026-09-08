@@ -37,3 +37,9 @@ nested의 추가4개 중 Tokenizer, Whisper + Tokenizer, CFLLM-ins-7B는 육안�
 v2 선행 결과에서 gray 생략은 개선됐으나 icon의 Input은 남았다. 사람 아이콘 몸통이 무라벨 raw 폐박스 후보로 잡혀 parent 전체 제외 조건에 걸렸다. 또한 상호 후보를 frame-only에서 제외해도 기존 ordinary admission에 양쪽 caption이 남을 수 있다는 정책 단위 반례를 독립 검토가 제시했다. RGB 실험에서 입증한 결과와 이 코드 경계 반례를 혼동하지 않는다.
 
 회귀1358 passed / 기존2 xfailed /9 warnings (`regression-v2.xml`). 테스트 통과는 위 육안 회귀를 상쇄하지 않는다. 기본 CLI는 아직 closed-native-v3이며 production 승인하지 않는다.
+
+## v3: 경계 성분 전체 제외의 실패
+
+코드 `cd036c3`, root fresh7개 및 실제 COM7개 `flow-v3`. blue-flow 라벨은 복구되고 root 결과는 v1과 같지만 독립 gray-flow의 Photo 캡션이 다시 남았다. 내부 사진의 편차 성분이 경계에 연결되어 통째로 제외됐기 때문이다(0.5183821→0.0036176). icon은 내부 단독 무라벨·무연결 조각을 생략하면서 빈 frame으로 개선됐다. 독립43개는 모두 fresh 완료했고 source hash guard를 통과했다. v3 또한 채택하지 않는다.
+
+1360 passed / 기존2 xfailed /9 warnings. 내부 linked child와 상호 ordinary 기권은 추가 정책 단위 검토에서 확인했으며 이것을 새로운 RGB 독립 사례의 성공으로 세지 않는다.

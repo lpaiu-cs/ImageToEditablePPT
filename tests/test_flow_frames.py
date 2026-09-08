@@ -66,9 +66,11 @@ def test_internal_graphic_evidence_excludes_border_ink():
     import numpy as np
     from image_to_editable_ppt.research.closed_content_gate import inspect_content
     rgb=np.full((360,600,3),255,np.uint8);own=np.zeros((360,600),np.uint8)
-    own[100:200,100:300]=1;cv2.rectangle(rgb,(100,100),(299,199),(0,0,0),12)
+    own[100:200,100:300]=1;cv2.rectangle(rgb,(100,100),(299,199),(0,0,0),6)
     candidate={'bbox':[100,100,300,200]};audit={'accepted':[]}
     assert not inspect_content(rgb,candidate,own,audit)['eligible']
     assert inspect_content(rgb,candidate,own,audit,interior_components=True)['eligible']
     cv2.rectangle(rgb,(150,130),(250,170),(0,0,0),-1)
+    assert not inspect_content(rgb,candidate,own,audit,interior_components=True)['eligible']
+    cv2.rectangle(rgb,(100,140),(150,160),(0,0,0),-1)
     assert not inspect_content(rgb,candidate,own,audit,interior_components=True)['eligible']
