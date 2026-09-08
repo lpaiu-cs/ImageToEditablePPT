@@ -40,3 +40,8 @@ tests/test_source_centerline_v2.py -text
 tools/run_centerline_probe.py -text
 docs/r9_source_centerline_v2_spec.md -text
 docs/r9_source_centerline_spec.md -text
+src/image_to_editable_ppt/research/duplicate_owner_observations.py -text
+tools/r9_duplicate_owner_fixtures.py -text
+tools/run_r9_duplicate_owner_controls.py -text
+docs/r9_duplicate_owner_experiment_spec.md -text
+benchmarks/r9_*.json -text

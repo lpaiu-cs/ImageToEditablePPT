@@ -1,0 +1,106 @@
+{
+  "phase": "R9-C v2",
+  "verdict": "narrow_source_path_gain_not_production",
+  "artifact_root": "artifacts/region-source-evidence-r9/centerline-v2",
+  "implementation_lock_commit": "15f761b",
+  "runner_lock_commit": "1a20cc7",
+  "population": "shared synthetic validation diagnostic; not unseen acceptance",
+  "files": {
+    "lock.json": "413a21bf95e9ced48024d698200053fe8d647fbab12bc767e824688a9445309e",
+    "results.json": "502847bd95dbf82876e900cc0b7922cefb7b3ba29de159b06796a9fbc4037223",
+    "evaluation.json": "b535141caaf7723199cc3acad97f834f335bc3bdf561fe5e8675dbf88e2ccbea",
+    "renders/powerpoint_render_manifest.json": "28b5ebdd64afa6cfb6d426531afead00fce8ecba91656afac7a5f1718faa8e36",
+    "review/contact-0.png": "9414319a0d928bf5e3d0eafa7d530f541137e1a8712b80fdabd481c432e04337",
+    "review/contact-1.png": "43878075f81b239dfca45ac634fed4826f09f32284c5a37e4ef4233389e7a556",
+    "review/contact-2.png": "a033dd4da3a0bc6aa865005b85dfb290f77a476f5e0f9c60faead07d199d660f",
+    "review/012.png": "149b87843e15b7c6f5efa25759ef141612101825ad7e25d05b572c8d1ea6390f",
+    "review/013.png": "6a29b9938bb4b6a935b064b1d9c6374bd5a0b8e455767b6e61667093c6e9f2cd",
+    "review/014.png": "538e83b938e8bc503fc0ae02102ede97b5d966429a2a4eab159c122c4abbd0f6"
+  },
+  "controls_passed": 43,
+  "changed_paths": [
+    {
+      "slot": "013",
+      "connector_id": "connector:r3:0"
+    },
+    {
+      "slot": "013",
+      "connector_id": "connector:r3:1"
+    },
+    {
+      "slot": "013",
+      "connector_id": "connector:r3:2"
+    },
+    {
+      "slot": "013",
+      "connector_id": "connector:r3:3"
+    },
+    {
+      "slot": "013",
+      "connector_id": "connector:r3:4"
+    },
+    {
+      "slot": "013",
+      "connector_id": "connector:r3:5"
+    }
+  ],
+  "decision_reasons": {
+    "outside_frozen_scope": 43,
+    "supported_raw_centerline": 7,
+    "not_single_straight_stroke": 1
+  },
+  "supported_but_already_identical_paths": 1,
+  "unchanged_native_render_slots": [
+    "000",
+    "001",
+    "002",
+    "003",
+    "004",
+    "005",
+    "006",
+    "007",
+    "008",
+    "009",
+    "010",
+    "011",
+    "012",
+    "014"
+  ],
+  "all_owner_label_direction_fields_unchanged": true,
+  "native_relation_before": {
+    "tp": 26,
+    "fp": 5,
+    "fn": 41
+  },
+  "native_relation_after": {
+    "tp": 32,
+    "fp": 5,
+    "fn": 35,
+    "predictions": 37,
+    "references": 67
+  },
+  "traced_relations": {
+    "tp": 35,
+    "fp": 16,
+    "fn": 32,
+    "predictions": 51,
+    "references": 67
+  },
+  "labels": {
+    "matched_nodes": 91,
+    "correct": 82,
+    "wrong": 1,
+    "blank": 8
+  },
+  "raw_fit_rejections_before": 20,
+  "raw_fit_rejections_after": 14,
+  "direct_visual_review": {
+    "contact_sheets": 3,
+    "images": 15,
+    "enlarged_tree_images": 3
+  },
+  "human_edit_cost_measured": false,
+  "product_runtime_changed": false,
+  "D_suppression_enabled": false,
+  "D_result_independent_hash_and_failure_count_check": true
+}
