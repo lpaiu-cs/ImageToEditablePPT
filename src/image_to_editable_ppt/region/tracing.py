@@ -90,7 +90,7 @@ def trace_scene(scene,rgb,roi,*,transparent_gaps=False):
             eligible.append(s)
         a,b,c,d=[round(z) for z in bounds(s)]
         a,b,c,d=a-x0,b-y0,c-x0,d-y0
-        owner_pad=observed_border_pad(raw,(a,b,c,d),p)
+        owner_pad=observed_border_pad(raw,(a,b,c,d),p) if s.owner_kind is PortOwnerKind.NODE else p
         owner_pads[s.id]=owner_pad
         if s.owner_kind is PortOwnerKind.NODE:
             mask[max(0,b-owner_pad):min(h,d+owner_pad+1),max(0,a-owner_pad):min(w,c+owner_pad+1)]=0
