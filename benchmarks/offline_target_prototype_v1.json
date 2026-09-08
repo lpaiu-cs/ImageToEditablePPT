@@ -1,0 +1,139 @@
+{
+  "schema_version": "offline_target_prototype_evidence_v1",
+  "research_only": true,
+  "training_performed": false,
+  "inference_input_allowed": false,
+  "source_reference_commit": "fa759d5fae78c041ed303c0ef65d7c89d63b91fb",
+  "artifact_root": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\offline-target-prototype-v1",
+  "target_file": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\offline-target-prototype-v1\\targets.final.json",
+  "target_sha256": "599161414e460be37ce3c1820295635f9f1a0d5c981c7569a1390e07b8962ff8",
+  "request_sha256": "31ea2a65a3152d5cd73b3192f0f5642119eb48e08928e09263021164ad14d88a",
+  "canonical_request_sha256": "2416c175466ed79520d6834569a15c8393855f8b32ea658e9d8153ce66885bf5",
+  "extractor_sha256": "6e0887896a9d23d7a433b20522e54c94d6e63d49d031afad47f3792d3c965d24",
+  "cli_sha256": "a640e2e243b5eec3ef10b27c01d7918d46920c5fc880d4ee3ee6e0d6b7610266",
+  "role_file_sha256": {
+    "graph_1302_00029.roles.json": "04e4eb505a141c13ef53abd135bdf0e6cd1fdb6c9e6d589d34b5725216c333ef",
+    "graph_1302_00063.roles.json": "636d469215d4728a2eb86297001ac638c6fcd243b9e678abc27dfd1cf5139df9"
+  },
+  "cases": [
+    {
+      "sample_id": "graph_1302_00029",
+      "supervised_nodes": 5,
+      "geometry_counts": {
+        "ellipse": 5
+      },
+      "masked_objects": 7,
+      "masked_shape_types": {
+        "sp": 2,
+        "cxnSp": 5
+      },
+      "max_bbox_difference_vs_prior_xml_audit_px": 0.0,
+      "source_ppt_sha256": "4f4126121205398c7c8cadb4d7fabbbd3f1a8d76b4f952244a9c2d8204686685",
+      "source_rgb_sha256": "9b4396663b7ff886b32d1bd7be4827a89421283fe76b5dab52f9408bcc1548d0",
+      "source_annotation_sha256": "4f9107bbe76b94ab82d3308671dcd9a1eb05e733514219889f67535bb9dc97b9",
+      "render_transform": {
+        "slide_size_emu": [
+          6096000,
+          3429000
+        ],
+        "rgb_size_pixels": [
+          640,
+          360
+        ],
+        "scale_pixels_per_emu": [
+          0.00010498687664041995,
+          0.00010498687664041995
+        ],
+        "matrix_slide_emu_to_pixels": [
+          [
+            0.00010498687664041995,
+            0,
+            0
+          ],
+          [
+            0,
+            0.00010498687664041995,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "crop": "none_declared",
+        "mapping_provenance": "declared_full_slide_from_source_manifest_not_render_reexecuted",
+        "renderer_id": "soffice_png_v1",
+        "renderer_version": null,
+        "renderer_version_status": "not_recorded"
+      }
+    },
+    {
+      "sample_id": "graph_1302_00063",
+      "supervised_nodes": 6,
+      "geometry_counts": {
+        "ellipse": 6
+      },
+      "masked_objects": 8,
+      "masked_shape_types": {
+        "sp": 1,
+        "cxnSp": 7
+      },
+      "max_bbox_difference_vs_prior_xml_audit_px": 0.0,
+      "source_ppt_sha256": "54843426353167f7ede2bf746c4012843dba7029a27a7bf6ad490a13ca51afb2",
+      "source_rgb_sha256": "4889e1b304787c0ab445c57d1503d770fe26367d6b75bb9cabaa8fc3e4360553",
+      "source_annotation_sha256": "81f1277630e0a6987d0519f3305d99a939c590ce0773d8c1aaf1824af29cc10c",
+      "render_transform": {
+        "slide_size_emu": [
+          6096000,
+          3429000
+        ],
+        "rgb_size_pixels": [
+          640,
+          360
+        ],
+        "scale_pixels_per_emu": [
+          0.00010498687664041995,
+          0.00010498687664041995
+        ],
+        "matrix_slide_emu_to_pixels": [
+          [
+            0.00010498687664041995,
+            0,
+            0
+          ],
+          [
+            0,
+            0.00010498687664041995,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "crop": "none_declared",
+        "mapping_provenance": "declared_full_slide_from_source_manifest_not_render_reexecuted",
+        "renderer_id": "soffice_png_v1",
+        "renderer_version": null,
+        "renderer_version_status": "not_recorded"
+      }
+    }
+  ],
+  "tests": "33 passed",
+  "verified_invariants": [
+    "11 source ellipse geometries reproduced with node role only from reviewed annotation membership",
+    "v1 frozen artifact hashes unchanged",
+    "v2 final prediction handoff hash unchanged",
+    "source PPT/RGB/annotation/manifest hashes unchanged",
+    "existing dataset loader and enum hashes unchanged",
+    "existing checkpoint hash unchanged"
+  ],
+  "limitations": [
+    "Only explicit, ungrouped, unrotated, unflipped rect/roundRect/ellipse and explicit borderless textbox geometry is supported.",
+    "Role supervision comes only from separately reviewed annotation membership; preset alone never supplies a role.",
+    "Renderer mapping is declared full-slide and not rerendered here; unavailable renderer version remains null.",
+    "These two existing validation graph cases are a target contract diagnosis, not unseen evaluation or product improvement."
+  ]
+}
