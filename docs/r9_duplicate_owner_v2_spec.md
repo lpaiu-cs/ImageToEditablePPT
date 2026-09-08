@@ -80,6 +80,8 @@ fixture 생성·전체 조합·seed·font/renderer SHA·owner/expectation 목록
 
 원본 3,656 records를 삭제/재라벨링하지 않고 그대로 replay한다. 원 결과와 v2 결과를 병렬 기록한다. 특히 376개 실패와 PP 8개를 별도 표로 유지한다. v1의 clean single-atom positive는 v2에서 방향 기권할 수 있으므로, v1 positive 결과는 historical comparison이며 v2 효과성 gate는 새 다중 atom positive로 따로 정의한다. 이러한 지원 범위 변경을 통과 건수 증가로 숨기지 않는다.
 
+결과 표에는 **기존 clean bitmap positive의 전체 개수/선택 성공/방향 기권/그 외 기권/손실**, **새 다중 atom clean positive의 기본 장면 수/변형 수/선택 성공/기권/손실**을 각각 싣는다. 기존 positive의 자동 기권을 새 positive로 대체해 통합 성공률을 제시하지 않는다. 전역 all-abstain뿐 아니라 기존 지원 능력의 감소도 보고한다.
+
 fanout 14건의 baseline 0관계도 그대로 둔다. owner 보존 96건과 baseline 정상 82건의 관계 보존 검증을 분리한다. 기존 AA flag가 font의 기본 AA를 끄지 못한 사실도 유지한다.
 
 ### 새 fixture 군과 기대 조건
@@ -109,6 +111,10 @@ fanout 14건의 baseline 0관계도 그대로 둔다. owner 보존 96건과 base
 - **관측 정보 보존**: core/weak/orphan component별 생존·부분 절단·전체 소실. 의미 있는 문자 여부를 알고리즘이 GT로 판정하지 않는다.
 - **offline fixture 기대값**: 실제 글자/점/독립 owner 손실 또는 허용된 위치 양자화인지 evaluator만 구분한다. 기존 원 annotation/PPT를 쓰는 경우도 inference와 분리한다.
 - **구조 보존**: 실제 owner 삭제, 중복 여부, 정상 fanout 관계 손실. endpoint ID만 바꿔 정답으로 만들지 않는다.
+
+- **지원 범위 위반**: unsupported 회전/세로 입력에 suppression을 승인한 경우. 실제 내용 손실이 확인되지 않아도 범위 위반은 성립하지만 이를 문자/관계 손실 건수에 더하지 않는다. D-v1의 회전·세로 280건도 원래 gate 실패 기록을 보존하면서 이 분류로 별도 표시한다. 나머지 부분 문자/punctuation 역시 관측 실패와 offline 확인된 실제 손실을 구분한다.
+
+최종 record는 `geometry_diagnostic`, `observed_support_loss`, `offline_content_loss`, `structural_loss`, `scope_violation`, `uncertainty_reason`을 분리한다. 범위 위반만 있는 사례를 실제 내용 손실이라고 쓰지 않는다. 동일 사례에 둘 다 있으면 각 flag를 유지하되 단순 합으로 고유 실패 사례 수를 부풀리지 않는다. `uncertainty_reason`에는 최소한 `orientation_unobservable`, `weak_orphan_unresolved`, `punctuation_or_noise_unresolved`, `insufficient_context`를 구별해 기록한다. 작은 점의 의미를 RGB만으로 보증한다고 주장하지 않는다.
 
 G0: 입력 whitelist/좌표/파일 IO/원본 불변/invalid data 검사. G1: V2-O 불변, V2-S와 관측 일치, score/order/opaque ID invariance, crop/full context 재현. G2: 독립 owner 또는 실제 글자/점 손실 0, unsupported 방향 승인 0, PP 잘못된 승자 0, 새 clean positive 최소 1개 성공. weak 먼 background speck 때문에 전부 기권하는 해법도 효과성 gate를 통과하지 못한다.
 
