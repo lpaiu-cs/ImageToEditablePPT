@@ -1,0 +1,31 @@
+{
+  "phase": "R8-T",
+  "verdict": "ocr_gain_with_error_and_duplicates_not_adopted",
+  "artifact_root": "artifacts/region-image-only-r8/text-only-ocr-v1",
+  "baseline": "R8-P fixed prediction source scenes",
+  "intervention": "label_anchor OCR only; original bbox and all connectors fixed",
+  "population": "15 cached shared synthetic validation samples; not unseen acceptance",
+  "files": {
+    "lock.json": "79aec5967b718c416ced4fab8fb1e16fbb99c88bcde44b46c5384059169a7d84",
+    "results.json": "dd0f4b374724fd7024e70428ce3cbee5a37ac20259387a0e5dd8135496d25ed6",
+    "evaluation.json": "cd4bde3c8746ab6ac64b13ee4952fc4326df82208424424bbb9a4b563188fadc",
+    "renders/powerpoint_render_manifest.json": "19af953fce798bd361ba99cd8186f9285e490417168bae85eba3aa597626fc9a",
+    "review/contact-2.png": "03e2a71f0226120375a2b707272e34e3da5bad71b8cb5c24265a21c2df4d7bf4"
+  },
+  "matched_node_labels_correct_wrong_blank": [82, 1, 8],
+  "text_only_objects": 28,
+  "text_only_nonempty": 24,
+  "text_only_matched_correct": 20,
+  "text_only_matched_wrong": 1,
+  "unmatched_objects_with_label": 3,
+  "traced_relation_tp_fp_fn": [35, 16, 32],
+  "native_relation_tp_fp_fn": [22, 2, 45],
+  "unchanged_non_tree_render_hashes": 12,
+  "native_renders_and_visual_reviews": 15,
+  "python_open_denials": 0,
+  "tests_passed": 436,
+  "known_failures_xfailed": 2,
+  "warnings": 9,
+  "offline_target_integration_commit": "183837f",
+  "offline_targets_used_for_inference": false
+}

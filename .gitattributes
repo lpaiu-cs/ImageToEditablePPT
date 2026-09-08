@@ -22,3 +22,8 @@ src/image_to_editable_ppt/research/prediction_handoff.py -text
 src/image_to_editable_ppt/research/predicted_owners.py -text
 tools/run_predicted_owner_baseline.py -text
 docs/region_predicted_owners_r8_spec.md -text
+src/image_to_editable_ppt/research/offline_ppt_targets.py -text
+src/image_to_editable_ppt/research/text_only_ocr.py -text
+tools/run_text_only_ocr_probe.py -text
+docs/text_only_ocr_r8t_spec.md -text
+benchmarks/region_r8t_*.json -text
