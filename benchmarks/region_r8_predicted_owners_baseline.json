@@ -1,0 +1,36 @@
+{
+  "phase": "R8-P",
+  "verdict": "partial_improvement_not_product_approved",
+  "population": "15 shared synthetic validation diagnostics; exposed to checkpoint selection",
+  "artifact_root": "artifacts/region-image-only-r8/predicted-owners-baseline",
+  "handoff_commit": "8328219996f2ebf965853b30b021775540d1eee7",
+  "integration_commit": "17a35ba",
+  "handoff_sha256": "346c4090c209e13243ed7a4d96723fe09921e037660acf4f3e8dd776c08f45e4",
+  "files": {
+    "lock.json": "ec0075cf560575034d0e1ade02a4cc81c6008d2425ca063a7236dcad91e2e8d8",
+    "results.json": "6438984241eccb697b938f56f1e2c2bd3b4002b65b3176609f2c5871c0b56873",
+    "evaluation.json": "2ecfcfc847187a3ce64c043c73e04a4f3d9a20861b7db9b610d2f6937dbae948",
+    "renders/powerpoint_render_manifest.json": "95f4b7a11be872b4101afb34f132d1ce4a68e351643f0d606ae586d7626eb993",
+    "review/contact-0.png": "19106dcdf0fa91b389a596fa63fec8ca4298a70ed5fdb14e168048f601489d42",
+    "review/contact-1.png": "bdc65b5e69938cf533a1ab5639b5d5ecc262c05b2338ed111c6dd11b39607734",
+    "review/contact-2.png": "c4e3f0607fa78fe49aa31dca34fd91308e61d23d9f4a1ab0753077fe427ff7ce"
+  },
+  "node_tp_fp_fn": [91, 3, 0],
+  "container_tp_fp_fn": [11, 0, 0],
+  "traced_relation_tp_fp_fn": [35, 16, 32],
+  "native_relation_tp_fp_fn": [22, 2, 45],
+  "matched_node_labels_correct_wrong_blank": [62, 0, 29],
+  "invisible_empty_label_anchor_objects": 28,
+  "native_omissions": {"label_anchor_attachment": 14, "preset_fit": 13},
+  "native_renders": 15,
+  "directly_visually_reviewed": 15,
+  "python_open_denials": 0,
+  "tests_passed": 393,
+  "warnings": 9,
+  "limitations": [
+    "Legacy inferred labels and unknown past inference execution code remain research only.",
+    "Graph annotation kind BOX can render as ellipse; exact-kind is not rendered-geometry accuracy.",
+    "All three trees are visually empty despite detected objects.",
+    "No unseen paper generalization or human edit-time savings established."
+  ]
+}

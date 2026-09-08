@@ -107,7 +107,7 @@ def main(args):
         rendered = Image.open(nr['render_path']).convert('RGB')
         panel = Image.new('RGB', (1320, 414), '#edf1f5')
         draw = ImageDraw.Draw(panel)
-        for i, (title, picture) in enumerate([('원본 RGB '+record['id'], im), ('R6 이미지 단독 → 실제 PPT 렌더', rendered)]):
+        for i, (title, picture) in enumerate([('원본 RGB '+record['id'], im), (getattr(args, 'render_label', 'R6 이미지 단독 → 실제 PPT 렌더'), rendered)]):
             draw.text((i*660+10, 8), title, font=font, fill='black')
             panel.paste(ImageOps.contain(picture, (640, 360)), (i*660+10, 42))
         panel.save(review / (record['slot']+'.png'))
@@ -136,4 +136,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--run', type=Path, required=True)
     parser.add_argument('--evaluator', type=Path, required=True)
+    parser.add_argument('--render-label', default='R6 이미지 단독 → 실제 PPT 렌더')
     main(parser.parse_args())

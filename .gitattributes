@@ -18,3 +18,7 @@ src/image_to_editable_ppt/research/image_only_guard.py -text
 tools/run_region_rgb_baseline.py -text
 tools/evaluate_region_rgb_baseline.py -text
 src/image_to_editable_ppt/region/*.py -text
+src/image_to_editable_ppt/research/prediction_handoff.py -text
+src/image_to_editable_ppt/research/predicted_owners.py -text
+tools/run_predicted_owner_baseline.py -text
+docs/region_predicted_owners_r8_spec.md -text
