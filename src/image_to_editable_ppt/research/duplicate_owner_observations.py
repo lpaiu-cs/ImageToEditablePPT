@@ -163,7 +163,7 @@ def threshold_observation(mask, owners, union, origin, s, h):
             padding = [bg[0]-b[0], bg[1]-b[1], b[2]-bg[2], b[3]-bg[3]]
             coverage = float((shared_mask & own).sum()/shared_mask.sum())
             vector = [float((shaft & own).sum()/max(1, (mask & own).sum())),
-                max(0., ((b[2]-b[0])*(b[3]-b[1])-(bg[2]-bg[0])*(bg[3]-bg[1]))/((bg[2]-bg[0])*(bg[3]-bg[1])),
+                max(0., ((b[2]-b[0])*(b[3]-b[1])-(bg[2]-bg[0])*(bg[3]-bg[1]))/((bg[2]-bg[0])*(bg[3]-bg[1]))),
                 (abs(padding[0]-padding[2])+abs(padding[1]-padding[3]))/(bg[3]-bg[1])]
             losses.append(dict(id=o['id'], glyph_coverage=coverage, padding=padding, losses=vector,
                                eligible=bool(coverage >= .98 and min(padding) >= 0)))
