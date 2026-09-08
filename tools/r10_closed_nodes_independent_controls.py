@@ -18,12 +18,14 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def build(out):
     out.mkdir(parents=True,exist_ok=False);rows=[]
     modes=['ellipse','rectangle','roundedrect','capsule','diamond','rotatedellipse','openarc',
-           'rawgap','colorfill','nested','adjacent','arrowcontact','solidpatch']
+           'rawgap','colorfill','nested','nested_green','nested_blue','adjacent','arrowcontact','solidpatch']
     for mode,s,aa,thickness,offset in itertools.product(modes,[.75,1,2],[1,4],[1,2,4],[0,.08]):
         r=s*aa;im=Image.new('RGB',(round(240*r),round(160*r)),'white');d=ImageDraw.Draw(im)
         b=[70,50,170,110];fill=(230,205,160) if mode=='colorfill' else (255,255,255)
+        if mode=='nested_green':fill=(180,230,190)
+        if mode=='nested_blue':fill=(180,210,240)
         box=tuple(v*r for v in b);width=max(1,round(thickness*r))
-        if mode in ('ellipse','colorfill','nested','adjacent','arrowcontact'):d.ellipse(box,fill=fill,outline='black',width=width)
+        if mode in ('ellipse','colorfill','nested','nested_green','nested_blue','adjacent','arrowcontact'):d.ellipse(box,fill=fill,outline='black',width=width)
         if mode in ('rectangle','rawgap'):d.rectangle(box,fill=fill,outline='black',width=width)
         if mode in ('roundedrect','capsule'):d.rounded_rectangle(box,radius=(12 if mode=='roundedrect' else 30)*r,fill=fill,outline='black',width=width)
         if mode=='diamond':d.polygon([(120*r,50*r),(170*r,80*r),(120*r,110*r),(70*r,80*r)],outline='black',width=width)
@@ -34,7 +36,7 @@ def build(out):
             xy=np.array(points)/r;b=[*xy.min(axis=0),*xy.max(axis=0)]
         if mode=='openarc':d.arc(box,15,340,fill='black',width=width)
         if mode=='rawgap':d.rectangle((119*r,47*r,121*r,(52+thickness)*r),fill='white')
-        if mode=='nested':d.ellipse((83*r,58*r,157*r,102*r),fill=(240,180,180),outline='black',width=width)
+        if mode.startswith('nested'):d.ellipse((83*r,58*r,157*r,102*r),fill=(240,180,180),outline='black',width=width)
         if mode=='adjacent':d.ellipse((173*r,50*r,233*r,110*r),fill=(180,220,240),outline='black',width=width)
         if mode=='arrowcontact':
             d.line([(20*r,80*r),(70*r,80*r)],fill='black',width=width)
@@ -50,9 +52,10 @@ def build(out):
         areas=[] if hierarchy is None else [cv2.contourArea(c) for c,h in zip(contours,hierarchy[0]) if h[3]>=0]
         large_hole=any(a>.3*bw*bh*s*s for a in areas)
         expected='ellipse' if mode in ('ellipse','colorfill','arrowcontact','adjacent') else 'rectangle' if mode=='rectangle' else 'not_ellipse' if mode in ('roundedrect','capsule') else 'nested_no_child_fill' if mode=='nested' else 'abstain'
+        if mode in ('nested_green','nested_blue'):expected='parent_color_or_abstain'
         valid=(not large_hole) if mode in ('rawgap','openarc') else large_hole if mode in ('ellipse','rectangle','colorfill','arrowcontact','adjacent','roundedrect','capsule') else True
         rows.append(dict(id=key,mode=mode,rgb=p.name,sha256=sha(p),bbox=bbox,expected=expected,
-                         expected_fill=list(fill) if mode=='colorfill' else None,raster_valid=valid,independent_hole_areas=areas))
+                         expected_fill=list(fill) if mode in ('colorfill','nested_green','nested_blue') else None,raster_valid=valid,independent_hole_areas=areas))
     (out/'manifest.json').write_text(json.dumps(rows,indent=2),encoding='utf-8')
     lock=dict(count=len(rows),valid=sum(r['raster_valid'] for r in rows),manifest_sha256=sha(out/'manifest.json'),builder_sha256=sha(__file__),
         contract='Expected geometry/fill fixed before observer. Nested child color is not outer fill. Open raster gaps must have no large dark-ink hole.')
@@ -72,6 +75,7 @@ def run(fixtures,source,out):
         if c['expected']=='abstain':passed=observed is None
         elif c['expected']=='not_ellipse':passed=observed is None or not observed['ellipse']
         elif c['expected']=='nested_no_child_fill':passed=observed is None or observed['style'].fill is None
+        elif c['expected']=='parent_color_or_abstain':passed=observed is None or (observed['style'].fill is not None and max(abs(x-y) for x,y in zip(observed['style'].fill,c['expected_fill']))<=3)
         else:
             passed=observed is not None and observed['ellipse']==(c['expected']=='ellipse')
             if passed and c['expected_fill'] is not None:passed=observed['style'].fill is not None and max(abs(x-y) for x,y in zip(observed['style'].fill,c['expected_fill']))<=3
