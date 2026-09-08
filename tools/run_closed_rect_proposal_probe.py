@@ -71,7 +71,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
         if flow_frames:
             whole=np.zeros(rgb.shape[:2],np.uint8)
             cv2.drawContours(whole,[c['contour']],-1,1,cv2.FILLED)
-            frame_content[identity]=inspect_content(rgb,c,whole,text_audit[identity])
+            frame_content[identity]=inspect_content(rgb,c,whole,text_audit[identity],interior_components=True)
         if spatial_texture:
             from image_to_editable_ppt.research.spatial_texture_guard import inspect_spatial_texture
             content_audit[identity]=inspect_spatial_texture(rgb,c,text_audit[identity],palette_guard=True,all_text_regions=True)
@@ -94,20 +94,20 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
         scene,box_audit=refine_box_centerlines(scene,rgb)
         scene,terminal_audit=recover_box_terminals(scene,rgb,box_audit)
     proposed_scene=scene
-    frames={}
+    frames={};frame_omitted=set()
     if flow_frames:
         from image_to_editable_ppt.research.flow_frames import frame_witnesses,surviving_frames
-        frames=frame_witnesses(scene,content_audit,frame_content)
+        frames,frame_omitted=frame_witnesses(scene,content_audit,frame_content)
         scene=replace(scene,shapes=tuple(replace(s,label=None) if s.id in frames else s for s in scene.shapes))
         styles.update({key:replace(styles[key],fill=None) for key in frames})
     if content_gate or texture_guard:
-        keep=admitted_ids(scene,content_audit)|frames.keys()
+        keep=(admitted_ids(scene,content_audit)|frames.keys())-frame_omitted
         scene=replace(scene,shapes=tuple(s for s in scene.shapes if s.id in keep),
             connectors=tuple(c for c in scene.connectors if c.source_owner_id in keep and c.target_owner_id in keep))
     normalized,scale=normalize_scene(scene);pptx=output/'result.pptx'
     emitted,emission=write_label_anchor_native(normalized,pptx,styles=styles)
     if content_gate or texture_guard:
-        keep=admitted_ids(emitted,content_audit)|(surviving_frames(frames,emitted) if flow_frames else set())
+        keep=(admitted_ids(emitted,content_audit)|(surviving_frames(frames,emitted) if flow_frames else set()))-frame_omitted
         if keep!={s.id for s in emitted.shapes}:
             scene=replace(scene,shapes=tuple(s for s in scene.shapes if s.id in keep),
                 connectors=tuple(c for c in scene.connectors if c.source_owner_id in keep and c.target_owner_id in keep))
@@ -117,7 +117,7 @@ def run(image,output,trace=False,inner_boundaries=False,content_gate=False,whole
     if flow_frames and set(frames)&{s.id for s in emitted.shapes}!=surviving_frames(frames,emitted):raise ValueError('frame lost its source attachment witnesses')
     save(output/'result.json',dict(source_sha256=source,source_scene=asdict(scene),emitted_scene=asdict(emitted),styles={k:asdict(v) for k,v in styles.items()},
         proposal_audit=proposal_audit,text_audit=text_audit,region_audit=region_audit,content_audit=content_audit,proposed_scene=asdict(proposed_scene),text_placement=placement,tracing_audit=trace_audit,box_audit=box_audit,terminal_audit=terminal_audit,nested_audit=nested_audit,
-        flow_frame_audit=dict(witnesses=frames,retained=sorted(set(frames)&{s.id for s in emitted.shapes}),nontext_content=frame_content,policy='user-approved blank frame; texture verdict unchanged; no content or label endorsement'),
+        flow_frame_audit=dict(witnesses=frames,retained=sorted(set(frames)&{s.id for s in emitted.shapes}),omitted=sorted(frame_omitted),nontext_content=frame_content,policy='user-approved blank frame; texture verdict unchanged; no content or label endorsement'),
         emission=emission,pptx_sha256=digest(pptx),nodes=len(scene.shapes),labels=sum(bool(s.label) for s in scene.shapes),
         provenance='direct RGB-only research execution; no cached detector/scene/GT inputs; Python IO not sandboxed'))
     if digest(image)!=source or any(digest(p)!=sha for p,sha in code.items()):raise ValueError('source/runtime changed during execution')

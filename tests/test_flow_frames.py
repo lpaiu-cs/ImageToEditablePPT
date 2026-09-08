@@ -29,7 +29,7 @@ def test_only_fixed_external_independent_flow_admits_frame(case):
         scene=replace(scene,shapes=scene.shapes+(replace(scene.shapes[1],id='child',bbox=BBox(*box)),));content['child']={'eligible':True}
     if case=='bad_attachment':scene=replace(scene,connectors=(a,replace(b,path_points=(Point(400,210),Point(210,210)))))
     if case=='unverified':scene=replace(scene,shapes=(replace(scene.shapes[0],source='unverified'),scene.shapes[1]))
-    before=dict(content['frame']);witnesses=frame_witnesses(scene,content)
+    before=dict(content['frame']);witnesses,omitted=frame_witnesses(scene,content)
     assert set(witnesses)==({'frame'} if case=='valid' else set())
     assert content['frame']==before and scene.shapes[0].label=='Caption'
     if witnesses:
@@ -41,10 +41,34 @@ def test_only_fixed_external_independent_flow_admits_frame(case):
 def test_nontext_policy_covers_texture_pass_without_mutual_endorsement():
     scene,content=scene_pair();content['frame']['eligible']=True
     nontext={'frame':{'reason':'unexplained_interior_content'},'seed':{'reason':'flat_owned_interior'}}
-    assert not frame_witnesses(scene,content)
-    assert set(frame_witnesses(scene,content,nontext))=={'frame'}
+    assert not frame_witnesses(scene,content)[0]
+    assert set(frame_witnesses(scene,content,nontext)[0])=={'frame'}
     nontext['seed']['reason']='unexplained_interior_content'
-    assert not frame_witnesses(scene,content,nontext)
+    assert frame_witnesses(scene,content,nontext)==({}, {'frame','seed'})
     nontext['frame']['reason']='insufficient_unexplained_interior'
     nontext['seed']['reason']='flat_owned_interior'
-    assert not frame_witnesses(scene,content,nontext)
+    assert not frame_witnesses(scene,content,nontext)[0]
+
+
+def test_unlinked_unlabelled_fragment_is_omitted_but_repeated_structure_is_protected():
+    scene,content=scene_pair()
+    fragment=replace(scene.shapes[1],id='fragment',label=None,bbox=BBox(120,120,150,150))
+    scene=replace(scene,shapes=scene.shapes+(fragment,));content['fragment']={'eligible':True}
+    frames,omitted=frame_witnesses(scene,content)
+    assert set(frames)=={'frame'} and omitted=={'fragment'}
+    twin=replace(fragment,id='twin',bbox=BBox(120,180,150,210))
+    content['twin']={'eligible':True}
+    assert not frame_witnesses(replace(scene,shapes=scene.shapes+(twin,)),content)[0]
+
+
+def test_internal_graphic_evidence_excludes_border_ink():
+    import cv2
+    import numpy as np
+    from image_to_editable_ppt.research.closed_content_gate import inspect_content
+    rgb=np.full((360,600,3),255,np.uint8);own=np.zeros((360,600),np.uint8)
+    own[100:200,100:300]=1;cv2.rectangle(rgb,(100,100),(299,199),(0,0,0),12)
+    candidate={'bbox':[100,100,300,200]};audit={'accepted':[]}
+    assert not inspect_content(rgb,candidate,own,audit)['eligible']
+    assert inspect_content(rgb,candidate,own,audit,interior_components=True)['eligible']
+    cv2.rectangle(rgb,(150,130),(250,170),(0,0,0),-1)
+    assert not inspect_content(rgb,candidate,own,audit,interior_components=True)['eligible']
