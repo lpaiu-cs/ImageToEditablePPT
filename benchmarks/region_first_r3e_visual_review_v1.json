@@ -1,0 +1,15 @@
+{
+  "review_date": "2026-09-08",
+  "reviewer": "assistant direct inspection of PowerPoint 16 rendered PNGs",
+  "population": "six repeatedly consumed development ROIs; not holdout",
+  "initial_verdict": "visible local connector gain, not overall product acceptance",
+  "mixed-attention": "Four separate upright arrows now reach their observed target sites; old writer collapsed heads into the center. Two false gap shapes still exist and become conspicuous after moving the target. Fonts, outlines and container corner style differ from source.",
+  "cogbot-perceive": "Left branch retains its L-shaped route; right branch stays near observed bottom-right corner instead of cutting diagonally across the gap. Right corner is approximated by a short diagonal, not exact curvature. Extra fill fragment and label/style limitations remain.",
+  "mixed-blip": "Five boxes and three interior relations remain recognizable. Typography is small; row-boundary incoming/outgoing lines are outside this frozen target scope.",
+  "serial-hevc": "Four boxes and three downward relations remain. OCR word ordering is visibly wrong in the third box, and external Decoding label is absent. No claim of faithful editable text.",
+  "reasoning-row": "Four-node chain remains clear; initial path change is small. Source outlines, fonts and arrow weight are not reproduced.",
+  "negative-plots": "Output remains blank as intended for non-diagram plots.",
+  "ordinary_edit": "Connection sites follow moved/resized owners after save/reopen, but the prescribed downward move creates overlapping boxes and oblique arrows. This is an attachment test, not a usable automatic layout result. Attention's leftover false gap shapes are exposed; PERCEIVE text is occluded by the moved node.",
+  "explicit_reroute": "Native reroute chooses different owner sites and visibly loses the recovered spatial attachment arrangement in both samples. Owner identities stay bound; site/path preservation fails.",
+  "style_limit": "Native connector renders show shadow-like theme effects and heavy arrowheads. These remain an undesirable inherited output styling limitation; no styling cleanup was smuggled into this emitter-only comparison."
+}

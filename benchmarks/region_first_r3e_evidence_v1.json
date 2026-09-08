@@ -1,0 +1,4495 @@
+{
+  "status": "development_only_not_product_acceptance",
+  "e0_results": {
+    "status": "R3E_native_path_diagnostic",
+    "input_evidence_sha256": "753db146a8a4962041217959d0ca15d277f81b0c2cbfa4b4b4dfa816980e812f",
+    "git_commit": "3988336a38c03a8f009ce0b55b64d2d564bbec04",
+    "git_status": "",
+    "code_sha256": {
+      "src/image_to_editable_ppt/research/path_emit.py": "8e84594d2566517161b96752c782b8f8f08512fbd83fdca55efe9013a06c2513",
+      "src/image_to_editable_ppt/research/native_emit.py": "ae48317520480e55985a78c12d1fe756a621aa76487d2e70dd805a70388df792",
+      "src/image_to_editable_ppt/v3/emit/pptx_writer.py": "2638040b48f14cd9c6c95493cf2b8c008a51da1a95edbb9477aefa53e391008c",
+      "src/image_to_editable_ppt/v3/emit/style.py": "500fb23f7e3c1efad5e186a1074e02eafaa930b188669e69477dff86d7a5e5c0",
+      "tools/run_path_emission.py": "aef0b058785d5d844566edc8932558549be6d90d9279432fdfc106d3394e1a48",
+      "docs/region_first_r3e_protocol.md": "26aa7826f883a9f057f668acda1173afbefa9a7098a47890eb7655c7c0214366"
+    },
+    "records": [
+      {
+        "sample": "mixed-blip",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\mixed-blip--transparent_gap_trace.json",
+        "input_scene_sha256": "5ffe7354b33fea57ecbb5f40f276844b07d12d58c79874d47ef2ef689868be24",
+        "pptx_path": "artifacts\\region-first-r3e\\run1\\mixed-blip--native_path.pptx",
+        "pptx_sha256": "a8cbb1c589e6c42844fc1a07c81ed74598480b8b1660803903e6ae286f6e70e9",
+        "sites": {
+          "node:r0:0": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              1.0,
+              0.48913,
+              0
+            ],
+            [
+              0.0,
+              0.521739,
+              10800000
+            ]
+          ],
+          "node:r0:1": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.0,
+              0.513889,
+              10800000
+            ]
+          ],
+          "node:r0:3": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ]
+          ],
+          "node:r0:4": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              1.0,
+              0.513889,
+              0
+            ]
+          ],
+          "node:r0:2": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.0,
+              0.479167,
+              10800000
+            ]
+          ]
+        },
+        "path_audit": [
+          {
+            "id": "connector:r3:0",
+            "actual_pt": [
+              [
+                215.0335433070866,
+                235.81208107007873
+              ],
+              [
+                242.09393700787402,
+                236.29529975196849
+              ]
+            ],
+            "expected_pt": [
+              [
+                215.03355704697987,
+                235.81208053691273
+              ],
+              [
+                242.09395973154358,
+                236.29530201342277
+              ]
+            ],
+            "max_vertex_error_pt": 2.2723669559354676e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:1",
+            "actual_pt": [
+              [
+                85.53023622047245,
+                236.77852326614175
+              ],
+              [
+                112.59062992125985,
+                237.26174678031495
+              ]
+            ],
+            "expected_pt": [
+              [
+                85.53020134228187,
+                236.77852348993287
+              ],
+              [
+                112.59060402684563,
+                237.26174496644293
+              ]
+            ],
+            "max_vertex_error_pt": 3.487819057568231e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:2",
+            "actual_pt": [
+              [
+                434.41614173228345,
+                240.644296888189
+              ],
+              [
+                461.9597637795276,
+                241.12751896692913
+              ]
+            ],
+            "expected_pt": [
+              [
+                434.4161073825503,
+                240.6442953020134
+              ],
+              [
+                461.9597315436241,
+                241.1275167785235
+              ]
+            ],
+            "max_vertex_error_pt": 3.434973314142553e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          }
+        ],
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\mixed-attention--transparent_gap_trace.json",
+        "input_scene_sha256": "616cf4b11b092d77c1f13de69748eff278179daf8b374fcec22f1fb7f24ce1ec",
+        "pptx_path": "artifacts\\region-first-r3e\\run1\\mixed-attention--native_path.pptx",
+        "pptx_sha256": "94098590c7e99edab6b5e0e926400f37f4d88ecf18024b44e878d3700f47a1f4",
+        "sites": {
+          "node:r0:4": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.472222,
+              0.0,
+              16200000
+            ]
+          ],
+          "node:r0:0": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.0925,
+              1.0,
+              5400000
+            ],
+            [
+              0.2675,
+              1.0,
+              5400000
+            ],
+            [
+              0.4525,
+              1.0,
+              5400000
+            ],
+            [
+              0.895,
+              1.0,
+              5400000
+            ]
+          ],
+          "node:r0:5": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.416667,
+              0.0,
+              16200000
+            ]
+          ],
+          "node:r0:6": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.457143,
+              0.0,
+              16200000
+            ]
+          ],
+          "node:r0:7": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.485714,
+              0.0,
+              16200000
+            ]
+          ]
+        },
+        "path_audit": [
+          {
+            "id": "connector:r3:0",
+            "actual_pt": [
+              [
+                273.92727272755906,
+                85.74543307086614
+              ],
+              [
+                273.92727272755906,
+                66.7636220472441
+              ]
+            ],
+            "expected_pt": [
+              [
+                273.9272727272727,
+                85.74545454545455
+              ],
+              [
+                273.9272727272727,
+                66.76363636363637
+              ]
+            ],
+            "max_vertex_error_pt": 2.1474588407954798e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:1",
+            "actual_pt": [
+              [
+                296.8363636362205,
+                85.74543307086614
+              ],
+              [
+                296.8363636362205,
+                66.7636220472441
+              ]
+            ],
+            "expected_pt": [
+              [
+                296.8363636363636,
+                85.74545454545455
+              ],
+              [
+                296.8363636363636,
+                66.76363636363637
+              ]
+            ],
+            "max_vertex_error_pt": 2.1474588407954798e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:2",
+            "actual_pt": [
+              [
+                321.0545454543307,
+                85.74543307086614
+              ],
+              [
+                321.0545454543307,
+                66.7636220472441
+              ]
+            ],
+            "expected_pt": [
+              [
+                321.05454545454546,
+                85.74545454545455
+              ],
+              [
+                321.05454545454546,
+                66.76363636363637
+              ]
+            ],
+            "max_vertex_error_pt": 2.1474588407954798e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:3",
+            "actual_pt": [
+              [
+                378.98181818188976,
+                85.74543307086614
+              ],
+              [
+                378.98181818188976,
+                66.7636220472441
+              ]
+            ],
+            "expected_pt": [
+              [
+                378.9818181818182,
+                85.74545454545455
+              ],
+              [
+                378.9818181818182,
+                66.76363636363637
+              ]
+            ],
+            "max_vertex_error_pt": 2.1474588407954798e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          }
+        ],
+        "native": {
+          "native_shapes": 12,
+          "raster_images": 0,
+          "connectors": 4,
+          "bound_endpoints": 8,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\serial-hevc--transparent_gap_trace.json",
+        "input_scene_sha256": "1a7dd2a97f8559c1e3eb3c383a2990d051fe74036503c433009798fa14153f5b",
+        "pptx_path": "artifacts\\region-first-r3e\\run1\\serial-hevc--native_path.pptx",
+        "pptx_sha256": "27f19edd41c36e7b7a95668ff18b9fbb983ab0e75522ed202cfab4c3cf815fae",
+        "sites": {
+          "node:r0:0": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.499527,
+              1.0,
+              5400000
+            ]
+          ],
+          "node:r0:1": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.498581,
+              0.0,
+              16200000
+            ],
+            [
+              0.499527,
+              1.0,
+              5400000
+            ]
+          ],
+          "node:r0:2": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.499527,
+              0.0,
+              16200000
+            ],
+            [
+              0.499527,
+              1.0,
+              5400000
+            ]
+          ],
+          "node:r0:3": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.499527,
+              0.0,
+              16200000
+            ]
+          ]
+        },
+        "path_audit": [
+          {
+            "id": "connector:r3:0",
+            "actual_pt": [
+              [
+                297.28211835433075,
+                101.72188976377953
+              ],
+              [
+                297.0278156220473,
+                150.03976377952756
+              ]
+            ],
+            "expected_pt": [
+              [
+                297.28211920529805,
+                101.72185430463577
+              ],
+              [
+                297.0278145695364,
+                150.03973509933775
+              ]
+            ],
+            "max_vertex_error_pt": 3.545914375990833e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:1",
+            "actual_pt": [
+              [
+                297.28211920551183,
+                220.73645669291338
+              ],
+              [
+                297.28211920551183,
+                258.3735433070866
+              ]
+            ],
+            "expected_pt": [
+              [
+                297.28211920529805,
+                220.7364238410596
+              ],
+              [
+                297.28211920529805,
+                258.3735099337748
+              ]
+            ],
+            "max_vertex_error_pt": 3.337331179409375e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:2",
+            "actual_pt": [
+              [
+                297.28211920551183,
+                353.99204724409446
+              ],
+              [
+                297.28211920551183,
+                391.6291338582677
+              ]
+            ],
+            "expected_pt": [
+              [
+                297.28211920529805,
+                353.9920529801324
+              ],
+              [
+                297.28211920529805,
+                391.6291390728477
+              ]
+            ],
+            "max_vertex_error_pt": 5.736037962833507e-06,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          }
+        ],
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\reasoning-row--transparent_gap_trace.json",
+        "input_scene_sha256": "8b8cd7be34f03644b5e4e8cd119979d758e2efeeaf9560aa27e2c57afb5ffcc3",
+        "pptx_path": "artifacts\\region-first-r3e\\run1\\reasoning-row--native_path.pptx",
+        "pptx_sha256": "e6b980ebf81cb61e7178c1a7962b205ded730c7b1b07f887cb5e0b32e0df16c9",
+        "sites": {
+          "node:r0:0": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              1.0,
+              0.493151,
+              0
+            ],
+            [
+              0.0,
+              0.506849,
+              10800000
+            ]
+          ],
+          "node:r0:2": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.0,
+              0.492958,
+              10800000
+            ],
+            [
+              1.0,
+              0.492958,
+              0
+            ]
+          ],
+          "node:r0:1": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.0,
+              0.479452,
+              10800000
+            ]
+          ],
+          "node:r0:3": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              1.0,
+              0.528571,
+              0
+            ]
+          ]
+        },
+        "path_audit": [
+          {
+            "id": "connector:r3:0",
+            "actual_pt": [
+              [
+                285.48692913385827,
+                29.15183246062992
+              ],
+              [
+                300.3141732283465,
+                29.15183246062992
+              ]
+            ],
+            "expected_pt": [
+              [
+                285.4869109947644,
+                29.15183246073299
+              ],
+              [
+                300.3141361256545,
+                29.15183246073299
+              ]
+            ],
+            "max_vertex_error_pt": 3.71026919765427e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:1",
+            "actual_pt": [
+              [
+                354.09425196850395,
+                29.151833637007876
+              ],
+              [
+                367.91622047244095,
+                28.900523542519686
+              ]
+            ],
+            "expected_pt": [
+              [
+                354.09424083769636,
+                29.15183246073299
+              ],
+              [
+                367.9162303664922,
+                28.900523560209425
+              ]
+            ],
+            "max_vertex_error_pt": 1.113080759296281e-05,
+            "vertices": 2,
+            "expected_vertices": 2,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:2",
+            "actual_pt": [
+              [
+                217.13086614173227,
+                29.905758083464566
+              ],
+              [
+                218.63871327559056,
+                29.403139554330707
+              ],
+              [
+                230.95291338582678,
+                29.403139554330707
+              ]
+            ],
+            "expected_pt": [
+              [
+                217.13089005235605,
+                29.905759162303667
+              ],
+              [
+                218.6387434554974,
+                29.403141361256544
+              ],
+              [
+                230.95287958115182,
+                29.403141361256544
+              ]
+            ],
+            "max_vertex_error_pt": 3.3804674956172676e-05,
+            "vertices": 3,
+            "expected_vertices": 3,
+            "bound_endpoints": 2
+          }
+        ],
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--transparent_gap_trace.json",
+        "input_scene_sha256": "b57cecb1bcb99f9e99a96194aae1ec7df8182cb45a160ceb0ecddfe74a6e554f",
+        "pptx_path": "artifacts\\region-first-r3e\\run1\\cogbot-perceive--native_path.pptx",
+        "pptx_sha256": "6055eb19eb391ab4d56120ae3eb57cf6e1a51c82aa766eafe2021066854f885a",
+        "sites": {
+          "node:r0:1": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.0,
+              0.490909,
+              10800000
+            ],
+            [
+              1.0,
+              1.0,
+              0
+            ]
+          ],
+          "node:r0:2": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.497696,
+              0.0,
+              16200000
+            ]
+          ],
+          "node:r0:3": [
+            [
+              0.5,
+              0,
+              16200000
+            ],
+            [
+              0,
+              0.5,
+              10800000
+            ],
+            [
+              0.5,
+              1,
+              5400000
+            ],
+            [
+              1,
+              0.5,
+              0
+            ],
+            [
+              0.501235,
+              0.0,
+              16200000
+            ]
+          ]
+        },
+        "path_audit": [
+          {
+            "id": "connector:r3:0",
+            "actual_pt": [
+              [
+                76.17393700787402,
+                85.5651968503937
+              ],
+              [
+                74.08695525275591,
+                85.5651968503937
+              ],
+              [
+                71.58261345984252,
+                88.0695968503937
+              ],
+              [
+                70.74783286220472,
+                90.1566368503937
+              ],
+              [
+                70.74783286220472,
+                108.5216768503937
+              ],
+              [
+                70.12173228346457,
+                109.5651968503937
+              ]
+            ],
+            "expected_pt": [
+              [
+                76.17391304347825,
+                85.56521739130434
+              ],
+              [
+                74.08695652173913,
+                85.56521739130434
+              ],
+              [
+                71.58260869565217,
+                88.0695652173913
+              ],
+              [
+                70.74782608695652,
+                90.15652173913044
+              ],
+              [
+                70.74782608695652,
+                108.52173913043478
+              ],
+              [
+                70.12173913043478,
+                109.56521739130434
+              ]
+            ],
+            "max_vertex_error_pt": 0.00011511126325558507,
+            "vertices": 6,
+            "expected_vertices": 6,
+            "bound_endpoints": 2
+          },
+          {
+            "id": "connector:r3:1",
+            "actual_pt": [
+              [
+                162.15653543307087,
+                97.25220472440945
+              ],
+              [
+                162.57390488976378,
+                98.08690246062991
+              ],
+              [
+                163.61740157480315,
+                99.13042854330708
+              ],
+              [
+                164.24347036850392,
+                100.59136505905511
+              ],
+              [
+                164.4521697055118,
+                108.52179389763779
+              ],
+              [
+                165.07826771653544,
+                109.5651968503937
+              ]
+            ],
+            "expected_pt": [
+              [
+                162.15652173913045,
+                97.25217391304346
+              ],
+              [
+                162.57391304347829,
+                98.08695652173914
+              ],
+              [
+                163.61739130434782,
+                99.13043478260869
+              ],
+              [
+                164.24347826086955,
+                100.59130434782608
+              ],
+              [
+                164.45217391304348,
+                108.52173913043478
+              ],
+              [
+                165.0782608695652,
+                109.56521739130434
+              ]
+            ],
+            "max_vertex_error_pt": 6.0711229025400826e-05,
+            "vertices": 6,
+            "expected_vertices": 6,
+            "bound_endpoints": 2
+          }
+        ],
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 2,
+          "bound_endpoints": 4,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\negative-plots--transparent_gap_trace.json",
+        "input_scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "pptx_path": "artifacts\\region-first-r3e\\run1\\negative-plots--native_path.pptx",
+        "pptx_sha256": "c0ce336e8685cea24a807592e8e8e784e5868dcc3b45c32493457b1179148e25",
+        "sites": {},
+        "path_audit": [],
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      }
+    ]
+  },
+  "e0_open_probe": {
+    "powerpoint_version": "16.0",
+    "records": [
+      {
+        "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e\\run1\\cogbot-perceive--native_path.pptx",
+        "sha256": "6055eb19eb391ab4d56120ae3eb57cf6e1a51c82aa766eafe2021066854f885a",
+        "opened": false,
+        "error": "The file or directory is corrupted and unreadable. (0x80070570)",
+        "hresult": -2147023504
+      },
+      {
+        "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e\\run1\\mixed-attention--native_path.pptx",
+        "sha256": "94098590c7e99edab6b5e0e926400f37f4d88ecf18024b44e878d3700f47a1f4",
+        "opened": false,
+        "error": "The file or directory is corrupted and unreadable. (0x80070570)",
+        "hresult": -2147023504
+      },
+      {
+        "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e\\run1\\mixed-blip--native_path.pptx",
+        "sha256": "a8cbb1c589e6c42844fc1a07c81ed74598480b8b1660803903e6ae286f6e70e9",
+        "opened": false,
+        "error": "The file or directory is corrupted and unreadable. (0x80070570)",
+        "hresult": -2147023504
+      },
+      {
+        "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e\\run1\\negative-plots--native_path.pptx",
+        "sha256": "c0ce336e8685cea24a807592e8e8e784e5868dcc3b45c32493457b1179148e25",
+        "opened": true
+      },
+      {
+        "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e\\run1\\reasoning-row--native_path.pptx",
+        "sha256": "e6b980ebf81cb61e7178c1a7962b205ded730c7b1b07f887cb5e0b32e0df16c9",
+        "opened": false,
+        "error": "The file or directory is corrupted and unreadable. (0x80070570)",
+        "hresult": -2147023504
+      },
+      {
+        "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e\\run1\\serial-hevc--native_path.pptx",
+        "sha256": "27f19edd41c36e7b7a95668ff18b9fbb983ab0e75522ed202cfab4c3cf815fae",
+        "opened": false,
+        "error": "The file or directory is corrupted and unreadable. (0x80070570)",
+        "hresult": -2147023504
+      }
+    ]
+  },
+  "e1_results": {
+    "status": "R3E1_native_preset_diagnostic",
+    "input_evidence_sha256": "753db146a8a4962041217959d0ca15d277f81b0c2cbfa4b4b4dfa816980e812f",
+    "git_commit": "f7163870208bcff9b0b539c339ae81626dd60a48",
+    "git_status": "",
+    "code_sha256": {
+      "src/image_to_editable_ppt/research/preset_emit.py": "6158df17f06b11f01eb1a8f83b7921c4c80fc44fca9f0070e8ed0c38a1a52748",
+      "src/image_to_editable_ppt/research/path_emit.py": "8e84594d2566517161b96752c782b8f8f08512fbd83fdca55efe9013a06c2513",
+      "src/image_to_editable_ppt/research/native_emit.py": "ae48317520480e55985a78c12d1fe756a621aa76487d2e70dd805a70388df792",
+      "src/image_to_editable_ppt/v3/emit/pptx_writer.py": "2638040b48f14cd9c6c95493cf2b8c008a51da1a95edbb9477aefa53e391008c",
+      "src/image_to_editable_ppt/v3/emit/style.py": "500fb23f7e3c1efad5e186a1074e02eafaa930b188669e69477dff86d7a5e5c0",
+      "tools/run_preset_emission.py": "8ca7cdac7e91431a8d8dd27e8b1b2db5a3e00aa875477f077afe45d6fbbd2d59",
+      "docs/region_first_r3e1_protocol.md": "d45befa869b00104bdc8bc9b17b16002bfa1cb2d26e0f4014a8e2453a5d58f60"
+    },
+    "records": [
+      {
+        "sample": "mixed-blip",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\mixed-blip--transparent_gap_trace.json",
+        "input_scene_sha256": "5ffe7354b33fea57ecbb5f40f276844b07d12d58c79874d47ef2ef689868be24",
+        "pptx_path": "artifacts\\region-first-r3e1\\run1\\mixed-blip--preset_path.pptx",
+        "pptx_sha256": "ac214c7d6e504cb7d27da8d43311c157e91adf3e5e94ba73a9882b79ffbbb6e8",
+        "sites": {
+          "connector:r3:0": {
+            "error_px": 5.684341886080802e-14,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                286.71140939597313,
+                314.4161073825503
+              ],
+              [
+                322.7919463087248,
+                315.0604026845637
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                114.04026845637583,
+                315.7046979865772
+              ],
+              [
+                150.1208053691275,
+                316.3489932885906
+              ]
+            ]
+          },
+          "connector:r3:2": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                579.2214765100671,
+                320.8590604026845
+              ],
+              [
+                615.9463087248322,
+                321.503355704698
+              ]
+            ]
+          }
+        },
+        "path_audit": {
+          "connector:r3:0": {
+            "error_px": 5.684341886080802e-14,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                286.71140939597313,
+                314.4161073825503
+              ],
+              [
+                322.7919463087248,
+                315.0604026845637
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                114.04026845637583,
+                315.7046979865772
+              ],
+              [
+                150.1208053691275,
+                316.3489932885906
+              ]
+            ]
+          },
+          "connector:r3:2": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                579.2214765100671,
+                320.8590604026845
+              ],
+              [
+                615.9463087248322,
+                321.503355704698
+              ]
+            ]
+          }
+        },
+        "native": {
+          "native_shapes": 8,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 5
+        }
+      },
+      {
+        "sample": "mixed-attention",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\mixed-attention--transparent_gap_trace.json",
+        "input_scene_sha256": "616cf4b11b092d77c1f13de69748eff278179daf8b374fcec22f1fb7f24ce1ec",
+        "pptx_path": "artifacts\\region-first-r3e1\\run1\\mixed-attention--preset_path.pptx",
+        "pptx_sha256": "62b5f2657849634a4f57575a031d5b830e3baf79cf97d5f9b96cc3958963d0d3",
+        "sites": {
+          "connector:r3:0": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                365.2363636363636,
+                114.32727272727273
+              ],
+              [
+                365.2363636363636,
+                89.01818181818182
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                395.78181818181815,
+                114.32727272727273
+              ],
+              [
+                395.78181818181815,
+                89.01818181818182
+              ]
+            ]
+          },
+          "connector:r3:2": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                428.07272727272726,
+                114.32727272727273
+              ],
+              [
+                428.07272727272726,
+                89.01818181818182
+              ]
+            ]
+          },
+          "connector:r3:3": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                505.3090909090909,
+                114.32727272727273
+              ],
+              [
+                505.3090909090909,
+                89.01818181818182
+              ]
+            ]
+          }
+        },
+        "path_audit": {
+          "connector:r3:0": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                365.2363636363636,
+                114.32727272727273
+              ],
+              [
+                365.2363636363636,
+                89.01818181818182
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                395.78181818181815,
+                114.32727272727273
+              ],
+              [
+                395.78181818181815,
+                89.01818181818182
+              ]
+            ]
+          },
+          "connector:r3:2": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                428.07272727272726,
+                114.32727272727273
+              ],
+              [
+                428.07272727272726,
+                89.01818181818182
+              ]
+            ]
+          },
+          "connector:r3:3": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                505.3090909090909,
+                114.32727272727273
+              ],
+              [
+                505.3090909090909,
+                89.01818181818182
+              ]
+            ]
+          }
+        },
+        "native": {
+          "native_shapes": 12,
+          "raster_images": 0,
+          "connectors": 4,
+          "bound_endpoints": 8,
+          "nonempty_text_shapes": 1
+        }
+      },
+      {
+        "sample": "serial-hevc",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\serial-hevc--transparent_gap_trace.json",
+        "input_scene_sha256": "1a7dd2a97f8559c1e3eb3c383a2990d051fe74036503c433009798fa14153f5b",
+        "pptx_path": "artifacts\\region-first-r3e1\\run1\\serial-hevc--preset_path.pptx",
+        "pptx_sha256": "1ef6ede0c851cd33e42b9c9befa406be797ac1b52c92bf40ad59975887b8daf3",
+        "sites": {
+          "connector:r3:0": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                396.3761589403974,
+                135.6291390728477
+              ],
+              [
+                396.03708609271524,
+                200.05298013245033
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                396.3761589403974,
+                294.3152317880795
+              ],
+              [
+                396.3761589403974,
+                344.4980132450331
+              ]
+            ]
+          },
+          "connector:r3:2": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                396.3761589403974,
+                471.9894039735099
+              ],
+              [
+                396.3761589403974,
+                522.1721854304636
+              ]
+            ]
+          }
+        },
+        "path_audit": {
+          "connector:r3:0": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                396.3761589403974,
+                135.6291390728477
+              ],
+              [
+                396.03708609271524,
+                200.05298013245033
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                396.3761589403974,
+                294.3152317880795
+              ],
+              [
+                396.3761589403974,
+                344.4980132450331
+              ]
+            ]
+          },
+          "connector:r3:2": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                396.3761589403974,
+                471.9894039735099
+              ],
+              [
+                396.3761589403974,
+                522.1721854304636
+              ]
+            ]
+          }
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "reasoning-row",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\reasoning-row--transparent_gap_trace.json",
+        "input_scene_sha256": "8b8cd7be34f03644b5e4e8cd119979d758e2efeeaf9560aa27e2c57afb5ffcc3",
+        "pptx_path": "artifacts\\region-first-r3e1\\run1\\reasoning-row--preset_path.pptx",
+        "pptx_sha256": "19dbfb0acfaa1750f0d722d3138434b79fcbfd318de1d2b448dcf464f314ca5f",
+        "sites": {
+          "connector:r3:0": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                380.64921465968587,
+                38.869109947643985
+              ],
+              [
+                400.4188481675393,
+                38.869109947643985
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 7.105427357601002e-15,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                472.12565445026183,
+                38.869109947643985
+              ],
+              [
+                490.55497382198956,
+                38.53403141361257
+              ]
+            ]
+          },
+          "connector:r3:2": {
+            "error_px": 0.5966546721675442,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                289.5078534031414,
+                39.87434554973822
+              ],
+              [
+                307.9371727748691,
+                39.204188481675395
+              ]
+            ]
+          }
+        },
+        "path_audit": {
+          "connector:r3:0": {
+            "error_px": 0.0,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                380.64921465968587,
+                38.869109947643985
+              ],
+              [
+                400.4188481675393,
+                38.869109947643985
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 7.105427357601002e-15,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                472.12565445026183,
+                38.869109947643985
+              ],
+              [
+                490.55497382198956,
+                38.53403141361257
+              ]
+            ]
+          },
+          "connector:r3:2": {
+            "error_px": 0.5966546721675442,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                289.5078534031414,
+                39.87434554973822
+              ],
+              [
+                307.9371727748691,
+                39.204188481675395
+              ]
+            ]
+          }
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 3,
+          "bound_endpoints": 6,
+          "nonempty_text_shapes": 4
+        }
+      },
+      {
+        "sample": "cogbot-perceive",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\cogbot-perceive--transparent_gap_trace.json",
+        "input_scene_sha256": "b57cecb1bcb99f9e99a96194aae1ec7df8182cb45a160ceb0ecddfe74a6e554f",
+        "pptx_path": "artifacts\\region-first-r3e1\\run1\\cogbot-perceive--preset_path.pptx",
+        "pptx_sha256": "8e6a73cdfe51fb965593a6e510ea9387422d11e0707997e4a53fc8bd6bdb3a08",
+        "sites": {
+          "connector:r3:0": {
+            "error_px": 2.361121773701174,
+            "preset": "bentConnector3",
+            "adj": 0.7586206896551719,
+            "route_px": [
+              [
+                101.56521739130434,
+                114.08695652173913
+              ],
+              [
+                95.44347826086957,
+                114.08695652173913
+              ],
+              [
+                95.44347826086957,
+                146.08695652173913
+              ],
+              [
+                93.49565217391304,
+                146.08695652173913
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 1.6795247511703704,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                216.20869565217393,
+                129.6695652173913
+              ],
+              [
+                220.10434782608695,
+                146.08695652173913
+              ]
+            ]
+          }
+        },
+        "path_audit": {
+          "connector:r3:0": {
+            "error_px": 2.361121773701174,
+            "preset": "bentConnector3",
+            "adj": 0.7586206896551719,
+            "route_px": [
+              [
+                101.56521739130434,
+                114.08695652173913
+              ],
+              [
+                95.44347826086957,
+                114.08695652173913
+              ],
+              [
+                95.44347826086957,
+                146.08695652173913
+              ],
+              [
+                93.49565217391304,
+                146.08695652173913
+              ]
+            ]
+          },
+          "connector:r3:1": {
+            "error_px": 1.6795247511703704,
+            "preset": "line",
+            "adj": null,
+            "route_px": [
+              [
+                216.20869565217393,
+                129.6695652173913
+              ],
+              [
+                220.10434782608695,
+                146.08695652173913
+              ]
+            ]
+          }
+        },
+        "native": {
+          "native_shapes": 7,
+          "raster_images": 0,
+          "connectors": 2,
+          "bound_endpoints": 4,
+          "nonempty_text_shapes": 3
+        }
+      },
+      {
+        "sample": "negative-plots",
+        "input_scene_path": "artifacts\\region-first-r3\\run1\\negative-plots--transparent_gap_trace.json",
+        "input_scene_sha256": "44d1fde50827a08851580146ae873c1ab6d3b3fcd664762ff1bdc9bc789acbd4",
+        "pptx_path": "artifacts\\region-first-r3e1\\run1\\negative-plots--preset_path.pptx",
+        "pptx_sha256": "45c3b021b7739056c8c7273e709afa754b89de7cb6d69431dd3d2481771c30ac",
+        "sites": {},
+        "path_audit": {},
+        "native": {
+          "native_shapes": 0,
+          "raster_images": 0,
+          "connectors": 0,
+          "bound_endpoints": 0,
+          "nonempty_text_shapes": 0
+        }
+      }
+    ]
+  },
+  "e1_render_manifest": {
+    "schema_version": "phase16_powerpoint_render_manifest_v1",
+    "generated_at": "2026-09-07T23:56:05.9842425+00:00",
+    "powerpoint_version": "16.0",
+    "export_format": "PNG",
+    "target_width": 1200,
+    "records": [
+      {
+        "id": "cogbot-perceive--preset_path",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\cogbot-perceive--preset_path.pptx",
+        "pptx_sha256": "8e6a73cdfe51fb965593a6e510ea9387422d11e0707997e4a53fc8bd6bdb3a08",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1-renders\\cogbot-perceive--preset_path.png",
+        "render_sha256": "36ac45902296e465a1cef63cd193f57d8b01cdf80b547daf1df32f6ebbd3ab27",
+        "width": 1200,
+        "height": 655
+      },
+      {
+        "id": "mixed-attention--preset_path",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\mixed-attention--preset_path.pptx",
+        "pptx_sha256": "62b5f2657849634a4f57575a031d5b830e3baf79cf97d5f9b96cc3958963d0d3",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1-renders\\mixed-attention--preset_path.png",
+        "render_sha256": "91f442323f5ee4bc5ab23143729d9ca1a490457795bea0a388d5104b197bd308",
+        "width": 1200,
+        "height": 262
+      },
+      {
+        "id": "mixed-blip--preset_path",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\mixed-blip--preset_path.pptx",
+        "pptx_sha256": "ac214c7d6e504cb7d27da8d43311c157e91adf3e5e94ba73a9882b79ffbbb6e8",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1-renders\\mixed-blip--preset_path.png",
+        "render_sha256": "184e9a71a714cdc7865e38ba8e1eb574d4343a857accb4a8eb648c6b07deacdf",
+        "width": 1200,
+        "height": 700
+      },
+      {
+        "id": "negative-plots--preset_path",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\negative-plots--preset_path.pptx",
+        "pptx_sha256": "45c3b021b7739056c8c7273e709afa754b89de7cb6d69431dd3d2481771c30ac",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1-renders\\negative-plots--preset_path.png",
+        "render_sha256": "b6a4a0e75aab03b5bf5236aa109f10bc6e23b1f3c7d2b04e7c2ece44c61d8bcf",
+        "width": 1200,
+        "height": 303
+      },
+      {
+        "id": "reasoning-row--preset_path",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\reasoning-row--preset_path.pptx",
+        "pptx_sha256": "19dbfb0acfaa1750f0d722d3138434b79fcbfd318de1d2b448dcf464f314ca5f",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1-renders\\reasoning-row--preset_path.png",
+        "render_sha256": "fca703ea492f4eddeabdb350d2def80f9c832e329de7e9fae1921f51cde8159e",
+        "width": 1200,
+        "height": 492
+      },
+      {
+        "id": "serial-hevc--preset_path",
+        "pptx_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\serial-hevc--preset_path.pptx",
+        "pptx_sha256": "1ef6ede0c851cd33e42b9c9befa406be797ac1b52c92bf40ad59975887b8daf3",
+        "render_path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1-renders\\serial-hevc--preset_path.png",
+        "render_sha256": "98387b36ac792323af15847500f48936b395387e71ed391dff59daaef645e55d",
+        "width": 1200,
+        "height": 1552
+      }
+    ]
+  },
+  "initial_audits": [
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\mixed-blip--preset_path.pptx",
+      "sha256": "ac214c7d6e504cb7d27da8d43311c157e91adf3e5e94ba73a9882b79ffbbb6e8",
+      "connectors": [
+        {
+          "connector": "connector:r3:0",
+          "vertices_pt": [
+            [
+              215.0335433070866,
+              235.8120472440945
+            ],
+            [
+              242.09393700787402,
+              236.29527559055117
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:0",
+            "node:r0:1"
+          ],
+          "site_indices": [
+            4,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              215.03355704697987,
+              235.81208053691273
+            ],
+            [
+              242.09395973154358,
+              236.29530201342277
+            ]
+          ],
+          "max_endpoint_error_pt": 3.6016613021199146e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 3.6016613021199146e-05
+        },
+        {
+          "connector": "connector:r3:1",
+          "vertices_pt": [
+            [
+              85.53023622047245,
+              236.77850393700788
+            ],
+            [
+              112.59062992125985,
+              237.26173228346457
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:3",
+            "node:r0:0"
+          ],
+          "site_indices": [
+            3,
+            5
+          ],
+          "expected_endpoints_pt": [
+            [
+              85.53020134228187,
+              236.77852348993287
+            ],
+            [
+              112.59060402684563,
+              237.26174496644293
+            ]
+          ],
+          "max_endpoint_error_pt": 3.998506037502697e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 3.998506037502696e-05
+        },
+        {
+          "connector": "connector:r3:2",
+          "vertices_pt": [
+            [
+              434.41614173228345,
+              240.6443307086614
+            ],
+            [
+              461.9597637795276,
+              241.1275590551181
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:4",
+            "node:r0:2"
+          ],
+          "site_indices": [
+            4,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              434.4161073825503,
+              240.6442953020134
+            ],
+            [
+              461.9597315436241,
+              241.1275167785235
+            ]
+          ],
+          "max_endpoint_error_pt": 5.316449870734065e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 5.316449870734065e-05
+        }
+      ],
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "raster_count": 0,
+      "max_box_error_pt": 7.66263277824919e-05,
+      "max_endpoint_error_pt": 5.316449870734065e-05,
+      "sample": "mixed-blip"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\mixed-attention--preset_path.pptx",
+      "sha256": "62b5f2657849634a4f57575a031d5b830e3baf79cf97d5f9b96cc3958963d0d3",
+      "connectors": [
+        {
+          "connector": "connector:r3:0",
+          "vertices_pt": [
+            [
+              273.9272440944882,
+              85.74543307086614
+            ],
+            [
+              273.9273228346457,
+              66.7636220472441
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:4",
+            "node:r0:0"
+          ],
+          "site_indices": [
+            4,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              273.9272727272727,
+              85.74545454545455
+            ],
+            [
+              273.9272727272727,
+              66.76363636363637
+            ]
+          ],
+          "max_endpoint_error_pt": 5.2112454523239086e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 5.2112454523239086e-05
+        },
+        {
+          "connector": "connector:r3:1",
+          "vertices_pt": [
+            [
+              296.8363779527559,
+              85.74543307086614
+            ],
+            [
+              296.8364566929134,
+              66.7636220472441
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:5",
+            "node:r0:0"
+          ],
+          "site_indices": [
+            4,
+            5
+          ],
+          "expected_endpoints_pt": [
+            [
+              296.8363636363636,
+              85.74545454545455
+            ],
+            [
+              296.8363636363636,
+              66.76363636363637
+            ]
+          ],
+          "max_endpoint_error_pt": 9.41513703589803e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 9.41513703589803e-05
+        },
+        {
+          "connector": "connector:r3:2",
+          "vertices_pt": [
+            [
+              321.05456692913384,
+              85.74543307086614
+            ],
+            [
+              321.05464566929135,
+              66.7636220472441
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:6",
+            "node:r0:0"
+          ],
+          "site_indices": [
+            4,
+            6
+          ],
+          "expected_endpoints_pt": [
+            [
+              321.05454545454546,
+              85.74545454545455
+            ],
+            [
+              321.05454545454546,
+              66.76363636363637
+            ]
+          ],
+          "max_endpoint_error_pt": 0.00010123218055693848,
+          "owners_preserved": true,
+          "fit_route_error_pt": 0.00010123218055693848
+        },
+        {
+          "connector": "connector:r3:3",
+          "vertices_pt": [
+            [
+              378.9818110236221,
+              85.74543307086614
+            ],
+            [
+              378.9818897637795,
+              66.7636220472441
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:7",
+            "node:r0:0"
+          ],
+          "site_indices": [
+            4,
+            7
+          ],
+          "expected_endpoints_pt": [
+            [
+              378.9818181818182,
+              85.74545454545455
+            ],
+            [
+              378.9818181818182,
+              66.76363636363637
+            ]
+          ],
+          "max_endpoint_error_pt": 7.299956352093458e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 7.299956352093458e-05
+        }
+      ],
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "raster_count": 0,
+      "max_box_error_pt": 7.158196134504635e-05,
+      "max_endpoint_error_pt": 0.00010123218055693848,
+      "sample": "mixed-attention"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\serial-hevc--preset_path.pptx",
+      "sha256": "1ef6ede0c851cd33e42b9c9befa406be797ac1b52c92bf40ad59975887b8daf3",
+      "connectors": [
+        {
+          "connector": "connector:r3:0",
+          "vertices_pt": [
+            [
+              297.282125984252,
+              101.72188976377953
+            ],
+            [
+              297.02779527559056,
+              150.03976377952756
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:0",
+            "node:r0:1"
+          ],
+          "site_indices": [
+            4,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              297.28211920529805,
+              101.72185430463577
+            ],
+            [
+              297.0278145695364,
+              150.03973509933775
+            ]
+          ],
+          "max_endpoint_error_pt": 3.610131705054984e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 3.610131705054984e-05
+        },
+        {
+          "connector": "connector:r3:1",
+          "vertices_pt": [
+            [
+              297.282125984252,
+              220.73645669291338
+            ],
+            [
+              297.28220472440944,
+              258.3735433070866
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:1",
+            "node:r0:2"
+          ],
+          "site_indices": [
+            5,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              297.28211920529805,
+              220.7364238410596
+            ],
+            [
+              297.28211920529805,
+              258.3735099337748
+            ]
+          ],
+          "max_endpoint_error_pt": 9.180030693717931e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 9.180030693717931e-05
+        },
+        {
+          "connector": "connector:r3:2",
+          "vertices_pt": [
+            [
+              297.282125984252,
+              353.99204724409446
+            ],
+            [
+              297.28220472440944,
+              391.6291338582677
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:2",
+            "node:r0:3"
+          ],
+          "site_indices": [
+            5,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              297.28211920529805,
+              353.9920529801324
+            ],
+            [
+              297.28211920529805,
+              391.6291390728477
+            ]
+          ],
+          "max_endpoint_error_pt": 8.56779449913013e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 8.56779449913013e-05
+        }
+      ],
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "raster_count": 0,
+      "max_box_error_pt": 7.456849351683559e-05,
+      "max_endpoint_error_pt": 9.180030693717931e-05,
+      "sample": "serial-hevc"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\reasoning-row--preset_path.pptx",
+      "sha256": "19dbfb0acfaa1750f0d722d3138434b79fcbfd318de1d2b448dcf464f314ca5f",
+      "connectors": [
+        {
+          "connector": "connector:r3:0",
+          "vertices_pt": [
+            [
+              285.48692913385827,
+              29.15181102362205
+            ],
+            [
+              300.3141732283465,
+              29.15188976377953
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:0",
+            "node:r0:2"
+          ],
+          "site_indices": [
+            4,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              285.4869109947644,
+              29.15183246073299
+            ],
+            [
+              300.3141361256545,
+              29.15183246073299
+            ]
+          ],
+          "max_endpoint_error_pt": 6.826601566336676e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 6.826601566336676e-05
+        },
+        {
+          "connector": "connector:r3:1",
+          "vertices_pt": [
+            [
+              354.09425196850395,
+              29.15188976377953
+            ],
+            [
+              367.91622047244095,
+              28.90055118110236
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:2",
+            "node:r0:1"
+          ],
+          "site_indices": [
+            5,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              354.09424083769636,
+              29.15183246073299
+            ],
+            [
+              367.9162303664922,
+              28.900523560209425
+            ]
+          ],
+          "max_endpoint_error_pt": 5.8374086890643424e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 5.8374086890643424e-05
+        },
+        {
+          "connector": "connector:r3:2",
+          "vertices_pt": [
+            [
+              217.13086614173227,
+              29.905748031496064
+            ],
+            [
+              230.9528346456693,
+              29.403149606299213
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:3",
+            "node:r0:0"
+          ],
+          "site_indices": [
+            4,
+            5
+          ],
+          "expected_endpoints_pt": [
+            [
+              217.13089005235605,
+              29.905759162303667
+            ],
+            [
+              230.95287958115182,
+              29.403141361256544
+            ]
+          ],
+          "max_endpoint_error_pt": 4.5685646739093324e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 4.5685646739093324e-05
+        }
+      ],
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "raster_count": 0,
+      "max_box_error_pt": 7.502988828633761e-05,
+      "max_endpoint_error_pt": 6.826601566336676e-05,
+      "sample": "reasoning-row"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\cogbot-perceive--preset_path.pptx",
+      "sha256": "8e6a73cdfe51fb965593a6e510ea9387422d11e0707997e4a53fc8bd6bdb3a08",
+      "connectors": [
+        {
+          "connector": "connector:r3:0",
+          "vertices_pt": [
+            [
+              76.17393700787402,
+              85.5651968503937
+            ],
+            [
+              71.58261345984252,
+              85.5651968503937
+            ],
+            [
+              71.58261345984252,
+              109.5651968503937
+            ],
+            [
+              70.12173228346457,
+              109.5651968503937
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:1",
+            "node:r0:2"
+          ],
+          "site_indices": [
+            4,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              76.17391304347825,
+              85.56521739130434
+            ],
+            [
+              70.12173913043478,
+              109.56521739130434
+            ]
+          ],
+          "max_endpoint_error_pt": 3.1562973154126896e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 3.1562973154126896e-05
+        },
+        {
+          "connector": "connector:r3:1",
+          "vertices_pt": [
+            [
+              162.15653543307087,
+              97.25220472440945
+            ],
+            [
+              165.07826771653544,
+              109.56527559055118
+            ]
+          ],
+          "arrow_ends": [
+            {
+              "type": "triangle"
+            }
+          ],
+          "owner_bindings": [
+            "node:r0:1",
+            "node:r0:3"
+          ],
+          "site_indices": [
+            5,
+            4
+          ],
+          "expected_endpoints_pt": [
+            [
+              162.15652173913045,
+              97.25217391304346
+            ],
+            [
+              165.0782608695652,
+              109.56521739130434
+            ]
+          ],
+          "max_endpoint_error_pt": 5.860062571011241e-05,
+          "owners_preserved": true,
+          "fit_route_error_pt": 5.860062571011241e-05
+        }
+      ],
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "raster_count": 0,
+      "max_box_error_pt": 7.189318726830152e-05,
+      "max_endpoint_error_pt": 5.860062571011241e-05,
+      "sample": "cogbot-perceive"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\run1\\negative-plots--preset_path.pptx",
+      "sha256": "45c3b021b7739056c8c7273e709afa754b89de7cb6d69431dd3d2481771c30ac",
+      "connectors": [],
+      "native_ids_exact": true,
+      "labels_preserved": true,
+      "raster_count": 0,
+      "max_box_error_pt": 0,
+      "max_endpoint_error_pt": 0,
+      "sample": "negative-plots"
+    }
+  ],
+  "edit_audits": [
+    {
+      "sample": "mixed-attention",
+      "stages": [
+        {
+          "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--roundtrip.pptx",
+          "sha256": "0d0e6f267535d0b686d5d98ce4e45f1ae2b7130a1587f95e0c32e55b819ec961",
+          "connectors": [
+            {
+              "connector": "connector:r3:0",
+              "vertices_pt": [
+                [
+                  273.9272440944882,
+                  85.74543307086614
+                ],
+                [
+                  273.9273228346457,
+                  66.7636220472441
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:4",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  273.9272727272727,
+                  85.74545454545455
+                ],
+                [
+                  273.9272727272727,
+                  66.76363636363637
+                ]
+              ],
+              "max_endpoint_error_pt": 5.2112454523239086e-05,
+              "owners_preserved": true,
+              "fit_route_error_pt": 5.2112454523239086e-05
+            },
+            {
+              "connector": "connector:r3:1",
+              "vertices_pt": [
+                [
+                  296.8363779527559,
+                  85.74543307086614
+                ],
+                [
+                  296.8364566929134,
+                  66.7636220472441
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:5",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                5
+              ],
+              "expected_endpoints_pt": [
+                [
+                  296.8363636363636,
+                  85.74545454545455
+                ],
+                [
+                  296.8363636363636,
+                  66.76363636363637
+                ]
+              ],
+              "max_endpoint_error_pt": 9.41513703589803e-05,
+              "owners_preserved": true,
+              "fit_route_error_pt": 9.41513703589803e-05
+            },
+            {
+              "connector": "connector:r3:2",
+              "vertices_pt": [
+                [
+                  321.05456692913384,
+                  85.74543307086614
+                ],
+                [
+                  321.05464566929135,
+                  66.7636220472441
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:6",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                6
+              ],
+              "expected_endpoints_pt": [
+                [
+                  321.05454545454546,
+                  85.74545454545455
+                ],
+                [
+                  321.05454545454546,
+                  66.76363636363637
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00010123218055693848,
+              "owners_preserved": true,
+              "fit_route_error_pt": 0.00010123218055693848
+            },
+            {
+              "connector": "connector:r3:3",
+              "vertices_pt": [
+                [
+                  378.9818110236221,
+                  85.74543307086614
+                ],
+                [
+                  378.9818897637795,
+                  66.7636220472441
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:7",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                7
+              ],
+              "expected_endpoints_pt": [
+                [
+                  378.9818181818182,
+                  85.74545454545455
+                ],
+                [
+                  378.9818181818182,
+                  66.76363636363637
+                ]
+              ],
+              "max_endpoint_error_pt": 7.299956352093458e-05,
+              "owners_preserved": true,
+              "fit_route_error_pt": 7.299956352093458e-05
+            }
+          ],
+          "native_ids_exact": true,
+          "labels_preserved": true,
+          "raster_count": 0,
+          "max_box_error_pt": 7.158196134504635e-05,
+          "max_endpoint_error_pt": 0.00010123218055693848,
+          "stage": "roundtrip",
+          "sites_preserved": true,
+          "arrow_ends_preserved": true
+        },
+        {
+          "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--edited.pptx",
+          "sha256": "2bda0105064e962e1a58ba44cbcd5c015a3dab6e38b507da0e1813c840bccc54",
+          "connectors": [
+            {
+              "connector": "connector:r3:0",
+              "vertices_pt": [
+                [
+                  273.9272440944882,
+                  85.74543307086614
+                ],
+                [
+                  288.95448818897637,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:4",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  273.9272727272727,
+                  85.74545454545455
+                ],
+                [
+                  288.95454545454544,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00012168933429028825,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:1",
+              "vertices_pt": [
+                [
+                  296.8362992125984,
+                  85.74543307086614
+                ],
+                [
+                  317.5907874015748,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:5",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                5
+              ],
+              "expected_endpoints_pt": [
+                [
+                  296.8363636363636,
+                  85.74545454545455
+                ],
+                [
+                  317.59090909090907,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00016228753110738846,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:2",
+              "vertices_pt": [
+                [
+                  321.0544881889764,
+                  85.74543307086614
+                ],
+                [
+                  347.8635433070866,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:6",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                6
+              ],
+              "expected_endpoints_pt": [
+                [
+                  321.05454545454546,
+                  85.74545454545455
+                ],
+                [
+                  347.8636363636364,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00014208613631227197,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:3",
+              "vertices_pt": [
+                [
+                  378.98173228346457,
+                  85.74543307086614
+                ],
+                [
+                  420.27259842519686,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:7",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                7
+              ],
+              "expected_endpoints_pt": [
+                [
+                  378.9818181818182,
+                  85.74545454545455
+                ],
+                [
+                  420.2727272727273,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 0.0001677218971443602,
+              "owners_preserved": true
+            }
+          ],
+          "native_ids_exact": true,
+          "labels_preserved": true,
+          "raster_count": 0,
+          "max_box_error_pt": 8.589835361760834e-05,
+          "max_endpoint_error_pt": 0.0001677218971443602,
+          "stage": "edited",
+          "sites_preserved": true,
+          "arrow_ends_preserved": true
+        },
+        {
+          "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--reopened.pptx",
+          "sha256": "2bda0105064e962e1a58ba44cbcd5c015a3dab6e38b507da0e1813c840bccc54",
+          "connectors": [
+            {
+              "connector": "connector:r3:0",
+              "vertices_pt": [
+                [
+                  273.9272440944882,
+                  85.74543307086614
+                ],
+                [
+                  288.95448818897637,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:4",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  273.9272727272727,
+                  85.74545454545455
+                ],
+                [
+                  288.95454545454544,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00012168933429028825,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:1",
+              "vertices_pt": [
+                [
+                  296.8362992125984,
+                  85.74543307086614
+                ],
+                [
+                  317.5907874015748,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:5",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                5
+              ],
+              "expected_endpoints_pt": [
+                [
+                  296.8363636363636,
+                  85.74545454545455
+                ],
+                [
+                  317.59090909090907,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00016228753110738846,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:2",
+              "vertices_pt": [
+                [
+                  321.0544881889764,
+                  85.74543307086614
+                ],
+                [
+                  347.8635433070866,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:6",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                6
+              ],
+              "expected_endpoints_pt": [
+                [
+                  321.05454545454546,
+                  85.74545454545455
+                ],
+                [
+                  347.8636363636364,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00014208613631227197,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:3",
+              "vertices_pt": [
+                [
+                  378.98173228346457,
+                  85.74543307086614
+                ],
+                [
+                  420.27259842519686,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:7",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                4,
+                7
+              ],
+              "expected_endpoints_pt": [
+                [
+                  378.9818181818182,
+                  85.74545454545455
+                ],
+                [
+                  420.2727272727273,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 0.0001677218971443602,
+              "owners_preserved": true
+            }
+          ],
+          "native_ids_exact": true,
+          "labels_preserved": true,
+          "raster_count": 0,
+          "max_box_error_pt": 8.589835361760834e-05,
+          "max_endpoint_error_pt": 0.0001677218971443602,
+          "stage": "reopened",
+          "sites_preserved": true,
+          "arrow_ends_preserved": true
+        },
+        {
+          "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--rerouted.pptx",
+          "sha256": "1a720bebe6e3717710557e58100efedbc8761f47465987a842276088e1c54a32",
+          "connectors": [
+            {
+              "connector": "connector:r3:0",
+              "vertices_pt": [
+                [
+                  280.14543307086615,
+                  91.47267716535433
+                ],
+                [
+                  288.95448818897637,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:4",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                3,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  273.9272727272727,
+                  85.74545454545455
+                ],
+                [
+                  288.95454545454544,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 8.45379187090208,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:1",
+              "vertices_pt": [
+                [
+                  291.9272440944882,
+                  91.47267716535433
+                ],
+                [
+                  288.95448818897637,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:5",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                1,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  296.8363636363636,
+                  85.74545454545455
+                ],
+                [
+                  317.59090909090907,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 28.636420902133995,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:2",
+              "vertices_pt": [
+                [
+                  315.8181102362205,
+                  91.47267716535433
+                ],
+                [
+                  317.5907874015748,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:6",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                1,
+                5
+              ],
+              "expected_endpoints_pt": [
+                [
+                  321.05454545454546,
+                  85.74545454545455
+                ],
+                [
+                  347.8636363636364,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 30.27284896225199,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:3",
+              "vertices_pt": [
+                [
+                  373.41811023622046,
+                  91.47267716535433
+                ],
+                [
+                  355.63629921259843,
+                  93.20716535433071
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:7",
+                "node:r0:0"
+              ],
+              "site_indices": [
+                1,
+                2
+              ],
+              "expected_endpoints_pt": [
+                [
+                  378.9818181818182,
+                  85.74545454545455
+                ],
+                [
+                  420.2727272727273,
+                  93.20727272727274
+                ]
+              ],
+              "max_endpoint_error_pt": 64.63642806021807,
+              "owners_preserved": true
+            }
+          ],
+          "native_ids_exact": true,
+          "labels_preserved": true,
+          "raster_count": 0,
+          "max_box_error_pt": 8.589835361760834e-05,
+          "max_endpoint_error_pt": 64.63642806021807,
+          "stage": "rerouted",
+          "sites_preserved": false,
+          "arrow_ends_preserved": true
+        }
+      ]
+    },
+    {
+      "sample": "cogbot-perceive",
+      "stages": [
+        {
+          "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--roundtrip.pptx",
+          "sha256": "d2fbbf87b5e6fa3755e27d959157b4044107fe76fe5e879297b2e6aedbced279",
+          "connectors": [
+            {
+              "connector": "connector:r3:0",
+              "vertices_pt": [
+                [
+                  76.17393700787402,
+                  85.5651968503937
+                ],
+                [
+                  71.58261345984252,
+                  85.5651968503937
+                ],
+                [
+                  71.58261345984252,
+                  109.5651968503937
+                ],
+                [
+                  70.12173228346457,
+                  109.5651968503937
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "site_indices": [
+                4,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  76.17391304347825,
+                  85.56521739130434
+                ],
+                [
+                  70.12173913043478,
+                  109.56521739130434
+                ]
+              ],
+              "max_endpoint_error_pt": 3.1562973154126896e-05,
+              "owners_preserved": true,
+              "fit_route_error_pt": 3.1562973154126896e-05
+            },
+            {
+              "connector": "connector:r3:1",
+              "vertices_pt": [
+                [
+                  162.15653543307087,
+                  97.25220472440945
+                ],
+                [
+                  165.07826771653544,
+                  109.56527559055118
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:1",
+                "node:r0:3"
+              ],
+              "site_indices": [
+                5,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  162.15652173913045,
+                  97.25217391304346
+                ],
+                [
+                  165.0782608695652,
+                  109.56521739130434
+                ]
+              ],
+              "max_endpoint_error_pt": 5.860062571011241e-05,
+              "owners_preserved": true,
+              "fit_route_error_pt": 5.860062571011241e-05
+            }
+          ],
+          "native_ids_exact": true,
+          "labels_preserved": true,
+          "raster_count": 0,
+          "max_box_error_pt": 7.189318726830152e-05,
+          "max_endpoint_error_pt": 5.860062571011241e-05,
+          "stage": "roundtrip",
+          "sites_preserved": true,
+          "arrow_ends_preserved": true
+        },
+        {
+          "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--edited.pptx",
+          "sha256": "5403275a01d7774f1252fd39ab4389652a1647a370c5aaeb5c40647b952acfc1",
+          "connectors": [
+            {
+              "connector": "connector:r3:0",
+              "vertices_pt": [
+                [
+                  88.17385826771654,
+                  105.81889763779527
+                ],
+                [
+                  70.12181102362204,
+                  105.81889763779527
+                ],
+                [
+                  70.12181102362204,
+                  109.5651968503937
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "site_indices": [
+                4,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  88.17391304347825,
+                  105.81913043478261
+                ],
+                [
+                  70.12173913043478,
+                  109.56521739130434
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00023915438817340422,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:1",
+              "vertices_pt": [
+                [
+                  195.6520472440945,
+                  119.8432283464567
+                ],
+                [
+                  165.07826771653544,
+                  109.5651968503937
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:1",
+                "node:r0:3"
+              ],
+              "site_indices": [
+                5,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  195.6521739130435,
+                  119.84347826086956
+                ],
+                [
+                  165.0782608695652,
+                  109.56521739130434
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00028018250551913206,
+              "owners_preserved": true
+            }
+          ],
+          "native_ids_exact": true,
+          "labels_preserved": true,
+          "raster_count": 0,
+          "max_box_error_pt": 0.00014036288942520514,
+          "max_endpoint_error_pt": 0.00028018250551913206,
+          "stage": "edited",
+          "sites_preserved": true,
+          "arrow_ends_preserved": true
+        },
+        {
+          "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--reopened.pptx",
+          "sha256": "5403275a01d7774f1252fd39ab4389652a1647a370c5aaeb5c40647b952acfc1",
+          "connectors": [
+            {
+              "connector": "connector:r3:0",
+              "vertices_pt": [
+                [
+                  88.17385826771654,
+                  105.81889763779527
+                ],
+                [
+                  70.12181102362204,
+                  105.81889763779527
+                ],
+                [
+                  70.12181102362204,
+                  109.5651968503937
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "site_indices": [
+                4,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  88.17391304347825,
+                  105.81913043478261
+                ],
+                [
+                  70.12173913043478,
+                  109.56521739130434
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00023915438817340422,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:1",
+              "vertices_pt": [
+                [
+                  195.6520472440945,
+                  119.8432283464567
+                ],
+                [
+                  165.07826771653544,
+                  109.5651968503937
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:1",
+                "node:r0:3"
+              ],
+              "site_indices": [
+                5,
+                4
+              ],
+              "expected_endpoints_pt": [
+                [
+                  195.6521739130435,
+                  119.84347826086956
+                ],
+                [
+                  165.0782608695652,
+                  109.56521739130434
+                ]
+              ],
+              "max_endpoint_error_pt": 0.00028018250551913206,
+              "owners_preserved": true
+            }
+          ],
+          "native_ids_exact": true,
+          "labels_preserved": true,
+          "raster_count": 0,
+          "max_box_error_pt": 0.00014036288942520514,
+          "max_endpoint_error_pt": 0.00028018250551913206,
+          "stage": "reopened",
+          "sites_preserved": true,
+          "arrow_ends_preserved": true
+        },
+        {
+          "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--rerouted.pptx",
+          "sha256": "6f69a43afbaf2fe6cee8ad399cc51afb5df620ee456d6ed6494a8e3ea92b329d",
+          "connectors": [
+            {
+              "connector": "connector:r3:0",
+              "vertices_pt": [
+                [
+                  88.17385826771654,
+                  106.06929133858267
+                ],
+                [
+                  70.33047244094489,
+                  106.06929133858267
+                ],
+                [
+                  70.33047244094489,
+                  109.56511811023623
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:1",
+                "node:r0:2"
+              ],
+              "site_indices": [
+                1,
+                0
+              ],
+              "expected_endpoints_pt": [
+                [
+                  88.17391304347825,
+                  105.81913043478261
+                ],
+                [
+                  70.12173913043478,
+                  109.56521739130434
+                ]
+              ],
+              "max_endpoint_error_pt": 0.25016090979697353,
+              "owners_preserved": true
+            },
+            {
+              "connector": "connector:r3:1",
+              "vertices_pt": [
+                [
+                  195.6520472440945,
+                  119.8432283464567
+                ],
+                [
+                  207.23472440944883,
+                  124.90433070866142
+                ]
+              ],
+              "arrow_ends": [
+                {
+                  "type": "triangle"
+                }
+              ],
+              "owner_bindings": [
+                "node:r0:1",
+                "node:r0:3"
+              ],
+              "site_indices": [
+                5,
+                3
+              ],
+              "expected_endpoints_pt": [
+                [
+                  195.6521739130435,
+                  119.84347826086956
+                ],
+                [
+                  165.0782608695652,
+                  109.56521739130434
+                ]
+              ],
+              "max_endpoint_error_pt": 44.86040364901165,
+              "owners_preserved": true
+            }
+          ],
+          "native_ids_exact": true,
+          "labels_preserved": true,
+          "raster_count": 0,
+          "max_box_error_pt": 0.00014036288942520514,
+          "max_endpoint_error_pt": 44.86040364901165,
+          "stage": "rerouted",
+          "sites_preserved": false,
+          "arrow_ends_preserved": true
+        }
+      ]
+    }
+  ],
+  "native_probe": {
+    "powerpoint_version": "16.0",
+    "records": [
+      {
+        "sample": "mixed-attention",
+        "edited_owner": "node:r0:0",
+        "input_sha256": "62b5f2657849634a4f57575a031d5b830e3baf79cf97d5f9b96cc3958963d0d3",
+        "original_unchanged": true,
+        "text_edit_succeeded": true,
+        "before": [
+          {
+            "name": "container:r0:1",
+            "id": 2,
+            "left": 262.14544677734375,
+            "top": 80.83629608154297,
+            "width": 130.9090576171875,
+            "height": 21.272676467895508
+          },
+          {
+            "name": "node:r0:0",
+            "id": 3,
+            "left": 261.818115234375,
+            "top": 24.545433044433594,
+            "width": 130.9090576171875,
+            "height": 42.218109130859375
+          },
+          {
+            "name": "node:r0:2",
+            "id": 4,
+            "left": 296.8363037109375,
+            "top": 67.09086608886719,
+            "width": 24.545433044433594,
+            "height": 13.418109893798828
+          },
+          {
+            "name": "node:r0:1",
+            "id": 5,
+            "left": 273.92724609375,
+            "top": 67.09086608886719,
+            "width": 23.236299514770508,
+            "height": 13.418109893798828
+          },
+          {
+            "name": "node:r0:5",
+            "id": 6,
+            "left": 291.92724609375,
+            "top": 85.74542999267578,
+            "width": 11.781810760498047,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:4",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 85.74542999267578,
+            "width": 11.781810760498047,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:6",
+            "id": 8,
+            "left": 315.818115234375,
+            "top": 85.74542999267578,
+            "width": 11.454487800598145,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:7",
+            "id": 9,
+            "left": 373.4181213378906,
+            "top": 85.74542999267578,
+            "width": 11.454487800598145,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 10,
+            "left": 273.92724609375,
+            "top": 66.76361846923828,
+            "width": 7.874015864217654e-05,
+            "height": 18.9818115234375,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:4",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 11,
+            "left": 296.83636474609375,
+            "top": 66.76361846923828,
+            "width": 7.874015864217654e-05,
+            "height": 18.9818115234375,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:5",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:2",
+            "id": 12,
+            "left": 321.0545654296875,
+            "top": 66.76361846923828,
+            "width": 7.874015864217654e-05,
+            "height": 18.9818115234375,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:6",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 7
+          },
+          {
+            "name": "connector:r3:3",
+            "id": 13,
+            "left": 378.9818115234375,
+            "top": 66.76361846923828,
+            "width": 7.874015864217654e-05,
+            "height": 18.9818115234375,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:7",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 8
+          }
+        ],
+        "edited": [
+          {
+            "name": "container:r0:1",
+            "id": 2,
+            "left": 262.14544677734375,
+            "top": 80.83629608154297,
+            "width": 130.9090576171875,
+            "height": 21.272676467895508
+          },
+          {
+            "name": "node:r0:0",
+            "id": 3,
+            "left": 273.818115234375,
+            "top": 42.545433044433594,
+            "width": 163.6363067626953,
+            "height": 50.6617317199707
+          },
+          {
+            "name": "node:r0:2",
+            "id": 4,
+            "left": 296.8363037109375,
+            "top": 67.09086608886719,
+            "width": 24.545433044433594,
+            "height": 13.418109893798828
+          },
+          {
+            "name": "node:r0:1",
+            "id": 5,
+            "left": 273.92724609375,
+            "top": 67.09086608886719,
+            "width": 23.236299514770508,
+            "height": 13.418109893798828
+          },
+          {
+            "name": "node:r0:5",
+            "id": 6,
+            "left": 291.92724609375,
+            "top": 85.74542999267578,
+            "width": 11.781810760498047,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:4",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 85.74542999267578,
+            "width": 11.781810760498047,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:6",
+            "id": 8,
+            "left": 315.818115234375,
+            "top": 85.74542999267578,
+            "width": 11.454487800598145,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:7",
+            "id": 9,
+            "left": 373.4181213378906,
+            "top": 85.74542999267578,
+            "width": 11.454487800598145,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 10,
+            "left": 273.92724609375,
+            "top": 85.74542999267578,
+            "width": 15.027244567871094,
+            "height": 7.461732387542725,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:4",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 11,
+            "left": 296.8363037109375,
+            "top": 85.74542999267578,
+            "width": 20.754487991333008,
+            "height": 7.461732387542725,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:5",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:2",
+            "id": 12,
+            "left": 321.0544738769531,
+            "top": 85.74542999267578,
+            "width": 26.80905532836914,
+            "height": 7.461732387542725,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:6",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 7
+          },
+          {
+            "name": "connector:r3:3",
+            "id": 13,
+            "left": 378.9817199707031,
+            "top": 85.74542999267578,
+            "width": 41.29086685180664,
+            "height": 7.461732387542725,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:7",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 8
+          }
+        ],
+        "reopened": [
+          {
+            "name": "container:r0:1",
+            "id": 2,
+            "left": 262.14544677734375,
+            "top": 80.83629608154297,
+            "width": 130.9090576171875,
+            "height": 21.272676467895508
+          },
+          {
+            "name": "node:r0:0",
+            "id": 3,
+            "left": 273.818115234375,
+            "top": 42.545433044433594,
+            "width": 163.6363067626953,
+            "height": 50.6617317199707
+          },
+          {
+            "name": "node:r0:2",
+            "id": 4,
+            "left": 296.8363037109375,
+            "top": 67.09086608886719,
+            "width": 24.545433044433594,
+            "height": 13.418109893798828
+          },
+          {
+            "name": "node:r0:1",
+            "id": 5,
+            "left": 273.92724609375,
+            "top": 67.09086608886719,
+            "width": 23.236299514770508,
+            "height": 13.418109893798828
+          },
+          {
+            "name": "node:r0:5",
+            "id": 6,
+            "left": 291.92724609375,
+            "top": 85.74542999267578,
+            "width": 11.781810760498047,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:4",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 85.74542999267578,
+            "width": 11.781810760498047,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:6",
+            "id": 8,
+            "left": 315.818115234375,
+            "top": 85.74542999267578,
+            "width": 11.454487800598145,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:7",
+            "id": 9,
+            "left": 373.4181213378906,
+            "top": 85.74542999267578,
+            "width": 11.454487800598145,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 10,
+            "left": 273.92724609375,
+            "top": 85.74542999267578,
+            "width": 15.027244567871094,
+            "height": 7.461732387542725,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:4",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 11,
+            "left": 296.8363037109375,
+            "top": 85.74542999267578,
+            "width": 20.754487991333008,
+            "height": 7.461732387542725,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:5",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:2",
+            "id": 12,
+            "left": 321.0544738769531,
+            "top": 85.74542999267578,
+            "width": 26.80905532836914,
+            "height": 7.461732387542725,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:6",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 7
+          },
+          {
+            "name": "connector:r3:3",
+            "id": 13,
+            "left": 378.9817199707031,
+            "top": 85.74542999267578,
+            "width": 41.29086685180664,
+            "height": 7.461732387542725,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:7",
+            "begin_site": 5,
+            "end_owner": "node:r0:0",
+            "end_site": 8
+          }
+        ],
+        "rerouted": [
+          {
+            "name": "container:r0:1",
+            "id": 2,
+            "left": 262.14544677734375,
+            "top": 80.83629608154297,
+            "width": 130.9090576171875,
+            "height": 21.272676467895508
+          },
+          {
+            "name": "node:r0:0",
+            "id": 3,
+            "left": 273.818115234375,
+            "top": 42.545433044433594,
+            "width": 163.6363067626953,
+            "height": 50.6617317199707
+          },
+          {
+            "name": "node:r0:2",
+            "id": 4,
+            "left": 296.8363037109375,
+            "top": 67.09086608886719,
+            "width": 24.545433044433594,
+            "height": 13.418109893798828
+          },
+          {
+            "name": "node:r0:1",
+            "id": 5,
+            "left": 273.92724609375,
+            "top": 67.09086608886719,
+            "width": 23.236299514770508,
+            "height": 13.418109893798828
+          },
+          {
+            "name": "node:r0:5",
+            "id": 6,
+            "left": 291.92724609375,
+            "top": 85.74542999267578,
+            "width": 11.781810760498047,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:4",
+            "id": 7,
+            "left": 268.3636169433594,
+            "top": 85.74542999267578,
+            "width": 11.781810760498047,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:6",
+            "id": 8,
+            "left": 315.818115234375,
+            "top": 85.74542999267578,
+            "width": 11.454487800598145,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "node:r0:7",
+            "id": 9,
+            "left": 373.4181213378906,
+            "top": 85.74542999267578,
+            "width": 11.454487800598145,
+            "height": 11.454487800598145
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 10,
+            "left": 280.14544677734375,
+            "top": 91.4726791381836,
+            "width": 8.80905532836914,
+            "height": 1.7344881296157837,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:4",
+            "begin_site": 4,
+            "end_owner": "node:r0:0",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 11,
+            "left": 288.9544982910156,
+            "top": 91.4726791381836,
+            "width": 2.9727559089660645,
+            "height": 1.7344881296157837,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:5",
+            "begin_site": 2,
+            "end_owner": "node:r0:0",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:2",
+            "id": 12,
+            "left": 315.818115234375,
+            "top": 91.4726791381836,
+            "width": 1.7726771831512451,
+            "height": 1.7344881296157837,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:6",
+            "begin_site": 2,
+            "end_owner": "node:r0:0",
+            "end_site": 6
+          },
+          {
+            "name": "connector:r3:3",
+            "id": 13,
+            "left": 355.63629150390625,
+            "top": 91.4726791381836,
+            "width": 17.781810760498047,
+            "height": 1.7344881296157837,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:7",
+            "begin_site": 2,
+            "end_owner": "node:r0:0",
+            "end_site": 3
+          }
+        ]
+      },
+      {
+        "sample": "cogbot-perceive",
+        "edited_owner": "node:r0:1",
+        "input_sha256": "8e6a73cdfe51fb965593a6e510ea9387422d11e0707997e4a53fc8bd6bdb3a08",
+        "original_unchanged": true,
+        "text_edit_succeeded": true,
+        "before": [
+          {
+            "name": "container:r0:0",
+            "id": 2,
+            "left": 18.156455993652344,
+            "top": 55.30432891845703,
+            "width": 195.13038635253906,
+            "height": 91.19999694824219
+          },
+          {
+            "name": "node:r0:2",
+            "id": 3,
+            "left": 25.04346466064453,
+            "top": 109.56519317626953,
+            "width": 90.57386016845703,
+            "height": 30.67818832397461
+          },
+          {
+            "name": "node:r0:3",
+            "id": 4,
+            "left": 122.7129898071289,
+            "top": 109.56519317626953,
+            "width": 84.521728515625,
+            "height": 30.67818832397461
+          },
+          {
+            "name": "node:r0:1",
+            "id": 5,
+            "left": 76.17385864257812,
+            "top": 74.29559326171875,
+            "width": 85.98259735107422,
+            "height": 22.956457138061523
+          },
+          {
+            "name": "node:r0:0",
+            "id": 6,
+            "left": 179.6869354248047,
+            "top": 66.15645599365234,
+            "width": 16.06952667236328,
+            "height": 9.182598114013672
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 7,
+            "left": 70.12173461914062,
+            "top": 85.56519317626953,
+            "width": 6.052204608917236,
+            "height": 24.0,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:1",
+            "begin_site": 5,
+            "end_owner": "node:r0:2",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 8,
+            "left": 162.1565399169922,
+            "top": 97.25220489501953,
+            "width": 2.921732187271118,
+            "height": 12.313071250915527,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:1",
+            "begin_site": 6,
+            "end_owner": "node:r0:3",
+            "end_site": 5
+          }
+        ],
+        "edited": [
+          {
+            "name": "container:r0:0",
+            "id": 2,
+            "left": 18.156455993652344,
+            "top": 55.30432891845703,
+            "width": 195.13038635253906,
+            "height": 91.19999694824219
+          },
+          {
+            "name": "node:r0:2",
+            "id": 3,
+            "left": 25.04346466064453,
+            "top": 109.56519317626953,
+            "width": 90.57386016845703,
+            "height": 30.67818832397461
+          },
+          {
+            "name": "node:r0:3",
+            "id": 4,
+            "left": 122.7129898071289,
+            "top": 109.56519317626953,
+            "width": 84.521728515625,
+            "height": 30.67818832397461
+          },
+          {
+            "name": "node:r0:1",
+            "id": 5,
+            "left": 88.17378234863281,
+            "top": 92.2955093383789,
+            "width": 107.478271484375,
+            "height": 27.54771614074707
+          },
+          {
+            "name": "node:r0:0",
+            "id": 6,
+            "left": 179.6869354248047,
+            "top": 66.15645599365234,
+            "width": 16.06952667236328,
+            "height": 9.182598114013672
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 7,
+            "left": 70.12181091308594,
+            "top": 105.81890106201172,
+            "width": 18.052047729492188,
+            "height": 3.7462992668151855,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:1",
+            "begin_site": 5,
+            "end_owner": "node:r0:2",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 8,
+            "left": 165.07826232910156,
+            "top": 109.56519317626953,
+            "width": 30.573780059814453,
+            "height": 10.278031349182129,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:1",
+            "begin_site": 6,
+            "end_owner": "node:r0:3",
+            "end_site": 5
+          }
+        ],
+        "reopened": [
+          {
+            "name": "container:r0:0",
+            "id": 2,
+            "left": 18.156455993652344,
+            "top": 55.30432891845703,
+            "width": 195.13038635253906,
+            "height": 91.19999694824219
+          },
+          {
+            "name": "node:r0:2",
+            "id": 3,
+            "left": 25.04346466064453,
+            "top": 109.56519317626953,
+            "width": 90.57386016845703,
+            "height": 30.67818832397461
+          },
+          {
+            "name": "node:r0:3",
+            "id": 4,
+            "left": 122.7129898071289,
+            "top": 109.56519317626953,
+            "width": 84.521728515625,
+            "height": 30.67818832397461
+          },
+          {
+            "name": "node:r0:1",
+            "id": 5,
+            "left": 88.17378234863281,
+            "top": 92.2955093383789,
+            "width": 107.478271484375,
+            "height": 27.54771614074707
+          },
+          {
+            "name": "node:r0:0",
+            "id": 6,
+            "left": 179.6869354248047,
+            "top": 66.15645599365234,
+            "width": 16.06952667236328,
+            "height": 9.182598114013672
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 7,
+            "left": 70.12181091308594,
+            "top": 105.81890106201172,
+            "width": 18.052047729492188,
+            "height": 3.7462992668151855,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:1",
+            "begin_site": 5,
+            "end_owner": "node:r0:2",
+            "end_site": 5
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 8,
+            "left": 165.07826232910156,
+            "top": 109.56519317626953,
+            "width": 30.573780059814453,
+            "height": 10.278031349182129,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:1",
+            "begin_site": 6,
+            "end_owner": "node:r0:3",
+            "end_site": 5
+          }
+        ],
+        "rerouted": [
+          {
+            "name": "container:r0:0",
+            "id": 2,
+            "left": 18.156455993652344,
+            "top": 55.30432891845703,
+            "width": 195.13038635253906,
+            "height": 91.19999694824219
+          },
+          {
+            "name": "node:r0:2",
+            "id": 3,
+            "left": 25.04346466064453,
+            "top": 109.56519317626953,
+            "width": 90.57386016845703,
+            "height": 30.67818832397461
+          },
+          {
+            "name": "node:r0:3",
+            "id": 4,
+            "left": 122.7129898071289,
+            "top": 109.56519317626953,
+            "width": 84.521728515625,
+            "height": 30.67818832397461
+          },
+          {
+            "name": "node:r0:1",
+            "id": 5,
+            "left": 88.17378234863281,
+            "top": 92.2955093383789,
+            "width": 107.478271484375,
+            "height": 27.54771614074707
+          },
+          {
+            "name": "node:r0:0",
+            "id": 6,
+            "left": 179.6869354248047,
+            "top": 66.15645599365234,
+            "width": 16.06952667236328,
+            "height": 9.182598114013672
+          },
+          {
+            "name": "connector:r3:0",
+            "id": 7,
+            "left": 70.33047485351562,
+            "top": 106.06929016113281,
+            "width": 17.843385696411133,
+            "height": 3.4958267211914062,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:1",
+            "begin_site": 2,
+            "end_owner": "node:r0:2",
+            "end_site": 1
+          },
+          {
+            "name": "connector:r3:1",
+            "id": 8,
+            "left": 195.6520538330078,
+            "top": 119.84323120117188,
+            "width": 11.582676887512207,
+            "height": 5.061102390289307,
+            "begin_connected": true,
+            "end_connected": true,
+            "begin_owner": "node:r0:1",
+            "begin_site": 6,
+            "end_owner": "node:r0:3",
+            "end_site": 4
+          }
+        ]
+      }
+    ]
+  },
+  "sheets": [
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\review-v2\\mixed-blip-initial.png",
+      "sha256": "6b74bdd269e17828c5ec3ce04c7d8fbdf5806f47d3e4b6ed29108302ef360d49"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\review-v2\\mixed-attention-initial.png",
+      "sha256": "8b85f0d682d7d948ece23682bbbfeed2dd332dc67b8e3697d991cd776e32aa12"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\review-v2\\mixed-attention-edit.png",
+      "sha256": "b5045f4ce042234854a24a6ddd285c5c6171ca3e8263481b8b75ab5555c7c989"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\review-v2\\serial-hevc-initial.png",
+      "sha256": "d19b62e56ae3494a92a761f6ddcebc179c2ed80da701643c873d14ceab2aadb9"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\review-v2\\reasoning-row-initial.png",
+      "sha256": "f8546e535029c48e0253529d5a54419fa30bd981ef3bb46c4a700a8e6e30badf"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\review-v2\\cogbot-perceive-initial.png",
+      "sha256": "9e38eac192faf04c187dfecfebd9f7def28756b93617eb3e19e9f869d831c1d1"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\review-v2\\cogbot-perceive-edit.png",
+      "sha256": "6d257d03e77e3e0643a6abaf5107c461fb5cb35b98924f67046f71b20f398e54"
+    },
+    {
+      "path": "C:\\vs\\ImageToEditablePPT\\artifacts\\region-first-r3e1\\review-v2\\negative-plots-initial.png",
+      "sha256": "49d7fda66f3c325183c821fec68465fdc65355ee87de929c609bbeea7172332f"
+    }
+  ],
+  "provenance": {
+    "artifacts\\region-first-r3e\\run1\\results.json": "0a92f29f83eaa20561703065a911e6ea76a652d90d28c3ab35cb1a68a2b8fdef",
+    "artifacts\\region-first-r3e\\open_probe.json": "80658a76c96d8addbc2c4045e8f241119da18949287d5a709caabf613fb71f84",
+    "artifacts\\region-first-r3e1\\run1\\results.json": "a70b93030896895f44a858b4875a261a75c4b38b244050a84a18cfdc2754b3c0",
+    "artifacts\\region-first-r3e1\\run1-renders\\powerpoint_render_manifest.json": "cd7e91212894dce316865063150d089cdf3db4c42283d7ce5faab1f0004181c1",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\probe.json": "890d0dbceec6e3e47f6995839957a17142b0c18c8053f1aa0cdf8c9e8e69c9ab",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--edited.png": "1ade67d51f4ba12ef47525992a97738312df742b832d484350bbde7ed26b5860",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--reopened.png": "1ade67d51f4ba12ef47525992a97738312df742b832d484350bbde7ed26b5860",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--rerouted.png": "4ab0f32bf4c2a64592ddcf947f8eef47a352c6f0f46a135419dc7b87e630b47f",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--roundtrip.png": "36ac45902296e465a1cef63cd193f57d8b01cdf80b547daf1df32f6ebbd3ab27",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--edited.png": "bb94f8bc9acb74753e32c506dccae9209fda59a8d96b7899a2cbe0aa980b3c55",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--reopened.png": "bb94f8bc9acb74753e32c506dccae9209fda59a8d96b7899a2cbe0aa980b3c55",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--rerouted.png": "b376d9808a5167715b67a546d28da52c6ac7ba38dd71edb8472c265f606b2447",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--roundtrip.png": "8bb2efb38bf913fcb83106f98ac21334c1fc04cacdb0467276c31eb4cfdaa256",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--edited.pptx": "5403275a01d7774f1252fd39ab4389652a1647a370c5aaeb5c40647b952acfc1",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--reopened.pptx": "5403275a01d7774f1252fd39ab4389652a1647a370c5aaeb5c40647b952acfc1",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--rerouted.pptx": "6f69a43afbaf2fe6cee8ad399cc51afb5df620ee456d6ed6494a8e3ea92b329d",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\cogbot-perceive--roundtrip.pptx": "d2fbbf87b5e6fa3755e27d959157b4044107fe76fe5e879297b2e6aedbced279",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--edited.pptx": "2bda0105064e962e1a58ba44cbcd5c015a3dab6e38b507da0e1813c840bccc54",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--reopened.pptx": "2bda0105064e962e1a58ba44cbcd5c015a3dab6e38b507da0e1813c840bccc54",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--rerouted.pptx": "1a720bebe6e3717710557e58100efedbc8761f47465987a842276088e1c54a32",
+    "artifacts\\region-first-r3e1\\edit-probe-v1\\mixed-attention--roundtrip.pptx": "0d0e6f267535d0b686d5d98ce4e45f1ae2b7130a1587f95e0c32e55b819ec961"
+  },
+  "audit_code_sha256": "f8c1f34a693a792774074f27435a5d35372b6a3cedb9479e5e56ac7bb85a221e",
+  "probe_code_sha256": "9035a8b68c867000feb04217ba6b7b09045460a76adb79d9fc42822fc0c4c902",
+  "visual_review": {
+    "review_date": "2026-09-08",
+    "reviewer": "assistant direct inspection of PowerPoint 16 rendered PNGs",
+    "population": "six repeatedly consumed development ROIs; not holdout",
+    "initial_verdict": "visible local connector gain, not overall product acceptance",
+    "mixed-attention": "Four separate upright arrows now reach their observed target sites; old writer collapsed heads into the center. Two false gap shapes still exist and become conspicuous after moving the target. Fonts, outlines and container corner style differ from source.",
+    "cogbot-perceive": "Left branch retains its L-shaped route; right branch stays near observed bottom-right corner instead of cutting diagonally across the gap. Right corner is approximated by a short diagonal, not exact curvature. Extra fill fragment and label/style limitations remain.",
+    "mixed-blip": "Five boxes and three interior relations remain recognizable. Typography is small; row-boundary incoming/outgoing lines are outside this frozen target scope.",
+    "serial-hevc": "Four boxes and three downward relations remain. OCR word ordering is visibly wrong in the third box, and external Decoding label is absent. No claim of faithful editable text.",
+    "reasoning-row": "Four-node chain remains clear; initial path change is small. Source outlines, fonts and arrow weight are not reproduced.",
+    "negative-plots": "Output remains blank as intended for non-diagram plots.",
+    "ordinary_edit": "Connection sites follow moved/resized owners after save/reopen, but the prescribed downward move creates overlapping boxes and oblique arrows. This is an attachment test, not a usable automatic layout result. Attention's leftover false gap shapes are exposed; PERCEIVE text is occluded by the moved node.",
+    "explicit_reroute": "Native reroute chooses different owner sites and visibly loses the recovered spatial attachment arrangement in both samples. Owner identities stay bound; site/path preservation fails.",
+    "style_limit": "Native connector renders show shadow-like theme effects and heavy arrowheads. These remain an undesirable inherited output styling limitation; no styling cleanup was smuggled into this emitter-only comparison."
+  }
+}
