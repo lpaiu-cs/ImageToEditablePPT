@@ -72,6 +72,28 @@ def _terminal_escape(pixels, along, across, length, scale, at_start):
     return bool(inside & outside)
 
 
+def _owner_contact(pixels, along, across, length, scale, boxes):
+    """A source-connected component must not be silently removed inside an owner."""
+    q = pixels.astype(int)
+    offsets = q.min(axis=0)
+    q = q-offsets
+    mask = np.zeros((q[:,1].max()+1,q[:,0].max()+1),np.uint8)
+    mask[q[:,1],q[:,0]] = 1
+    _, labels = cv2.connectedComponents(mask,connectivity=8)
+    ids = labels[q[:,1],q[:,0]]
+    shaft = (along > .2*length) & (along < .8*length) & (np.abs(across) <= 3*scale)
+    connected = set(ids[shaft])
+    # Same raster-center convention as TLS and pixel_cell_support in this module.
+    x,y = pixels[:,0],pixels[:,1]
+    for x0,y0,x1,y1 in boxes:
+        # One original-pixel boundary fringe is not an erased glyph/head body.
+        # This is a coordinate quantization band, not scaled with slide size.
+        inside = (x>x0+1)&(x<x1-1)&(y>y0+1)&(y<y1-1)
+        if connected & set(ids[inside]):
+            return True
+    return False
+
+
 def observe_pair(pixels, boxes, *, scale, other_boxes=()):
     """Propose a directed line only from source support between the given boxes."""
     pixels = np.asarray(pixels, dtype=float).reshape(-1, 2)
@@ -137,6 +159,8 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
         return reject('opposite_terminal_unresolved')
     if _terminal_escape(pixels,all_t,all_v,length,scale,start_head):
         return reject('terminal_source_contact_outside_corridor')
+    if _owner_contact(pixels,all_t,all_v,length,scale,[*boxes,*other_boxes]):
+        return reject('source_connected_ink_inside_owner')
     points = (b, a) if start_head else (a, b)
     return tuple(Point(float(p[0]), float(p[1])) for p in points), dict(audit, reason='supported_source_arrow', reversed=start_head)
 
@@ -147,10 +171,8 @@ def add_source_rays(scene, rgb):
     raw = stroke_mask(rgb).copy()
     def box(s):
         return [s.bbox.x0, s.bbox.y0, s.bbox.x1, s.bbox.y1]
-    for s in scene.shapes:
-        if s.owner_kind is PortOwnerKind.NODE:
-            x0,y0,x1,y1 = box(s)
-            raw[max(0,math.floor(y0)):math.ceil(y1)+1,max(0,math.floor(x0)):math.ceil(x1)+1] = 0
+    # Keep the original owner interiors for contact checks. Masking them first
+    # can erase a second arrowhead or a glyph attached to the observed shaft.
     yy, xx = np.where(raw)
     pixels = np.column_stack([xx, yy])
     edges = list(scene.connectors)
