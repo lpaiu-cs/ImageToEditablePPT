@@ -1,0 +1,540 @@
+{
+  "status": "FAIL",
+  "total": 4328,
+  "passed": 4192,
+  "failed": 136,
+  "scope_violations": 0,
+  "fixture_support_or_owner_loss": 136,
+  "failure_counts": {
+    "fixture_support_or_owner_loss": 136
+  },
+  "denied_file_opens": [],
+  "new_clean": {
+    "records": 8,
+    "selected": 8,
+    "by_base": {
+      "speck_far": {
+        "total": 4,
+        "selected": 4
+      },
+      "row_clean": {
+        "total": 4,
+        "selected": 4
+      }
+    },
+    "effective": true
+  },
+  "historical_positive": {
+    "records": 288,
+    "selected": 0,
+    "abstained": 288
+  },
+  "by_population": {
+    "v1_replay": {
+      "total": 3656,
+      "failed": 0
+    },
+    "v2_new": {
+      "total": 672,
+      "failed": 136
+    }
+  },
+  "fixture_lock_sha256": "a06141bd8e39a42e9d72e2208ca16fd384e8464ac36dec3fe52cd9b80f078dcc",
+  "execution_lock_sha256": "808853507ac47d678b13e8fe24608ad0a1efab91c2d09b5f4307411b8874309a",
+  "actual_15_executed": false,
+  "by_base": {
+    "baseline_2": {
+      "total": 96,
+      "failed": 0
+    },
+    "baseline_4": {
+      "total": 96,
+      "failed": 0
+    },
+    "baseline_8": {
+      "total": 96,
+      "failed": 0
+    },
+    "bbox_shift_loss": {
+      "total": 24,
+      "failed": 4
+    },
+    "bbox_shift_safe": {
+      "total": 24,
+      "failed": 0
+    },
+    "blank": {
+      "total": 96,
+      "failed": 0
+    },
+    "bright12_separate": {
+      "total": 24,
+      "failed": 24
+    },
+    "bright12_touch": {
+      "total": 24,
+      "failed": 24
+    },
+    "bright24_separate": {
+      "total": 24,
+      "failed": 0
+    },
+    "bright24_touch": {
+      "total": 24,
+      "failed": 24
+    },
+    "bright32_separate": {
+      "total": 24,
+      "failed": 0
+    },
+    "bright32_touch": {
+      "total": 24,
+      "failed": 24
+    },
+    "bright64_separate": {
+      "total": 24,
+      "failed": 0
+    },
+    "bright64_touch": {
+      "total": 24,
+      "failed": 24
+    },
+    "chain": {
+      "total": 312,
+      "failed": 0
+    },
+    "clipped": {
+      "total": 96,
+      "failed": 0
+    },
+    "color_background": {
+      "total": 96,
+      "failed": 0
+    },
+    "contact_0": {
+      "total": 96,
+      "failed": 0
+    },
+    "contact_1": {
+      "total": 96,
+      "failed": 0
+    },
+    "contact_3": {
+      "total": 96,
+      "failed": 0
+    },
+    "crop_context": {
+      "total": 8,
+      "failed": 0
+    },
+    "crop_full": {
+      "total": 8,
+      "failed": 0
+    },
+    "crop_short": {
+      "total": 8,
+      "failed": 0
+    },
+    "fanout": {
+      "total": 96,
+      "failed": 0
+    },
+    "gradient": {
+      "total": 96,
+      "failed": 0
+    },
+    "gray_background": {
+      "total": 96,
+      "failed": 0
+    },
+    "independent": {
+      "total": 24,
+      "failed": 0
+    },
+    "individual_rotated": {
+      "total": 24,
+      "failed": 0
+    },
+    "individual_rotated_loss": {
+      "total": 24,
+      "failed": 0
+    },
+    "joined_labels": {
+      "total": 96,
+      "failed": 0
+    },
+    "near_different": {
+      "total": 96,
+      "failed": 0
+    },
+    "near_same": {
+      "total": 96,
+      "failed": 0
+    },
+    "parallel_i": {
+      "total": 96,
+      "failed": 0
+    },
+    "partial_il": {
+      "total": 96,
+      "failed": 0
+    },
+    "partial_root": {
+      "total": 96,
+      "failed": 0
+    },
+    "positive_bitmap": {
+      "total": 96,
+      "failed": 0
+    },
+    "positive_font": {
+      "total": 96,
+      "failed": 0
+    },
+    "positive_shaft": {
+      "total": 96,
+      "failed": 0
+    },
+    "pp_real": {
+      "total": 8,
+      "failed": 0
+    },
+    "punct1": {
+      "total": 24,
+      "failed": 4
+    },
+    "punct2": {
+      "total": 24,
+      "failed": 0
+    },
+    "punct4": {
+      "total": 24,
+      "failed": 0
+    },
+    "punctuation": {
+      "total": 96,
+      "failed": 0
+    },
+    "repeat_CP": {
+      "total": 96,
+      "failed": 0
+    },
+    "repeat_PP": {
+      "total": 96,
+      "failed": 0
+    },
+    "repeat_cat": {
+      "total": 96,
+      "failed": 0
+    },
+    "repeat_runs": {
+      "total": 96,
+      "failed": 0
+    },
+    "rotation_90": {
+      "total": 96,
+      "failed": 0
+    },
+    "rotation_m15": {
+      "total": 96,
+      "failed": 0
+    },
+    "rotation_p15": {
+      "total": 96,
+      "failed": 0
+    },
+    "row_90": {
+      "total": 24,
+      "failed": 0
+    },
+    "row_clean": {
+      "total": 24,
+      "failed": 0
+    },
+    "row_font_aa": {
+      "total": 24,
+      "failed": 0
+    },
+    "row_font_binary": {
+      "total": 24,
+      "failed": 0
+    },
+    "row_m15": {
+      "total": 24,
+      "failed": 0
+    },
+    "row_p15": {
+      "total": 24,
+      "failed": 0
+    },
+    "speck_far": {
+      "total": 24,
+      "failed": 0
+    },
+    "speck_near": {
+      "total": 24,
+      "failed": 8
+    },
+    "superscript": {
+      "total": 96,
+      "failed": 0
+    },
+    "texture": {
+      "total": 96,
+      "failed": 0
+    },
+    "tie": {
+      "total": 120,
+      "failed": 0
+    },
+    "tradeoff": {
+      "total": 96,
+      "failed": 0
+    },
+    "two_rows": {
+      "total": 24,
+      "failed": 0
+    },
+    "underline": {
+      "total": 96,
+      "failed": 0
+    },
+    "vertical": {
+      "total": 96,
+      "failed": 0
+    }
+  },
+  "failed_ids": [
+    "v2-speck_near-s0.75-aa0-o0-swap0",
+    "v2-speck_near-s0.75-aa0-o0-swap1",
+    "v2-speck_near-s0.75-aa0-o1-swap0",
+    "v2-speck_near-s0.75-aa0-o1-swap1",
+    "v2-speck_near-s0.75-aa1-o0-swap0",
+    "v2-speck_near-s0.75-aa1-o0-swap1",
+    "v2-speck_near-s0.75-aa1-o1-swap0",
+    "v2-speck_near-s0.75-aa1-o1-swap1",
+    "v2-punct1-s0.75-aa0-o0-swap0",
+    "v2-punct1-s0.75-aa0-o0-swap1",
+    "v2-punct1-s0.75-aa0-o1-swap0",
+    "v2-punct1-s0.75-aa0-o1-swap1",
+    "v2-bbox_shift_loss-s0.75-aa0-o0-swap0",
+    "v2-bbox_shift_loss-s0.75-aa0-o0-swap1",
+    "v2-bbox_shift_loss-s0.75-aa0-o1-swap0",
+    "v2-bbox_shift_loss-s0.75-aa0-o1-swap1",
+    "v2-bright12_separate-s0.75-aa0-o0-swap0",
+    "v2-bright12_separate-s0.75-aa0-o0-swap1",
+    "v2-bright12_separate-s0.75-aa0-o1-swap0",
+    "v2-bright12_separate-s0.75-aa0-o1-swap1",
+    "v2-bright12_separate-s0.75-aa1-o0-swap0",
+    "v2-bright12_separate-s0.75-aa1-o0-swap1",
+    "v2-bright12_separate-s0.75-aa1-o1-swap0",
+    "v2-bright12_separate-s0.75-aa1-o1-swap1",
+    "v2-bright12_separate-s1.0-aa0-o0-swap0",
+    "v2-bright12_separate-s1.0-aa0-o0-swap1",
+    "v2-bright12_separate-s1.0-aa0-o1-swap0",
+    "v2-bright12_separate-s1.0-aa0-o1-swap1",
+    "v2-bright12_separate-s1.0-aa1-o0-swap0",
+    "v2-bright12_separate-s1.0-aa1-o0-swap1",
+    "v2-bright12_separate-s1.0-aa1-o1-swap0",
+    "v2-bright12_separate-s1.0-aa1-o1-swap1",
+    "v2-bright12_separate-s1.5-aa0-o0-swap0",
+    "v2-bright12_separate-s1.5-aa0-o0-swap1",
+    "v2-bright12_separate-s1.5-aa0-o1-swap0",
+    "v2-bright12_separate-s1.5-aa0-o1-swap1",
+    "v2-bright12_separate-s1.5-aa1-o0-swap0",
+    "v2-bright12_separate-s1.5-aa1-o0-swap1",
+    "v2-bright12_separate-s1.5-aa1-o1-swap0",
+    "v2-bright12_separate-s1.5-aa1-o1-swap1",
+    "v2-bright12_touch-s0.75-aa0-o0-swap0",
+    "v2-bright12_touch-s0.75-aa0-o0-swap1",
+    "v2-bright12_touch-s0.75-aa0-o1-swap0",
+    "v2-bright12_touch-s0.75-aa0-o1-swap1",
+    "v2-bright12_touch-s0.75-aa1-o0-swap0",
+    "v2-bright12_touch-s0.75-aa1-o0-swap1",
+    "v2-bright12_touch-s0.75-aa1-o1-swap0",
+    "v2-bright12_touch-s0.75-aa1-o1-swap1",
+    "v2-bright12_touch-s1.0-aa0-o0-swap0",
+    "v2-bright12_touch-s1.0-aa0-o0-swap1",
+    "v2-bright12_touch-s1.0-aa0-o1-swap0",
+    "v2-bright12_touch-s1.0-aa0-o1-swap1",
+    "v2-bright12_touch-s1.0-aa1-o0-swap0",
+    "v2-bright12_touch-s1.0-aa1-o0-swap1",
+    "v2-bright12_touch-s1.0-aa1-o1-swap0",
+    "v2-bright12_touch-s1.0-aa1-o1-swap1",
+    "v2-bright12_touch-s1.5-aa0-o0-swap0",
+    "v2-bright12_touch-s1.5-aa0-o0-swap1",
+    "v2-bright12_touch-s1.5-aa0-o1-swap0",
+    "v2-bright12_touch-s1.5-aa0-o1-swap1",
+    "v2-bright12_touch-s1.5-aa1-o0-swap0",
+    "v2-bright12_touch-s1.5-aa1-o0-swap1",
+    "v2-bright12_touch-s1.5-aa1-o1-swap0",
+    "v2-bright12_touch-s1.5-aa1-o1-swap1",
+    "v2-bright24_touch-s0.75-aa0-o0-swap0",
+    "v2-bright24_touch-s0.75-aa0-o0-swap1",
+    "v2-bright24_touch-s0.75-aa0-o1-swap0",
+    "v2-bright24_touch-s0.75-aa0-o1-swap1",
+    "v2-bright24_touch-s0.75-aa1-o0-swap0",
+    "v2-bright24_touch-s0.75-aa1-o0-swap1",
+    "v2-bright24_touch-s0.75-aa1-o1-swap0",
+    "v2-bright24_touch-s0.75-aa1-o1-swap1",
+    "v2-bright24_touch-s1.0-aa0-o0-swap0",
+    "v2-bright24_touch-s1.0-aa0-o0-swap1",
+    "v2-bright24_touch-s1.0-aa0-o1-swap0",
+    "v2-bright24_touch-s1.0-aa0-o1-swap1",
+    "v2-bright24_touch-s1.0-aa1-o0-swap0",
+    "v2-bright24_touch-s1.0-aa1-o0-swap1",
+    "v2-bright24_touch-s1.0-aa1-o1-swap0",
+    "v2-bright24_touch-s1.0-aa1-o1-swap1",
+    "v2-bright24_touch-s1.5-aa0-o0-swap0",
+    "v2-bright24_touch-s1.5-aa0-o0-swap1",
+    "v2-bright24_touch-s1.5-aa0-o1-swap0",
+    "v2-bright24_touch-s1.5-aa0-o1-swap1",
+    "v2-bright24_touch-s1.5-aa1-o0-swap0",
+    "v2-bright24_touch-s1.5-aa1-o0-swap1",
+    "v2-bright24_touch-s1.5-aa1-o1-swap0",
+    "v2-bright24_touch-s1.5-aa1-o1-swap1",
+    "v2-bright32_touch-s0.75-aa0-o0-swap0",
+    "v2-bright32_touch-s0.75-aa0-o0-swap1",
+    "v2-bright32_touch-s0.75-aa0-o1-swap0",
+    "v2-bright32_touch-s0.75-aa0-o1-swap1",
+    "v2-bright32_touch-s0.75-aa1-o0-swap0",
+    "v2-bright32_touch-s0.75-aa1-o0-swap1",
+    "v2-bright32_touch-s0.75-aa1-o1-swap0",
+    "v2-bright32_touch-s0.75-aa1-o1-swap1",
+    "v2-bright32_touch-s1.0-aa0-o0-swap0",
+    "v2-bright32_touch-s1.0-aa0-o0-swap1",
+    "v2-bright32_touch-s1.0-aa0-o1-swap0",
+    "v2-bright32_touch-s1.0-aa0-o1-swap1",
+    "v2-bright32_touch-s1.0-aa1-o0-swap0",
+    "v2-bright32_touch-s1.0-aa1-o0-swap1",
+    "v2-bright32_touch-s1.0-aa1-o1-swap0",
+    "v2-bright32_touch-s1.0-aa1-o1-swap1",
+    "v2-bright32_touch-s1.5-aa0-o0-swap0",
+    "v2-bright32_touch-s1.5-aa0-o0-swap1",
+    "v2-bright32_touch-s1.5-aa0-o1-swap0",
+    "v2-bright32_touch-s1.5-aa0-o1-swap1",
+    "v2-bright32_touch-s1.5-aa1-o0-swap0",
+    "v2-bright32_touch-s1.5-aa1-o0-swap1",
+    "v2-bright32_touch-s1.5-aa1-o1-swap0",
+    "v2-bright32_touch-s1.5-aa1-o1-swap1",
+    "v2-bright64_touch-s0.75-aa0-o0-swap0",
+    "v2-bright64_touch-s0.75-aa0-o0-swap1",
+    "v2-bright64_touch-s0.75-aa0-o1-swap0",
+    "v2-bright64_touch-s0.75-aa0-o1-swap1",
+    "v2-bright64_touch-s0.75-aa1-o0-swap0",
+    "v2-bright64_touch-s0.75-aa1-o0-swap1",
+    "v2-bright64_touch-s0.75-aa1-o1-swap0",
+    "v2-bright64_touch-s0.75-aa1-o1-swap1",
+    "v2-bright64_touch-s1.0-aa0-o0-swap0",
+    "v2-bright64_touch-s1.0-aa0-o0-swap1",
+    "v2-bright64_touch-s1.0-aa0-o1-swap0",
+    "v2-bright64_touch-s1.0-aa0-o1-swap1",
+    "v2-bright64_touch-s1.0-aa1-o0-swap0",
+    "v2-bright64_touch-s1.0-aa1-o0-swap1",
+    "v2-bright64_touch-s1.0-aa1-o1-swap0",
+    "v2-bright64_touch-s1.0-aa1-o1-swap1",
+    "v2-bright64_touch-s1.5-aa0-o0-swap0",
+    "v2-bright64_touch-s1.5-aa0-o0-swap1",
+    "v2-bright64_touch-s1.5-aa0-o1-swap0",
+    "v2-bright64_touch-s1.5-aa0-o1-swap1",
+    "v2-bright64_touch-s1.5-aa1-o0-swap0",
+    "v2-bright64_touch-s1.5-aa1-o0-swap1",
+    "v2-bright64_touch-s1.5-aa1-o1-swap0",
+    "v2-bright64_touch-s1.5-aa1-o1-swap1"
+  ],
+  "failed_geometry_groups": 34,
+  "artifact_root": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v2-controls",
+  "unit_tests": "11 passed",
+  "evidence": {
+    "results.json": {
+      "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v2-controls\\results.json",
+      "sha256": "c1bcb51f39eb79f5459e4bed7ed5fd428e4d132f7bb1996f73e241dc70bc38a4"
+    },
+    "execution-lock.json": {
+      "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v2-controls\\execution-lock.json",
+      "sha256": "808853507ac47d678b13e8fe24608ad0a1efab91c2d09b5f4307411b8874309a"
+    },
+    "rgb-support-audit.json": {
+      "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v2-controls\\rgb-support-audit.json",
+      "sha256": "95740e9bf7c1c6a2e6c1da10e99dfcfc97ed5b169a6a3b7e1c3b4ce21ba5b502"
+    },
+    "raster-delta-audit.json": {
+      "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v2-controls\\raster-delta-audit.json",
+      "sha256": "c5c56136167af93e25bfd9735aa14f98e586beae7402b51126220456d7c359cc"
+    },
+    "negative-padding-audit.json": {
+      "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v2-controls\\negative-padding-audit.json",
+      "sha256": "07a41c74c1125a1efb9d926256bbd10ce325621247353b7bb5d9e40b13b93c31"
+    },
+    "id-invariance.json": {
+      "path": "C:\\Users\\lpaiu\\.codex\\worktrees\\9cae\\ImageToEditablePPT\\artifacts\\r9-d-v2-controls\\id-invariance.json",
+      "sha256": "05788f3af385c5e1cb943015e3221aa47309e938780369c00f98df93ebd33827"
+    }
+  },
+  "post_result_raster_delta": {
+    "status": "post_result_raster_delta_audit_not_gate_rewrite",
+    "count": 136,
+    "same_rgb": 12,
+    "no_added_signal_outside": 92,
+    "outside_max_below12": 32,
+    "outside_ge12": 12,
+    "by_base": {
+      "bbox_shift_loss": {
+        "total": 4,
+        "same_rgb": 4,
+        "no_added_outside": 4,
+        "max_delta": 0
+      },
+      "bright12_separate": {
+        "total": 24,
+        "same_rgb": 0,
+        "no_added_outside": 0,
+        "max_delta": 12
+      },
+      "bright12_touch": {
+        "total": 24,
+        "same_rgb": 0,
+        "no_added_outside": 20,
+        "max_delta": 1
+      },
+      "bright24_touch": {
+        "total": 24,
+        "same_rgb": 0,
+        "no_added_outside": 20,
+        "max_delta": 2
+      },
+      "bright32_touch": {
+        "total": 24,
+        "same_rgb": 0,
+        "no_added_outside": 20,
+        "max_delta": 2
+      },
+      "bright64_touch": {
+        "total": 24,
+        "same_rgb": 0,
+        "no_added_outside": 20,
+        "max_delta": 5
+      },
+      "punct1": {
+        "total": 4,
+        "same_rgb": 4,
+        "no_added_outside": 4,
+        "max_delta": 0
+      },
+      "speck_near": {
+        "total": 8,
+        "same_rgb": 4,
+        "no_added_outside": 4,
+        "max_delta": 8
+      }
+    }
+  },
+  "implementation_audit": {
+    "negative_padding_candidates": 2512,
+    "negative_padding_eligible": 40,
+    "negative_padding_selected": 0,
+    "explicit_shaft_glyph_neighbor_veto": false,
+    "opaque_id_checks": 168,
+    "opaque_id_passed": 168
+  }
+}
