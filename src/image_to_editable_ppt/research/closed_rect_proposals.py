@@ -27,7 +27,7 @@ def pixel_cell_agreement(a,b):
     return bool(np.max(abs(np.asarray(a,dtype=float)-np.asarray(b,dtype=float)))<=1)
 
 
-def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=False,pixel_agreement=False):
+def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=False,pixel_agreement=False,compact_boxes=False):
     if rgb.dtype!=np.uint8 or rgb.ndim!=3 or rgb.shape[2]!=3:raise ValueError('uint8 RGB required')
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);s=rgb.shape[0]/360
     arms=[]
@@ -41,7 +41,8 @@ def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=Fa
                 x,y,w,height=cv2.boundingRect(contour)
                 area=cv2.contourArea(contour)
                 dimensions=(w>=32*s and height>=16*s and 1.15<=w/height<=15) or (
-                    portrait_boxes and height>=32*s and w>=16*s and 1.15<=height/w<=15)
+                    portrait_boxes and height>=32*s and w>=16*s and 1.15<=height/w<=15) or (
+                    compact_boxes and min(w,height)>=32*s and 1/1.15<=w/height<=1.15)
                 if not (dimensions and .90*w*height<=area<=.25*gray.size):continue
                 points=contour[:,0,:]
                 distance=np.minimum(np.minimum(points[:,0]-x,x+w-1-points[:,0])/w,
@@ -69,13 +70,13 @@ def propose(rgb,*,inner_boundaries=False,dark_boundaries=False,portrait_boxes=Fa
         reason='closed_rectangle_agreement' if stable and unambiguous else 'ambiguous_or_threshold_unstable_boundary'
         records.append(dict(bbox=box,reason=reason))
         if reason=='closed_rectangle_agreement':selected.append(candidate)
-    return selected,dict(thresholds=[130,170] if dark_boundaries else [[20,60],[40,100]],dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,inner_boundaries=inner_boundaries,pixel_agreement=pixel_agreement,candidates=records)
+    return selected,dict(thresholds=[130,170] if dark_boundaries else [[20,60],[40,100]],dark_boundaries=dark_boundaries,portrait_boxes=portrait_boxes,inner_boundaries=inner_boundaries,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes,candidates=records)
 
 
-def propose_union(rgb,*,portrait_boxes=False,pixel_agreement=False):
+def propose_union(rgb,*,portrait_boxes=False,pixel_agreement=False,compact_boxes=False):
     """Union independently closed boundaries; suppress duplicates, never fit a new box."""
-    canny,canny_audit=propose(rgb,inner_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement)
-    dark,dark_audit=propose(rgb,dark_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement)
+    canny,canny_audit=propose(rgb,inner_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes)
+    dark,dark_audit=propose(rgb,dark_boundaries=True,portrait_boxes=portrait_boxes,pixel_agreement=pixel_agreement,compact_boxes=compact_boxes)
     ordered=sorted([dict(c,method=method) for method,items in [('canny',canny),('dark',dark)] for c in items],
                    key=lambda c:((c['bbox'][2]-c['bbox'][0])*(c['bbox'][3]-c['bbox'][1]),c['method']))
     selected=[];duplicates=[]
