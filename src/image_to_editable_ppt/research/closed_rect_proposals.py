@@ -63,7 +63,7 @@ def propose(rgb,*,inner_boundaries=False):
     return selected,dict(thresholds=[[20,60],[40,100]],inner_boundaries=inner_boundaries,candidates=records)
 
 
-def observe_text(rgb,box,engine,*,excluded=None):
+def observe_text(rgb,box,engine,*,excluded=None,whole_lines=False):
     x0,y0,x1,y1=box
     crop=rgb[y0:y1,x0:x1]
     arms=[]
@@ -83,7 +83,7 @@ def observe_text(rgb,box,engine,*,excluded=None):
             found.append(dict(text=text.strip(),confidence=float(confidence),bbox=b))
         arms.append(found)
     lines=[]
-    for words in arms:
+    for arm_index,words in enumerate(arms):
         groups=[]
         for word in sorted(words,key=lambda w:(w['bbox'][1],w['bbox'][0])):
             b=word['bbox']
@@ -101,6 +101,23 @@ def observe_text(rgb,box,engine,*,excluded=None):
             # Three agreeing OCR passes can repeat one glyph in overlapping
             # recognition windows. Do not concatenate those windows into text.
             if g['overlapping_words']:g['confidence']=0.
+            if whole_lines and g['overlapping_words']:
+                # Re-read the observed complete source row in one recognition
+                # window; do not repair strings by deduplicating guessed glyphs.
+                a,b,c,d=g['bbox'];pad=2
+                a=max(0,int(np.floor(a))-pad);b=max(0,int(np.floor(b))-pad)
+                c=min(crop.shape[1],int(np.ceil(c))+pad);d=min(crop.shape[0],int(np.ceil(d))+pad)
+                g['whole_line_observation']=None
+                if excluded is None or not excluded[y0+b:y0+d,x0+a:x0+c].any():
+                    size=[1.,1.5,2.25][arm_index]
+                    row=cv2.resize(crop[b:d,a:c],None,fx=size,fy=size,interpolation=cv2.INTER_CUBIC)
+                    observed,_=engine(row,use_det=False,use_cls=False,use_rec=True)
+                    if observed and len(observed)==1 and len(observed[0])==2:
+                        text,confidence=observed[0]
+                        g['whole_line_observation']=dict(text=text,confidence=float(confidence),source_bbox=[a,b,c,d])
+                        g['text']=text.strip();g['confidence']=float(confidence) if confidence>=.98 else 0.
+                    else:g['confidence']=0.
+                else:g['confidence']=0.
         lines.append(sorted(groups,key=lambda g:g['bbox'][1]))
     accepted=[]
     for index,line in enumerate(lines[0]):
@@ -108,4 +125,4 @@ def observe_text(rgb,box,engine,*,excluded=None):
         others=[arm[index] for arm in lines[1:]]
         if line['confidence']<.95 or any(other['confidence']<.95 or line['text']!=other['text'] or _iou(line['bbox'],other['bbox'])<.8 for other in others):break
         accepted.append(line)
-    return '\n'.join(w['text'] for w in accepted) or None,dict(arms=arms,lines=lines,accepted=accepted,policy='complete stable prefix lines only')
+    return '\n'.join(w['text'] for w in accepted) or None,dict(arms=arms,lines=lines,accepted=accepted,whole_lines=whole_lines,policy='complete stable prefix lines only')

@@ -74,6 +74,29 @@ def test_overlapping_ocr_windows_cannot_repeat_a_source_glyph():
     assert all(arm[0]['overlapping_words'] for arm in audit['lines'])
 
 
+def test_whole_line_reads_one_observed_window_instead_of_joining_fragments():
+    def engine(image,**kwargs):
+        if kwargs.get('use_det') is False:return [['Section 3.4',.99]],None
+        s=image.shape[0]/100
+        return [(np.array([[a,5],[b,5],[b,20],[a,20]])*s,text,.99)
+                for a,b,text in [(5,65,'Section 3'),(55,85,'3.4')]],None
+    label,audit=observe_text(np.full((100,100,3),255,np.uint8),[0,0,100,100],engine,whole_lines=True)
+    assert label=='Section 3.4'
+    assert all(arm[0]['whole_line_observation']['text']=='Section 3.4' for arm in audit['lines'])
+
+
+def test_whole_line_disagreement_is_not_majority_voted():
+    count=[0]
+    def engine(image,**kwargs):
+        if kwargs.get('use_det') is False:
+            count[0]+=1
+            return [['Wrong' if count[0]==1 else 'Right',.99]],None
+        s=image.shape[0]/100
+        return [(np.array([[a,5],[b,5],[b,20],[a,20]])*s,text,.99)
+                for a,b,text in [(5,65,'Section 3'),(55,85,'3.4')]],None
+    assert observe_text(np.full((100,100,3),255,np.uint8),[0,0,100,100],engine,whole_lines=True)[0] is None
+
+
 def test_inner_boundary_policy_does_not_merge_overlapping_distinct_boxes():
     rgb=np.full((360,640,3),255,np.uint8)
     cv2.rectangle(rgb,(50,40),(270,140),(0,0,0),1)

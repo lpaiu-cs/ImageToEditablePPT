@@ -58,3 +58,17 @@ def test_parent_label_uses_native_owner_insets_and_no_extra_shape(tmp_path):
     assert abs(obj.text_frame.margin_top-15*scale*9525)<=1
     assert not obj.text_frame.word_wrap
     assert placement[0]['source_text_bbox']==[35,15,160,35]
+
+
+def test_overlapping_vertical_ocr_windows_do_not_expand_paragraph_height(tmp_path):
+    rgb=np.full((360,640,3),255,np.uint8)
+    scene=detector_scene(rgb,[dict(id='box',role='node',semantic_kind='box',bbox_xyxy=[10,10,325,142],confidence=.9)])
+    scene=replace(scene,shapes=(replace(scene.shapes[0],label='QueryPlanner\n(referent cache &\nrole alias)'),))
+    normalized,scale=normalize_scene(scene);path=tmp_path/'lines.pptx'
+    write_label_anchor_native(normalized,path)
+    lines=[dict(text=t,bbox=b) for t,b in [('QueryPlanner',[44,7,283,61]),
+        ('(referent cache &',[40,47,278,95]),('role alias)',[88,84,226,128])]]
+    place_owned_text(path,scene,{'box':{'accepted':lines}},scale)
+    frame=Presentation(path).slides[0].shapes[0].text_frame
+    assert [round(p.line_spacing.pt/(scale*.75)) for p in frame.paragraphs]==[40,37,44]
+    assert all(r.font.name=='Arial' for p in frame.paragraphs for r in p.runs)

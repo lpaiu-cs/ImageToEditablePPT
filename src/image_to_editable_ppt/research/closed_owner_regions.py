@@ -55,6 +55,12 @@ def place_owned_text(pptx, scene, text_audit, scale):
     from pptx.util import Pt, Emu
     from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
     from image_to_editable_ppt.v3.emit.pptx_writer import EMU_PER_PIXEL
+    from PIL import ImageFont
+    from pathlib import Path
+    font_path=Path('C:/Windows/Fonts/arial.ttf')
+    if not font_path.is_file():
+        raise RuntimeError('Arial metrics are required for this locked Windows research renderer')
+    metric_font=ImageFont.truetype(str(font_path),100)
     deck = Presentation(pptx)
     objects = {s.name: s for s in deck.slides[0].shapes}
     audit = []
@@ -74,15 +80,22 @@ def place_owned_text(pptx, scene, text_audit, scale):
         frame.vertical_anchor = MSO_ANCHOR.TOP
         frame.auto_size = MSO_AUTO_SIZE.NONE
         frame.word_wrap = False
-        for paragraph, line in zip(frame.paragraphs, lines):
+        for index,(paragraph, line) in enumerate(zip(frame.paragraphs, lines)):
             height = line['bbox'][3]-line['bbox'][1]
+            # OCR glyph windows may overlap vertically. Their sum is not the
+            # source paragraph height; advance by observed row origins instead.
+            advance=lines[index+1]['bbox'][1]-line['bbox'][1] if index+1<len(lines) else height
+            advance=max(1,min(height,advance))
             # The glyph box is not a font em box. Use a conservative metric fit.
-            size = max(1, height*scale*.75*.85)
+            width=max(1,min(bx[2]-bx[0],owner.bbox.width-bx[0]-1))
+            width_fit=width*100/max(1,metric_font.getlength(line['text']))
+            size = max(1, min(advance*.85,width_fit*.95)*scale*.75)
             paragraph.alignment = PP_ALIGN.CENTER
             paragraph.space_before = Pt(0)
             paragraph.space_after = Pt(0)
-            paragraph.line_spacing = Pt(height*scale*.75)
+            paragraph.line_spacing = Pt(advance*scale*.75)
             for run in paragraph.runs:
+                run.font.name = 'Arial'
                 run.font.size = Pt(size)
         audit.append(dict(owner=owner.id, source_text_bbox=bx, native_text=objects[owner.id].text))
     deck.save(pptx)
