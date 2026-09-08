@@ -2,6 +2,29 @@ import cv2
 import numpy as np
 import pytest
 from image_to_editable_ppt.research.spatial_texture_guard import spatial_tile,inspect_spatial_texture
+from image_to_editable_ppt.research.spatial_texture_guard import stable_texture_words
+from copy import deepcopy
+
+
+def test_texture_words_need_three_confident_matching_observations_without_mutating_label():
+    word=dict(text='Later row',bbox=[2,20,40,30],confidence=.99)
+    audit=dict(accepted=[],spatial_ocr=dict(arms=[[deepcopy(word)] for _ in range(3)]))
+    before=deepcopy(audit)
+    assert len(stable_texture_words(audit))==1 and audit==before
+    audit['spatial_ocr']['arms'][2][0]['confidence']=.97
+    assert not stable_texture_words(audit)
+    audit['spatial_ocr']['arms'][2][0]=dict(word,bbox=[50,50,80,60])
+    assert not stable_texture_words(audit)
+    audit['spatial_ocr']['arms'][2][0]=dict(word,text='Different')
+    assert not stable_texture_words(audit)
+
+
+def test_later_source_row_needs_fixed_confidence_and_geometry_verdict():
+    row=dict(bbox=[1,20,80,30],reason='stable_source_row',observations=[dict(text='Text',confidence=.99) for _ in range(3)])
+    audit=dict(source_rows=dict(bands=[row]),accepted=[])
+    assert stable_texture_words(audit)[0]['bbox']==row['bbox']
+    row['reason']='non_text_row_geometry'
+    assert not stable_texture_words(audit)
 
 
 @pytest.mark.parametrize('mode',['flat','linear','radial','box'])

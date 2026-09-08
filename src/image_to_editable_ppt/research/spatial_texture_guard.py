@@ -2,6 +2,24 @@
 import cv2
 import numpy as np
 from image_to_editable_ppt.research.source_texture_guard import inspect_texture
+from image_to_editable_ppt.research.closed_rect_proposals import _iou
+
+
+def stable_texture_words(audit):
+    """High-confidence later observations are text even when not exported."""
+    result=[];db=(audit or {}).get('spatial_ocr',{});arms=db.get('arms',[])
+    if len(arms)==3:
+        for word in arms[0]:
+            if word['confidence']<.98 or not word['text'].strip():continue
+            if all(any(other['text']==word['text'] and other['confidence']>=.98 and
+                _iou(word['bbox'],other['bbox'])>=.8 for other in arm) for arm in arms[1:]):
+                result.append(dict(**word,texture_evidence='three_spatial_word_observations'))
+    for row in (audit or {}).get('source_rows',{}).get('bands',[]):
+        obs=row.get('observations',[])
+        if row.get('reason')=='stable_source_row' and len(obs)==3 and obs[0]['text'] and all(
+            o['confidence']>=.98 and o['text']==obs[0]['text'] for o in obs):
+            result.append(dict(text=obs[0]['text'],bbox=row['bbox'],confidence=min(o['confidence'] for o in obs),texture_evidence='three_source_row_observations'))
+    return result
 
 
 def spatial_tile(rgb,mask,lag,*,palette_guard=False):
@@ -22,12 +40,17 @@ def spatial_tile(rgb,mask,lag,*,palette_guard=False):
         deviation=deviation,roughness=roughness,axis_ratio=axis_ratio,mean_dx=dx,mean_dy=dy)
 
 
-def inspect_spatial_texture(rgb,candidate,text_audit=None,*,palette_guard=False):
-    old=inspect_texture(rgb,candidate,text_audit);x0,y0,x1,y1=candidate['bbox'];scale=rgb.shape[0]/360
+def inspect_spatial_texture(rgb,candidate,text_audit=None,*,palette_guard=False,all_text_regions=False):
+    additional=stable_texture_words(text_audit) if all_text_regions else []
+    audit=text_audit or {}
+    if additional:
+        lines=audit.get('observed_accepted',audit.get('accepted',[]))
+        audit=dict(audit,observed_accepted=[*lines,dict(words=additional)])
+    old=inspect_texture(rgb,candidate,audit);x0,y0,x1,y1=candidate['bbox'];scale=rgb.shape[0]/360
     mask=np.zeros(rgb.shape[:2],np.uint8)
     cv2.drawContours(mask,[candidate['contour']],-1,1,cv2.FILLED)
     mask=cv2.erode(mask,np.ones((3,3),np.uint8))
-    for line in (text_audit or {}).get('observed_accepted',(text_audit or {}).get('accepted',[])):
+    for line in audit.get('observed_accepted',audit.get('accepted',[])):
         for word in line['words']:
             a,b,c,d=word['bbox'];pad=max(1,round(scale))
             mask[max(0,y0+int(b)-pad):y0+int(np.ceil(d))+pad,max(0,x0+int(a)-pad):x0+int(np.ceil(c))+pad]=0
@@ -45,4 +68,5 @@ def inspect_spatial_texture(rgb,candidate,text_audit=None,*,palette_guard=False)
     fraction=textured/max(1,observed)
     return dict(eligible=fraction<=.2,reason='dense_spatial_or_color_texture' if fraction>.2 else 'no_spatial_texture_veto',
         textured_fraction=fraction,observed_pixels=observed,textured_tiles=tiles,spatial_tiles=records,legacy=old,palette_guard=palette_guard,
+        all_text_regions=all_text_regions,additional_text_regions=additional,
         scope='opt-in texture veto only, not general semantic classification')

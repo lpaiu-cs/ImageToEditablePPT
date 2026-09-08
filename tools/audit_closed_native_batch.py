@@ -11,7 +11,10 @@ from run_region_rgb_baseline import digest,save
 def audit(root,output):
     output.mkdir(parents=True,exist_ok=False)
     rows=[];font=ImageFont.truetype('C:/Windows/Fonts/malgun.ttf',22)
-    for directory in sorted(p for p in root.iterdir() if p.is_dir() and (p/'result.json').is_file()):
+    directories=sorted(p.parent for p in root.rglob('result.json') if p.with_name('lock.json').is_file())
+    if not directories:raise ValueError('No bound native results to audit')
+    for directory in directories:
+        identity=directory.parent.name if directory.name=='native' else directory.name
         result=json.loads((directory/'result.json').read_text(encoding='utf-8'))
         lock=json.loads((directory/'lock.json').read_text(encoding='utf-8'))
         pptx=directory/'result.pptx';source=Path(lock['source_path'])
@@ -61,11 +64,13 @@ def audit(root,output):
         with Image.open(rendered_path) as im:native_im=im.convert('RGB')
         height=round(width*source_im.height/source_im.width)
         board=Image.new('RGB',(width*2+30,height+60),'white');draw=ImageDraw.Draw(board)
-        draw.text((10,10),f'{directory.name} 원본 RGB',font=font,fill='black')
+        draw.text((10,10),f'{identity} 원본 RGB',font=font,fill='black')
         draw.text((width+20,10),'이미지 단독 추론 → native PPT',font=font,fill='black')
         board.paste(source_im.resize((width,height)),(0,50));board.paste(native_im.resize((width,height)),(width+30,50))
-        comparison=output/(directory.name+'.png');board.save(comparison)
-        rows.append(dict(id=directory.name,nodes=len(nodes),labels=sum(bool(s['label']) for s in expected.values()),
+        comparison=output/(identity+'.png')
+        if comparison.exists():raise ValueError('Duplicate audit case identity')
+        board.save(comparison)
+        rows.append(dict(id=identity,nodes=len(nodes),labels=sum(bool(s['label']) for s in expected.values()),
             native_edges=len(edges),pictures=0,source_sha256=digest(source),pptx_sha256=digest(pptx),
             result_sha256=digest(directory/'result.json'),lock_sha256=digest(directory/'lock.json'),
             render_manifest_sha256=digest(manifest),render_sha256=digest(rendered_path),
