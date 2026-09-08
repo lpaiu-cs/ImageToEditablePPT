@@ -31,3 +31,4 @@ src/image_to_editable_ppt/research/label_anchor_native.py -text
 tools/run_anchor_attachment_probe.py -text
 docs/label_anchor_attachment_r8a_spec.md -text
 benchmarks/region_r8a_*.json -text
+tools/diagnose_r8a_trace_fit.py -text

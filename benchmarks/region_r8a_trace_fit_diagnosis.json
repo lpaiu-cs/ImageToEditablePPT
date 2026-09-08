@@ -1,0 +1,20 @@
+{
+  "phase": "R8-A diagnosis",
+  "status": "read_only_source_path_diagnosis_no_candidate_emitted",
+  "artifact_root": "artifacts/region-image-only-r8/trace-fit-diagnosis-v1",
+  "sample": "tree_1302_00079",
+  "files": {
+    "diagnosis.json": "e04f72a0072180ef6ddf1b142c3c881ba37effd78828da5e44331a841a91af35",
+    "contact.png": "0d1d0e89f85a85933e76d3134b624f1ac3f5a319549ca985f4909b47a42194e0",
+    "fixed_scene.json": "d84d0a43bef7b59426fd3663360d99e4bd8430ae0cd8b826b6970fa728a26aec"
+  },
+  "paths_reproduced_exactly": 7,
+  "rejected_diagonal_overlays_reviewed": 6,
+  "raw_ink_p95_original_pixel_range": [1.402743935585022, 1.444573998451233],
+  "trace_vertex_max_original_pixel_range": [2.7418184733296584, 2.913891413326837],
+  "tls_intersects_both_predicted_owners": 6,
+  "annotation_or_ppt_read": false,
+  "native_gate_changed": false,
+  "product_changed": false,
+  "duplicate_diagnosis_integration_commit": "8472ab2"
+}
