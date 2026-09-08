@@ -53,14 +53,19 @@ def main(args):
     assert set(rows) == {r['id'] for r in results['records']}
     native = json.loads((args.run / 'renders/powerpoint_render_manifest.json').read_text(encoding='utf-8-sig'))
     renders = {r['id']: r for r in native['records']}
-    review = args.run / 'review'
+    unmonitored = getattr(args,'allow_unmonitored_replay',False)
+    if unmonitored:
+        assert results['mode']=='cached B/G refinement diagnostic'
+        assert all(r['io']=={'mode':'cached scene diagnostic; no OS/read sandbox claim'} for r in results['records'])
+    review = args.run / getattr(args,'review_name','review')
     review.mkdir(exist_ok=False)
     reports = []
     font = ImageFont.truetype('C:/Windows/Fonts/malgun.ttf', 18)
     sheets = []
     for record in results['records']:
         row = rows[record['id']]
-        assert record['returncode'] == 0 and not record['io']['denied_paths']
+        assert record['returncode'] == 0
+        if not unmonitored:assert not record['io']['denied_paths']
         assert row['image_sha256'] == record['source_sha256']
         assert digest(row['annotation']) == row['annotation_sha256']
         reference = json.loads(args.evaluator.parent.joinpath(row['annotation']).read_text(encoding='utf-8'))
@@ -123,6 +128,7 @@ def main(args):
               for k in reports[0]['metrics']}
     labels = [l for r in reports for l in r['labels']]
     summary = dict(population='shared synthetic validation diagnostic; not unseen acceptance',
+                   input_boundary='unmonitored cached scene replay, NOT fresh/guarded inference' if unmonitored else 'recorded Python read audit; not OS sandbox',
                    results_sha256=digest(args.run / 'results.json'), evaluator_sha256=digest(args.evaluator),
                    matching='IoU >= 0.5; emitted objects without an additional detector NMS; kind-specific and role-only separated',
                    totals=totals, labels=dict(matched_nodes=len(labels), correct=sum(l['correct'] for l in labels),
@@ -137,4 +143,6 @@ if __name__ == '__main__':
     parser.add_argument('--run', type=Path, required=True)
     parser.add_argument('--evaluator', type=Path, required=True)
     parser.add_argument('--render-label', default='R6 이미지 단독 → 실제 PPT 렌더')
+    parser.add_argument('--allow-unmonitored-replay',action='store_true')
+    parser.add_argument('--review-name',default='review')
     main(parser.parse_args())

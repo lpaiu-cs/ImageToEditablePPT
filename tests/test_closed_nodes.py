@@ -92,3 +92,24 @@ def test_not_every_dark_enclosure_is_a_supported_node(mode):
         if mode=='glyph_bridge':cv2.putText(rgb,'A',(88,95),cv2.FONT_HERSHEY_SIMPLEX,2,(0,0,0),3)
     observed,audit=observe_closed_node(rgb,[70,45,170,115])
     assert observed is None,audit
+
+
+def test_bbox_association_uses_overlap_not_four_pixel_endpoint_gate():
+    rgb,bbox=render('ellipse')
+    observed,audit=observe_closed_node(rgb,[64,43,171,116])
+    assert observed is not None and observed['ellipse'],audit
+
+
+def test_two_similarly_sized_nested_interiors_are_ambiguous():
+    rgb,bbox=render('ellipse',3)
+    cv2.ellipse(rgb,(360,240),(135,90),0,0,360,(0,0,0),2)
+    observed,audit=observe_closed_node(rgb,bbox)
+    assert observed is None,audit
+
+
+def test_child_shape_fill_does_not_become_parent_fill():
+    rgb,bbox=render('ellipse',3)
+    cv2.ellipse(rgb,(360,240),(110,70),0,0,360,(240,180,180),cv2.FILLED)
+    cv2.ellipse(rgb,(360,240),(110,70),0,0,360,(0,0,0),3)
+    observed,audit=observe_closed_node(rgb,bbox)
+    assert observed is None or observed['style'].fill is None,audit

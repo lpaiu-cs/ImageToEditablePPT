@@ -25,12 +25,14 @@ def observe_closed_node(rgb, bbox, *, evidence=None):
         return None, dict(reason='small_owner')
     # Detector errors are relative to each axis. A long, shallow node must not
     # use its tiny height as the allowed horizontal uncertainty.
-    tolerance = np.array([max(4.,.05*width),max(4.,.05*height)]*2)
+    tolerance = np.array([max(4.,.15*width),max(4.,.15*height)]*2)
     candidates = []
     for contour in holes:
         x,y,w,h = cv2.boundingRect(contour)
         area = cv2.contourArea(contour)
-        if .45*width*height <= area <= 1.1*width*height and np.all(np.abs(np.array([x,y,x+w,y+h])-bbox) <= tolerance):
+        intersection=max(0,min(x+w,x1)-max(x,x0))*max(0,min(y+h,y1)-max(y,y0))
+        iou=intersection/(w*h+width*height-intersection)
+        if iou>=.75 and .45*width*height <= area <= 1.1*width*height and np.all(np.abs(np.array([x,y,x+w,y+h])-bbox) <= tolerance):
             candidates.append(contour)
     if len(candidates) != 1:
         return None, dict(reason='no_unique_closed_interior', candidates=len(candidates))
@@ -55,7 +57,18 @@ def observe_closed_node(rgb, bbox, *, evidence=None):
     cv2.drawContours(interior,[contour],-1,1,cv2.FILLED)
     inset = max(2,round(min(w,h)*.10))
     core = cv2.erode(interior,np.ones((2*inset+1,2*inset+1),np.uint8))
-    if not core.any():
+    nested = np.zeros(raw.shape,np.uint8)
+    for other in holes:
+        if other is contour or cv2.contourArea(other)<12:
+            continue
+        # Nested closed shapes own their fill. Their interior and boundary must
+        # never dominate the enclosing node's representative background color.
+        if all(cv2.pointPolygonTest(contour,(float(p[0]),float(p[1])),False)>0 for p in other[:,0,:]):
+            cv2.drawContours(nested,[other],-1,1,cv2.FILLED)
+    nested = cv2.dilate(nested,np.ones((7,7),np.uint8))
+    core &= 1-nested
+    audit['excluded_nested_pixels']=int(nested.sum())
+    if core.sum()<max(12,.1*cv2.contourArea(contour)):
         return None,dict(audit,reason='empty_closed_core')
     fill = tuple(int(v) for v in np.median(rgb[core!=0],axis=0))
     # OpenCV hole contours run on the surrounding ink pixels, not purely in
@@ -71,7 +84,7 @@ def observe_closed_node(rgb, bbox, *, evidence=None):
     # White interiors need no fill. Every nonwhite fill came from this closed
     # interior, never a panel-wide median or an open boundary.
     style = ShapeVisualStyle(fill=fill if max(255-v for v in fill)>=24 else None,stroke=stroke)
-    return dict(ellipse=ellipse,style=style),dict(audit,fill=fill,stroke=stroke)
+    return dict(ellipse=ellipse,style=style,contour=contour),dict(audit,fill=fill,stroke=stroke)
 
 
 def recover_closed_nodes(scene,rgb):
