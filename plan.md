@@ -2,7 +2,7 @@
 
 최종 업데이트: 2026-09-08
 
-현재 연구선: `codex/region-first-diagnostics`. 사용자 승인으로 [Region-first R0](docs/region_first_r0_protocol.md)를 별도 개발 진단으로 실행했고, 6개 개발 표본 × 3조건의 실제 PowerPoint 렌더 육안 검토를 완료했다. [R0 결과](docs/region_first_r0_results.md): ROI는 도움이 되지만 객체 오탐·elbow 누락·PPT 연결점 붕괴·OCR가 남는다. 다음은 고정 scene을 이용한 native emit 계약의 독립 검증이다. Phase 15/16 동결 자료와 NO-GO는 유지하며, 아래 Phase 16 상태는 그 동결 연구선에만 해당한다. R0는 수동 ROI/경계 대조군을 자동 성능으로 세지 않고, 사람 시간 절약이나 holdout 승인을 주장하지 않는다.
+현재 연구선: `codex/region-first-diagnostics`. [R3 연속 캠페인](docs/region_first_r3_campaign_results.md)을 edffcd4로 동결했다. 소비한 6개 ROI에서 방향 관계 9/15→15/15, native preset의 초기 육안 개선과 일반 편집 연결점 유지가 확인됐으나 오검출 3개·OCR·reroute 한계가 남는다. 사용자가 프로덕션까지 진행을 승인하여 [R4 및 프로덕션 계획](docs/region_first_r4_production_plan.md)에 따라 객체/텍스트/스타일 검증 후 명시적 ROI 변환 CLI를 통합한다. 기존 기본 경로와 Phase15/16 판정은 보존한다. ROI 제공 조건을 전체 이미지 자동 성능, 사람 시간 절약 또는 holdout 승인으로 세지 않는다.
 상태: `Phase 15는 동결됐다. Phase 16.0은 새 dev/holdout·수동 annotation v2·정확 재생성한 Phase 15 baseline·육안 A/B rubric·PowerPoint 보정 deck까지 고정했으나, 사람의 실제 편집시간 측정이 없어 experiment lock은 blocked다. MEG algorithm tuning과 holdout candidate run은 시작하지 않았으며 candidate/NO-GO를 유지한다.`
 
 ---
