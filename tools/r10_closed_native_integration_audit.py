@@ -39,7 +39,7 @@ def prepare(root,pilot,out):
     (out/'lock.json').write_text(json.dumps(result,indent=2));print(len(records),sha(out/'lock.json'))
 
 
-def run(out,nested=False):
+def run(out,nested=False,pixel=False):
     lock=json.loads((out/'lock.json').read_text());root=Path(lock['root']);results=[]
     def verify():
         assert all(sha(Path(p))==v for p,v in lock['code_sha256'].items())
@@ -49,6 +49,7 @@ def run(out,nested=False):
         cmd=['C:/vs/ImageToEditablePPT/.venv/Scripts/python.exe',str(root/'tools/convert_closed_native.py'),'--image',r['input'],'--output',str(target.resolve())]
         if nested:
             cmd=['C:/vs/ImageToEditablePPT/.venv/Scripts/python.exe',str(root/'tools/run_closed_rect_proposal_probe.py'),'--image',r['input'],'--output',str((target/'native').resolve()),'--trace','--boundary-union','--owned-text','--portrait-boxes','--texture-guard','--nested-owners']
+        if pixel:cmd.append('--pixel-agreement')
         process=subprocess.run(cmd,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120)
         target.mkdir(parents=True,exist_ok=True);(target/'stdout.txt').write_text(process.stdout);(target/'stderr.txt').write_text(process.stderr)
         result=dict(**r,exit=process.returncode,command=cmd)
@@ -68,6 +69,6 @@ def run(out,nested=False):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('mode',choices=['prepare','run']);p.add_argument('--out',type=Path,required=True);p.add_argument('--root',type=Path);p.add_argument('--pilot',type=Path);p.add_argument('--nested-owners',action='store_true');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('mode',choices=['prepare','run']);p.add_argument('--out',type=Path,required=True);p.add_argument('--root',type=Path);p.add_argument('--pilot',type=Path);p.add_argument('--nested-owners',action='store_true');p.add_argument('--pixel-agreement',action='store_true');a=p.parse_args()
     if a.mode=='prepare':prepare(a.root,a.pilot,a.out)
-    else:run(a.out,a.nested_owners)
+    else:run(a.out,a.nested_owners,a.pixel_agreement)
