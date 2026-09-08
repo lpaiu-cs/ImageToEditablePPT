@@ -46,8 +46,8 @@ def recognize_consistent(engine,crop):
     return a,record
 
 
-def recover_labels(scene,rgb,*,enabled=True):
-    engine=_load_engine() if enabled else None
+def recover_labels(scene,rgb,*,enabled=True,engine=None):
+    engine=(_load_engine() if engine is None else engine) if enabled else None
     h,w=rgb.shape[:2]; shapes=[]; audit={}
     for s in scene.shapes:
         if s.owner_kind is not PortOwnerKind.NODE:

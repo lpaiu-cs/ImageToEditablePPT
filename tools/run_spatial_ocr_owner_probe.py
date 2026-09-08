@@ -98,7 +98,7 @@ def run(out, centerline=False, source_rays=False, spatial_text=False):
     files = list((ROOT / 'src/image_to_editable_ppt/region').glob('*.py'))
     files += list((ROOT / 'src/image_to_editable_ppt/v3/emit').glob('*.py'))
     files += [ROOT / 'src/image_to_editable_ppt/research' / name for name in
-              ('native_emit.py', 'image_only_guard.py', 'label_anchor_native.py', 'source_centerline_v2.py', 'spatial_ocr_owners.py', 'duplicate_owner_observations.py', 'source_rays.py', 'spatial_text.py')]
+              ('native_emit.py', 'image_only_guard.py', 'label_anchor_native.py', 'source_centerline_v2.py', 'spatial_ocr_owners.py', 'spatial_ocr_observation.py', 'duplicate_owner_observations.py', 'source_rays.py', 'spatial_text.py')]
     files += [Path(__file__).resolve(), ROOT / 'docs/r10_spatial_ocr_owner_spec.md', ROOT / 'docs/r10_spatial_ocr_selection_v1.md', ROOT / 'tools/diagnose_spatial_ocr_owners.py', ROOT / 'tests/test_spatial_ocr_owners.py']
     files += [ROOT / 'docs/r10_source_rays_spec.md', ROOT / 'tests/test_source_rays.py']
     files += [ROOT / 'docs/r10_spatial_text_spec.md', ROOT / 'tests/test_spatial_text.py']
@@ -155,5 +155,4 @@ if __name__ == '__main__':
         worker(args.image, args.output)
     else:
         run(args.output,args.centerline,args.source_rays,args.spatial_text)
-
 
