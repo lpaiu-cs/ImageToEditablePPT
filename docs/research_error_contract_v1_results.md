@@ -42,3 +42,16 @@ source에서 바뀐6개 경로의 최대 endpoint 변위는 각각 1.636, 4.199,
 산출물: `artifacts/region-source-evidence-r9/error-contract-v1/lock.json`, `results.json`.
 실행기: `tools/assess_frozen_revisions.py`. 비교기는 동일ID 제어 대조에 한정되며 일반 GT
 매칭기나 D-S 삭제의 옳고 그름을 판정하는 도구가 아니다. 사용자 수정시간은 미측정이다.
+
+## 통합 확인
+
+평가분리17개 + C-v2 43개 + D-v1 입력경계12개는 72 passed다.
+현재 전체 pytest는 559 passed / 6 failed / 2 xfailed / 9 warnings로 종료했다.
+6개 실패는 위에 설명한 동결 C-v1 테스트이며 새로운 제품 퇴행으로 세지 않는다.
+전체 테스트가 성공했다고 주장하지 않으며, 기존 학습 smoke test 실행을 새 학습 실험으로 세지 않는다.
+
+D-v2 명세는 별도 작업의 c35f654/65b56cd/e778ac를 검토해 root의 dc3c254/872bfa7/4b5655f로
+통합했다. 직접 관측하지 못하는 개별 glyph 자세를 행 방향 판정으로 검증했다고 주장하지
+않도록 고쳤고, TLS 각도 여유를 엄밀한 오차 상한이 아닌 휴리스틱으로 명시했다.
+명세 검토 후 별도 작업에서 구현·fixture 잠금·G0~G2 진행을 승인했다. 이 보고서 작성 시점에는
+D-v2 반례 성적이 아직 없으며 실제15장/C결합/제품 승격을 수행하지 않았다.
