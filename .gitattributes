@@ -35,3 +35,8 @@ tools/diagnose_r8a_trace_fit.py -text
 src/image_to_editable_ppt/research/source_centerline.py -text
 tests/test_source_centerline.py -text
 benchmarks/r9_centerline_v1_controls.json -text
+src/image_to_editable_ppt/research/source_centerline_v2.py -text
+tests/test_source_centerline_v2.py -text
+tools/run_centerline_probe.py -text
+docs/r9_source_centerline_v2_spec.md -text
+docs/r9_source_centerline_spec.md -text
