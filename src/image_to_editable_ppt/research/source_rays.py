@@ -3,6 +3,7 @@ from dataclasses import replace
 from itertools import combinations
 import math
 
+import cv2
 import numpy as np
 
 from image_to_editable_ppt.region.strokes import stroke_mask
@@ -37,7 +38,7 @@ def _head(along, across, length, shaft_width, scale, cell_extent, reverse=False)
     record = dict(profile=profile, peak=peak, shaft_width=shaft_width)
     if len(taper) < 3 or len(taper) > 12 or widths[peak] < max(1.6*shaft_width, shaft_width+2*scale):
         return False, dict(record, reason='no_terminal_widening')
-    if taper[-1] > .75*taper[0] or taper[-1] > shaft_width+scale:
+    if taper[-1] > .75*taper[0] or taper[-1] > shaft_width+cell_extent:
         return False, dict(record, reason='no_tip_taper')
     correlation = float(np.corrcoef(np.arange(len(taper)), taper)[0, 1])
     record['taper_correlation'] = correlation
@@ -50,6 +51,25 @@ def _head(along, across, length, shaft_width, scale, cell_extent, reverse=False)
     if min(float(wide.max()), -float(wide.min())) < .2*widths[peak]:
         return False, dict(record, reason='asymmetric_terminal')
     return True, dict(record, reason='observed_head_base_and_taper')
+
+
+def _terminal_escape(pixels, along, across, length, scale, at_start):
+    """Inspect source connectivity before clipping the transverse corridor."""
+    distance = along if at_start else length-along
+    selected = (distance >= 0) & (distance <= 16*scale)
+    p = pixels[selected].astype(int)
+    if not len(p):
+        return False
+    offsets = p.min(axis=0)
+    q = p-offsets
+    mask = np.zeros((q[:,1].max()+1,q[:,0].max()+1),np.uint8)
+    mask[q[:,1],q[:,0]] = 1
+    _, labels = cv2.connectedComponents(mask,connectivity=8)
+    ids = labels[q[:,1],q[:,0]]
+    v = np.abs(across[selected])
+    inside = set(ids[v <= 8*scale])
+    outside = set(ids[v > 8*scale])
+    return bool(inside & outside)
 
 
 def observe_pair(pixels, boxes, *, scale, other_boxes=()):
@@ -89,8 +109,9 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
         return reject('short_exterior_span')
     if any(segment_hits_box(a, b, box) for box in other_boxes):
         return reject('third_owner_intersection')
-    t = (pixels-a) @ axis
-    v = (pixels-a) @ normal
+    all_t = (pixels-a) @ axis
+    all_v = (pixels-a) @ normal
+    t,v = all_t,all_v
     inside = (t >= 0) & (t <= length) & (np.abs(v) <= 8*scale)
     t, v = t[inside], v[inside]
     if len(t) < 12:
@@ -111,6 +132,11 @@ def observe_pair(pixels, boxes, *, scale, other_boxes=()):
     audit.update(start_head=start_audit, end_head=end_audit)
     if end_head == start_head:
         return reject('no_unique_arrowhead')
+    opposite = end_audit if start_head else start_audit
+    if max(opposite['profile']) >= max(1.6*shaft_width,shaft_width+2*scale):
+        return reject('opposite_terminal_unresolved')
+    if _terminal_escape(pixels,all_t,all_v,length,scale,start_head):
+        return reject('terminal_source_contact_outside_corridor')
     points = (b, a) if start_head else (a, b)
     return tuple(Point(float(p[0]), float(p[1])) for p in points), dict(audit, reason='supported_source_arrow', reversed=start_head)
 
