@@ -1,0 +1,4 @@
+# These frozen evidence files are byte-hashed. Preserve their original bytes
+# across Windows/Linux checkouts rather than applying newline normalization.
+benchmarks/region_complex_r5_inputs_v*.json -text
+benchmarks/region_complex_r5_evidence_v2.json -text
