@@ -1,0 +1,22 @@
+{
+  "schema": "r9_d_v3_control_lock",
+  "phase": "before_v3_execution",
+  "records": 672,
+  "mechanism_tests": 41,
+  "v1_v2_unchanged": true,
+  "source_v2_manifest_sha256": "4af0c5307f82508dd4bed070e39cc0101727f8644b7a4249d7441af7a769bcdc",
+  "source_v2_result_sha256": "c1bcb51f39eb79f5459e4bed7ed5fd428e4d132f7bb1996f73e241dc70bc38a4",
+  "observer_sha256": "1cd7dbe834394d386e2393ddcb65fd2e7cbb3a566b823da848a8a887db00c68f",
+  "test_sha256": "58d5a16aaa00db49c3badbcb3f64c6e3fd1d92af5801d90de7de0a14bc0b64a6",
+  "tool_sha256": "8975c62b7751b29228031ee74a7368356da69eec8bc11c61ad625033cbef5073",
+  "spec_sha256": "74f3a2f78b22f9d53e5275a9331cca899afc32e43920098460a9d7fd4b2ebdd8",
+  "manifest_sha256": "c9a33191405a330034572c6c9f74d60c0c3757636b6e7196a4a41aec67b5a4c7",
+  "expectations_sha256": "fd89e0aceb245606c7b0ecc4f5a85cab4afa0021dc03db33c36cf538f8526291",
+  "classifications": {
+    "unchanged_structural_or_scope_contract": 336,
+    "verified_far_background_speck": 24,
+    "rasterized_away": 12,
+    "body_at_risk": 204,
+    "body_shared": 96
+  }
+}
